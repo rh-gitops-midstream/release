@@ -1,0 +1,3 @@
+[submodule "dex/dex"]
+	path = dex/dex
+	url = https://github.com/dexidp/dex.git
