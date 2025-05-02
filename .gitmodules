@@ -7,3 +7,6 @@
 [submodule "gitops-console-plugin/gitops-console-plugin"]
 	path = gitops-console-plugin/gitops-console-plugin
 	url = https://github.com/redhat-developer/gitops-console-plugin.git
+[submodule "gitops-must-gather/gitops-must-gather"]
+	path = gitops-must-gather/gitops-must-gather
+	url = https://github.com/redhat-developer/gitops-must-gather.git
