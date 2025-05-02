@@ -1,3 +1,6 @@
 [submodule "dex/dex"]
 	path = dex/dex
 	url = https://github.com/dexidp/dex.git
+[submodule "gitops-backend/gitops-backend"]
+	path = gitops-backend/gitops-backend
+	url = https://github.com/redhat-developer/gitops-backend.git
