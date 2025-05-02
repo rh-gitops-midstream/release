@@ -4,3 +4,6 @@
 [submodule "gitops-backend/gitops-backend"]
 	path = gitops-backend/gitops-backend
 	url = https://github.com/redhat-developer/gitops-backend.git
+[submodule "gitops-console-plugin/gitops-console-plugin"]
+	path = gitops-console-plugin/gitops-console-plugin
+	url = https://github.com/redhat-developer/gitops-console-plugin.git
