@@ -29,6 +29,10 @@ spec:
     value: Dockerfile
   - name: path-context
     value: dex
+  - name: build-platforms
+    value:
+      - linux/x86_64
+      - linux/arm64
   pipelineRef:
     resolver: git
     params:
@@ -37,7 +41,7 @@ spec:
       - name: revision
         value: main
       - name: pathInRepo
-        value: /konflux-ci/pipelines/build-image.yaml
+        value: /konflux-ci/pipelines/build-multi-platform-image.yaml
   taskRunTemplate: {}
   workspaces:
   - name: git-auth
