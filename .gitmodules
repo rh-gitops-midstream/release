@@ -10,3 +10,6 @@
 [submodule "gitops-must-gather/gitops-must-gather"]
 	path = gitops-must-gather/gitops-must-gather
 	url = https://github.com/redhat-developer/gitops-must-gather.git
+[submodule "gitops-operator/gitops-operator"]
+	path = gitops-operator/gitops-operator
+	url = https://github.com/redhat-developer/gitops-operator.git
