@@ -1,0 +1,32 @@
+metadata:
+  name: "openshift-gitops-operator.v1.17.0"
+  annotations:
+    olm.skipRange: ">=1.0.0 <1.17.0"
+    operators.openshift.io/valid-subscription: '["OpenShift Container Platform", "OpenShift Platform Plus"]'
+    features.operators.openshift.io/fips-compliant: "false"
+  labels:
+    operatorframework.io/os.linux: "supported"
+    operatorframework.io/arch.amd64: "supported"
+    operatorframework.io/arch.arm64: "supported"
+    operatorframework.io/arch.ppc64le: "supported"
+    operatorframework.io/arch.s390x: "supported"
+
+spec:
+  version: "1.17.0"
+  replaces: "openshift-gitops-operator.v1.16.0"
+  install:
+    spec:
+      deployments:
+        - name: openshift-gitops-operator-controller-manager
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: manager
+                    env:
+                      - name: ARGOCD_CLUSTER_CONFIG_NAMESPACES
+                        value: openshift-gitops
+                      - name: CLUSTER_SCOPED_ARGO_ROLLOUTS_NAMESPACES
+                        value: openshift-gitops
+                      - name: ENABLE_CONVERSION_WEBHOOK
+                        value: "true"

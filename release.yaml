@@ -1,0 +1,43 @@
+release:
+  name: OpenShift GitOps Operator
+  version: ""
+  manager:
+    name: "Siddhesh Ghadi"
+    github: svghadi
+    email: ""
+  snapshots:
+    - name: bundle
+      id: ""
+    - name: catalog-4.12
+      id: ""
+    - name: catalog-4.13
+      id: ""
+  images:
+    - name: "Red Hat OpenShift GitOps Service"
+      image: "registry.redhat.io/openshift-gitops-1/gitops-rhel8@sha256:8ebdaf548ad61d312d851d9840c6d0f7d99cf15eedd1aab08715d0f37b0ea8e8"
+      source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-backend-main"
+      path: "gitops-backend"
+    - name: "Red Hat OpenShift GitOps DevConsole Plugin"
+      image: "registry.redhat.io/openshift-gitops-1/console-plugin-rhel8@sha256:d7fae25f0fb79fc8d0abccc2fbd30c74d56b16b2582b4794d67da7b256add3e7"
+      source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-console-plugin-main"
+      path: "gitops-console-plugin"
+    - name: "Red Hat OpenShift GitOps Dex"
+      image: "registry.redhat.io/openshift-gitops-1/dex-rhel8@sha256:9a17cb3f6a43b574d27233bf6ca145d38aa38195bed33d29441c9dc38ff317a7"
+      source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex-main"
+      path: "dex"
+    - name: "Red Hat OpenShift Must Gather"
+      image: "registry.redhat.io/openshift-gitops-1/must-gather-rhel8@sha256:86d0c9efdcbb9923a30cd21a6b0ba9f92accadf6a200de2f01e79880f6e236c8"
+      source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-must-gather-main"
+      path: "must-gather"
+    - name: "Redis 7"
+      image: "registry.redhat.io/rhel9/redis-7@sha256:af174f3bc30f88c42b86add90d910cab79b1066d939b7faa99d85f5e8778e6d0"
+      path: "redis"
+    - name: "Red Hat SSO 7.6"
+      image: "registry.redhat.io/rh-sso-7/sso76-openshift-rhel8@sha256:cf52b301f1c37c1de925bcf7e16005b0a3a1865645db29fd671d47db592da1e7"
+      path: "keycloak"
+    - name: "OpenShift HAProxy Router"
+      image: "registry.redhat.io/openshift4/ose-haproxy-router@sha256:72817b62a55fb0f82f2908effc7bd3d20409fc60e9f228449d8f78eb390e22ac"
+      path: "haproxy"
+    - name: "Proxy for Kubernetes RBAC authorization"
+      image: "registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:baa41441752d6d739065eda587b92402e209c67fbcdacf0a40559d37c9e978eb"
+      path: "kube-rbac-proxy"
