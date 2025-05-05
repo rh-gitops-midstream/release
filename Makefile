@@ -15,7 +15,6 @@ bundle:
 	cp -rf gitops-operator-bundle/gitops-operator/bundle gitops-operator-bundle/
 	@echo "Patching $(CSV_FILE)"
 	yq ea '. as $$item ireduce ({}; . * $$item )' $(CSV_FILE) $(CSV_PATCH) -i
-	yq ea '. as $$item ireduce ({}; . * $$item )' $(CSV_FILE) $(IMAGES_PATCH) -i
 	@echo "✅ CSV Patch complete"
 	@echo "Patching $(METADATA_FILE)"
 	yq ea '. as $$item ireduce ({}; . * $$item )' $(METADATA_FILE) $(METADATA_PATCH) -i
