@@ -32,6 +32,9 @@ spec:
     value: Dockerfile
   - name: path-context
     value: gitops-must-gather
+  - name: additional-tags
+    value:
+      - '{{target_branch}}'
   pipelineRef:
     resolver: git
     params:

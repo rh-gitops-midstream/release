@@ -32,6 +32,9 @@ spec:
     value: Dockerfile
   - name: path-context
     value: gitops-console-plugin
+  - name: additional-tags
+    value:
+      - '{{target_branch}}'
   pipelineRef:
     resolver: git
     params:
