@@ -99,6 +99,10 @@ spec:
       description: Additional tags to apply to the image in the registry. Set this only for push events, setting it for PR events will break the bundle update script.
       type: array
       default: []
+    - name: enable-symlink-check
+      description: Enable symlink check for git clone
+      type: string
+      default: "true"
   results:
     - description: ""
       name: IMAGE_URL
@@ -140,6 +144,8 @@ spec:
           value: $(params.output-image).git
         - name: ociArtifactExpiresAfter
           value: $(params.image-expires-after)
+        - name: enableSymlinkCheck
+          value: $(params.enable-symlink-check)
       runAfter:
         - init
       taskRef:
