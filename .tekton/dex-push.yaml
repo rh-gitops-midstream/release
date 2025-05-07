@@ -7,15 +7,14 @@ metadata:
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
-    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "main" && ( "dex/***".pathChanged() || ".tekton/dex-*.yaml".pathChanged()
+    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && ( "dex/***".pathChanged() || ".tekton/dex-*.yaml".pathChanged()
       )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: openshift-gitops-operator-main
-    appstudio.openshift.io/component: dex-main
+    appstudio.openshift.io/application: gitops-1-16
+    appstudio.openshift.io/component: dex-1-16
     pipelines.appstudio.openshift.io/type: build
-  name: dex-main-on-push
+  name: dex-on-push
   namespace: rh-openshift-gitops-tenant
 spec:
   params:
@@ -42,7 +41,7 @@ spec:
       - name: url
         value: https://github.com/rh-gitops-midstream/release.git
       - name: revision
-        value: main
+        value: '{{target_branch}}'
       - name: pathInRepo
         value: /konflux-ci/pipelines/build-multi-platform-image.yaml
   taskRunTemplate: {}
