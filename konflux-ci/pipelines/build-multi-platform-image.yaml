@@ -102,7 +102,7 @@ spec:
     - name: enable-symlink-check
       description: Enable symlink check for git clone
       type: string
-      default: "true"
+      default: "false"
   results:
     - description: ""
       name: IMAGE_URL
