@@ -1,0 +1,121 @@
+# Copyright 2023 Red Hat
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# ------------------------------------------------------------------------
+
+####################################################################################################
+# Argo Rollouts Openshift Routes Plugin Build stage which performs the actual build of Argo Rollouts binaries
+####################################################################################################
+
+FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.22 AS rollouts-plugin-trafficrouter-openshift-build
+
+WORKDIR /go/src/github.com/argoproj/argo-rollouts
+
+COPY . .
+
+WORKDIR /go/src/github.com/argoproj/argo-rollouts/rollouts-plugin-trafficrouter-openshift/
+
+ENV GOFLAGS="-mod=mod"
+ENV CGO_ENABLED=1
+ENV GOEXPERIMENT=strictfipsruntime
+
+# Perform the build
+RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime go build -v -tags strictfipsruntime  -o ./dist/rollouts-plugin-trafficrouter-openshift .
+
+####################################################################################################
+# Argo Rollouts Build stage which performs the actual build of Argo Rollouts binaries
+####################################################################################################
+
+FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.22 AS argo-rollouts-build
+
+WORKDIR /go/src/github.com/argoproj/argo-rollouts
+
+COPY . . 
+
+WORKDIR /go/src/github.com/argoproj/argo-rollouts/argo-rollouts/
+
+ENV GOFLAGS="-mod=mod"
+ENV CGO_ENABLED=1
+ENV GOEXPERIMENT=strictfipsruntime
+
+# Perform the build
+RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime \
+go build -v -ldflags "-X github.com/argoproj/argo-rollouts/utils/version.version=${CI_ARGO_ROLLOUTS_UPSTREAM_TAG} \
+  -X github.com/argoproj/argo-rollouts/utils/version.buildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+  -X github.com/argoproj/argo-rollouts/utils/version.gitCommit=${CI_ARGO_ROLLOUTS_UPSTREAM_COMMIT} \
+  -X github.com/argoproj/argo-rollouts/utils/version.gitTreeState=clean \
+  -X github.com/argoproj/argo-rollouts.gitTag=${CI_ARGO_ROLLOUTS_UPSTREAM_TAG}" \
+  -tags strictfipsruntime -o ./dist/rollouts-controller ./cmd/rollouts-controller
+
+####################################################################################################
+# Final image
+####################################################################################################
+####################################################################################################
+# Argo Rollouts Base - used as the base for both the release and dev argo rollouts images
+####################################################################################################
+FROM registry.access.redhat.com/ubi8/ubi-minimal AS argo-rollouts-base
+
+USER root
+RUN microdnf install shadow-utils  -y
+
+RUN groupadd -g 999 argo-rollouts && \
+    useradd -l -r -u 999 -g argo-rollouts argo-rollouts && \
+    mkdir -p /home/argo-rollouts && \
+    chown argo-rollouts:0 /home/argo-rollouts && \
+    chmod g=u /home/argo-rollouts && \
+    microdnf update && \
+    microdnf install -y git git-lfs gpg tar tzdata && \
+    microdnf clean all && \
+    rm -rf /tmp/* /var/tmp/*
+
+# support for mounting configuration from a configmap
+RUN mkdir -p /app/config/ssh && \
+    touch /app/config/ssh/ssh_known_hosts && \
+    ln -s /app/config/ssh/ssh_known_hosts /etc/ssh/ssh_known_hosts 
+
+RUN mkdir -p /app/config/tls
+RUN mkdir -p /app/config/gpg/source && \
+    mkdir -p /app/config/gpg/keys && \
+    chown argo-rollouts /app/config/gpg/keys && \
+    chmod 0700 /app/config/gpg/keys
+# Create directory for storing the binary for the default route plugin
+RUN mkdir -p /plugins/rollouts-trafficrouter-openshift/
+
+USER 999
+
+WORKDIR /home/argo-rollouts
+
+# Create the binary for the default route plugin to the plugins directory
+COPY --from=rollouts-plugin-trafficrouter-openshift-build /go/src/github.com/argoproj/argo-rollouts/rollouts-plugin-trafficrouter-openshift/dist/rollouts-plugin-trafficrouter-openshift ./plugins/rollouts-trafficrouter-openshift/openshift-route-plugin
+
+COPY --from=argo-rollouts-build /go/src/github.com/argoproj/argo-rollouts/argo-rollouts/dist/rollouts-controller /usr/local/bin/
+
+LABEL \
+    name="openshift-gitops-1/argo-rollouts-rhel8" \
+    version=${CI_CONTAINER_VERSION} \
+    License="Apache 2.0" \
+    com.redhat.component="openshift-gitops-argo-rollouts-container" \
+    com.redhat.delivery.appregistry="false" \
+    release=${CI_CONTAINER_RELEASE} \
+    upstream-version=${CI_UPSTREAM_VERSION} \
+    upstream-vcs-ref="${CI_ARGO_ROLLOUTS_UPSTREAM_COMMIT}" \
+    upstream-vcs-type="git" \
+    summary="Red Hat Openshift GitOps Argo Rollouts" \
+    io.openshift.expose-services="" \
+    io.openshift.tags="openshift,gitops,argorollouts" \
+    io.k8s.display-name="openshift-gitops-argo-rollouts" \
+    maintainer="William Tam <wtam@redhat.com>" \
+    description="Red Hat Openshift GitOps Argo Rollouts"
+
+ENTRYPOINT [ "/usr/local/bin/rollouts-controller"]

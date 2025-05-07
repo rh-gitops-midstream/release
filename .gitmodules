@@ -31,3 +31,9 @@
 [submodule "argo-cd/ssh-connect"]
 	path = argo-cd/ssh-connect
 	url = https://github.com/gotoh/ssh-connect
+[submodule "argo-rollouts/argo-rollouts"]
+	path = argo-rollouts/argo-rollouts
+	url = https://github.com/argoproj/argo-rollouts.git
+[submodule "argo-rollouts/rollouts-plugin-trafficrouter-openshift"]
+	path = argo-rollouts/rollouts-plugin-trafficrouter-openshift
+	url = https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
