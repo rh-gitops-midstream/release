@@ -1,0 +1,14 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  name: gitops-1.16-test
+  namespace: rh-openshift-gitops-tenant
+spec:
+  releasePlan: gitops-1-16-stage
+  snapshot: gitops-1-16-ndl8q
+  data:
+    mapping:
+      defaults:
+        tags:
+          - "1.16.1"
+          - "1.16.1-{{ timestamp }}"
