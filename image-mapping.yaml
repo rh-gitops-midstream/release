@@ -18,6 +18,26 @@ images:
     path: "gitops-must-gather"
     source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-must-gather-main"
     target: "registry.redhat.io/openshift-gitops-1/must-gather-rhel8"
+  
+  - name: "Red Hat OpenShift GitOps Operator"
+    path: "gitops-operator"
+    source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-main"
+    target: "registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator"
+
+  - name: "Red Hat OpenShift GitOps Argo CD"
+    path: "argo-cd"
+    source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-cd-main"
+    target: "registry.redhat.io/openshift-gitops-1/argocd-rhel8"
+  
+  - name: "Red Hat OpenShift GitOps Argo Rollouts"
+    path: "argo-rollouts"
+    source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts-main"
+    target: "registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8"
+
+  - name: "Red Hat OpenShift GitOps Operator Bundle"
+    path: "gitops-operator-bundle"
+    source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle-main"
+    target: "registry.redhat.io/openshift-gitops-1/gitops-operator-bundle" 
 
   - name: "Redis 7"
     path: "redis"
