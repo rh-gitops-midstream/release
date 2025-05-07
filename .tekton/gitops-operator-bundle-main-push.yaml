@@ -31,6 +31,9 @@ spec:
     value: gitops-operator-bundle
   - name: build-image-index
     value: "false"
+  - name: additional-tags
+    value:
+      - '{{target_branch}}'
   pipelineRef:
     resolver: git
     params:
