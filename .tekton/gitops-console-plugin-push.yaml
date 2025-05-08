@@ -15,7 +15,7 @@ metadata:
     appstudio.openshift.io/application: gitops-1-16
     appstudio.openshift.io/component: gitops-console-plugin-1-16
     pipelines.appstudio.openshift.io/type: build
-  name: gitops-console-plugin-on-push
+  name: gitops-console-plugin-1-16-on-push
   namespace: rh-openshift-gitops-tenant
 spec:
   params:

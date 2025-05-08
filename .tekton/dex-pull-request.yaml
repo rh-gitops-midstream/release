@@ -16,7 +16,7 @@ metadata:
     appstudio.openshift.io/application: gitops-1-16
     appstudio.openshift.io/component: dex-1-16
     pipelines.appstudio.openshift.io/type: build
-  name: dex-on-pull-request
+  name: dex-1-16-on-pull-request
   namespace: rh-openshift-gitops-tenant
 spec:
   params:

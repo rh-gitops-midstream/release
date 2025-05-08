@@ -15,7 +15,7 @@ metadata:
     appstudio.openshift.io/application: gitops-1-16
     appstudio.openshift.io/component: gitops-must-gather-1-16
     pipelines.appstudio.openshift.io/type: build
-  name: gitops-must-gather-on-push
+  name: gitops-must-gather-1-16-on-push
   namespace: rh-openshift-gitops-tenant
 spec:
   params:

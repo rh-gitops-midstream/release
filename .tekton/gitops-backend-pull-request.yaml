@@ -16,7 +16,7 @@ metadata:
     appstudio.openshift.io/application: gitops-1-16
     appstudio.openshift.io/component: gitops-backend-1-16
     pipelines.appstudio.openshift.io/type: build
-  name: gitops-backend-on-pull-request
+  name: gitops-backend-1-16-on-pull-request
   namespace: rh-openshift-gitops-tenant
 spec:
   params:
