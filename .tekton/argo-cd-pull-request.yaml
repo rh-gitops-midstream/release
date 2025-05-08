@@ -9,14 +9,14 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "true"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
-      == "main" && ( "gitops-operator/***".pathChanged() || ".tekton/gitops-operator-main-*.yaml".pathChanged()
+      == "release-1.16" && ( "argo-cd/***".pathChanged() || ".tekton/argo-cd-*.yaml".pathChanged()
       )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: openshift-gitops-operator-main
-    appstudio.openshift.io/component: gitops-operator-main
+    appstudio.openshift.io/application: gitops-1-16
+    appstudio.openshift.io/component: argo-cd-1-16
     pipelines.appstudio.openshift.io/type: build
-  name: gitops-operator-main-on-pull-request
+  name: argo-cd-on-pull-request
   namespace: rh-openshift-gitops-tenant
 spec:
   params:
@@ -25,7 +25,7 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-main:on-pr-{{revision}}
+    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-cd:on-pr-{{revision}}
   - name: image-expires-after
     value: 5d
   - name: build-platforms
@@ -34,17 +34,14 @@ spec:
   - name: dockerfile
     value: Dockerfile
   - name: path-context
-    value: gitops-operator
-  - name: additional-tags
-    value:
-      - '{{target_branch}}'
+    value: argo-cd
   pipelineRef:
     resolver: git
     params:
       - name: url
         value: https://github.com/rh-gitops-midstream/release.git
       - name: revision
-        value: main
+        value: '{{target_branch}}'
       - name: pathInRepo
         value: /konflux-ci/pipelines/build-multi-platform-image.yaml
   taskRunTemplate: {}
