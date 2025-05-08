@@ -1,23 +1,43 @@
 images:
   - name: "Red Hat OpenShift GitOps Service"
     path: "gitops-backend"
-    source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-backend-main"
+    source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-backend"
     target: "registry.redhat.io/openshift-gitops-1/gitops-rhel8"
 
   - name: "Red Hat OpenShift GitOps DevConsole Plugin"
     path: "gitops-console-plugin"
-    source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-console-plugin-main"
+    source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-console-plugin"
     target: "registry.redhat.io/openshift-gitops-1/console-plugin-rhel8"
 
   - name: "Red Hat OpenShift GitOps Dex"
     path: "dex"
-    source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex-main"
+    source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex"
     target: "registry.redhat.io/openshift-gitops-1/dex-rhel8"
 
   - name: "Red Hat OpenShift Must Gather"
     path: "gitops-must-gather"
-    source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-must-gather-main"
+    source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-must-gather"
     target: "registry.redhat.io/openshift-gitops-1/must-gather-rhel8"
+
+  - name: "Red Hat OpenShift GitOps Operator"
+    path: "gitops-operator"
+    source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator"
+    target: "registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator"
+
+  - name: "Red Hat OpenShift GitOps Argo CD"
+    path: "argo-cd"
+    source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-cd"
+    target: "registry.redhat.io/openshift-gitops-1/argocd-rhel8"
+  
+  - name: "Red Hat OpenShift GitOps Argo Rollouts"
+    path: "argo-rollouts"
+    source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts"
+    target: "registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8"
+
+  - name: "Red Hat OpenShift GitOps Operator Bundle"
+    path: "gitops-operator-bundle"
+    source: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle"
+    target: "registry.redhat.io/openshift-gitops-1/gitops-operator-bundle" 
 
   - name: "Redis 7"
     path: "redis"
