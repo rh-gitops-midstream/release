@@ -1,14 +1,29 @@
 release:
   name: OpenShift GitOps Operator
-  version: ""
+  version: "1.16.1"
   manager:
     name: "Siddhesh Ghadi"
     github: svghadi
-    email: ""
   snapshots:
     - name: bundle
-      id: ""
+      id: null
     - name: catalog-4.12
-      id: ""
+      id: null
     - name: catalog-4.13
-      id: ""
+      id: null
+  sources:
+    - type: git
+      name: "Argo CD"
+      path: argo-cd
+      url: "https://github.com/argoproj/argo-cd"
+      revision: 
+      artifacts:
+        - type: image
+          url: "registry.redhat.io/openshift-gitops-1/argocd-rhel8"
+        - type: rpm
+          url: ""
+    - type: registry
+      name: Redis
+      artifacts:
+        - type: image
+          url: "registry.redhat.io/rhel9/redis-7@sha256:af174f3bc30f88c42b86add90d910cab79b1066d939b7faa99d85f5e8778e6d0"

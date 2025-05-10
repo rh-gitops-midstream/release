@@ -64,8 +64,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          base: ${{ env.branch_name }} 
-          branch: ${{ github.event.inputs.target_branch }}
+          base: ${{ github.event.inputs.target_branch }}
           delete-branch: false
           title: "chore: bump TAG to ${{ steps.bump_tag.outputs.new_tag }}"
           body: |
