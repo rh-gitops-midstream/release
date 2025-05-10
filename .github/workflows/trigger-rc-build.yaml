@@ -1,0 +1,72 @@
+name: Trigger RC Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        description: 'Select Branch'
+        required: true
+        type: choice
+        # Add/update release branches as needed
+        options:
+          - release-1.17
+          - release-1.16
+          - release-1.15 
+          - main 
+
+permissions:
+  contents: write        # Needed to push commits
+  pull-requests: write   # Needed to create PRs
+
+jobs:
+  update-tag:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.target_branch }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump RC tag
+        id: bump_tag
+        run: |
+          current_tag=$(cat TAG)
+          echo "Current TAG: $current_tag"
+
+          base_version=$(echo "$current_tag" | cut -d '-' -f 1)
+          current_suffix=$(echo "$current_tag" | cut -d '-' -f 2)
+          next_suffix=$((current_suffix + 1))
+          new_tag="${base_version}-${next_suffix}"
+
+          echo "$new_tag" > TAG
+          echo "New TAG: $new_tag"
+          echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
+
+      - name: Create new PR branch and commit changes
+        run: |
+          BRANCH_NAME="update-tag-${{ steps.bump_tag.outputs.new_tag }}"
+          git checkout -b "$BRANCH_NAME"
+
+          git add TAG
+          git commit -m "chore: bump TAG to ${{ steps.bump_tag.outputs.new_tag }}"
+          git push origin "$BRANCH_NAME"
+
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_ENV
+
+      # TODO: use latest configurations options from @v7 of peter-evans/create-pull-request
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: ${{ github.event.inputs.target_branch }}
+          head: ${{ env.branch_name }}
+          title: "chore: bump TAG to ${{ steps.bump_tag.outputs.new_tag }}"
+          body: |
+            This PR updates the TAG file to `${{ steps.bump_tag.outputs.new_tag }}`.
+            Triggered manually via the Trigger RC Build workflow.
