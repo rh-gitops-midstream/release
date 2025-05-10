@@ -66,7 +66,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: ${{ github.event.inputs.target_branch }}
           branch: ${{ env.branch_name }}
-          delete-branch: true
+          delete-branch: false
           title: "chore: bump TAG to ${{ steps.bump_tag.outputs.new_tag }}"
           body: |
             This PR updates the TAG file to `${{ steps.bump_tag.outputs.new_tag }}`.
