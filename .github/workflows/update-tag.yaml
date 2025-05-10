@@ -1,4 +1,4 @@
-name: Trigger RC Build
+name: Update TAG
 
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.target_branch }}
@@ -33,7 +33,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Bump RC tag
+      - name: Bump RC Tag
         id: bump_tag
         run: |
           current_tag=$(cat TAG)
@@ -61,11 +61,12 @@ jobs:
 
       # TODO: use latest configurations options from @v7 of peter-evans/create-pull-request
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: ${{ github.event.inputs.target_branch }}
-          head: ${{ env.branch_name }}
+          branch: ${{ env.branch_name }}
+          delete-branch: true
           title: "chore: bump TAG to ${{ steps.bump_tag.outputs.new_tag }}"
           body: |
             This PR updates the TAG file to `${{ steps.bump_tag.outputs.new_tag }}`.
