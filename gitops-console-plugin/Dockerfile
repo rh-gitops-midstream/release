@@ -22,9 +22,8 @@ ADD . /usr/src/app
 WORKDIR /usr/src/app/gitops-console-plugin
     
 # Install Yarn
-RUN npm install --global yarn
+RUN npm install --global /cachi2/output/deps/yarn-classic/yarn-1.22.22.tgz
 
-    
 RUN yarn install --no-progress --non-interactive
     
     
