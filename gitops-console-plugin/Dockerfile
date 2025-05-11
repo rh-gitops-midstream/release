@@ -22,20 +22,13 @@ ADD . /usr/src/app
 
 # Install Yarn
 WORKDIR /usr/src/app
-RUN npm install 
+RUN npm install --prefer-offline --no-progress --non-interactive
 ENV YARN="/usr/src/app/node_modules/.bin/yarn"
 RUN $YARN --version
 
 # Install Console Plugin Dependencies
 WORKDIR /usr/src/app/gitops-console-plugin
-RUN $YARN install --no-progress --non-interactive
-    
-RUN $YARN  install --network-timeout 600000 && \
-    $YARN  cache clean
-    
-RUN $YARN  install --no-progress --non-interactive
-    
-COPY [".", "."]
+RUN $YARN install --no-progress --non-interactive --prefer-offline --network-timeout 600000 
     
 RUN $YARN build
     
