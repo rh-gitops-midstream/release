@@ -36,7 +36,7 @@ spec:
     value:
       - '{{target_branch}}'
   - name: prefetch-input
-    value: '[{"type": "gomod", "path": "./gitops-console-plugin/gitops-console-plugin"}, {"type": "npm", "path": "./gitops-console-plugin/gitops-console-plugin"}, {"type": "yarn", "path": "./gitops-console-plugin/gitops-console-plugin"}]'
+    value: '[{"type": "npm", "path": "./gitops-console-plugin/gitops-console-plugin"}, {"type": "yarn", "path": "./gitops-console-plugin/gitops-console-plugin"}]'
   pipelineRef:
     resolver: git
     params:
