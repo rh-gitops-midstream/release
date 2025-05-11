@@ -24,7 +24,10 @@ ADD . /usr/src/app
 WORKDIR /usr/src/app
 RUN npm install 
 RUN ls -la
+RUN la -la node_modules/.bin/yarn
 RUN ln -s node_modules/.bin/yarn /usr/local/bin/yarn
+RUN /usr/local/bin/yarn version
+RUN which yarn
 RUN npm install -g
 
 # Install Console Plugin Dependencies
