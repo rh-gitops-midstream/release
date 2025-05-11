@@ -23,7 +23,9 @@ ADD . /usr/src/app
 # Install Yarn
 WORKDIR /usr/src/app
 RUN npm install 
+RUN ls -la
 RUN ln -s node_modules/.bin/yarn /usr/local/bin/yarn
+RUN npm install -g
 
 # Install Console Plugin Dependencies
 WORKDIR /usr/src/app/gitops-console-plugin
