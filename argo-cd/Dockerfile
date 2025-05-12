@@ -83,7 +83,8 @@ RUN if [ "$BUILD_ALL_CLIS" = "true" ] ; then \
 
 # build kustomize
 WORKDIR /go/src/github.com/argoproj/kustomize
-RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -mod=mod -buildvcs=true -ldflags="-s -X sigs.k8s.io/kustomize/api/provenance.version=${CI_KUSTOMIZE_UPSTREAM_TAG} \
+ENV GOSUMDB=off
+RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -mod=readonly -buildvcs=true -ldflags="-s -X sigs.k8s.io/kustomize/api/provenance.version=${CI_KUSTOMIZE_UPSTREAM_TAG} \
 -X sigs.k8s.io/kustomize/api/provenance.buildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
 -tags strictfipsruntime -o kustomize ./kustomize/main.go
 
