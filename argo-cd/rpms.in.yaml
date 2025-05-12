@@ -11,6 +11,10 @@ packages:
   - gpg
   - tar
   - tzdata
+  - cmake
+  - gcc
+  - sed
+  - shadow-utils
 arches:
   - x86_64
   - aarch64

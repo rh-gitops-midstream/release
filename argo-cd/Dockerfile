@@ -128,7 +128,6 @@ RUN groupadd -g 999 argocd && \
     mkdir -p /home/argocd && \
     chown argocd:0 /home/argocd && \
     chmod g=u /home/argocd && \
-    microdnf update && \
     microdnf install -y git gpg tar tzdata && \
     microdnf clean all && \
     rm -rf /tmp/* /var/tmp/*
