@@ -21,26 +21,26 @@ FROM registry.access.redhat.com/ubi8/nodejs-18 AS argocd-ui
 
 USER root
 
-# Install Yarn
-#RUN npm install --global /cachi2/output/deps/yarn-classic/yarn-1.22.22.tgz
-RUN npm install -g yarn
 
-WORKDIR /src
+# Install Yarn
+WORKDIR /usr/src/app
+COPY ["./package.json", "package-lock.json", "./"]
+RUN npm install --prefer-offline --no-progress --non-interactive
+ENV YARN="/usr/src/app/node_modules/.bin/yarn"
+RUN $YARN --version
+
+WORKDIR /usr/src/app/argo-cd/ui
 
 COPY ["argo-cd/ui/package.json", "argo-cd/ui/yarn.lock", "./"]
 
-RUN yarn install --network-timeout 200000 && \
-    yarn cache clean
+RUN $YARN  install --no-progress --non-interactive --prefer-offline --network-timeout 200000 && \
+    $YARN cache clean
 
 COPY ["argo-cd/ui/", "."]
 
-#RUN yarn install --no-progress --non-interactive --offline
-RUN yarn install --no-progress --non-interactive
-
-
 ARG ARGO_VERSION=latest
 ENV ARGO_VERSION=$ARGO_VERSION
-RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' yarn build
+RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' $YARN build
 
 ####################################################################################################
 # Argo CD Build stage which performs the actual build of Argo CD binaries
