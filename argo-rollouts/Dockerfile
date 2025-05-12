@@ -74,7 +74,6 @@ RUN groupadd -g 999 argo-rollouts && \
     mkdir -p /home/argo-rollouts && \
     chown argo-rollouts:0 /home/argo-rollouts && \
     chmod g=u /home/argo-rollouts && \
-    microdnf update && \
     microdnf install -y git git-lfs gpg tar tzdata && \
     microdnf clean all && \
     rm -rf /tmp/* /var/tmp/*

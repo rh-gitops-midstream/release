@@ -36,6 +36,8 @@ spec:
   - name: additional-tags
     value:
       - '{{target_branch}}'
+  - name: prefetch-input
+    value: '[{"type": "gomod", "path": "./argo-rollouts/rollouts-plugin-trafficrouter-openshift"}, {"type": "gomod", "path": "./argo-rollouts/argo-rollouts"}, {"type": "rpm", "path": "./argo-rollouts"}]'
   pipelineRef:
     resolver: git
     params:
