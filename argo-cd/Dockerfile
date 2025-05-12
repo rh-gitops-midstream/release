@@ -81,6 +81,7 @@ RUN if [ "$BUILD_ALL_CLIS" = "true" ] ; then \
     make CLI_NAME=argocd-windows-amd64.exe GOOS=windows GOARCH=amd64 cli-local \
     ; fi
 
+# TODO: use separate stage for building deps
 # build kustomize
 WORKDIR /go/src/github.com/argoproj/kustomize
 RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -mod=readonly -buildvcs=true -ldflags="-s -X sigs.k8s.io/kustomize/api/provenance.version=${CI_KUSTOMIZE_UPSTREAM_TAG} \
