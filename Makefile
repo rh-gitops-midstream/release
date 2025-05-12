@@ -1,6 +1,6 @@
-.PHONY: images
+.PHONY: update-shas
 BRANCH_NAME := $(shell git rev-parse --abbrev-ref HEAD)
-image:
+update-shas:
 	BRANCH_NAME=$(BRANCH_NAME) ./hack/update-image-shas.sh
 
 .PHONY: bundle
@@ -11,7 +11,7 @@ IMAGES_PATCH := gitops-operator-bundle/patches/images.yaml
 METADATA_FILE := gitops-operator-bundle/bundle/metadata/annotations.yaml
 METADATA_PATCH := gitops-operator-bundle/patches/metadata.yaml
 
-bundle:
+bundle: update-shas
 	cp -rf gitops-operator-bundle/gitops-operator/bundle gitops-operator-bundle/
 	@echo "Patching $(CSV_FILE)"
 	yq ea '. as $$item ireduce ({}; . * $$item )' $(CSV_FILE) $(CSV_PATCH) -i
@@ -19,3 +19,13 @@ bundle:
 	@echo "Patching $(METADATA_FILE)"
 	yq ea '. as $$item ireduce ({}; . * $$item )' $(METADATA_FILE) $(METADATA_PATCH) -i
 	@echo "✅ Metadata Patch complete"
+
+PHONY: trigger-builds
+trigger-builds: 
+	kubectl annotate components/argo-cd-1-16 build.appstudio.openshift.io/request=trigger-pac-build
+	kubectl annotate components/argo-rollouts-1-16 build.appstudio.openshift.io/request=trigger-pac-build
+	kubectl annotate components/dex-1-16 build.appstudio.openshift.io/request=trigger-pac-build
+	kubectl annotate components/gitops-backend-1-16 build.appstudio.openshift.io/request=trigger-pac-build
+	kubectl annotate components/gitops-console-plugin-1-16 build.appstudio.openshift.io/request=trigger-pac-build
+	kubectl annotate components/gitops-must-gather-1-16 build.appstudio.openshift.io/request=trigger-pac-build
+	kubectl annotate components/gitops-operator-1-16 build.appstudio.openshift.io/request=trigger-pac-build
