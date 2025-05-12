@@ -1,0 +1,7 @@
+{
+    "name": "yarn-install",
+    "version": "1.22.22",
+    "dependencies": {
+        "yarn": "^1.22.22"
+    }
+}

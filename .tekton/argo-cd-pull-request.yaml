@@ -35,6 +35,8 @@ spec:
     value: Dockerfile
   - name: path-context
     value: argo-cd
+  - name: prefetch-input
+    value: '[{"type":"gomod","path":"./argo-cd/argo-cd"}, {"type":"yarn","path":"./argo-cd/argo-cd/ui"}, {"type":"gomod","path":"./argo-cd/kustomize/kustomize"}, {"type":"gomod","path":"./argo-cd/helm"}, {"type":"gomod","path":"./argo-cd/git-lfs"}, {"type":"rpm","path":"./argo-cd"}, {"type":"npm","path":"./argo-cd"}]'
   pipelineRef:
     resolver: git
     params:

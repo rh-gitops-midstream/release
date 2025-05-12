@@ -21,26 +21,26 @@ FROM registry.access.redhat.com/ubi8/nodejs-18 AS argocd-ui
 
 USER root
 
-# Install Yarn
-#RUN npm install --global /cachi2/output/deps/yarn-classic/yarn-1.22.22.tgz
-RUN npm install -g yarn
 
-WORKDIR /src
+# Install Yarn
+WORKDIR /usr/src/app
+COPY ["./package.json", "package-lock.json", "./"]
+RUN npm install --prefer-offline --no-progress --non-interactive
+ENV YARN="/usr/src/app/node_modules/.bin/yarn"
+RUN $YARN --version
+
+WORKDIR /usr/src/app/argo-cd/ui
 
 COPY ["argo-cd/ui/package.json", "argo-cd/ui/yarn.lock", "./"]
 
-RUN yarn install --network-timeout 200000 && \
-    yarn cache clean
+RUN $YARN  install --no-progress --non-interactive --prefer-offline --network-timeout 200000 && \
+    $YARN cache clean
 
 COPY ["argo-cd/ui/", "."]
 
-#RUN yarn install --no-progress --non-interactive --offline
-RUN yarn install --no-progress --non-interactive
-
-
 ARG ARGO_VERSION=latest
 ENV ARGO_VERSION=$ARGO_VERSION
-RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' yarn build
+RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' $YARN build
 
 ####################################################################################################
 # Argo CD Build stage which performs the actual build of Argo CD binaries
@@ -57,7 +57,7 @@ ENV GOFLAGS="-mod=mod"
 ARG EXTRA_BUILD_INFO='{Vendor Information: Red Hat OpenShift GitOps version: 1.16.0}'
 
 # Perform the build
-COPY --from=argocd-ui /src/dist/app /go/src/github.com/argoproj/argo-cd/ui/dist/app
+COPY --from=argocd-ui /usr/src/app/argo-cd/ui/dist/app /go/src/github.com/argoproj/argo-cd/ui/dist/app
 RUN export PACKAGE=github.com/argoproj/argo-cd/v2/common &&\
 export VERSION=$(cat VERSION) &&\
 export BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') &&\
@@ -83,6 +83,7 @@ RUN if [ "$BUILD_ALL_CLIS" = "true" ] ; then \
 
 # build kustomize
 WORKDIR /go/src/github.com/argoproj/kustomize
+ENV GOSUMDB=off
 RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -mod=readonly -buildvcs=true -ldflags="-s -X sigs.k8s.io/kustomize/api/provenance.version=${CI_KUSTOMIZE_UPSTREAM_TAG} \
 -X sigs.k8s.io/kustomize/api/provenance.buildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
 -tags strictfipsruntime -o kustomize ./kustomize/main.go
