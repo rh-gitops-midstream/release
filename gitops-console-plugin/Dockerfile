@@ -19,23 +19,18 @@ FROM registry.access.redhat.com/ubi9/nodejs-22:9.5-1734528986 AS builder
 USER root
 
 ADD . /usr/src/app
-WORKDIR /usr/src/app/gitops-console-plugin
-    
-# Install Yarn
-RUN npm install --global yarn
 
+# Install Yarn
+WORKDIR /usr/src/app
+RUN npm install --prefer-offline --no-progress --non-interactive
+ENV YARN="/usr/src/app/node_modules/.bin/yarn"
+RUN $YARN --version
+
+# Install Console Plugin Dependencies
+WORKDIR /usr/src/app/gitops-console-plugin
+RUN $YARN install --no-progress --non-interactive --prefer-offline --network-timeout 600000 
     
-RUN yarn install --no-progress --non-interactive
-    
-    
-RUN yarn install --network-timeout 600000 && \
-    yarn cache clean
-    
-RUN yarn install --no-progress --non-interactive
-    
-COPY [".", "."]
-    
-RUN yarn build
+RUN $YARN build
     
 ####################################################################################################
     
