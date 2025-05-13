@@ -24,5 +24,6 @@ LABEL \
     io.openshift.expose-services="" \
     io.openshift.tags="openshift,gitops" \
     io.k8s.display-name="Red Hat OpenShift GitOps Backend Service" \
+    io.k8s.description="Red Hat OpenShift GitOps Backend Service" \
     maintainer="William Tam <wtam@redhat.com>" \
     description="Red Hat OpenShift GitOps Backend Service"
