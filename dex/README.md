@@ -21,6 +21,7 @@ Run `make build-plugin` target to build image locally.
 make build-plugin
 ```
 
+# TODO: This is no longer valid. Update the docs
 ## How to add/update prefetch RPM dependencies?
 
 Configurations for prefetching RPMs for hermetic (disconnected) builds are located in the [deps](./deps) directory. For detailed instructions on adding a new RPM dependency, refer to the [Konflux documentation](https://konflux-ci.dev/docs/how-tos/configuring/prefetching-dependencies/#rpm).

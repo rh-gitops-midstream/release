@@ -58,5 +58,6 @@ LABEL \
     io.openshift.expose-services="" \
     io.openshift.tags="openshift,gitops,dex,sso" \
     io.k8s.display-name="Red Hat OpenShift GitOps Dex" \
+    io.k8s.description="Red Hat OpenShift GitOps Dex" \
     maintainer="William Tam <wtam@redhat.com>" \
     description="Red Hat OpenShift GitOps Dex"

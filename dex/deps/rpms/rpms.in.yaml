@@ -1,3 +1,0 @@
-packages: [ca-certificates, openssl]
-contentOrigin:
-  repofiles: ["./ubi.repo"]
