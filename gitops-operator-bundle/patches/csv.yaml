@@ -4,7 +4,10 @@ metadata:
     olm.skipRange: ">=1.0.0 <1.16.0"
     operators.openshift.io/valid-subscription: '["OpenShift Container Platform", "OpenShift Platform Plus"]'
     features.operators.openshift.io/fips-compliant: "false"
-    containerImage: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator:v1.16.1
+    features.operators.openshift.io/cnf: "false"
+    features.operators.openshift.io/cni: "false"
+    features.operators.openshift.io/csi: "false"
+    containerImage: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator@sha256:c7533687da8f07bc86316c4ebf791e36e7a40bd6d65dd08af5247c482a3b142e
   labels:
     operatorframework.io/os.linux: "supported"
     operatorframework.io/arch.amd64: "supported"

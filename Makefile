@@ -11,7 +11,7 @@ IMAGES_PATCH := gitops-operator-bundle/patches/images.yaml
 METADATA_FILE := gitops-operator-bundle/bundle/metadata/annotations.yaml
 METADATA_PATCH := gitops-operator-bundle/patches/metadata.yaml
 
-bundle: update-shas
+bundle: 
 	cp -rf gitops-operator-bundle/gitops-operator/bundle gitops-operator-bundle/
 	@echo "Patching $(CSV_FILE)"
 	yq ea '. as $$item ireduce ({}; . * $$item )' $(CSV_FILE) $(CSV_PATCH) -i
