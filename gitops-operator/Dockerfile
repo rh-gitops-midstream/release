@@ -62,7 +62,9 @@
         upstream-vcs-ref="${COMMIT_SHA}" \
         upstream-vcs-type="git" \
         summary="Openshift GitOps Operator Dockerfile Template" \
+        description="Red Hat OpenShift GitOps Operator" \
         maintainer="William Tam <wtam@redhat.com>"  \
+        com.redhat.component="openshift-gitops-operator-container" \
         io.openshift.tags="openshift,gitops-operator" \
         io.k8s.display-name="Red Hat OpenShift GitOps Operator" \
         io.k8s.description="Red Hat OpenShift GitOps Operator" \
