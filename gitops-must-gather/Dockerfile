@@ -22,10 +22,12 @@ LABEL \
     com.redhat.delivery.appregistry="false" \ 
     upstream-vcs-type="git" \
     summary="OpenShift GitOps Must Gather" \
+    description="Red Hat OpenShift GitOps Must Gather" \
     maintainer="William Tam <wtam@redhat.com>" \
     io.k8s.display-name="Red Hat OpenShift GitOps Must Gather"\
     io.openshift.tags="openshift,gitops-operator, must-gather" \
     io.openshift.maintainer.product="Red Hat OpenShift GitOps" \
+    io.k8s.description="Red Hat OpenShift GitOps Must Gather" \
     io.openshift.maintainer.component="William Tam <wtam@redhat.com>"  
     
 # Save original gather script
