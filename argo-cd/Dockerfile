@@ -186,5 +186,6 @@ LABEL \
     io.openshift.expose-services="" \
     io.openshift.tags="openshift,gitops,argocd" \
     io.k8s.display-name="openshift-gitops-argocd" \
+    io.k8s.description="Red Hat Openshift GitOps Argo CD" \
     maintainer="William Tam <wtam@redhat.com>" \
     description="Red Hat Openshift GitOps Argo CD"
