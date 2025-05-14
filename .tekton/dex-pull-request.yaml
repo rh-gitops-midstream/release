@@ -33,7 +33,7 @@ spec:
   - name: path-context
     value: dex
   - name: prefetch-input
-    value: '[{"type": "gomod", "path": "./dex/dex"}, {"type": "rpm", "path": "./dex/deps/rpms"}]'
+    value: '[{"type": "gomod", "path": "./dex/dex"}, {"type": "rpm", "path": "./dex"}]'
   pipelineRef:
     resolver: git
     params:

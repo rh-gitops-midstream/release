@@ -114,6 +114,7 @@ LABEL \
     io.openshift.expose-services="" \
     io.openshift.tags="openshift,gitops,argorollouts" \
     io.k8s.display-name="openshift-gitops-argo-rollouts" \
+    io.k8s.description="Red Hat Openshift GitOps Argo Rollouts" \
     maintainer="William Tam <wtam@redhat.com>" \
     description="Red Hat Openshift GitOps Argo Rollouts"
 
