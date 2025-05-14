@@ -33,7 +33,7 @@ spec:
   - name: path-context
     value: gitops-operator-bundle
   - name: build-image-index
-    value: "true"
+    value: "false"
   pipelineRef:
     resolver: git
     params:

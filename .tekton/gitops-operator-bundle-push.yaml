@@ -29,11 +29,8 @@ spec:
     value: bundle.Dockerfile
   - name: path-context
     value: gitops-operator-bundle
-  - name: build-platforms
-    value:
-    - linux/x86_64
   - name: build-image-index
-    value: "true"
+    value: "false"
   - name: additional-tags
     value:
       - '{{target_branch}}'
