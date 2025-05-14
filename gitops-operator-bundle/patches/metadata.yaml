@@ -1,2 +1,2 @@
 annotations:
-  operators.operatorframework.io.bundle.channels.v1: "latest,gitops-1.17"
+  operators.operatorframework.io.bundle.channels.v1: "latest,gitops-1.16"
