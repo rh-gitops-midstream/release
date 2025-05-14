@@ -226,7 +226,7 @@ spec:
         - name: CACHI2_ARTIFACT
           value: $(tasks.prefetch-dependencies.results.CACHI2_ARTIFACT)
         - name: IMAGE_APPEND_PLATFORM
-          value: "true"
+          value: $(params.build-image-index)
       runAfter:
         - prefetch-dependencies
       taskRef:
