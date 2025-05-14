@@ -25,7 +25,7 @@ LABEL \
     release=${CI_CONTAINER_RELEASE} \
     version=${TARGET_VERSION} \
     url="" \
-    vendor="Red Hat" \
+    vendor="Red Hat, Inc." \
     com.redhat.component="openshift-gitops-operator-bundle-container" \
     description="Red Hat OpenShift GitOps Operator Bundle" \
     distribution-scope="restricted" \
