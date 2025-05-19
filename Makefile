@@ -7,6 +7,7 @@ update-shas:
 
 CSV_FILE := gitops-operator-bundle/bundle/manifests/gitops-operator.clusterserviceversion.yaml
 CSV_PATCH := gitops-operator-bundle/patches/csv.yaml
+CSV_ENV_PATCH := gitops-operator-bundle/patches/csv-env.yaml
 IMAGES_PATCH := gitops-operator-bundle/patches/images.yaml
 METADATA_FILE := gitops-operator-bundle/bundle/metadata/annotations.yaml
 METADATA_PATCH := gitops-operator-bundle/patches/metadata.yaml
@@ -15,6 +16,12 @@ bundle:
 	cp -rf gitops-operator-bundle/gitops-operator/bundle gitops-operator-bundle/
 	@echo "Patching $(CSV_FILE)"
 	yq ea '. as $$item ireduce ({}; . * $$item )' $(CSV_FILE) $(CSV_PATCH) -i
+	yq eval-all '\
+		select(fileIndex == 0) as $$csv | \
+		select(fileIndex == 1) as $$newEnv | \
+		$$csv | \
+		(.spec.install.spec.deployments[].spec.template.spec.containers[] | select(.name == "manager")).env = $$newEnv.env' \
+		$(CSV_FILE) $(CSV_ENV_PATCH) -i
 	@echo "✅ CSV Patch complete"
 	@echo "Patching $(METADATA_FILE)"
 	yq ea '. as $$item ireduce ({}; . * $$item )' $(METADATA_FILE) $(METADATA_PATCH) -i

@@ -5,6 +5,7 @@ set -euo pipefail
 BRANCH_NAME="${BRANCH_NAME:-main}"
 MAPPING_FILE="image-mapping.yaml"
 CSV_FILE="gitops-operator-bundle/patches/csv.yaml"
+CSV_ENV_FILE="gitops-operator-bundle/patches/csv-env.yaml"
 
 if ! command -v skopeo &> /dev/null; then
   echo "❌ skopeo not installed. Please install it to proceed."
@@ -49,6 +50,9 @@ yq e '.images[]' "$MAPPING_FILE" -o=json | jq -c '.' | while read -r image; do
 
   echo "✏️ Replacing ${TARGET}@sha256:<digest> with ${FULL_IMAGE} in ${CSV_FILE}"
   sed -i '' "s|${TARGET}@sha256:[a-f0-9]\{64\}|${FULL_IMAGE}|g" "$CSV_FILE"
+  echo "✏️ Replacing ${TARGET}@sha256:<digest> with ${FULL_IMAGE} in ${CSV_ENV_FILE}"
+  sed -i '' "s|${TARGET}@sha256:[a-f0-9]\{64\}|${FULL_IMAGE}|g" "$CSV_ENV_FILE"
+
 done
 
-echo "✅ Image references updated in $CSV_FILE."
+echo "✅ Image references updated in CSV patches."

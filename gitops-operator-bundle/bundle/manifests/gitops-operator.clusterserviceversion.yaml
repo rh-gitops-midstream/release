@@ -959,12 +959,29 @@ spec:
                 - create
           serviceAccountName: openshift-gitops-operator-controller-manager
       deployments:
-        - name: openshift-gitops-operator-controller-manager
+        - label:
+            control-plane: gitops-operator
+          name: openshift-gitops-operator-controller-manager
           spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                control-plane: gitops-operator
+            strategy: {}
             template:
+              metadata:
+                annotations:
+                  kubectl.kubernetes.io/default-container: manager
+                labels:
+                  control-plane: gitops-operator
               spec:
                 containers:
-                  - name: manager
+                  - args:
+                      - --health-probe-bind-address=:8081
+                      - --metrics-bind-address=127.0.0.1:8080
+                      - --leader-elect
+                    command:
+                      - /usr/local/bin/manager
                     env:
                       - name: ARGOCD_CLUSTER_CONFIG_NAMESPACES
                         value: openshift-gitops
@@ -1016,6 +1033,70 @@ spec:
                         value: "registry.redhat.io/openshift-gitops-1/must-gather-rhel8@sha256:03d13fe1f1aa0ee5b9a283a05256727503c4daa3c20da1365d7ab78516a009b2"
                       - name: RELATED_IMAGE_KUBE_RBAC_PROXY_IMAGE
                         value: "registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:baa41441752d6d739065eda587b92402e209c67fbcdacf0a40559d37c9e978eb"
+                    image: quay.io/redhat-developer/gitops-operator:latest
+                    livenessProbe:
+                      httpGet:
+                        path: /healthz
+                        port: 8081
+                      initialDelaySeconds: 15
+                      periodSeconds: 20
+                    name: manager
+                    ports:
+                      - containerPort: 9443
+                        name: webhook-server
+                        protocol: TCP
+                    readinessProbe:
+                      httpGet:
+                        path: /readyz
+                        port: 8081
+                      initialDelaySeconds: 5
+                      periodSeconds: 10
+                    resources: {}
+                    securityContext:
+                      allowPrivilegeEscalation: false
+                      capabilities:
+                        drop:
+                          - ALL
+                      readOnlyRootFilesystem: true
+                      runAsNonRoot: true
+                  - args:
+                      - --secure-listen-address=0.0.0.0:8443
+                      - --upstream=http://127.0.0.1:8080
+                      - --tls-cert-file=/etc/tls/private/tls.crt
+                      - --tls-private-key-file=/etc/tls/private/tls.key
+                      - --logtostderr=true
+                      - --allow-paths=/metrics
+                      - --http2-disable
+                    image: registry.redhat.io/openshift4/ose-kube-rbac-proxy:v4.13
+                    name: kube-rbac-proxy
+                    ports:
+                      - containerPort: 8443
+                        name: metrics
+                        protocol: TCP
+                    resources:
+                      limits:
+                        cpu: 500m
+                        memory: 128Mi
+                      requests:
+                        cpu: 1m
+                        memory: 15Mi
+                    securityContext:
+                      allowPrivilegeEscalation: false
+                      capabilities:
+                        drop:
+                          - ALL
+                    volumeMounts:
+                      - mountPath: /etc/tls/private
+                        name: kube-rbac-proxy-tls
+                        readOnly: true
+                securityContext:
+                  runAsNonRoot: true
+                serviceAccountName: openshift-gitops-operator-controller-manager
+                terminationGracePeriodSeconds: 10
+                volumes:
+                  - name: kube-rbac-proxy-tls
+                    secret:
+                      secretName: kube-rbac-proxy-tls
       permissions:
         - rules:
             - apiGroups:
@@ -1065,9 +1146,9 @@ spec:
     - gitops
     - pipelines
   maintainers:
-    - email: shbose@redhat.com
-      name: shoubhik
-  maturity: alpha
+    - email: team-gitops@redhat.com
+      name: OpenShift GitOps Team
+  maturity: GA
   provider:
     name: Red Hat Inc
   replaces: "openshift-gitops-operator.v1.16.0"
