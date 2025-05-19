@@ -1033,7 +1033,7 @@ spec:
                         value: "registry.redhat.io/openshift-gitops-1/must-gather-rhel8@sha256:03d13fe1f1aa0ee5b9a283a05256727503c4daa3c20da1365d7ab78516a009b2"
                       - name: RELATED_IMAGE_KUBE_RBAC_PROXY_IMAGE
                         value: "registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:baa41441752d6d739065eda587b92402e209c67fbcdacf0a40559d37c9e978eb"
-                    image: quay.io/redhat-developer/gitops-operator:latest
+                    image: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator@sha256:adb171142d660b1a848605728aca529de47b5679f9c87e6039ca6a542cf17f83
                     livenessProbe:
                       httpGet:
                         path: /healthz
@@ -1067,7 +1067,7 @@ spec:
                       - --logtostderr=true
                       - --allow-paths=/metrics
                       - --http2-disable
-                    image: registry.redhat.io/openshift4/ose-kube-rbac-proxy:v4.13
+                    image: registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:baa41441752d6d739065eda587b92402e209c67fbcdacf0a40559d37c9e978eb
                     name: kube-rbac-proxy
                     ports:
                       - containerPort: 8443
