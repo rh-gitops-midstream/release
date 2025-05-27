@@ -38,9 +38,3 @@
 [submodule "argo-rollouts/rollouts-plugin-trafficrouter-openshift"]
 	path = argo-rollouts/rollouts-plugin-trafficrouter-openshift
 	url = https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
-[submodule "argocd-extension-installer/argocd-extension-installer"]
-	path = argocd-extension-installer/argocd-extension-installer
-	url = https://github.com/argoproj-labs/argocd-extension-installer.git
-[submodule "argocd-extension-installer/rollout-extension"]
-	path = argocd-extension-installer/rollout-extension
-	url = https://github.com/argoproj-labs/rollout-extension.git
