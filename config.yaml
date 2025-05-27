@@ -1,0 +1,101 @@
+# Release Metadata
+release:
+  name: OpenShift GitOps Operator
+  version: "1.16.2"
+  manager:
+    name: "Siddhesh Ghadi"
+    github: svghadi
+    email: "sghadi@redhat.com"
+
+# Artifact - container images and rpms built from the source code
+artifacts:
+  - name: "Red Hat OpenShift GitOps Service"
+    id: backend
+    path: "gitops-backend"
+    type: image
+    releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-rhel8"
+    konflux-ci:
+      component: gitops-backend
+      buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-backend"
+
+  - name: "Red Hat OpenShift GitOps DevConsole Plugin"
+    id: console-plugin
+    path: "gitops-console-plugin"
+    type: image
+    releaseRef: "registry.redhat.io/openshift-gitops-1/console-plugin-rhel8"
+    konflux-ci:
+      component: gitops-console-plugin
+      buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-console-plugin"
+
+  - name: "Red Hat OpenShift GitOps Dex"
+    id: dex
+    path: "dex"
+    type: image
+    releaseRef: "registry.redhat.io/openshift-gitops-1/dex-rhel8"
+    konflux-ci:
+      component: dex
+      buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex"
+
+  - name: "Red Hat OpenShift Must Gather"
+    id: must-gather
+    path: gitops-must-gather
+    type: image
+    releaseRef: "registry.redhat.io/openshift-gitops-1/must-gather-rhel8"
+    konflux-ci:
+      component: gitops-must-gather
+      buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-must-gather"
+
+  - name: "Red Hat OpenShift GitOps Operator"
+    id: operator
+    path: "gitops-operator"
+    type: image
+    releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator"
+    konflux-ci:
+      component: "gitops-operator"
+      buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator"
+
+  - name: "Red Hat OpenShift GitOps Argo CD"
+    id: argocd
+    path: "argo-cd"
+    type: image
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-rhel8"
+    konflux-ci:
+      component: argocd-cd
+      buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-cd"
+
+  - name: "Red Hat OpenShift GitOps Argo Rollouts"
+    id: rollouts
+    path: "argo-rollouts"
+    type: image
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8"
+    konflux-ci:
+      component: argo-rollouts
+      buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts"
+
+  - name: "Red Hat OpenShift GitOps Operator Bundle"
+    id: bundle
+    path: "gitops-operator-bundle"
+    type: image
+    releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-operator-bundle"
+    konflux-ci:
+      component: "gitops-operator-bundle"
+      buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle"
+
+# Dependencies - required container images
+dependencies:
+  - name: "OpenShift HAProxy Router"
+    id: haproxy
+    type: image
+    ref: registry.redhat.io/openshift4/ose-haproxy-router@sha256:72817b62a55fb0f82f2908effc7bd3d20409fc60e9f228449d8f78eb390e22ac
+  - name: "Red Hat SSO 7.6"
+    id: keycloak
+    type: image
+    ref: registry.redhat.io/rh-sso-7/sso76-openshift-rhel8@sha256:cf52b301f1c37c1de925bcf7e16005b0a3a1865645db29fd671d47db592da1e7
+  - name: "Redis 7"
+    id: redis
+    type: image
+    ref: registry.redhat.io/rhel9/redis-7@sha256:af174f3bc30f88c42b86add90d910cab79b1066d939b7faa99d85f5e8778e6d0
+  - name: "Proxy for Kubernetes RBAC authorization"
+    id: kube-proxy
+    type: image
+    ref: registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:baa41441752d6d739065eda587b92402e209c67fbcdacf0a40559d37c9e978eb
