@@ -1,0 +1,55 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  annotations:
+    build.appstudio.openshift.io/repo: https://github.com/rh-gitops-midstream/release?rev={{revision}}
+    build.appstudio.redhat.com/commit_sha: '{{revision}}'
+    build.appstudio.redhat.com/target_branch: '{{target_branch}}'
+    pipelinesascode.tekton.dev/cancel-in-progress: "false"
+    pipelinesascode.tekton.dev/max-keep-runs: "3"
+    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
+      == "release-1.16" && ( "argocd-extension-installer/***".pathChanged() || ".tekton/argocd-extension-installer-*.yaml".pathChanged()
+      )
+  creationTimestamp: null
+  labels:
+    appstudio.openshift.io/application: gitops-1-16
+    appstudio.openshift.io/component: argocd-extension-installer-1-16
+    pipelines.appstudio.openshift.io/type: build
+  name: argocd-extension-installer-1-16-on-push
+  namespace: rh-openshift-gitops-tenant
+spec:
+  params:
+  - name: git-url
+    value: '{{source_url}}'
+  - name: revision
+    value: '{{revision}}'
+  - name: output-image
+    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extension-installer:{{revision}}
+  - name: build-platforms
+    value:
+    - linux/x86_64
+    - linux/arm64
+  - name: dockerfile
+    value: Dockerfile
+  - name: path-context
+    value: argocd-extension-installer
+  - name: additional-tags
+    value:
+      - '{{target_branch}}'
+  - name: prefetch-input
+    value: '[{"type": "rpm", "path": "./argocd-extension-installer"}]'
+  pipelineRef:
+    resolver: git
+    params:
+      - name: url
+        value: https://github.com/rh-gitops-midstream/release.git
+      - name: revision
+        value: '{{target_branch}}'
+      - name: pathInRepo
+        value: /konflux-ci/pipelines/build-multi-platform-image.yaml
+  taskRunTemplate: {}
+  workspaces:
+  - name: git-auth
+    secret:
+      secretName: '{{ git_auth_secret }}'
+status: {}
