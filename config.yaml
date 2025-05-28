@@ -81,6 +81,15 @@ artifacts:
       component: "gitops-operator-bundle"
       buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle"
 
+  - name: "Red Hat OpenShift GitOps ArgoCD Extensions"
+    id: extensions
+    path: "argocd-extension-installer"
+    type: image
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel8"
+    konflux-ci:
+      component: "argocd-extension-installer-1-16"
+      buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extension-installer"
+
 # Dependencies - required container images
 dependencies:
   - name: "OpenShift HAProxy Router"
