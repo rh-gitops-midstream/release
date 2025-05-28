@@ -118,7 +118,7 @@ if 'labels' not in csv['metadata']:
     csv['metadata']['labels'] = {}
 
 csv['metadata']['annotations']['operators.openshift.io/valid-subscription'] = '["OpenShift Container Platform", "OpenShift Platform Plus"]'
-csv['metadata']['annotations']['features.operators.openshift.io/fips-compliant'] = 'false'
+csv['metadata']['annotations']['features.operators.openshift.io/fips-compliant'] = 'true'
 csv['metadata']['annotations']['features.operators.openshift.io/cnf'] = 'false'
 csv['metadata']['annotations']['features.operators.openshift.io/cni'] = 'false'
 csv['metadata']['annotations']['features.operators.openshift.io/csi'] = 'false'
