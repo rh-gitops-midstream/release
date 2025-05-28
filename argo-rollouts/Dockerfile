@@ -58,7 +58,8 @@ go build -v -ldflags "-X github.com/argoproj/argo-rollouts/utils/version.version
   -tags strictfipsruntime -o ./dist/rollouts-controller ./cmd/rollouts-controller
 
 # build git-lfs
-WORKDIR /go/src/github.com/argoproj/git-lfs
+WORKDIR /go/src/github.com/argoproj/git-lfs/
+RUN ls -lha
 RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 \
  go build -ldflags="-w -s -X 'github.com/git-lfs/git-lfs/v3/config.Vendor=Red Hat Inc' \
  -X github.com/git-lfs/git-lfs/v3/config.GitCommit=${CI_GIT_LFS_UPSTREAM_TAG}" \
