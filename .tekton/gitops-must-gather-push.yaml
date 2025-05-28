@@ -8,14 +8,14 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "release-1.16" && ( "gitops-must-gather/***".pathChanged() || ".tekton/gitops-must-gather-*.yaml".pathChanged()
+      == "release-1.17" && ( "gitops-must-gather/***".pathChanged() || ".tekton/gitops-must-gather-*.yaml".pathChanged()
       )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: gitops-1-16
-    appstudio.openshift.io/component: gitops-must-gather-1-16
+    appstudio.openshift.io/application: gitops-1-17
+    appstudio.openshift.io/component: gitops-must-gather-1-17
     pipelines.appstudio.openshift.io/type: build
-  name: gitops-must-gather-1-16-on-push
+  name: gitops-must-gather-1-17-on-push
   namespace: rh-openshift-gitops-tenant
 spec:
   params:

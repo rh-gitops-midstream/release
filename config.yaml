@@ -1,7 +1,7 @@
 # Release Metadata
 release:
   name: OpenShift GitOps Operator
-  version: "1.16.2"
+  version: "1.17.0"
   manager:
     name: "Siddhesh Ghadi"
     github: svghadi
@@ -15,7 +15,7 @@ artifacts:
     type: image
     releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-rhel8"
     konflux-ci:
-      component: gitops-backend
+      component: gitops-backend-1-17
       buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-backend"
 
   - name: "Red Hat OpenShift GitOps DevConsole Plugin"
@@ -24,7 +24,7 @@ artifacts:
     type: image
     releaseRef: "registry.redhat.io/openshift-gitops-1/console-plugin-rhel8"
     konflux-ci:
-      component: gitops-console-plugin
+      component: gitops-console-plugin-1-17
       buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-console-plugin"
 
   - name: "Red Hat OpenShift GitOps Dex"
@@ -33,7 +33,7 @@ artifacts:
     type: image
     releaseRef: "registry.redhat.io/openshift-gitops-1/dex-rhel8"
     konflux-ci:
-      component: dex
+      component: dex-1-17
       buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex"
 
   - name: "Red Hat OpenShift Must Gather"
@@ -42,7 +42,7 @@ artifacts:
     type: image
     releaseRef: "registry.redhat.io/openshift-gitops-1/must-gather-rhel8"
     konflux-ci:
-      component: gitops-must-gather
+      component: gitops-must-gather-1-17
       buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-must-gather"
 
   - name: "Red Hat OpenShift GitOps Operator"
@@ -51,7 +51,7 @@ artifacts:
     type: image
     releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator"
     konflux-ci:
-      component: "gitops-operator"
+      component: "gitops-operator-1-17"
       buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator"
 
   - name: "Red Hat OpenShift GitOps Argo CD"
@@ -60,7 +60,7 @@ artifacts:
     type: image
     releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-rhel8"
     konflux-ci:
-      component: argocd-cd
+      component: argocd-cd-1-17
       buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-cd"
 
   - name: "Red Hat OpenShift GitOps Argo Rollouts"
@@ -69,7 +69,7 @@ artifacts:
     type: image
     releaseRef: "registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8"
     konflux-ci:
-      component: argo-rollouts
+      component: argo-rollouts-1-17
       buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts"
 
   - name: "Red Hat OpenShift GitOps Operator Bundle"
@@ -78,7 +78,7 @@ artifacts:
     type: image
     releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-operator-bundle"
     konflux-ci:
-      component: "gitops-operator-bundle"
+      component: "gitops-operator-bundle-1-17"
       buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle"
 
   - name: "Red Hat OpenShift GitOps ArgoCD Extensions"
@@ -87,7 +87,7 @@ artifacts:
     type: image
     releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel8"
     konflux-ci:
-      component: "argocd-extension-installer-1-16"
+      component: "argocd-extension-installer-1-17"
       buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extension-installer"
 
 # Dependencies - required container images

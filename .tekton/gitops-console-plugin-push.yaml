@@ -12,10 +12,10 @@ metadata:
       )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: gitops-1-16
-    appstudio.openshift.io/component: gitops-console-plugin-1-16
+    appstudio.openshift.io/application: gitops-1-17
+    appstudio.openshift.io/component: gitops-console-plugin-1-17
     pipelines.appstudio.openshift.io/type: build
-  name: gitops-console-plugin-1-16-on-push
+  name: gitops-console-plugin-1-17-on-push
   namespace: rh-openshift-gitops-tenant
 spec:
   params:

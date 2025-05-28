@@ -9,14 +9,14 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "true"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
-      == "release-1.16" && ( "gitops-backend/***".pathChanged() || ".tekton/gitops-backend-*.yaml".pathChanged()
+      == "release-1.17" && ( "gitops-backend/***".pathChanged() || ".tekton/gitops-backend-*.yaml".pathChanged()
       )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: gitops-1-16
-    appstudio.openshift.io/component: gitops-backend-1-16
+    appstudio.openshift.io/application: gitops-1-17
+    appstudio.openshift.io/component: gitops-backend-1-17
     pipelines.appstudio.openshift.io/type: build
-  name: gitops-backend-1-16-on-pull-request
+  name: gitops-backend-1-17-on-pull-request
   namespace: rh-openshift-gitops-tenant
 spec:
   params:
