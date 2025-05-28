@@ -80,8 +80,7 @@ export LDFLAGS="-X ${PACKAGE}.version=${VERSION} \
 go build -gcflags="all=-N -l" -v -ldflags "${LDFLAGS}" -tags strictfipsruntime -o ./dist/argocd ./cmd
 
 # Create static linked binary to be called from different base images.
-RUN source ${REMOTE_SOURCES_DIR}/argo_cd/cachito.env &&\
-    export PACKAGE=github.com/argoproj/argo-cd/v2/common &&\
+RUN export PACKAGE=github.com/argoproj/argo-cd/v2/common &&\
     export VERSION=$(cat VERSION) &&\
     export BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') &&\
     export KUBECTL_VER=$(go list -m k8s.io/client-go | head -n 1 | rev | cut -d' ' -f1 | rev) &&\

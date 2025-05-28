@@ -36,7 +36,7 @@ spec:
   - name: path-context
     value: argo-rollouts
   - name: prefetch-input
-    value: '[{"type": "gomod", "path": "./argo-rollouts/rollouts-plugin-trafficrouter-openshift"}, {"type": "gomod", "path": "./argo-rollouts/argo-rollouts"}, {"type": "rpm", "path": "./argo-rollouts"}, {"type":"gomod","path":"./argo-cd/git-lfs"}]'
+    value: '[{"type": "gomod", "path": "./argo-rollouts/rollouts-plugin-trafficrouter-openshift"}, {"type": "gomod", "path": "./argo-rollouts/argo-rollouts"}, {"type": "rpm", "path": "./argo-rollouts"}, {"type":"gomod","path":"./argo-rollouts/git-lfs"}]'
   pipelineRef:
     resolver: git
     params:
