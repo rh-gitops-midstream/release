@@ -45,7 +45,7 @@ RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' $YARN build
 ####################################################################################################
 # Argo CD Build stage which performs the actual build of Argo CD binaries
 ####################################################################################################
-FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.22 as argocd-build
+FROM registry.redhat.io/rhel8/go-toolset:1.23 as argocd-build
 
 WORKDIR /go/src/github.com/argoproj/
 COPY . .
@@ -53,6 +53,11 @@ COPY . .
 WORKDIR /go/src/github.com/argoproj/argo-cd
 
 ENV GOFLAGS="-mod=mod"
+
+# build with strictfips
+ENV GOEXPERIMENT=strictfipsruntime
+ENV CGO_ENABLED=1
+ENV CGO_FLAG=1
 
 ARG EXTRA_BUILD_INFO='{Vendor Information: Red Hat OpenShift GitOps version: 1.16.0}'
 
@@ -74,6 +79,23 @@ export LDFLAGS="-X ${PACKAGE}.version=${VERSION} \
   -X ${PACKAGE}.gitTag=${CI_ARGO_CD_UPSTREAM_TAG}" &&\
 go build -gcflags="all=-N -l" -v -ldflags "${LDFLAGS}" -tags strictfipsruntime -o ./dist/argocd ./cmd
 
+  # Create static linked binary to be called from different base images.
+  RUN source ${REMOTE_SOURCES_DIR}/argo_cd/cachito.env &&\
+  export PACKAGE=github.com/argoproj/argo-cd/v2/common &&\
+  export VERSION=$(cat VERSION) &&\
+  export BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') &&\
+  export KUBECTL_VER=$(go list -m k8s.io/client-go | head -n 1 | rev | cut -d' ' -f1 | rev) &&\
+  export GOEXPERIMENT='' &&\
+  export CGO_ENABLED=0 &&\
+  export GODEBUG="tarinsecurepath=0,zipinsecurepath=0" &&\
+  export LDFLAGS="-extldflags \"-static\" -X ${PACKAGE}.version=${VERSION} \
+    -X ${PACKAGE}.buildDate=${BUILD_DATE} \
+    -X ${PACKAGE}.gitCommit=${CI_ARGO_CD_UPSTREAM_COMMIT} \
+    -X ${PACKAGE}.gitTreeState=clean \
+    -X ${PACKAGE}.kubectlVersion=${KUBECTL_VER}\
+    -X \"${PACKAGE}.extraBuildInfo=${EXTRA_BUILD_INFO}\" \
+    -X ${PACKAGE}.gitTag=v${VERSION}" &&\
+  go build -gcflags="all=-N -l" -v -ldflags "${LDFLAGS}" -o ./dist/argocd-cmp-server ./cmd
 
 ARG BUILD_ALL_CLIS=false
 RUN if [ "$BUILD_ALL_CLIS" = "true" ] ; then \
@@ -158,7 +180,6 @@ WORKDIR /home/argocd
 COPY --from=argocd-build /go/src/github.com/argoproj/argo-cd/dist/argocd /usr/local/bin/
 RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-server
 RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-repo-server
-RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-cmp-server
 RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-application-controller
 RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-dex
 RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-notifications
