@@ -44,3 +44,6 @@
 [submodule "argocd-extension-installer/rollout-extension"]
 	path = argocd-extension-installer/rollout-extension
 	url = https://github.com/argoproj-labs/rollout-extension.git
+[submodule "argo-rollouts/git-lfs"]
+	path = argo-rollouts/git-lfs
+	url = https://github.com/git-lfs/git-lfs
