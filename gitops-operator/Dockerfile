@@ -41,7 +41,7 @@
     
     ARG VERBOSE=2
     ENV GOFLAGS="-mod=mod"
-    RUN go build -o bin/manager ./cmd/main.go
+    RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -tags strictfipsruntime -o bin/manager ./cmd/main.go
     
     FROM registry.access.redhat.com/ubi8/ubi-minimal
     ENV LANG=en_US.utf8

@@ -21,7 +21,7 @@ COPY . /app
 WORKDIR /app/dex
 
 ENV GOFLAGS=""
-RUN GOOS=linux go build -mod=mod -o /tmp/dex -ldflags "-w -X main.version=$(git describe --tags --always --abbrev=7)" ./cmd/dex
+RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 GOOS=linux go build -mod=mod -o /tmp/dex -ldflags "-w -X main.version=$(git describe --tags --always --abbrev=7)" -tags strictfipsruntime ./cmd/dex
 
 # --- start build stage #2
 FROM registry.access.redhat.com/ubi8/ubi-minimal

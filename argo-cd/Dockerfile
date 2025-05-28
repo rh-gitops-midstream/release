@@ -178,6 +178,7 @@ ENV USER=argocd
 WORKDIR /home/argocd
 
 COPY --from=argocd-build /go/src/github.com/argoproj/argo-cd/dist/argocd /usr/local/bin/
+COPY --from=argocd-build /go/src/github.com/argoproj/argo-cd/dist/argocd-cmp-server /usr/local/bin/
 RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-server
 RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-repo-server
 RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-application-controller
