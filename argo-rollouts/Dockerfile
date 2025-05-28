@@ -20,11 +20,11 @@
 
 FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.22 AS rollouts-plugin-trafficrouter-openshift-build
 
-WORKDIR /go/src/github.com/argoproj/argo-rollouts
+WORKDIR /go/src/github.com/argoproj/
 
 COPY . .
 
-WORKDIR /go/src/github.com/argoproj/argo-rollouts/rollouts-plugin-trafficrouter-openshift/
+WORKDIR /go/src/github.com/argoproj/rollouts-plugin-trafficrouter-openshift/
 
 ENV GOFLAGS="-mod=mod"
 ENV CGO_ENABLED=1
@@ -39,11 +39,10 @@ RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime go build -v -tags strictfipsrun
 
 FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.22 AS argo-rollouts-build
 
-WORKDIR /go/src/github.com/argoproj/argo-rollouts
+WORKDIR /go/src/github.com/argoproj/
+COPY . .
 
-COPY . . 
-
-WORKDIR /go/src/github.com/argoproj/argo-rollouts/argo-rollouts/
+WORKDIR /go/src/github.com/argoproj/argo-rollouts/
 
 ENV GOFLAGS="-mod=mod"
 ENV CGO_ENABLED=1
@@ -57,6 +56,13 @@ go build -v -ldflags "-X github.com/argoproj/argo-rollouts/utils/version.version
   -X github.com/argoproj/argo-rollouts/utils/version.gitTreeState=clean \
   -X github.com/argoproj/argo-rollouts.gitTag=${CI_ARGO_ROLLOUTS_UPSTREAM_TAG}" \
   -tags strictfipsruntime -o ./dist/rollouts-controller ./cmd/rollouts-controller
+
+# build git-lfs
+WORKDIR /go/src/github.com/argoproj/git-lfs
+RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 \
+ go build -ldflags="-w -s -X 'github.com/git-lfs/git-lfs/v3/config.Vendor=Red Hat Inc' \
+ -X github.com/git-lfs/git-lfs/v3/config.GitCommit=${CI_GIT_LFS_UPSTREAM_TAG}" \
+ -gcflags="" -tags strictfipsruntime -trimpath  -o ./bin/git-lfs ./git-lfs.go
 
 ####################################################################################################
 # Final image
@@ -74,7 +80,7 @@ RUN groupadd -g 999 argo-rollouts && \
     mkdir -p /home/argo-rollouts && \
     chown argo-rollouts:0 /home/argo-rollouts && \
     chmod g=u /home/argo-rollouts && \
-    microdnf install -y git git-lfs gpg tar tzdata && \
+    microdnf install -y git gpg tar tzdata && \
     microdnf clean all && \
     rm -rf /tmp/* /var/tmp/*
 
@@ -96,9 +102,10 @@ USER 999
 WORKDIR /home/argo-rollouts
 
 # Create the binary for the default route plugin to the plugins directory
-COPY --from=rollouts-plugin-trafficrouter-openshift-build /go/src/github.com/argoproj/argo-rollouts/rollouts-plugin-trafficrouter-openshift/dist/rollouts-plugin-trafficrouter-openshift ./plugins/rollouts-trafficrouter-openshift/openshift-route-plugin
+COPY --from=rollouts-plugin-trafficrouter-openshift-build /go/src/github.com/argoproj/rollouts-plugin-trafficrouter-openshift/dist/rollouts-plugin-trafficrouter-openshift ./plugins/rollouts-trafficrouter-openshift/openshift-route-plugin
 
-COPY --from=argo-rollouts-build /go/src/github.com/argoproj/argo-rollouts/argo-rollouts/dist/rollouts-controller /usr/local/bin/
+COPY --from=argo-rollouts-build /go/src/github.com/argoproj/argo-rollouts/dist/rollouts-controller /usr/local/bin/
+COPY --from=argo-rollouts-build /go/src/github.com/argoproj/git-lfs/bin/git-lfs /usr/local/bin/
 
 LABEL \
     name="openshift-gitops-1/argo-rollouts-rhel8" \
