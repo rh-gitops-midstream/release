@@ -55,7 +55,7 @@ with open(CONFIG_FILE, 'r') as file:
 # TODO: Compute these values dynamically based on the config file and other sources
 package = "openshift-gitops-operator"
 version = config['release']['version'] 
-channel = "gitops-1.16"
+channel = "latest,gitops-1.16"
 skip_range = ">=1.0.0 <1.16.0"
 replaces = "openshift-gitops-operator.v1.16.1"
 

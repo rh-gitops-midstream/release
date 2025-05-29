@@ -183,7 +183,7 @@ metadata:
     createdAt: "2025-03-07T13:13:07Z"
     description: Enables teams to adopt GitOps principles for managing cluster configurations and application delivery across hybrid multi-cluster Kubernetes environments.
     features.operators.openshift.io/disconnected: "true"
-    features.operators.openshift.io/fips-compliant: "false"
+    features.operators.openshift.io/fips-compliant: "true"
     features.operators.openshift.io/proxy-aware: "true"
     features.operators.openshift.io/tls-profiles: "false"
     features.operators.openshift.io/token-auth-aws: "false"
@@ -1026,9 +1026,9 @@ spec:
                       - name: ARGOCD_EXTENSION_IMAGE
                         value: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel8@sha256:b1404959970b3570d3a94352c08e85e3232133427d4a4224f90bcde3536525de
                       - name: RELATED_IMAGE_ARGO_ROLLOUTS_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8@sha256:7864909b57433f9a16a358c145434f45cde2b536b197fab4ed997e0811ebb56f
+                        value: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8@sha256:85a391895bcfd2cef24c873ce16affb2cd76586b31141b4537f892a587d1dbfd
                       - name: ARGO_ROLLOUTS_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8@sha256:7864909b57433f9a16a358c145434f45cde2b536b197fab4ed997e0811ebb56f
+                        value: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8@sha256:85a391895bcfd2cef24c873ce16affb2cd76586b31141b4537f892a587d1dbfd
                       - name: RELATED_IMAGE_MUST_GATHER_IMAGE
                         value: registry.redhat.io/openshift-gitops-1/must-gather-rhel8@sha256:03d13fe1f1aa0ee5b9a283a05256727503c4daa3c20da1365d7ab78516a009b2
                       - name: RELATED_IMAGE_KUBE_RBAC_PROXY_IMAGE
@@ -1190,6 +1190,6 @@ spec:
     - name: argocd_extension_image
       image: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel8@sha256:b1404959970b3570d3a94352c08e85e3232133427d4a4224f90bcde3536525de
     - name: argo_rollouts_image
-      image: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8@sha256:7864909b57433f9a16a358c145434f45cde2b536b197fab4ed997e0811ebb56f
+      image: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8@sha256:85a391895bcfd2cef24c873ce16affb2cd76586b31141b4537f892a587d1dbfd
     - name: must_gather_image
       image: registry.redhat.io/openshift-gitops-1/must-gather-rhel8@sha256:03d13fe1f1aa0ee5b9a283a05256727503c4daa3c20da1365d7ab78516a009b2
