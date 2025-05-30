@@ -122,7 +122,6 @@ RUN cmake . && make tini
 
 # build connect-proxy
 WORKDIR /go/src/github.com/argoproj/ssh-connect
-RUN yum install -y gcc sed 
 RUN sed -i 's/SOCKLEN_T/socklen_t/g' connect.c 
 RUN gcc -v connect.c -o connect-proxy
 
@@ -132,6 +131,11 @@ RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 \
  go build -ldflags="-w -s -X 'github.com/git-lfs/git-lfs/v3/config.Vendor=Red Hat Inc' \
  -X github.com/git-lfs/git-lfs/v3/config.GitCommit=$(git describe --tags --always --abbrev=7)" \
  -gcflags="" -tags strictfipsruntime -trimpath  -o ./bin/git-lfs ./git-lfs.go
+
+FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.23 as argocd-build
+
+WORKDIR /app/
+COPY . /app
 
 ####################################################################################################
 # Final image
