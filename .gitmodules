@@ -16,7 +16,7 @@
 	url = https://github.com/redhat-developer/gitops-operator.git
 [submodule "argo-cd/argo-cd"]
 	path = argo-cd/argo-cd
-	url = https://github.com/argoproj/argo-cd.git
+	url = https://github.com/svghadi/argo-cd.git
 [submodule "argo-cd/helm"]
 	path = argo-cd/helm
 	url = https://github.com/helm/helm
