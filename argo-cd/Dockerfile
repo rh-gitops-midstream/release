@@ -59,7 +59,7 @@ ENV GOEXPERIMENT=strictfipsruntime
 ENV CGO_ENABLED=1
 ENV CGO_FLAG=1
 
-ARG EXTRA_BUILD_INFO='{Vendor Information: Red Hat OpenShift GitOps version: 1.16.0}'
+ARG EXTRA_BUILD_INFO='{Vendor Information: Red Hat OpenShift GitOps version: 1.16.2}'
 
 # Perform the build
 COPY --from=argocd-ui /usr/src/app/argo-cd/ui/dist/app /go/src/github.com/argoproj/argo-cd/ui/dist/app
