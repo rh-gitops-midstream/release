@@ -45,7 +45,8 @@ RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' $YARN build
 ####################################################################################################
 # Argo CD Build stage which performs the actual build of Argo CD binaries
 ####################################################################################################
-FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.22 as argocd-build
+# TODO: Move to registry.redhat.io images?
+FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.23 as argocd-build
 
 WORKDIR /go/src/github.com/argoproj/
 COPY . .
@@ -72,11 +73,10 @@ export CGO_ENABLED=1 &&\
 export GODEBUG="tarinsecurepath=0,zipinsecurepath=0" &&\
 export LDFLAGS="-X ${PACKAGE}.version=${VERSION} \
   -X ${PACKAGE}.buildDate=${BUILD_DATE} \
-  -X ${PACKAGE}.gitCommit=${CI_ARGO_CD_UPSTREAM_COMMIT} \
+  -X ${PACKAGE}.gitCommit=$(git rev-parse HEAD) \
   -X ${PACKAGE}.gitTreeState=clean \
   -X ${PACKAGE}.kubectlVersion=${KUBECTL_VER}\
-  -X \"${PACKAGE}.extraBuildInfo=${EXTRA_BUILD_INFO}\" \
-  -X ${PACKAGE}.gitTag=${CI_ARGO_CD_UPSTREAM_TAG}" &&\
+  -X \"${PACKAGE}.extraBuildInfo=${EXTRA_BUILD_INFO}\"" &&\
 go build -gcflags="all=-N -l" -v -ldflags "${LDFLAGS}" -tags strictfipsruntime -o ./dist/argocd ./cmd
 
 # Create static linked binary to be called from different base images.
@@ -89,11 +89,10 @@ RUN export PACKAGE=github.com/argoproj/argo-cd/v2/common &&\
     export GODEBUG="tarinsecurepath=0,zipinsecurepath=0" &&\
     export LDFLAGS="-extldflags \"-static\" -X ${PACKAGE}.version=${VERSION} \
         -X ${PACKAGE}.buildDate=${BUILD_DATE} \
-        -X ${PACKAGE}.gitCommit=${CI_ARGO_CD_UPSTREAM_COMMIT} \
+        -X ${PACKAGE}.gitCommit=$(git rev-parse HEAD) \
         -X ${PACKAGE}.gitTreeState=clean \
         -X ${PACKAGE}.kubectlVersion=${KUBECTL_VER}\
-        -X \"${PACKAGE}.extraBuildInfo=${EXTRA_BUILD_INFO}\" \
-        -X ${PACKAGE}.gitTag=v${VERSION}" &&\
+        -X \"${PACKAGE}.extraBuildInfo=${EXTRA_BUILD_INFO}\"" &&\
     go build -gcflags="all=-N -l" -v -ldflags "${LDFLAGS}" -o ./dist/argocd-cmp-server ./cmd
 
 ARG BUILD_ALL_CLIS=false
@@ -102,17 +101,18 @@ RUN if [ "$BUILD_ALL_CLIS" = "true" ] ; then \
     make CLI_NAME=argocd-windows-amd64.exe GOOS=windows GOARCH=amd64 cli-local \
     ; fi
 
+# TODO: use separate build stage for each binary to reduce
 # build kustomize
 WORKDIR /go/src/github.com/argoproj/kustomize
 ENV GOSUMDB=off
-RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -mod=readonly -buildvcs=true -ldflags="-s -X sigs.k8s.io/kustomize/api/provenance.version=${CI_KUSTOMIZE_UPSTREAM_TAG} \
+RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -mod=readonly -buildvcs=true -ldflags="-s -X sigs.k8s.io/kustomize/api/provenance.version=$(git describe --tags --always --abbrev=7 | sed 's|^kustomize/||') \
 -X sigs.k8s.io/kustomize/api/provenance.buildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
 -tags strictfipsruntime -o kustomize ./kustomize/main.go
 
 # build helm
 WORKDIR /go/src/github.com/argoproj/helm
-RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -ldflags="-w -s -X helm.sh/helm/v3/internal/version.version=${CI_HELM_UPSTREAM_TAG} \
--X helm.sh/helm/v3/internal/version.gitCommit=${CI_HELM_UPSTREAM_COMMIT}" -tags strictfipsruntime ./cmd/helm
+RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -ldflags="-w -s -X helm.sh/helm/v3/internal/version.version=$(git describe --tags --always --abbrev=7) \
+-X helm.sh/helm/v3/internal/version.gitCommit=$(git rev-parse HEAD)" -tags strictfipsruntime ./cmd/helm
 
 # build tini
 WORKDIR /go/src/github.com/argoproj/tini
@@ -130,7 +130,7 @@ RUN gcc -v connect.c -o connect-proxy
 WORKDIR /go/src/github.com/argoproj/git-lfs
 RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 \
  go build -ldflags="-w -s -X 'github.com/git-lfs/git-lfs/v3/config.Vendor=Red Hat Inc' \
- -X github.com/git-lfs/git-lfs/v3/config.GitCommit=${CI_GIT_LFS_UPSTREAM_TAG}" \
+ -X github.com/git-lfs/git-lfs/v3/config.GitCommit=$(git describe --tags --always --abbrev=7)" \
  -gcflags="" -tags strictfipsruntime -trimpath  -o ./bin/git-lfs ./git-lfs.go
 
 ####################################################################################################
