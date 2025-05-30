@@ -132,11 +132,6 @@ RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 \
  -X github.com/git-lfs/git-lfs/v3/config.GitCommit=$(git describe --tags --always --abbrev=7)" \
  -gcflags="" -tags strictfipsruntime -trimpath  -o ./bin/git-lfs ./git-lfs.go
 
-FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.23 as argocd-build
-
-WORKDIR /app/
-COPY . /app
-
 ####################################################################################################
 # Final image
 ####################################################################################################
