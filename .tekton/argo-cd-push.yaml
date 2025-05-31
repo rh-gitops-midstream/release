@@ -32,7 +32,7 @@ spec:
   - name: dockerfile
     value: argo-cd/Dockerfile
   - name: prefetch-input
-    value: '[{"type":"gomod","path":"./sources/argo-cd"}, {"type":"yarn","path":"./sources/argo-cd/ui"}, {"type":"gomod","path":"./sources/kustomize/kustomize"}, {"type":"gomod","path":"./sources/helm"}, {"type":"gomod","path":"./sources/git-lfs"}, {"type":"rpm","path":"./argo-cd"}, {"type":"npm","path":"./argo-cd"}]'
+    value: '[{"type":"gomod","path":"./sources/argo-cd"}, {"type":"yarn","path":"./sources/argo-cd/ui"}, {"type":"gomod","path":"./sources/kustomize/kustomize"}, {"type":"gomod","path":"./sources/helm"}, {"type":"gomod","path":"./sources/git-lfs"}, {"type":"rpm","path":"./argo-cd"}, {"type":"npm","path":"build/yarn"}]'
   - name: additional-tags
     value:
       - '{{target_branch}}'

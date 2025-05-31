@@ -20,7 +20,7 @@ USER root
 
 # Install Yarn
 WORKDIR /workspace
-COPY gitops-console-plugin/package.json gitops-console-plugin/package-lock.json .
+COPY ["build/yarn/package.json", "build/yarn/package-lock.json", "./"]
 RUN npm install --prefer-offline --no-progress --non-interactive
 ENV YARN="/workspace/node_modules/.bin/yarn"
 RUN $YARN --version

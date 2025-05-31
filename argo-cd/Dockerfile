@@ -24,7 +24,7 @@ USER root
 
 # Install Yarn
 WORKDIR /usr/src/app
-COPY ["argo-cd/package.json", "argo-cd/package-lock.json", "./"]
+COPY ["build/yarn/package.json", "build/yarn/package-lock.json", "./"]
 RUN npm install --prefer-offline --no-progress --non-interactive
 ENV YARN="/usr/src/app/node_modules/.bin/yarn"
 RUN $YARN --version
