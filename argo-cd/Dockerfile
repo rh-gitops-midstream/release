@@ -24,19 +24,19 @@ USER root
 
 # Install Yarn
 WORKDIR /usr/src/app
-COPY ["./package.json", "package-lock.json", "./"]
+COPY ["argo-cd/package.json", "argo-cd/package-lock.json", "./"]
 RUN npm install --prefer-offline --no-progress --non-interactive
 ENV YARN="/usr/src/app/node_modules/.bin/yarn"
 RUN $YARN --version
 
 WORKDIR /usr/src/app/argo-cd/ui
 
-COPY ["argo-cd/ui/package.json", "argo-cd/ui/yarn.lock", "./"]
+COPY ["sources/argo-cd/ui/package.json", "sources/argo-cd/ui/yarn.lock", "./"]
 
 RUN $YARN  install --no-progress --non-interactive --prefer-offline --network-timeout 200000 && \
     $YARN cache clean
 
-COPY ["argo-cd/ui/", "."]
+COPY ["sources/argo-cd/ui/", "."]
 
 ARG ARGO_VERSION=latest
 ENV ARGO_VERSION=$ARGO_VERSION
@@ -47,9 +47,8 @@ RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' $YARN build
 ####################################################################################################
 FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.22 as argocd-build
 
-WORKDIR /go/src/github.com/argoproj/
-COPY . .
 
+COPY sources/argo-cd /go/src/github.com/argoproj/argo-cd
 WORKDIR /go/src/github.com/argoproj/argo-cd
 
 ENV GOFLAGS="-mod=mod"
@@ -103,6 +102,7 @@ RUN if [ "$BUILD_ALL_CLIS" = "true" ] ; then \
     ; fi
 
 # build kustomize
+COPY sources/kustomize /go/src/github.com/argoproj/kustomize
 WORKDIR /go/src/github.com/argoproj/kustomize
 ENV GOSUMDB=off
 RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -mod=readonly -buildvcs=true -ldflags="-s -X sigs.k8s.io/kustomize/api/provenance.version=${CI_KUSTOMIZE_UPSTREAM_TAG} \
@@ -110,23 +110,27 @@ RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -mod=readonly -buildvc
 -tags strictfipsruntime -o kustomize ./kustomize/main.go
 
 # build helm
+COPY sources/helm /go/src/github.com/argoproj/helm
 WORKDIR /go/src/github.com/argoproj/helm
 RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -ldflags="-w -s -X helm.sh/helm/v3/internal/version.version=${CI_HELM_UPSTREAM_TAG} \
 -X helm.sh/helm/v3/internal/version.gitCommit=${CI_HELM_UPSTREAM_COMMIT}" -tags strictfipsruntime ./cmd/helm
 
 # build tini
+COPY sources/tini /go/src/github.com/argoproj/tini
 WORKDIR /go/src/github.com/argoproj/tini
 ENV CFLAGS="-DPR_SET_CHILD_SUBREAPER=36 -DPR_GET_CHILD_SUBREAPER=37"
 RUN yum install -y cmake
 RUN cmake . && make tini
 
 # build connect-proxy
+COPY sources/ssh-connect /go/src/github.com/argoproj/ssh-connect
 WORKDIR /go/src/github.com/argoproj/ssh-connect
 RUN yum install -y gcc sed 
 RUN sed -i 's/SOCKLEN_T/socklen_t/g' connect.c 
 RUN gcc -v connect.c -o connect-proxy
 
 # build git-lfs
+COPY sources/git-lfs /go/src/github.com/argoproj/git-lfs
 WORKDIR /go/src/github.com/argoproj/git-lfs
 RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 \
  go build -ldflags="-w -s -X 'github.com/git-lfs/git-lfs/v3/config.Vendor=Red Hat Inc' \
@@ -153,10 +157,10 @@ RUN groupadd -g 999 argocd && \
     microdnf clean all && \
     rm -rf /tmp/* /var/tmp/*
 
-COPY argo-cd/hack/gpg-wrapper.sh /usr/local/bin/gpg-wrapper.sh
-COPY argo-cd/hack/git-verify-wrapper.sh /usr/local/bin/git-verify-wrapper.sh
+COPY sources/argo-cd/hack/gpg-wrapper.sh /usr/local/bin/gpg-wrapper.sh
+COPY sources/argo-cd/hack/git-verify-wrapper.sh /usr/local/bin/git-verify-wrapper.sh
 
-COPY argo-cd/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY sources/argo-cd/entrypoint.sh /usr/local/bin/entrypoint.sh
 # keep uid_entrypoint.sh for backward compatibility
 RUN ln -s /usr/local/bin/entrypoint.sh /usr/local/bin/uid_entrypoint.sh
 

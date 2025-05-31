@@ -9,7 +9,7 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "true"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
-      == "release-1.16" && ( "argo-cd/***".pathChanged() || ".tekton/argo-cd-*.yaml".pathChanged()
+      == "release-1.16" && ( "sources/argo-cd/***".pathChanged() || "argo-cd/***".pathChanged() || ".tekton/argo-cd-*.yaml".pathChanged()
       )
   creationTimestamp: null
   labels:
@@ -32,11 +32,9 @@ spec:
     value:
     - linux/x86_64
   - name: dockerfile
-    value: Dockerfile
-  - name: path-context
-    value: argo-cd
+    value: argo-cd/Dockerfile
   - name: prefetch-input
-    value: '[{"type":"gomod","path":"./argo-cd/argo-cd"}, {"type":"yarn","path":"./argo-cd/argo-cd/ui"}, {"type":"gomod","path":"./argo-cd/kustomize/kustomize"}, {"type":"gomod","path":"./argo-cd/helm"}, {"type":"gomod","path":"./argo-cd/git-lfs"}, {"type":"rpm","path":"./argo-cd"}, {"type":"npm","path":"./argo-cd"}]'
+    value: '[{"type":"gomod","path":"./sources/argo-cd"}, {"type":"yarn","path":"./sources/argo-cd/ui"}, {"type":"gomod","path":"./sources/kustomize/kustomize"}, {"type":"gomod","path":"./sources/helm"}, {"type":"gomod","path":"./sources/git-lfs"}, {"type":"rpm","path":"./argo-cd"}, {"type":"npm","path":"./argo-cd"}]'
   pipelineRef:
     resolver: git
     params:
