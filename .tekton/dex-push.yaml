@@ -28,7 +28,7 @@ spec:
   - name: dockerfile
     value: dex/Dockerfile
   - name: prefetch-input
-    value: '[{"type": "gomod", "path": "./sources/dex"}, {"type": "rpm", "path": "./dex"}]'
+    value: '[{"type": "gomod", "path": "./sources/dex"}, {"type": "rpm", "path": "build/rpms/ubi8"}]'
   - name: build-platforms
     value:
       - linux/x86_64
