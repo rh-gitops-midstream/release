@@ -8,7 +8,7 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "release-1.16" && ( "argo-rollouts/***".pathChanged() || ".tekton/argo-rollouts-*.yaml".pathChanged()
+      == "release-1.16" && ( "sources/argo-rollouts/***".pathChanged() || "argo-rollouts/***".pathChanged() || ".tekton/argo-rollouts-*.yaml".pathChanged()
       )
   creationTimestamp: null
   labels:
@@ -29,15 +29,13 @@ spec:
     value:
     - linux/x86_64
     - linux/arm64
-  - name: dockerfile
-    value: Dockerfile
-  - name: path-context
-    value: argo-rollouts
   - name: additional-tags
     value:
       - '{{target_branch}}'
+  - name: dockerfile
+    value: argo-rollouts/Dockerfile
   - name: prefetch-input
-    value: '[{"type": "gomod", "path": "./argo-rollouts/rollouts-plugin-trafficrouter-openshift"}, {"type": "gomod", "path": "./argo-rollouts/argo-rollouts"}, {"type": "rpm", "path": "./argo-rollouts"}, {"type":"gomod","path":"./argo-rollouts/git-lfs"}]'
+    value: '[{"type": "gomod", "path": "./sources/rollouts-plugin-trafficrouter-openshift"}, {"type": "gomod", "path": "./sources/argo-rollouts"}, {"type": "rpm", "path": "./argo-rollouts"}, {"type":"gomod","path":"./sources/git-lfs"}]'
   pipelineRef:
     resolver: git
     params:

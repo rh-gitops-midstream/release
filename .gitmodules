@@ -16,15 +16,6 @@
 [submodule "argo-cd/ssh-connect"]
 	path = argo-cd/ssh-connect
 	url = https://github.com/gotoh/ssh-connect
-[submodule "argo-rollouts/argo-rollouts"]
-	path = argo-rollouts/argo-rollouts
-	url = https://github.com/argoproj/argo-rollouts.git
-[submodule "argo-rollouts/rollouts-plugin-trafficrouter-openshift"]
-	path = argo-rollouts/rollouts-plugin-trafficrouter-openshift
-	url = https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
-[submodule "argo-rollouts/git-lfs"]
-	path = argo-rollouts/git-lfs
-	url = https://github.com/git-lfs/git-lfs
 [submodule "sources/gitops-operator"]
 	path = sources/gitops-operator
 	url = https://github.com/redhat-developer/gitops-operator.git
@@ -46,3 +37,12 @@
 [submodule "sources/rollout-extension"]
 	path = sources/rollout-extension
 	url = https://github.com/argoproj-labs/rollout-extension.git
+[submodule "sources/rollouts-plugin-trafficrouter-openshift"]
+	path = sources/rollouts-plugin-trafficrouter-openshift
+	url = https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
+[submodule "sources/argo-rollouts"]
+	path = sources/argo-rollouts
+	url = https://github.com/argoproj/argo-rollouts.git
+[submodule "sources/git-lfs"]
+	path = sources/git-lfs
+	url = https://github.com/git-lfs/git-lfs

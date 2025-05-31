@@ -20,10 +20,7 @@
 
 FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.22 AS rollouts-plugin-trafficrouter-openshift-build
 
-WORKDIR /go/src/github.com/argoproj/
-
-COPY . .
-
+COPY sources/rollouts-plugin-trafficrouter-openshift/ /go/src/github.com/argoproj/rollouts-plugin-trafficrouter-openshift
 WORKDIR /go/src/github.com/argoproj/rollouts-plugin-trafficrouter-openshift/
 
 ENV GOFLAGS="-mod=mod"
@@ -39,9 +36,7 @@ RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime go build -v -tags strictfipsrun
 
 FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.22 AS argo-rollouts-build
 
-WORKDIR /go/src/github.com/argoproj/
-COPY . .
-
+COPY sources/argo-rollouts/ /go/src/github.com/argoproj/argo-rollouts
 WORKDIR /go/src/github.com/argoproj/argo-rollouts/
 
 ENV GOFLAGS="-mod=mod"
@@ -58,6 +53,7 @@ go build -v -ldflags "-X github.com/argoproj/argo-rollouts/utils/version.version
   -tags strictfipsruntime -o ./dist/rollouts-controller ./cmd/rollouts-controller
 
 # build git-lfs
+COPY sources/git-lfs/ /go/src/github.com/argoproj/git-lfs
 WORKDIR /go/src/github.com/argoproj/git-lfs/
 RUN ls -lha
 RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 \
