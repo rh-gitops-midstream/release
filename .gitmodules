@@ -47,3 +47,6 @@
 [submodule "sources/gitops-console-plugin"]
 	path = sources/gitops-console-plugin
 	url = https://github.com/redhat-developer/gitops-console-plugin.git
+[submodule "sources/gitops-backend"]
+	path = sources/gitops-backend
+	url = https://github.com/redhat-developer/gitops-backend.git

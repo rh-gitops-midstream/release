@@ -1,8 +1,8 @@
 # Build Stage
 FROM  brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.23 AS builder
 
-COPY . /app
-WORKDIR /app/gitops-backend
+COPY sources/gitops-backend /workspace
+WORKDIR /workspace
 
 RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 GOOS=linux go build -a -mod=readonly \
   -ldflags "-X github.com/redhat-developer/gitops-backend/pkg/health.GitRevision=$(git rev-parse HEAD)" -tags strictfipsruntime ./cmd/backend-http
@@ -10,7 +10,7 @@ RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 GOOS=linux go build -a -mod=rea
 # Final Stage
 FROM registry.access.redhat.com/ubi8/ubi-minimal
 WORKDIR /
-COPY --from=builder /app/gitops-backend/backend-http .
+COPY --from=builder /workspace/backend-http .
 EXPOSE 8080
 ENTRYPOINT ["./backend-http"]
 
