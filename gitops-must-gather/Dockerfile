@@ -33,7 +33,7 @@ LABEL \
 # Save original gather script
 RUN mv /usr/bin/gather /usr/bin/gather_original
 
-COPY gitops-must-gather/gather_gitops.sh /usr/bin/gather
+COPY sources/gitops-must-gather/gather_gitops.sh /usr/bin/gather
 
 # Make it executable
 RUN chmod +x /usr/bin/gather

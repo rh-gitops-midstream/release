@@ -8,7 +8,7 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "release-1.16" && ( "gitops-must-gather/***".pathChanged() || ".tekton/gitops-must-gather-*.yaml".pathChanged()
+      == "release-1.16" && ( "sourcs/gitops-must-gather/***".pathChanged() || gitops-must-gather/***".pathChanged() || ".tekton/gitops-must-gather-*.yaml".pathChanged()
       )
   creationTimestamp: null
   labels:
@@ -29,9 +29,7 @@ spec:
     value:
     - linux/x86_64
   - name: dockerfile
-    value: Dockerfile
-  - name: path-context
-    value: gitops-must-gather
+    value: gitops-must-gather/Dockerfile
   - name: additional-tags
     value:
       - '{{target_branch}}'

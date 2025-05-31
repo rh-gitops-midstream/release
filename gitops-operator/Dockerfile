@@ -21,6 +21,7 @@ COPY sources/gitops-operator /workspace
 
 WORKDIR /workspace
 ARG VERBOSE=2
+ENV GOFLAGS="-mod=mod"
 ENV CGO_ENABLED=1
 ENV GOEXPERIMENT=strictfipsruntime
 ENV GOOS=linux
