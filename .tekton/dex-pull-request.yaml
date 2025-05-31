@@ -9,7 +9,7 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "true"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
-      == "release-1.16" && ( "dex/***".pathChanged() || ".tekton/dex-*.yaml".pathChanged()
+      == "release-1.16" && ( "sources/dex/***".pathChanged() || "dex/***".pathChanged() || ".tekton/dex-*.yaml".pathChanged()
       )
   creationTimestamp: null
   labels:
@@ -29,11 +29,9 @@ spec:
   - name: image-expires-after
     value: 5d
   - name: dockerfile
-    value: Dockerfile
-  - name: path-context
-    value: dex
+    value: dex/Dockerfile
   - name: prefetch-input
-    value: '[{"type": "gomod", "path": "./dex/dex"}, {"type": "rpm", "path": "./dex"}]'
+    value: '[{"type": "gomod", "path": "./sources/dex"}, {"type": "rpm", "path": "./dex"}]'
   pipelineRef:
     resolver: git
     params:

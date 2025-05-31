@@ -8,7 +8,7 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "release-1.16" && ( "dex/***".pathChanged() || ".tekton/dex-*.yaml".pathChanged()
+      == "release-1.16" && ( "sources/dex/***".pathChanged() || "dex/***".pathChanged() || ".tekton/dex-*.yaml".pathChanged()
       )
   creationTimestamp: null
   labels:
@@ -26,9 +26,9 @@ spec:
   - name: output-image
     value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex:{{revision}}
   - name: dockerfile
-    value: Dockerfile
-  - name: path-context
-    value: dex
+    value: dex/Dockerfile
+  - name: prefetch-input
+    value: '[{"type": "gomod", "path": "./sources/dex"}, {"type": "rpm", "path": "./dex"}]'
   - name: build-platforms
     value:
       - linux/x86_64
@@ -36,8 +36,6 @@ spec:
   - name: additional-tags
     value:
       - '{{target_branch}}'
-  - name: prefetch-input
-    value: '[{"type": "gomod", "path": "./dex/dex"}, {"type": "rpm", "path": "./dex"}]'
   pipelineRef:
     resolver: git
     params:
