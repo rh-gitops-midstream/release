@@ -21,14 +21,15 @@ FROM registry.access.redhat.com/ubi8/ubi-minimal as rollout-extensions
 
 USER root
 
-COPY . /app
+COPY sources/rollout-extension /app/rollout-extension
+COPY argocd-extension-installer/install.sh /app/install.sh
 
 RUN microdnf install -y tar && microdnf clean all
 
 WORKDIR /app/rollout-extension/ui
 RUN mkdir -p dist && mkdir -p resources/extension-Rollout.js
 
-COPY extensions-Rollout.js resources/extension-Rollout.js
+COPY argocd-extension-installer/extensions-Rollout.js resources/extension-Rollout.js
 
 RUN tar cvf dist/extension.tar resources
 

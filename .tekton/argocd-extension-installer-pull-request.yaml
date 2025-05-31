@@ -9,7 +9,7 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "true"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
-      == "release-1.16" && ( "argocd-extension-installer/***".pathChanged() || ".tekton/argocd-extension-installer-*.yaml".pathChanged()
+      == "release-1.16" && ( "sources/argocd-extension-installer/***".pathChanged() || "argocd-extension-installer/***".pathChanged() || ".tekton/argocd-extension-installer-*.yaml".pathChanged()
       )
   creationTimestamp: null
   labels:
@@ -32,9 +32,7 @@ spec:
     value:
     - linux/x86_64
   - name: dockerfile
-    value: Dockerfile
-  - name: path-context
-    value: argocd-extension-installer
+    value: argocd-extension-installer/Dockerfile
   - name: prefetch-input
     value: '[{"type": "rpm", "path": "./argocd-extension-installer"}]'
   pipelineRef:
