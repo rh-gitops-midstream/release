@@ -8,7 +8,7 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "main" && ( "gitops-console-plugin/***".pathChanged() || ".tekton/gitops-console-plugin-*.yaml".pathChanged()
+      == "main" && ( "sources/gitops-console-plugin/***".pathChanged() || gitops-console-plugin/***".pathChanged() || ".tekton/gitops-console-plugin-*.yaml".pathChanged()
       )
   creationTimestamp: null
   labels:
@@ -29,9 +29,7 @@ spec:
     value:
     - linux/x86_64
   - name: dockerfile
-    value: Dockerfile
-  - name: path-context
-    value: gitops-console-plugin
+    value: gitops-console-plugin/Dockerfile
   - name: additional-tags
     value:
       - '{{target_branch}}'

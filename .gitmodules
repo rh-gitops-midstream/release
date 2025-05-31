@@ -5,9 +5,6 @@
 [submodule "gitops-backend/gitops-backend"]
 	path = gitops-backend/gitops-backend
 	url = https://github.com/redhat-developer/gitops-backend.git
-[submodule "gitops-console-plugin/gitops-console-plugin"]
-	path = gitops-console-plugin/gitops-console-plugin
-	url = https://github.com/redhat-developer/gitops-console-plugin.git
 [submodule "argo-cd/argo-cd"]
 	path = argo-cd/argo-cd
 	url = https://github.com/argoproj/argo-cd.git
@@ -47,3 +44,6 @@
 [submodule "sources/gitops-must-gather"]
 	path = sources/gitops-must-gather
 	url = https://github.com/redhat-developer/gitops-must-gather.git
+[submodule "sources/gitops-console-plugin"]
+	path = sources/gitops-console-plugin
+	url = https://github.com/redhat-developer/gitops-console-plugin.git

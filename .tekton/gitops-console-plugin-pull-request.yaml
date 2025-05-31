@@ -9,7 +9,7 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "true"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
-      == "release-1.16" && ( "gitops-console-plugin/***".pathChanged() || ".tekton/gitops-console-plugin-*.yaml".pathChanged()
+      == "release-1.16" && ( "sources/gitops-console-plugin/***".pathChanged() || gitops-console-plugin/***".pathChanged() || ".tekton/gitops-console-plugin-*.yaml".pathChanged()
       )
   creationTimestamp: null
   labels:
@@ -32,11 +32,9 @@ spec:
     value:
     - linux/x86_64
   - name: dockerfile
-    value: Dockerfile
-  - name: path-context
-    value: gitops-console-plugin
+    value: gitops-console-plugin/Dockerfile
   - name: prefetch-input
-    value: '[{"type": "npm", "path": "./gitops-console-plugin"}, {"type": "yarn", "path": "./gitops-console-plugin/gitops-console-plugin"}]'
+    value: '[{"type": "npm", "path": "./sources/gitops-console-plugin"}, {"type": "yarn", "path": "./gitops-console-plugin"}]'
   pipelineRef:
     resolver: git
     params:

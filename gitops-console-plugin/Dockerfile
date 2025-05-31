@@ -18,30 +18,30 @@ FROM registry.access.redhat.com/ubi9/nodejs-22:9.5-1734528986 AS builder
 
 USER root
 
-ADD . /usr/src/app
-
 # Install Yarn
-WORKDIR /usr/src/app
+WORKDIR /workspace
+COPY gitops-console-plugin/package.json gitops-console-plugin/package-lock.json .
 RUN npm install --prefer-offline --no-progress --non-interactive
-ENV YARN="/usr/src/app/node_modules/.bin/yarn"
+ENV YARN="/workspace/node_modules/.bin/yarn"
 RUN $YARN --version
 
-# Install Console Plugin Dependencies
-WORKDIR /usr/src/app/gitops-console-plugin
+# Build Console Plugin Dependencies
+COPY sources/gitops-console-plugin /workspace/gitops-console-plugin
+WORKDIR /workspace/gitops-console-plugin
 RUN $YARN install --no-progress --non-interactive --prefer-offline --network-timeout 600000 
-    
 RUN $YARN build
     
 ####################################################################################################
     
-FROM --platform=linux/amd64 registry.redhat.io/ubi9/httpd-24:9.5-1733127463
+FROM registry.redhat.io/rhel8/httpd-24
 USER root
 RUN chown -R 1001:0 /opt/app-root/src
 USER 1001
 RUN chmod g+rwx /opt/app-root/src
     
-COPY --from=builder /usr/src/app/gitops-console-plugin/ssl.conf /etc/httpd/conf.d
-COPY --from=builder /usr/src/app/gitops-console-plugin/dist /var/www/html/plugin
+RUN mkdir -p /var/www/html
+COPY --from=builder /workspace/gitops-console-plugin/ssl.conf /etc/httpd/conf.d
+COPY --from=builder /workspace/gitops-console-plugin/dist /var/www/html/plugin
     
 CMD run-httpd
     
