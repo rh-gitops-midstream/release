@@ -1,0 +1,19 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  labels:
+    release: 1.16.2
+  name: operator-catalog-stage-1
+  namespace: rh-openshift-gitops-tenant
+spec:
+  data:
+    releaseNotes:
+      description: GitOps 1.16.2
+      references:
+      - gitop-1-16-2
+      solution: GitOps 1.16.2
+      synopsis: GitOps 1.16.2
+      topic: GitOps 1.16.2
+  gracePeriodDays: 7
+  releasePlan: operator-catalog-stage
+  snapshot: operator-catalog-4-12-b5c5q

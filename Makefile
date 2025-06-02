@@ -1,6 +1,6 @@
 .PHONY: bundle
 bundle: 
-	cp -rf gitops-operator-bundle/gitops-operator/bundle gitops-operator-bundle/
+	cp -rf sources/gitops-operator/bundle gitops-operator-bundle/
 	python3 gitops-operator-bundle/patch-bundle.py
 
 PHONY: trigger-builds

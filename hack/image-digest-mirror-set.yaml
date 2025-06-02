@@ -1,0 +1,31 @@
+apiVersion: config.openshift.io/v1
+kind: ImageDigestMirrorSet
+metadata:
+  name: fbc-testing-idms
+spec:
+  imageDigestMirrors:
+  - source: registry.redhat.io/openshift-gitops-1/gitops-rhel8
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-backend
+  - source: registry.redhat.io/openshift-gitops-1/console-plugin-rhel8
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-console-plugin
+  - source: registry.redhat.io/openshift-gitops-1/dex-rhel8
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex
+  - source: registry.redhat.io/openshift-gitops-1/must-gather-rhel8
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-must-gather
+  - source: registry.redhat.io/openshift-gitops-1/argocd-rhel8
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-cd
+  - source: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts
+  - source: registry.redhat.io/openshift-gitops-1/gitops-operator-bundle
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle
+  - source: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator
+  

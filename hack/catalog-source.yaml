@@ -1,0 +1,10 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: fbc-gitops-1.16.1
+  namespace: openshift-marketplace
+spec:
+  sourceType: grpc
+  image: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/fbc-4-17@sha256:8e678bcf2b5c7599030203327f48646d41c4cdd7d596e64269b0ea9456e9753b
+  displayName: Konflux FBC test CatalogSource
+  publisher: Red Hat

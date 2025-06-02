@@ -1,0 +1,15 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  name: stage-gitops-1.16.2-1
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-16-stage
+  snapshot: gitops-1-16-gvmqz
+  data:
+    releaseNotes:
+      topic: "GitOps 1.16.2"
+      synopsis: "GitOps 1.16.2"
+      description: "GitOps 1.16.2"
+      solution: "GitOps 1.16.2"
