@@ -1,7 +1,7 @@
 apiVersion: config.openshift.io/v1
 kind: ImageDigestMirrorSet
 metadata:
-  name: fbc-testing-idms
+  name: gitops-testing-idms
 spec:
   imageDigestMirrors:
   - source: registry.redhat.io/openshift-gitops-1/gitops-rhel8
@@ -28,4 +28,6 @@ spec:
   - source: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator
     mirrors:
       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator
-  
+  - source: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel8
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extension-installer
