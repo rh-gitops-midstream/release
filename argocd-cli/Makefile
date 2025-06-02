@@ -1,0 +1,2 @@
+  sources:
+	rhpkg sources

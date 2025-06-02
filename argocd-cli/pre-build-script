@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+set -euxo pipefail
+
+#Install go
+curl --silent --output /tmp/go.tar.gz https://dl.google.com/go/go1.22.9.linux-amd64.tar.gz && tar xf /tmp/go.tar.gz -C /tmp
+/tmp/go/bin/go version
+
+#Run vendoring and create source tar file
+SPEC_FILE="openshift-gitops-argocd-cli.spec"
+UPSTREAM_COMMIT_ID=$(grep 'global commitid' "${SPEC_FILE}" | awk '{print $3}')
+UPSTREAM_URL=$(grep 'URL:' "${SPEC_FILE}" | awk '{print $2}'| sed -e 's/\/commit\/.*//g')
+SOURCE_TAR_FILE=$(grep 'global source_tar' "${SPEC_FILE}" | awk '{print $3}')
+
+# Do not rebuild rpm if there is a sources file already containing an entry of the source
+# bundle of the current upstream commit id. It means that no changes have gone in the
+# upstream since previous build. If there is no file called sources, it means that there
+# has been a midstream change and it is ok to build rpm even if there is no change upstream.
+if [[ -f "sources" ]]; then
+  cat sources
+  BUNDLED_SRC_FILE=$(grep "${SOURCE_TAR_FILE}" sources)
+  if [[ ! -z "${BUNDLED_SRC_FILE}" ]]; then
+    echo "RPM built for the same commit-id previously. Skipping rebuild"
+    exit 0;
+  fi
+fi
+
+git version
+GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git clone -vvv "${UPSTREAM_URL}"
+pushd argo-cd
+git reset --hard ${UPSTREAM_COMMIT_ID}
+/tmp/go/bin/go mod vendor
+tar -czS -f "../${SOURCE_TAR_FILE}" --transform "s,^.,argo-cd-${UPSTREAM_COMMIT_ID}," .
+popd
+sed -i '/argo-cd/d' source-repos
+rhpkg new-sources ${SOURCE_TAR_FILE}
+
+#cleanup
+rm -rf argo-cd
