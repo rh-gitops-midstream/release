@@ -43,6 +43,9 @@ spec:
         DOWNSTREAM_SOURCE_URL="$(git config --get remote.origin.url)"
         DOWNSTREAM_COMMIT_REF="$(git rev-parse HEAD)"
 
+        for item in $(params.GIT_METADATA_DIRECTORIES[*]); do
+          echo "$item"
+        done
 
         # result format: ["label1=value1", "label2=value2"]
         labels=$(cat <<EOF
