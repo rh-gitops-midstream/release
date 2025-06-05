@@ -34,7 +34,7 @@ spec:
         - name: LABELS_RESULT
           value: $(results.labels.path)
         - name: GIT_METADATA_DIRECTORIES
-          value: $(params.GIT_METADATA_DIRECTORIES)
+          value: "$(params.GIT_METADATA_DIRECTORIES[*])"
       script: |
         #!/bin/bash
         set -euo pipefail
