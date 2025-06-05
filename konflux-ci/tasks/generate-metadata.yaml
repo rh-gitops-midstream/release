@@ -117,7 +117,7 @@ spec:
         for dir in "${dirs[@]}"; do
           cd $dir
           pwd
-          version=$(git describe --tags --always)
+          version=$(git describe --tags --abbrev=0)
           commit=$(git rev-parse HEAD)
           # Convert "sources/argo-cd" -> "ARGO-CD"
           name=$(basename "$dir" | tr '[:lower:]' '[:upper:]')
