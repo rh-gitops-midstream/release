@@ -1,0 +1,62 @@
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: generate-metadata
+spec:
+  params:
+    - name: SOURCE_ARTIFACT
+      type: string
+      description: The Trusted Artifact URI pointing to the artifact with the application source code.
+    - name: GIT_METADATA_DIRECTORIES
+      type: array
+      description: List of directories to run Git commands and extract metadata.
+  results:
+    - name: labels
+      type: array
+      description: LABEL values for the container build
+    - name: args
+      type: array
+      description: ARG values for the container build
+  steps:
+    - name: use-trusted-artifact
+      # pin the image to a digest, Konflux will automatically send you updates
+      image: quay.io/redhat-appstudio/build-trusted-artifacts:latest@sha256:9b180776a41d9a22a1c51539f1647c60defbbd55b44bbebdd4130e33512d8b0d
+      args:
+        - use
+        - $(params.SOURCE_ARTIFACT)=/tekton/home/source
+
+    - name: generate-labels
+      # prefer Red Hat images for security
+      image: registry.access.redhat.com/ubi9/ubi-minimal:9.5@sha256:a50731d3397a4ee28583f1699842183d4d24fadcc565c4688487af9ee4e13a44
+      workingDir: /tekton/home/source
+      env:
+        - name: LABELS_RESULT
+          value: $(results.labels.path)
+      script: |
+        #!/bin/bash
+        set -euo pipefail
+
+        microdnf -y install git-core
+
+        CONTAINER_VERSION="$(cat TAG)"
+        DOWNSTREAM_SOURCE_URL="$(git config --get remote.origin.url)"
+        DOWNSTREAM_COMMIT_REF="$(git rev-parse HEAD)"
+
+        DIRS=($(params.git-metadata-directories))
+        cd "${DIRS[0]}"
+        UPSTREAM_SOURCE_URL="$(git config --get remote.origin.url)"
+        UPSTREAM_COMMIT_REF="$(git rev-parse HEAD)"
+
+        # result format: ["label1=value1", "label2=value2"]
+        labels=$(cat <<EOF
+        ["container-version=$CONTAINER_VERSION", \
+        "downstream-source-url=$DOWNSTREAM_SOURCE_URL", \
+        "downstream-source-ref=$DOWNSTREAM_COMMIT_REF", \
+        "upstream-source-url=$UPSTREAM_SOURCE_URL", \
+        "upstream-source-ref=$UPSTREAM_COMMIT_REF"]
+        EOF
+        )
+        echo "$labels" > "$LABELS_RESULT"
+        
+        cat $LABELS_RESULT
