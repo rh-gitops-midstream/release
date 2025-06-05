@@ -33,6 +33,8 @@ spec:
       env:
         - name: LABELS_RESULT
           value: $(results.labels.path)
+        - name: GIT_METADATA_DIRECTORIES
+          value: $(params.GIT_METADATA_DIRECTORIES)
       script: |
         #!/bin/bash
         set -euo pipefail
@@ -43,7 +45,7 @@ spec:
         DOWNSTREAM_SOURCE_URL="$(git config --get remote.origin.url)"
         DOWNSTREAM_COMMIT_REF="$(git rev-parse HEAD)"
 
-        for item in $(params.GIT_METADATA_DIRECTORIES[*]); do
+        for item in $GIT_METADATA_DIRECTORIES; do
           echo "$item"
         done
 
