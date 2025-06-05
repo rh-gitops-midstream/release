@@ -38,7 +38,7 @@ spec:
       - '{{target_branch}}'
   - name: git-metadata-directories
     value:
-      - "sources/dex"
+      - sources/dex
   pipelineRef:
     resolver: git
     params:
