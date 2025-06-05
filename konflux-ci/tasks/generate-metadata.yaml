@@ -116,6 +116,7 @@ spec:
         echo "--> Setting DIR Vars..."
         for dir in "${dirs[@]}"; do
           cd $dir
+          pwd
           version=$(git describe --tags --always)
           commit=$(git rev-parse HEAD)
           # Convert "sources/argo-cd" -> "ARGO-CD"
@@ -125,6 +126,8 @@ spec:
           cd - >/dev/null
         done
 
-        echo "$args" > "$ARGS_RESULT"
+        args_str=$(printf '"%s",' "${args[@]}")
+        args_str="[${args_str%,}]"
+        echo "$args_str" > "$ARGS_RESULT"
 
         cat $ARGS_RESULT
