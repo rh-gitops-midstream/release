@@ -36,6 +36,9 @@ spec:
     value: gitops-operator/Dockerfile
   - name: prefetch-input
     value: '[{"type": "gomod", "path": "./sources/gitops-operator"}]'
+  - name: git-metadata-directories
+    value:
+      - sources/gitops-operator
   pipelineRef:
     resolver: git
     params:

@@ -43,13 +43,9 @@ ENTRYPOINT [ "/usr/local/bin/manager" ]
     
 LABEL \
     name="openshift-gitops-1/gitops-rhel8-operator" \
-    version=${TARGET_VERSION} \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-operator-container" \
     com.redhat.delivery.appregistry="false" \
-    release=${CI_CONTAINER_RELEASE} \
-    upstream-version=${CI_UPSTREAM_VERSION} \
-    upstream-vcs-ref="${COMMIT_SHA}" \
     upstream-vcs-type="git" \
     summary="Openshift GitOps Operator Dockerfile Template" \
     description="Red Hat OpenShift GitOps Operator" \

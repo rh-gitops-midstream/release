@@ -36,6 +36,14 @@ spec:
   - name: additional-tags
     value:
       - '{{target_branch}}'
+  - name: git-metadata-directories
+    value:
+      - sources/argo-cd
+      - sources/git-lfs
+      - sources/helm
+      - sources/kustomize
+      - sources/ssh-connect
+      - sources/tini
   pipelineRef:
     resolver: git
     params:

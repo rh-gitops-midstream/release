@@ -56,11 +56,9 @@ ENTRYPOINT ["./install.sh"]
 
 LABEL \
     name="openshift-gitops-1/argocd-extensions-rhel8" \
-    version=${CI_CONTAINER_VERSION} \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-argocd-extensions-container" \
     com.redhat.delivery.appregistry="false" \
-    release=${CI_CONTAINER_RELEASE} \
     summary="Red Hat OpenShift GitOps Argocd Extensions" \
     io.openshift.expose-services="" \
     io.openshift.tags="openshift,gitops,extensions,argocd" \

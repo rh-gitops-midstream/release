@@ -50,11 +50,7 @@ LABEL \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-console-plugin-container" \
     com.redhat.delivery.appregistry="false" \
-    release=${CI_CONTAINER_RELEASE} \
     upstream-vcs-type="git" \
-    upstream-version=${CI_UPSTREAM_VERSION} \
-    upstream-vcs-ref="${COMMIT_SHA}" \
-    version=${CI_CONTAINER_VERSION} \
     summary="Red Hat OpenShift GitOps Console Plugin" \
     maintainer="William Tam <wtam@redhat.com>" \
     io.openshift.tags="openshift,gitops-console-plugin" \

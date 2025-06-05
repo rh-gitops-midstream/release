@@ -33,6 +33,9 @@ spec:
   - name: additional-tags
     value:
       - '{{target_branch}}'
+  - name: git-metadata-directories
+    value:
+      - sources/gitops-must-gather
   pipelineRef:
     resolver: git
     params:

@@ -39,26 +39,29 @@ FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.22
 COPY sources/argo-rollouts/ /go/src/github.com/argoproj/argo-rollouts
 WORKDIR /go/src/github.com/argoproj/argo-rollouts/
 
+ARG CI_ARGO_ROLLOUTS_VERSION
+ARG CI_ARGO_ROLLOUTS_COMMIT
 ENV GOFLAGS="-mod=mod"
 ENV CGO_ENABLED=1
 ENV GOEXPERIMENT=strictfipsruntime
 
 # Perform the build
 RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime \
-go build -v -ldflags "-X github.com/argoproj/argo-rollouts/utils/version.version=${CI_ARGO_ROLLOUTS_UPSTREAM_TAG} \
+go build -v -ldflags "-X github.com/argoproj/argo-rollouts/utils/version.version=${CI_ARGO_ROLLOUTS_VERSION} \
   -X github.com/argoproj/argo-rollouts/utils/version.buildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
-  -X github.com/argoproj/argo-rollouts/utils/version.gitCommit=${CI_ARGO_ROLLOUTS_UPSTREAM_COMMIT} \
+  -X github.com/argoproj/argo-rollouts/utils/version.gitCommit=${CI_ARGO_ROLLOUTS_COMMIT} \
   -X github.com/argoproj/argo-rollouts/utils/version.gitTreeState=clean \
-  -X github.com/argoproj/argo-rollouts.gitTag=${CI_ARGO_ROLLOUTS_UPSTREAM_TAG}" \
+  -X github.com/argoproj/argo-rollouts.gitTag=${CI_ARGO_ROLLOUTS_VERSION}" \
   -tags strictfipsruntime -o ./dist/rollouts-controller ./cmd/rollouts-controller
 
 # build git-lfs
 COPY sources/git-lfs/ /go/src/github.com/argoproj/git-lfs
 WORKDIR /go/src/github.com/argoproj/git-lfs/
 RUN ls -lha
+ARG CI_GIT_LFS_COMMIT
 RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 \
  go build -ldflags="-w -s -X 'github.com/git-lfs/git-lfs/v3/config.Vendor=Red Hat Inc' \
- -X github.com/git-lfs/git-lfs/v3/config.GitCommit=${CI_GIT_LFS_UPSTREAM_TAG}" \
+ -X github.com/git-lfs/git-lfs/v3/config.GitCommit=${CI_GIT_LFS_COMMIT}" \
  -gcflags="" -tags strictfipsruntime -trimpath  -o ./bin/git-lfs ./git-lfs.go
 
 ####################################################################################################
@@ -106,13 +109,9 @@ COPY --from=argo-rollouts-build /go/src/github.com/argoproj/git-lfs/bin/git-lfs 
 
 LABEL \
     name="openshift-gitops-1/argo-rollouts-rhel8" \
-    version=${CI_CONTAINER_VERSION} \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-argo-rollouts-container" \
     com.redhat.delivery.appregistry="false" \
-    release=${CI_CONTAINER_RELEASE} \
-    upstream-version=${CI_UPSTREAM_VERSION} \
-    upstream-vcs-ref="${CI_ARGO_ROLLOUTS_UPSTREAM_COMMIT}" \
     upstream-vcs-type="git" \
     summary="Red Hat Openshift GitOps Argo Rollouts" \
     io.openshift.expose-services="" \

@@ -58,7 +58,10 @@ ENV GOEXPERIMENT=strictfipsruntime
 ENV CGO_ENABLED=1
 ENV CGO_FLAG=1
 
-ARG EXTRA_BUILD_INFO='{Vendor Information: Red Hat OpenShift GitOps version: 1.16.0}'
+ARG VERSION
+ARG CI_ARGO_CD_COMMIT
+ARG CI_ARGO_CD_VERSION
+ARG EXTRA_BUILD_INFO='{Vendor Information: Red Hat OpenShift GitOps version: $VERSION}'
 
 # Perform the build
 COPY --from=argocd-ui /usr/src/app/argo-cd/ui/dist/app /go/src/github.com/argoproj/argo-cd/ui/dist/app
@@ -71,11 +74,11 @@ export CGO_ENABLED=1 &&\
 export GODEBUG="tarinsecurepath=0,zipinsecurepath=0" &&\
 export LDFLAGS="-X ${PACKAGE}.version=${VERSION} \
   -X ${PACKAGE}.buildDate=${BUILD_DATE} \
-  -X ${PACKAGE}.gitCommit=${CI_ARGO_CD_UPSTREAM_COMMIT} \
+  -X ${PACKAGE}.gitCommit=${CI_ARGO_CD_COMMIT} \
   -X ${PACKAGE}.gitTreeState=clean \
   -X ${PACKAGE}.kubectlVersion=${KUBECTL_VER}\
   -X \"${PACKAGE}.extraBuildInfo=${EXTRA_BUILD_INFO}\" \
-  -X ${PACKAGE}.gitTag=${CI_ARGO_CD_UPSTREAM_TAG}" &&\
+  -X ${PACKAGE}.gitTag=${CI_ARGO_CD_VERSION}" &&\
 go build -gcflags="all=-N -l" -v -ldflags "${LDFLAGS}" -tags strictfipsruntime -o ./dist/argocd ./cmd
 
 # Create static linked binary to be called from different base images.
@@ -88,7 +91,7 @@ RUN export PACKAGE=github.com/argoproj/argo-cd/v2/common &&\
     export GODEBUG="tarinsecurepath=0,zipinsecurepath=0" &&\
     export LDFLAGS="-extldflags \"-static\" -X ${PACKAGE}.version=${VERSION} \
         -X ${PACKAGE}.buildDate=${BUILD_DATE} \
-        -X ${PACKAGE}.gitCommit=${CI_ARGO_CD_UPSTREAM_COMMIT} \
+        -X ${PACKAGE}.gitCommit=${CI_ARGO_CD_COMMIT} \
         -X ${PACKAGE}.gitTreeState=clean \
         -X ${PACKAGE}.kubectlVersion=${KUBECTL_VER}\
         -X \"${PACKAGE}.extraBuildInfo=${EXTRA_BUILD_INFO}\" \
@@ -104,16 +107,19 @@ RUN if [ "$BUILD_ALL_CLIS" = "true" ] ; then \
 # build kustomize
 COPY sources/kustomize /go/src/github.com/argoproj/kustomize
 WORKDIR /go/src/github.com/argoproj/kustomize
+ARG CI_KUSTOMIZE_VERSION
 ENV GOSUMDB=off
-RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -mod=readonly -buildvcs=true -ldflags="-s -X sigs.k8s.io/kustomize/api/provenance.version=${CI_KUSTOMIZE_UPSTREAM_TAG} \
+RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -mod=readonly -buildvcs=true -ldflags="-s -X sigs.k8s.io/kustomize/api/provenance.version=${CI_KUSTOMIZE_VERSION} \
 -X sigs.k8s.io/kustomize/api/provenance.buildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
 -tags strictfipsruntime -o kustomize ./kustomize/main.go
 
 # build helm
 COPY sources/helm /go/src/github.com/argoproj/helm
 WORKDIR /go/src/github.com/argoproj/helm
-RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -ldflags="-w -s -X helm.sh/helm/v3/internal/version.version=${CI_HELM_UPSTREAM_TAG} \
--X helm.sh/helm/v3/internal/version.gitCommit=${CI_HELM_UPSTREAM_COMMIT}" -tags strictfipsruntime ./cmd/helm
+ARG CI_HELM_VERSION
+ARG CI_HELM_COMMIT
+RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -ldflags="-w -s -X helm.sh/helm/v3/internal/version.version=${CI_HELM_VERSION} \
+-X helm.sh/helm/v3/internal/version.gitCommit=${CI_HELM_COMMIT}" -tags strictfipsruntime ./cmd/helm
 
 # build tini
 COPY sources/tini /go/src/github.com/argoproj/tini
@@ -132,9 +138,10 @@ RUN gcc -v connect.c -o connect-proxy
 # build git-lfs
 COPY sources/git-lfs /go/src/github.com/argoproj/git-lfs
 WORKDIR /go/src/github.com/argoproj/git-lfs
+ARG CI_GIT_LFS_COMMIT
 RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 \
  go build -ldflags="-w -s -X 'github.com/git-lfs/git-lfs/v3/config.Vendor=Red Hat Inc' \
- -X github.com/git-lfs/git-lfs/v3/config.GitCommit=${CI_GIT_LFS_UPSTREAM_TAG}" \
+ -X github.com/git-lfs/git-lfs/v3/config.GitCommit=${CI_GIT_LFS_COMMIT}" \
  -gcflags="" -tags strictfipsruntime -trimpath  -o ./bin/git-lfs ./git-lfs.go
 
 ####################################################################################################
@@ -199,13 +206,9 @@ COPY --from=argocd-build  /go/src/github.com/argoproj/git-lfs/bin/git-lfs /usr/l
 
 LABEL \
     name="openshift-gitops-1/argocd-rhel8" \
-    version=${CI_CONTAINER_VERSION} \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-argocd-container" \
     com.redhat.delivery.appregistry="false" \
-    release=${CI_CONTAINER_RELEASE} \
-    upstream-version=${CI_UPSTREAM_VERSION} \
-    upstream-vcs-ref="${CI_ARGO_CD_UPSTREAM_COMMIT}" \
     upstream-vcs-type="git" \
     summary="Red Hat Openshift GitOps Argo CD" \
     io.openshift.expose-services="" \

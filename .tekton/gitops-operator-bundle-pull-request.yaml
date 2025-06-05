@@ -34,6 +34,9 @@ spec:
     value: gitops-operator-bundle
   - name: build-image-index
     value: "false"
+  - name: git-metadata-directories
+    value:
+      - sources/gitops-operator
   pipelineRef:
     resolver: git
     params:

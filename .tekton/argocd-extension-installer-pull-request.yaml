@@ -35,6 +35,10 @@ spec:
     value: argocd-extension-installer/Dockerfile
   - name: prefetch-input
     value: '[{"type": "rpm", "path": "./argocd-extension-installer"}]'
+  - name: git-metadata-directories
+    value:
+      - sources/argocd-extension-installer
+      - sources/rollout-extension
   pipelineRef:
     resolver: git
     params:

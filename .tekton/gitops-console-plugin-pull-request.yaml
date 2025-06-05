@@ -35,6 +35,9 @@ spec:
     value: gitops-console-plugin/Dockerfile
   - name: prefetch-input
     value: '[{"type": "npm", "path": "build/yarn"}, {"type": "yarn", "path": "./sources/gitops-console-plugin"}]'
+  - name: git-metadata-directories
+    value:
+      - sources/gitops-console-plugin
   pipelineRef:
     resolver: git
     params:

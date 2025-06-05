@@ -33,6 +33,9 @@ spec:
     - linux/x86_64
   - name: dockerfile
     value: gitops-must-gather/Dockerfile
+  - name: git-metadata-directories
+    value:
+      - sources/gitops-must-gather
   pipelineRef:
     resolver: git
     params:

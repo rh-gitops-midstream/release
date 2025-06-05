@@ -4,8 +4,9 @@ FROM  brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.2
 COPY sources/gitops-backend /workspace
 WORKDIR /workspace
 
+ARG CI_GITOPS_BACKEND_COMMIT
 RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 GOOS=linux go build -a -mod=readonly \
-  -ldflags "-X github.com/redhat-developer/gitops-backend/pkg/health.GitRevision=$(git rev-parse HEAD)" -tags strictfipsruntime ./cmd/backend-http
+  -ldflags "-X github.com/redhat-developer/gitops-backend/pkg/health.GitRevision=$CI_GITOPS_BACKEND_COMMIT" -tags strictfipsruntime ./cmd/backend-http
 
 # Final Stage
 FROM registry.access.redhat.com/ubi8/ubi-minimal
