@@ -33,20 +33,33 @@ spec:
       env:
         - name: LABELS_RESULT
           value: $(results.labels.path)
-        - name: GIT_METADATA_DIRECTORIES
-          value: "$(params.GIT_METADATA_DIRECTORIES[*])"
+      args:
+        - "--git-metadata-directories"
+        - "$(params.GIT_METADATA_DIRECTORIES[*])"
       script: |
         #!/bin/bash
         set -euo pipefail
 
         microdnf -y install git-core
 
+        echo "--> Parsing additional configuration..."
+        parsing_flag=""
+        dirs=()
+        for arg in "$@"; do
+            if [[ "$arg" == "--git-metadata-directories" ]]; then
+                echo "-> Parsing git directories..."
+                parsing_flag="git-metadata-directories"
+            elif [[ "$parsing_flag" == "git-metadata-directories" ]]; then
+                dirs+=("$arg")
+            fi
+        done
+
         CONTAINER_VERSION="$(cat TAG)"
         DOWNSTREAM_SOURCE_URL="$(git config --get remote.origin.url)"
         DOWNSTREAM_COMMIT_REF="$(git rev-parse HEAD)"
 
-        for item in $GIT_METADATA_DIRECTORIES; do
-          echo "$item"
+        for dir in "${dirs[@]}"; do
+          echo "$dir"
         done
 
         # result format: ["label1=value1", "label2=value2"]
