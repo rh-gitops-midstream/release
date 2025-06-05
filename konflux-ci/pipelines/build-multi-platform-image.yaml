@@ -178,7 +178,7 @@ spec:
         - name: url
           value: https://github.com/rh-gitops-midstream/release.git
         - name: revision
-          value: '{{target_branch}}'
+          value: "release-1.16"
         - name: pathInRepo
           value: /konflux-ci/tasks/generate-metadata.yaml
       params:
