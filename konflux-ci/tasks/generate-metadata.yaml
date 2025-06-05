@@ -43,7 +43,7 @@ spec:
         DOWNSTREAM_SOURCE_URL="$(git config --get remote.origin.url)"
         DOWNSTREAM_COMMIT_REF="$(git rev-parse HEAD)"
 
-        DIRS=($(params.git-metadata-directories))
+        DIRS=($(params.GIT_METADATA_DIRECTORIES))
         cd "${DIRS[0]}"
         UPSTREAM_SOURCE_URL="$(git config --get remote.origin.url)"
         UPSTREAM_COMMIT_REF="$(git rev-parse HEAD)"
