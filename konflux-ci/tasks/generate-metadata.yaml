@@ -43,18 +43,12 @@ spec:
         DOWNSTREAM_SOURCE_URL="$(git config --get remote.origin.url)"
         DOWNSTREAM_COMMIT_REF="$(git rev-parse HEAD)"
 
-        IFS=' ' read -r -a DIRS <<< "$(params.GIT_METADATA_DIRECTORIES)"
-        cd "${DIRS[0]}"
-        UPSTREAM_SOURCE_URL="$(git config --get remote.origin.url)"
-        UPSTREAM_COMMIT_REF="$(git rev-parse HEAD)"
 
         # result format: ["label1=value1", "label2=value2"]
         labels=$(cat <<EOF
         ["container-version=$CONTAINER_VERSION", \
         "downstream-source-url=$DOWNSTREAM_SOURCE_URL", \
-        "downstream-source-ref=$DOWNSTREAM_COMMIT_REF", \
-        "upstream-source-url=$UPSTREAM_SOURCE_URL", \
-        "upstream-source-ref=$UPSTREAM_COMMIT_REF"]
+        "downstream-source-ref=$DOWNSTREAM_COMMIT_REF"]
         EOF
         )
         echo "$labels" > "$LABELS_RESULT"
