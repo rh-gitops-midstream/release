@@ -59,16 +59,69 @@ spec:
         DOWNSTREAM_COMMIT_REF="$(git rev-parse HEAD)"
 
         for dir in "${dirs[@]}"; do
-          echo "$dir"
+          cd $dir
+          UPSTREAM_SOURCE_URL="$(git config --get remote.origin.url)"
+          UPSTREAM_COMMIT_REF="$(git rev-parse HEAD)"
+          break
         done
 
         # result format: ["label1=value1", "label2=value2"]
         labels=$(cat <<EOF
         ["container-version=$CONTAINER_VERSION", \
         "downstream-source-url=$DOWNSTREAM_SOURCE_URL", \
-        "downstream-source-ref=$DOWNSTREAM_COMMIT_REF"]
+        "downstream-source-ref=$DOWNSTREAM_COMMIT_REF", \
+        "upstream-source-url=$UPSTREAM_SOURCE_URL", \
+        "upstream-source-ref=$UPSTREAM_COMMIT_REF"]
         EOF
         )
         echo "$labels" > "$LABELS_RESULT"
         
         cat $LABELS_RESULT
+
+    - name: generate-args
+      # prefer Red Hat images for security
+      image: registry.access.redhat.com/ubi9/ubi-minimal:9.5@sha256:a50731d3397a4ee28583f1699842183d4d24fadcc565c4688487af9ee4e13a44
+      workingDir: /tekton/home/source
+      env:
+        - name: ARGS_RESULT
+          value: $(results.args.path)
+      args:
+        - "--git-metadata-directories"
+        - "$(params.GIT_METADATA_DIRECTORIES[*])"
+      script: |
+        #!/bin/bash
+        set -euo pipefail
+
+        microdnf -y install git-core
+
+        echo "--> Parsing additional configuration..."
+        parsing_flag=""
+        dirs=()
+        for arg in "$@"; do
+            if [[ "$arg" == "--git-metadata-directories" ]]; then
+                echo "-> Parsing git directories..."
+                parsing_flag="git-metadata-directories"
+            elif [[ "$parsing_flag" == "git-metadata-directories" ]]; then
+                dirs+=("$arg")
+            fi
+        done
+
+        # args format: ["arg1=value1", "arg2=value2"]
+        args=()
+        args+=( "VERSION=$(cut -d'-' -f1 < TAG)" )
+        args+=( "BUILD_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)" )
+        
+        for dir in "${dirs[@]}"; do
+          cd $dir
+          version=$(git describe --tags --always)
+          commit=$(git rev-parse HEAD)
+          # Convert "sources/argo-cd" -> "ARGO-CD"
+          name=$(basename "$dir" | tr '[:lower:]' '[:upper:]')
+          args+=( "${name}_VERSION=$version" )
+          args+=( "${name}_COMMIT=$commit" )
+          cd - >/dev/null
+        done
+
+        echo "$args" > "$ARGS_RESULT"
+
+        cat $ARGS_RESULT
