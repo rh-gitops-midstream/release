@@ -90,7 +90,7 @@ spec:
         - "$(params.GIT_METADATA_DIRECTORIES[*])"
       script: |
         #!/bin/bash
-        set -euo pipefail
+        set -exuo pipefail
 
         microdnf -y install git-core
 
@@ -106,11 +106,14 @@ spec:
             fi
         done
 
+        echo "--> Setting VERSION & BUILD_TIME..."
+
         # args format: ["arg1=value1", "arg2=value2"]
         args=()
         args+=( "VERSION=$(cut -d'-' -f1 < TAG)" )
         args+=( "BUILD_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)" )
         
+        echo "--> Setting DIR Vars..."
         for dir in "${dirs[@]}"; do
           cd $dir
           version=$(git describe --tags --always)
