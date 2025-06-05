@@ -90,6 +90,17 @@ artifacts:
       component: "argocd-extension-installer-1-16"
       buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extension-installer"
 
+# Sources - source code repositories
+sources:
+  - url: https://github.com/dexidp/dex.git
+    ref: v2.41.1
+    commit: 43956db7fd75c488a82c70cf231f44287300a75d
+    path: sources/dex
+  - url: https://github.com/redhat-developer/gitops-must-gather.git
+    ref: main
+    commit: 4b954166b1ccab7dd628df912e5be13381b57211
+    path: sources/gitops-must-gather
+
 # Dependencies - required container images
 dependencies:
   - name: "OpenShift HAProxy Router"

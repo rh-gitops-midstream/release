@@ -32,6 +32,9 @@ spec:
     value: gitops-backend/Dockerfile
   - name: prefetch-input
     value: '[{"type": "gomod", "path": "./sources/gitops-backend"}]'
+  - name: git-metadata-directories
+    value:
+      - "sources/gitops-backend"
   pipelineRef:
     resolver: git
     params:

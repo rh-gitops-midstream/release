@@ -17,13 +17,16 @@
 # --- start build stage #1
 FROM registry.redhat.io/rhel8/go-toolset:1.22 as builder
 
+ARG DEX_VERSION
+ARG DEX_COMMIT
+
 COPY sources/dex /app/dex
 WORKDIR /app/dex
 
 RUN pwd && ls -l
 
 ENV GOFLAGS=""
-RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 GOOS=linux go build -mod=mod -o /tmp/dex -ldflags "-w -X main.version=$(git describe --tags --always --abbrev=7)" -tags strictfipsruntime ./cmd/dex
+RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 GOOS=linux go build -mod=mod -o /tmp/dex -ldflags "-w -X main.version=$DEX_VERSION -X main.commit=$DEX_COMMIT" -tags strictfipsruntime ./cmd/dex
 
 # --- start build stage #2
 FROM registry.access.redhat.com/ubi8/ubi-minimal

@@ -103,6 +103,10 @@ spec:
       description: Enable symlink check for git clone
       type: string
       default: "false"
+    - name: git-metadata-directories
+      description: List of directories to run Git commands and extract metadata.
+      type: array
+      default: []
   results:
     - description: ""
       name: IMAGE_URL
@@ -165,6 +169,24 @@ spec:
       workspaces:
         - name: basic-auth
           workspace: git-auth
+    - name: generate-metadata
+      runAfter:
+      - clone-repository
+      taskRef:
+        resolver: git
+        params:
+        - name: url
+          value: https://github.com/rh-gitops-midstream/release.git
+        - name: revision
+          value: $(params.revision)
+        - name: pathInRepo
+          value: /konflux-ci/tasks/generate-metadata.yaml
+      params:
+        - name: SOURCE_ARTIFACT
+          value: $(tasks.clone-repository.results.SOURCE_ARTIFACT)
+        - name: GIT_METADATA_DIRECTORIES
+          value: 
+          - $(params.git-metadata-directories[*])
     - name: prefetch-dependencies
       params:
         - name: input
@@ -178,7 +200,7 @@ spec:
         - name: dev-package-managers
           value: "true"
       runAfter:
-        - clone-repository
+        - generate-metadata
       taskRef:
         params:
           - name: name
@@ -216,7 +238,10 @@ spec:
           value: $(tasks.clone-repository.results.commit)
         - name: BUILD_ARGS
           value:
+            # pass the build args array from the pipeline param
             - $(params.build-args[*])
+            # and a dynamically generated array of build args
+            - $(tasks.generate-metadata.results.build-args[*])
         - name: BUILD_ARGS_FILE
           value: $(params.build-args-file)
         - name: PRIVILEGED_NESTED
@@ -227,6 +252,9 @@ spec:
           value: $(tasks.prefetch-dependencies.results.CACHI2_ARTIFACT)
         - name: IMAGE_APPEND_PLATFORM
           value: $(params.build-image-index)
+        - name: LABELS
+          value:
+          - $(tasks.generate-metadata.results.labels[*])
       runAfter:
         - prefetch-dependencies
       taskRef:
