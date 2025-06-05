@@ -150,6 +150,8 @@ spec:
           value: $(params.image-expires-after)
         - name: enableSymlinkCheck
           value: $(params.enable-symlink-check)
+        - name: fetchTags
+          value: "true"
       runAfter:
         - init
       taskRef:
