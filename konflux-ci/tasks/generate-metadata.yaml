@@ -134,7 +134,7 @@ spec:
             echo "Git $actual_commit does not match expected commit $expected_commit from congif.yaml"
           fi
           # Convert "sources/argo-cd" -> "ARGO-CD"
-          name=$(basename "$dir" | tr '[:lower:]' '[:upper:]')
+          name=$(basename "$dir" | tr '[:lower:]-' '[:upper:]_')
           args+=( "CI_${name}_VERSION=$ref" )
           args+=( "CI_${name}_COMMIT=$actual_commit" )
           args+=( "CI_${name}_SHORT_COMMIT=$short_commit" )
