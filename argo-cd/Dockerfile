@@ -45,7 +45,7 @@ RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' $YARN build
 ####################################################################################################
 # Argo CD Build stage which performs the actual build of Argo CD binaries
 ####################################################################################################
-FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.22 as argocd-build
+FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.23 as argocd-build
 
 
 COPY sources/argo-cd /go/src/github.com/argoproj/argo-cd
