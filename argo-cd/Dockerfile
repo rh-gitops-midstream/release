@@ -131,7 +131,6 @@ RUN cmake . && make tini
 # build connect-proxy
 COPY sources/ssh-connect /go/src/github.com/argoproj/ssh-connect
 WORKDIR /go/src/github.com/argoproj/ssh-connect
-RUN yum install -y gcc sed 
 RUN sed -i 's/SOCKLEN_T/socklen_t/g' connect.c 
 RUN gcc -v connect.c -o connect-proxy
 
