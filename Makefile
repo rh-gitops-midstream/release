@@ -17,3 +17,21 @@ trigger-builds:
 .PHONY: deps
 deps:
 	pip install -r requirements.txt
+
+.PHONY: init-submodules
+init-submodules:
+	git submodule update --init --recursive
+
+.PHONY: sync-sources
+sync-sources:
+	@echo "Syncing sources from config.yaml..."
+	@count=$$(yq e '.sources | length' config.yaml); \
+	for i in $$(seq 0 $$((count - 1))); do \
+		path=$$(yq e ".sources[$$i].path" config.yaml); \
+		commit=$$(yq e ".sources[$$i].commit" config.yaml); \
+		echo "→ Syncing $$path"; \
+		cd "$$path" && \
+			git fetch origin && \
+			git checkout "$$commit" && \
+			cd - > /dev/null; \
+	done
