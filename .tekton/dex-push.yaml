@@ -29,10 +29,6 @@ spec:
     value: dex/Dockerfile
   - name: prefetch-input
     value: '[{"type": "gomod", "path": "./sources/dex"}, {"type": "rpm", "path": "build/rpms/ubi8"}]'
-  - name: build-platforms
-    value:
-      - linux/x86_64
-      - linux/arm64
   - name: additional-tags
     value:
       - '{{target_branch}}'

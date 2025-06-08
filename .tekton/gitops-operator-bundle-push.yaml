@@ -29,6 +29,9 @@ spec:
     value: bundle.Dockerfile
   - name: path-context
     value: gitops-operator-bundle
+  - name: build-platforms
+    value:
+      - linux/x86_64
   - name: build-image-index
     value: "false"
   - name: additional-tags
