@@ -77,8 +77,7 @@ export LDFLAGS="-X ${PACKAGE}.version=${VERSION} \
   -X ${PACKAGE}.gitCommit=${CI_ARGO_CD_COMMIT} \
   -X ${PACKAGE}.gitTreeState=clean \
   -X ${PACKAGE}.kubectlVersion=${KUBECTL_VER}\
-  -X \"${PACKAGE}.extraBuildInfo=${EXTRA_BUILD_INFO}\" \
-  -X ${PACKAGE}.gitTag=${CI_ARGO_CD_VERSION}" &&\
+  -X \"${PACKAGE}.extraBuildInfo=${EXTRA_BUILD_INFO}\"" &&\
 go build -gcflags="all=-N -l" -v -ldflags "${LDFLAGS}" -tags strictfipsruntime -o ./dist/argocd ./cmd
 
 # Create static linked binary to be called from different base images.
@@ -94,8 +93,7 @@ RUN export PACKAGE=github.com/argoproj/argo-cd/v2/common &&\
         -X ${PACKAGE}.gitCommit=${CI_ARGO_CD_COMMIT} \
         -X ${PACKAGE}.gitTreeState=clean \
         -X ${PACKAGE}.kubectlVersion=${KUBECTL_VER}\
-        -X \"${PACKAGE}.extraBuildInfo=${EXTRA_BUILD_INFO}\" \
-        -X ${PACKAGE}.gitTag=v${VERSION}" &&\
+        -X \"${PACKAGE}.extraBuildInfo=${EXTRA_BUILD_INFO}\"" &&\
     go build -gcflags="all=-N -l" -v -ldflags "${LDFLAGS}" -o ./dist/argocd-cmp-server ./cmd
 
 ARG BUILD_ALL_CLIS=false
@@ -106,12 +104,12 @@ RUN if [ "$BUILD_ALL_CLIS" = "true" ] ; then \
 
 # build kustomize
 COPY sources/kustomize /go/src/github.com/argoproj/kustomize
-WORKDIR /go/src/github.com/argoproj/kustomize
+WORKDIR /go/src/github.com/argoproj/kustomize/kustomize
 ARG CI_KUSTOMIZE_VERSION
 ENV GOSUMDB=off
 RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -mod=readonly -buildvcs=true -ldflags="-s -X sigs.k8s.io/kustomize/api/provenance.version=${CI_KUSTOMIZE_VERSION} \
 -X sigs.k8s.io/kustomize/api/provenance.buildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
--tags strictfipsruntime -o kustomize ./kustomize/main.go
+-tags strictfipsruntime -o kustomize .
 
 # build helm
 COPY sources/helm /go/src/github.com/argoproj/helm
@@ -197,7 +195,7 @@ RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-applicationset-controller
 RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-k8s-auth
 
 USER 999
-COPY --from=argocd-build  /go/src/github.com/argoproj/kustomize/kustomize /usr/local/bin/
+COPY --from=argocd-build  /go/src/github.com/argoproj/kustomize/kustomize/kustomize /usr/local/bin/
 COPY --from=argocd-build  /go/src/github.com/argoproj/helm/helm /usr/local/bin/
 COPY --from=argocd-build  /go/src/github.com/argoproj/tini/tini /usr/local/bin/
 COPY --from=argocd-build  /go/src/github.com/argoproj/ssh-connect/connect-proxy /usr/local/bin/connect-proxy
