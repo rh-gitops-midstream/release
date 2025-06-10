@@ -58,10 +58,10 @@ ENV GOEXPERIMENT=strictfipsruntime
 ENV CGO_ENABLED=1
 ENV CGO_FLAG=1
 
-ARG VERSION
+ARG CI_VERSION
 ARG CI_ARGO_CD_COMMIT
 ARG CI_ARGO_CD_VERSION
-ENV EXTRA_BUILD_INFO="{Vendor Information: Red Hat OpenShift GitOps version: $VERSION}"
+ENV EXTRA_BUILD_INFO="{Vendor Information: Red Hat OpenShift GitOps version: $CI_VERSION}"
 
 # Perform the build
 COPY --from=argocd-ui /usr/src/app/argo-cd/ui/dist/app /go/src/github.com/argoproj/argo-cd/ui/dist/app
