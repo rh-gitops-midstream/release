@@ -102,7 +102,7 @@ USER 999
 WORKDIR /home/argo-rollouts
 
 # Create the binary for the default route plugin to the plugins directory
-COPY --from=rollouts-plugin-trafficrouter-openshift-build /go/src/github.com/argoproj/rollouts-plugin-trafficrouter-openshift/dist/rollouts-plugin-trafficrouter-openshift ./plugins/rollouts-trafficrouter-openshift/openshift-route-plugin
+COPY --from=rollouts-plugin-trafficrouter-openshift-build /go/src/github.com/argoproj/rollouts-plugin-trafficrouter-openshift/dist/rollouts-plugin-trafficrouter-openshift /plugins/rollouts-trafficrouter-openshift/openshift-route-plugin
 
 COPY --from=argo-rollouts-build /go/src/github.com/argoproj/argo-rollouts/dist/rollouts-controller /usr/local/bin/
 COPY --from=argo-rollouts-build /go/src/github.com/argoproj/git-lfs/bin/git-lfs /usr/local/bin/
