@@ -1,0 +1,45 @@
+[submodule "sources/gitops-operator"]
+	path = sources/gitops-operator
+	url = https://github.com/redhat-developer/gitops-operator.git
+[submodule "sources/gitops-must-gather"]
+	path = sources/gitops-must-gather
+	url = https://github.com/redhat-developer/gitops-must-gather.git
+[submodule "sources/gitops-console-plugin"]
+	path = sources/gitops-console-plugin
+	url = https://github.com/redhat-developer/gitops-console-plugin.git
+[submodule "sources/gitops-backend"]
+	path = sources/gitops-backend
+	url = https://github.com/redhat-developer/gitops-backend.git
+[submodule "sources/dex"]
+	path = sources/dex
+	url = https://github.com/dexidp/dex.git
+[submodule "sources/argocd-extension-installer"]
+	path = sources/argocd-extension-installer
+	url = https://github.com/argoproj-labs/argocd-extension-installer.git
+[submodule "sources/rollout-extension"]
+	path = sources/rollout-extension
+	url = https://github.com/argoproj-labs/rollout-extension.git
+[submodule "sources/rollouts-plugin-trafficrouter-openshift"]
+	path = sources/rollouts-plugin-trafficrouter-openshift
+	url = https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
+[submodule "sources/argo-rollouts"]
+	path = sources/argo-rollouts
+	url = https://github.com/argoproj/argo-rollouts.git
+[submodule "sources/git-lfs"]
+	path = sources/git-lfs
+	url = https://github.com/git-lfs/git-lfs
+[submodule "sources/ssh-connect"]
+	path = sources/ssh-connect
+	url = https://github.com/gotoh/ssh-connect.git
+[submodule "sources/tini"]
+	path = sources/tini
+	url = https://github.com/krallin/tini.git
+[submodule "sources/kustomize"]
+	path = sources/kustomize
+	url = https://github.com/kubernetes-sigs/kustomize.git
+[submodule "sources/helm"]
+	path = sources/helm
+	url = https://github.com/helm/helm.git
+[submodule "sources/argo-cd"]
+	path = sources/argo-cd
+	url = https://github.com/argoproj/argo-cd.git
