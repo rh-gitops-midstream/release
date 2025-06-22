@@ -12,4 +12,14 @@ sources:
 deps:
 	@./hack/deps.sh
 
-
+# Build container images locally
+.PHONY: build
+# Default to podman if available, fallback to docker
+CONTAINER_RUNTIME := $(shell command -v podman 2>/dev/null || command -v docker)
+TAG ?= local
+build:
+	@if [ -z "$(container)" ]; then \
+		echo "Error: Please provide a container name to build using 'make build component=<name>'"; \
+		exit 1; \
+	fi
+	$(CONTAINER_RUNTIME) build -t $(container):$(TAG) -f containers/$(container)/Dockerfile .
