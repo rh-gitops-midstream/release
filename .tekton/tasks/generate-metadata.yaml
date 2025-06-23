@@ -1,0 +1,148 @@
+# yaml-language-server: $schema=ignore
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: generate-metadata
+spec:
+  params:
+    - name: SOURCE_ARTIFACT
+      type: string
+      description: The Trusted Artifact URI pointing to the artifact with the application source code.
+    - name: GIT_METADATA_DIRECTORIES
+      type: array
+      description: List of directories to run Git commands and extract metadata.
+  results:
+    - name: labels
+      type: array
+      description: LABEL values for the container build
+    - name: build-args
+      type: array
+      description: BUILD_ARG values for the container build
+  steps:
+    - name: use-trusted-artifact
+      # pin the image to a digest, Konflux will automatically send you updates
+      image: quay.io/redhat-appstudio/build-trusted-artifacts:latest@sha256:9b180776a41d9a22a1c51539f1647c60defbbd55b44bbebdd4130e33512d8b0d
+      args:
+        - use
+        - $(params.SOURCE_ARTIFACT)=/tekton/home/source
+
+    - name: generate-labels
+      # prefer Red Hat images for security
+      image: registry.access.redhat.com/ubi9/ubi-minimal:9.5@sha256:a50731d3397a4ee28583f1699842183d4d24fadcc565c4688487af9ee4e13a44
+      workingDir: /tekton/home/source
+      env:
+        - name: LABELS_RESULT
+          value: $(results.labels.path)
+      args:
+        - "--git-metadata-directories"
+        - "$(params.GIT_METADATA_DIRECTORIES[*])"
+      script: |
+        #!/bin/bash
+        set -euo pipefail
+
+        microdnf -y install git-core
+
+        echo "--> Parsing additional configuration..."
+        parsing_flag=""
+        dirs=()
+        for arg in "$@"; do
+            if [[ "$arg" == "--git-metadata-directories" ]]; then
+                echo "-> Parsing git directories..."
+                parsing_flag="git-metadata-directories"
+            elif [[ "$parsing_flag" == "git-metadata-directories" ]]; then
+                dirs+=("$arg")
+            fi
+        done
+
+        VERSION=$(cut -d'-' -f1 < TAG)
+        RELEASE=$(cut -d'-' -f2 < TAG)
+        DOWNSTREAM_SOURCE_URL="$(git config --get remote.origin.url)"
+        DOWNSTREAM_COMMIT_REF="$(git rev-parse HEAD)"
+
+        for dir in "${dirs[@]}"; do
+          cd $dir
+          UPSTREAM_SOURCE_URL="$(git config --get remote.origin.url)"
+          UPSTREAM_COMMIT_REF="$(git rev-parse HEAD)"
+          break
+        done
+
+        # result format: ["label1=value1", "label2=value2"]
+        labels=$(cat <<EOF
+        ["version=$VERSION", \
+        "release=$RELEASE", \
+        "downstream-source-url=$DOWNSTREAM_SOURCE_URL", \
+        "downstream-source-ref=$DOWNSTREAM_COMMIT_REF", \
+        "upstream-source-url=$UPSTREAM_SOURCE_URL", \
+        "upstream-source-ref=$UPSTREAM_COMMIT_REF"]
+        EOF
+        )
+        echo "$labels" > "$LABELS_RESULT"
+        
+        cat $LABELS_RESULT
+
+    - name: generate-args
+      # prefer Red Hat images for security
+      image: registry.access.redhat.com/ubi9/ubi-minimal:9.5@sha256:a50731d3397a4ee28583f1699842183d4d24fadcc565c4688487af9ee4e13a44
+      workingDir: /tekton/home/source
+      env:
+        - name: BUILD_ARGS_RESULT
+          value: $(results.build-args.path)
+      args:
+        - "--git-metadata-directories"
+        - "$(params.GIT_METADATA_DIRECTORIES[*])"
+      script: |
+        #!/bin/bash
+        set -exuo pipefail
+
+        microdnf -y install git-core
+        # TODO: use our QE image with yq installed
+        os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+        arch="$(uname -m | sed -E 's/x86_64/amd64/; s/aarch64/arm64/')"
+        curl -sSfLo yq "https://github.com/mikefarah/yq/releases/download/v4.22.1/yq_${os}_$arch"
+        chmod +x yq
+        mv yq /usr/local/bin/yq
+
+        echo "--> Parsing additional configuration..."
+        parsing_flag=""
+        dirs=()
+        for arg in "$@"; do
+            if [[ "$arg" == "--git-metadata-directories" ]]; then
+                echo "-> Parsing git directories..."
+                parsing_flag="git-metadata-directories"
+            elif [[ "$parsing_flag" == "git-metadata-directories" ]]; then
+                dirs+=("$arg")
+            fi
+        done
+
+
+        CONFIG_FILE="/tekton/home/source/config.yaml"
+
+        # args format: ["arg1=value1", "arg2=value2"]
+        args=()
+        args+=( "CI_VERSION=$(cut -d'-' -f1 < TAG)" )
+        args+=( "CI_RELEASE=$(cut -d'-' -f2 < TAG)" )
+        args+=( "CI_BUILD_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)" )
+        
+        for dir in "${dirs[@]}"; do
+          cd $dir
+          actual_commit=$(git rev-parse HEAD)
+          short_commit=$(git rev-parse --short HEAD)
+          ref=$(yq e ".sources[] | select(.path == \"$dir\") | .ref" $CONFIG_FILE)
+          expected_commit=$(yq e ".sources[] | select(.path == \"$dir\") | .commit" $CONFIG_FILE)
+          if [[ "$actual_commit" != "$expected_commit" ]]; then
+            echo "Git $actual_commit does not match expected commit $expected_commit from congif.yaml"
+          fi
+          # Convert "sources/argo-cd" -> "ARGO-CD"
+          name=$(basename "$dir" | tr '[:lower:]-' '[:upper:]_')
+          args+=( "CI_${name}_VERSION=$ref" )
+          args+=( "CI_${name}_COMMIT=$actual_commit" )
+          args+=( "CI_${name}_SHORT_COMMIT=$short_commit" )
+          cd - >/dev/null
+        done
+
+        args_str=$(printf '"%s",' "${args[@]}")
+        args_str="[${args_str%,}]"
+        echo "$args_str" > "$BUILD_ARGS_RESULT"
+
+        cat $BUILD_ARGS_RESULT
