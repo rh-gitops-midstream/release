@@ -41,7 +41,7 @@ FROM registry.access.redhat.com/ubi8/ubi-minimal
 ARG USER=ext-installer
 ENV HOME=/home/$USER
 
-RUN microdnf install -y file curl jq shadow-utils tar && microdnf clean all
+RUN microdnf install -y file jq shadow-utils tar && microdnf clean all
 
 WORKDIR $HOME
 
