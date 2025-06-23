@@ -1,5 +1,3 @@
-# yaml-language-server: $schema=ignore
----
 apiVersion: tekton.dev/v1
 kind: Task
 metadata:
