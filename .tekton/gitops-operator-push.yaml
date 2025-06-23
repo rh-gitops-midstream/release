@@ -36,7 +36,8 @@ spec:
       - sources/gitops-operator
   pipelineRef:
     name: build-multi-platform-image
-  taskRunTemplate: {}
+  taskRunTemplate: 
+    serviceAccountName: build-pipeline-gitops-operator-main
   workspaces:
   - name: git-auth
     secret:
