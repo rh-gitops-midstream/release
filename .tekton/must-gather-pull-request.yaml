@@ -9,7 +9,7 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "true"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression:  >
-      event == "pull_request" && target_branch == "main" && ( "sources/must-gather/***".pathChanged() || "containers/must-gather/***".pathChanged() || ".tekton/must-gather-pull-request.yaml".pathChanged() || ".tekton/build-multi-platform-image.yaml".pathChanged() || ".tekton/tasks/***".pathChanged() )
+      event == "pull_request" && target_branch == "main" && ( "sources/must-gather".pathChanged() || "containers/must-gather/***".pathChanged() || ".tekton/must-gather-pull-request.yaml".pathChanged() || ".tekton/build-multi-platform-image.yaml".pathChanged() || ".tekton/tasks/***".pathChanged() )
   creationTimestamp: null
   labels:
     appstudio.openshift.io/application: gitops-main
