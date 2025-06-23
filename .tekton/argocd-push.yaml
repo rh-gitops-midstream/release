@@ -8,7 +8,7 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: >
-      event == "push" && target_branch == "main" && ( "sources/argo-cd/***".pathChanged() || "containers/argocd/***".pathChanged() || ".tekton/argocd-push.yaml".pathChanged() || ".tekton/build-multi-platform-image.yaml".pathChanged() || ".tekton/tasks/***".pathChanged() )
+      event == "push" && target_branch == "main" && ( "sources/argo-cd".pathChanged() || "sources/git-lfs".pathChanged() || "sources/helm".pathChanged() || "sources/kustomize".pathChanged() || "sources/ssh-connect".pathChanged() || "sources/tini".pathChanged() || "containers/argocd/***".pathChanged() || ".tekton/argocd-push.yaml".pathChanged() || ".tekton/build-multi-platform-image.yaml".pathChanged() || ".tekton/tasks/***".pathChanged() )
   creationTimestamp: null
   labels:
     appstudio.openshift.io/application: gitops-main
