@@ -7,5 +7,5 @@ This repository contains the configurations used to release the RedHat OpenShift
 - [Konflux Component Guide](docs/konflux-component-guide.md)  
   Step-by-step instructions to add and configure new components in Konflux.
 
-- [Source Repositories Guide](docs/sources.md)  
+- [Source Repositories Guide](docs/sources-guide.md)  
   Overview and instructions for managing source entries used in builds.
