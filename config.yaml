@@ -73,3 +73,7 @@ sources:
     url: https://github.com/argoproj-labs/rollout-extension.git
     ref: master
     commit: 6f6289da54237a7ed084b22f3161317bfa9a9b4f
+  - path: sources/argocd-agent
+    url: https://github.com/argoproj-labs/argocd-agent.git
+    ref: main
+    commit: 3066c27c559eae6ad5e463873f24ab5454012d4a
