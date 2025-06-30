@@ -19,7 +19,7 @@ CONTAINER_RUNTIME := $(shell command -v podman 2>/dev/null || command -v docker)
 TAG ?= local
 build:
 	@if [ -z "$(container)" ]; then \
-		echo "Error: Please provide a container name to build using 'make build component=<name>'"; \
+		echo "Error: Please provide a container name to build using 'make build container=<name>'"; \
 		exit 1; \
 	fi
 	$(CONTAINER_RUNTIME) build -t $(container):$(TAG) -f containers/$(container)/Dockerfile .
