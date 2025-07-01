@@ -2,6 +2,15 @@
 release:
   name: OpenShift GitOps Operator
   version: "main"
+  konflux:
+    repo: https://github.com/rh-gitops-midstream/release.git
+    branch: main
+    application: gitops-main
+  olm:
+    # TODO: Compute olm data automatically
+    channel: "latest,gitops-main"
+    replaces: "openshift-gitops-operator.v1.16.1"
+    skip-range: "" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
   managers:
     - name: "Siddhesh Ghadi"
       github: svghadi
@@ -73,3 +82,51 @@ sources:
     url: https://github.com/argoproj-labs/rollout-extension.git
     ref: master
     commit: 6f6289da54237a7ed084b22f3161317bfa9a9b4f
+
+# Externaml images pulled directly from Red Hat registry and are 
+# required by the operator at runtime.
+# Bundle generation script will automatically fetch latest sha for each image 
+# based on the version specified.
+externalImages:
+  - name: "haproxy"
+    image: registry.redhat.io/openshift4/ose-haproxy-router
+    version: v4.14
+  - name: "keycloak"
+    image: registry.redhat.io/rh-sso-7/sso76-openshift-rhel8
+    version: 7.6
+  - name: "redis"
+    image: registry.redhat.io/rhel9/redis-7
+    version: 9.5
+  - name: "kube-rbac-proxy"
+    image: registry.redhat.io/openshift4/ose-kube-rbac-proxy
+    version: v4.13
+
+# Konflux images are images that are built from the source in this repository
+konfluxImages:
+  - name: argo-rollouts
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts-rhel8"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8"
+  - name: argocd-extenstions
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extensions-rhel8"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel8"
+  - name: argocd
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel8"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-rhel8"
+  - name: console-plugin
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-rhel8"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/console-plugin-rhel8"
+  - name: dex
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex-rhel8"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/dex-rhel8"
+  - name: gitops
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel8"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-rhel8"
+  - name: gitops-operator-bundle
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-operator-bundle"
+  - name: gitops-operator
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel8-operator"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator"
+  - name: must-gather
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/must-gather-rhel8"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/must-gather-rhel8"
