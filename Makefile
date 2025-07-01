@@ -7,10 +7,16 @@ sources:
 	@./hack/sync-sources.sh
 	@./hack/verify-sources.sh
 
+# Update bundle manifests with latest images
+.PHONY: bundle
+bundle: deps
+	cp -rf sources/gitops-operator/bundle containers/gitops-operator-bundle/
+	python3 containers/gitops-operator-bundle/patch-bundle.py
+
 # Install required deps in ./bin directory
 .PHONY: deps
 deps:
-	@./hack/deps.sh
+	@. ./hack/deps.sh
 
 # Build container images locally
 .PHONY: build
