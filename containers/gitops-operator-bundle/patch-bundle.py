@@ -40,7 +40,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 CONFIG_FILE = REPO_ROOT / "config.yaml"
 CSV_FILE = REPO_ROOT / "containers/gitops-operator-bundle/bundle/manifests/gitops-operator.clusterserviceversion.yaml"
 METADATA_FILE = REPO_ROOT / "containers/gitops-operator-bundle/bundle/metadata/annotations.yaml"
-DOCKERFILE = REPO_ROOT / "containers/gitops-operator-bundle/bundle.Dockerfile"
+DOCKERFILE = REPO_ROOT / "containers/gitops-operator-bundle/Dockerfile"
 
 # --- Load config ---
 

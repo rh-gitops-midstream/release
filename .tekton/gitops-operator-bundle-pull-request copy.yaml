@@ -28,7 +28,10 @@ spec:
   - name: image-expires-after
     value: 5d
   - name: dockerfile
-    value: containers/gitops-opertaor-bundle/bundle.Dockerfile
+    value: containers/gitops-operator-bundle/Dockerfile
+  - name: build-platforms
+    value:
+      - linux/x86_64
   - name: build-image-index
     value: "false"
   - name: git-metadata-directories
