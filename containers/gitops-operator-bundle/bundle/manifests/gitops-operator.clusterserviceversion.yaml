@@ -202,7 +202,7 @@ metadata:
     features.operators.openshift.io/cni: 'false'
     features.operators.openshift.io/csi: 'false'
     olm.skipRange: ""
-  name: openshift-gitops-operator.vmain
+  name: openshift-gitops-operator.v99.99.99
   namespace: placeholder
   labels:
     operatorframework.io/os.linux: supported
@@ -1155,8 +1155,8 @@ spec:
   maturity: GA
   provider:
     name: Red Hat Inc
-  replaces: "openshift-gitops-operator.v1.16.1"
-  version: main
+  replaces: "openshift-gitops-operator.v99.99.98"
+  version: 99.99.99
   webhookdefinitions:
     - admissionReviewVersions:
         - v1alpha1
