@@ -82,8 +82,12 @@ sources:
     url: https://github.com/argoproj-labs/rollout-extension.git
     ref: master
     commit: 6f6289da54237a7ed084b22f3161317bfa9a9b4f
+  - path: sources/argocd-agent
+    url: https://github.com/argoproj-labs/argocd-agent.git
+    ref: main
+    commit: ce498a724aac325b50fd52c359302be3d050f080
 
-# Externaml images pulled directly from Red Hat registry and are 
+# External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
 # Bundle generation script will automatically fetch latest sha for each image 
 # based on the version specified.
@@ -112,6 +116,9 @@ konfluxImages:
   - name: argocd
     buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel8"
     releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-rhel8"
+  - name: argocd-agent
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel8"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8"
   - name: console-plugin
     buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-rhel8"
     releaseRef: "registry.redhat.io/openshift-gitops-1/console-plugin-rhel8"
