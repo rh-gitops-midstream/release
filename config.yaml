@@ -28,20 +28,20 @@ sources:
     commit: a4755e5fc5ea85601037d31208901ee4ac07106e
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
-    ref: release-2.14
-    commit: 2aceb1dc444cd341dbe10030eeaaa9870f42b53d
+    ref: v3.0.9
+    commit: a1faf0265f5256f0b09e045f8486421359e3211f
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
     ref: v1.7.2
     commit: 59e5bd385c031600f86075beb9d77620f8d7915e
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
-    ref: kustomize/v5.4.3
-    commit: d4248b1213768c184f5ebbb8ee1a1422817478e4
+    ref: kustomize/v5.6.0
+    commit: 95db4aa0edd1afb988cd10465ce15f7546ebbbdc
   - path: sources/helm
     url: https://github.com/helm/helm.git
-    ref: v3.16.4
-    commit: 7877b45b63f95635153b29a42c0c2f4273ec45ca
+    ref: v3.17.1
+    commit: 980d8ac1939e39138101364400756af2bdee1da5
   - path: sources/dex
     ref: v2.41.1
     url: https://github.com/dexidp/dex.git
