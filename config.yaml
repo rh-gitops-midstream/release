@@ -24,16 +24,16 @@ release:
 sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
-    ref: v1.16
-    commit: a4755e5fc5ea85601037d31208901ee4ac07106e
+    ref: master
+    commit: 15c5833153f9217c698a85b16a69d1da904148d8
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
     ref: v3.0.9
     commit: a1faf0265f5256f0b09e045f8486421359e3211f
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
-    ref: v1.7.2
-    commit: 59e5bd385c031600f86075beb9d77620f8d7915e
+    ref: v1.8.3
+    commit: 49fa1516cf71672b69e265267da4e1d16e1fe114
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
     ref: kustomize/v5.6.0
@@ -65,7 +65,7 @@ sources:
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: main
-    commit: 7dce637faca9357462e22de717f08baeea934133
+    commit: a5f99b1de9bebe9db1640a7e2c4fdb282b40226d
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master

@@ -34,7 +34,7 @@ RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime go build -v -tags strictfipsrun
 # Argo Rollouts Build stage which performs the actual build of Argo Rollouts binaries
 ####################################################################################################
 
-FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.22 AS argo-rollouts-build
+FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.23 AS argo-rollouts-build
 
 COPY sources/argo-rollouts/ /go/src/github.com/argoproj/argo-rollouts
 WORKDIR /go/src/github.com/argoproj/argo-rollouts/
