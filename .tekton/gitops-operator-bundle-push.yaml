@@ -25,8 +25,6 @@ spec:
     value: '{{revision}}'
   - name: output-image
     value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle:{{revision}}
-  - name: image-expires-after
-    value: 5d
   - name: dockerfile
     value: containers/gitops-operator-bundle/Dockerfile
   - name: build-platforms
