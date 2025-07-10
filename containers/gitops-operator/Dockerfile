@@ -14,7 +14,8 @@
 #
 # --
 
-FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_golang_1.23  AS builder
+# TODO: switch to registry.redhat.io once the image is available
+FROM brew.registry.redhat.io/rh-osbs/rhel8-go-toolset:1.24.4-2  AS builder
 
 # Copy source code
 COPY sources/gitops-operator /workspace
