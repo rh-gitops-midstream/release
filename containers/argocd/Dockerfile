@@ -21,7 +21,6 @@ FROM registry.access.redhat.com/ubi8/nodejs-18 AS argocd-ui
 
 USER root
 
-
 # Install Yarn
 WORKDIR /usr/src/app
 COPY ["build/yarn/package.json", "build/yarn/package-lock.json", "./"]
@@ -47,6 +46,7 @@ RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' $YARN build
 ####################################################################################################
 # TODO: switch to registry.redhat.io once the image is available
 FROM brew.registry.redhat.io/rh-osbs/rhel8-go-toolset:1.24.4-2 as argocd-build
+USER root
 
 COPY sources/argo-cd /go/src/github.com/argoproj/argo-cd
 WORKDIR /go/src/github.com/argoproj/argo-cd
