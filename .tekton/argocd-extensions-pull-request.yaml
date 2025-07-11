@@ -33,7 +33,7 @@ spec:
   - name: dockerfile
     value: containers/argocd-extensions/Dockerfile
   - name: prefetch-input
-    value: '[{"type": "rpm", "path": "build/rpms/ubi8"}]'
+    value: '[{"type": "rpm", "path": "prefetch/rpms/ubi8"}]'
   - name: git-metadata-directories
     value:
       - sources/argocd-extension-installer

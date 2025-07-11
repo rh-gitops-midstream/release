@@ -23,7 +23,7 @@ USER root
 
 # Install Yarn
 WORKDIR /usr/src/app
-COPY ["build/yarn/package.json", "build/yarn/package-lock.json", "./"]
+COPY ["prefetch/yarn/package.json", "prefetch/yarn/package-lock.json", "./"]
 RUN npm install --prefer-offline --no-progress --non-interactive
 ENV YARN="/usr/src/app/node_modules/.bin/yarn"
 RUN $YARN --version
