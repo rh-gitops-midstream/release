@@ -30,7 +30,7 @@ spec:
   - name: dockerfile
     value: containers/dex/Dockerfile
   - name: prefetch-input
-    value: '[{"type": "gomod", "path": "./sources/dex"}, {"type": "rpm", "path": "build/rpms/ubi8"}]'
+    value: '[{"type": "gomod", "path": "./sources/dex"}, {"type": "rpm", "path": "prefetch/rpms/ubi8"}]'
   - name: git-metadata-directories
     value:
       - sources/dex
