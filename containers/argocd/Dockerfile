@@ -46,6 +46,7 @@ RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' $YARN build
 ####################################################################################################
 # TODO: switch to registry.redhat.io once the image is available
 FROM registry.redhat.io/rhel8/go-toolset:1.24.4 as argocd-build
+USER root
 
 COPY sources/argo-cd /go/src/github.com/argoproj/argo-cd
 WORKDIR /go/src/github.com/argoproj/argo-cd
