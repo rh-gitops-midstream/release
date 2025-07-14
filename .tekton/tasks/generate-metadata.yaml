@@ -53,8 +53,8 @@ spec:
             fi
         done
 
-        VERSION=$(cut -d'-' -f1 < TAG)
-        RELEASE=$(cut -d'-' -f2 < TAG)
+        VERSION=$(cut -d'-' -f1 < BUILD)
+        RELEASE=$(cut -d'-' -f2 < BUILD)
         DOWNSTREAM_SOURCE_URL="$(git config --get remote.origin.url)"
         DOWNSTREAM_COMMIT_REF="$(git rev-parse HEAD)"
 
@@ -118,8 +118,8 @@ spec:
 
         # args format: ["arg1=value1", "arg2=value2"]
         args=()
-        args+=( "CI_VERSION=$(cut -d'-' -f1 < TAG)" )
-        args+=( "CI_RELEASE=$(cut -d'-' -f2 < TAG)" )
+        args+=( "CI_VERSION=$(cut -d'-' -f1 < BUILD)" )
+        args+=( "CI_RELEASE=$(cut -d'-' -f2 < BUILD)" )
         args+=( "CI_BUILD_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)" )
         
         for dir in "${dirs[@]}"; do
