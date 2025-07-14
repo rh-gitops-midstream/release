@@ -40,14 +40,6 @@ jobs:
           BUILD=$(cat BUILD)
           echo "build=$BUILD" >> $GITHUB_OUTPUT
 
-      - name: Commit and push changes
-        run: |
-          BRANCH_NAME=rc/build-${{ steps.build.outputs.build }}-${{ github.run_id }}
-          git checkout -b $BRANCH_NAME
-          git add BUILD
-          git commit -m "chore(build): bump to ${{ steps.build.outputs.build }}"
-          git push origin $BRANCH_NAME
-
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
