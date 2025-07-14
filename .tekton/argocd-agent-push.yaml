@@ -7,8 +7,17 @@ metadata:
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
-    pipelinesascode.tekton.dev/on-cel-expression: >
-      event == "push" && target_branch == "main" && ( "sources/argocd-agent".pathChanged() || "containers/argocd-agent/***".pathChanged() || ".tekton/argocd-agent-push.yaml".pathChanged() || ".tekton/build-multi-platform-image.yaml".pathChanged() || ".tekton/tasks/***".pathChanged() )
+    pipelinesascode.tekton.dev/on-cel-expression: >-
+      event == "push" &&
+      target_branch == "main" &&
+      (
+        "sources/argocd-agent".pathChanged() ||
+        "containers/argocd-agent/***".pathChanged() ||
+        ".tekton/argocd-agent-push.yaml".pathChanged() ||
+        "BUILD".pathChanged() ||
+        ".tekton/build-multi-platform-image.yaml".pathChanged() ||
+        ".tekton/tasks/***".pathChanged()
+      )
   creationTimestamp: null
   labels:
     appstudio.openshift.io/application: gitops-main

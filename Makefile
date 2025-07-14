@@ -19,13 +19,29 @@ deps:
 	@. ./hack/deps.sh
 
 # Build container images locally
-.PHONY: build
+.PHONY: container
 # Default to podman if available, fallback to docker
 CONTAINER_RUNTIME := $(shell command -v podman 2>/dev/null || command -v docker)
 TAG ?= local
-build:
-	@if [ -z "$(container)" ]; then \
-		echo "Error: Please provide a container name to build using 'make build container=<name>'"; \
+container:
+	@if [ -z "$(name)" ]; then \
+		echo "Error: Container name not specified."; \
+		echo "Usage:    make container name=<name>"; \
+		echo "Available container names:"; \
+		ls containers/; \
 		exit 1; \
 	fi
-	$(CONTAINER_RUNTIME) build -t $(container):$(TAG) -f containers/$(container)/Dockerfile .
+	$(CONTAINER_RUNTIME) build -t $(name):$(TAG) -f containers/$(name)/Dockerfile .
+
+.PHONY: update-build
+# Increment the build version in the BUILD file
+# The BUILD file should be in the format: <base-version>-<build-number>
+# Example: v1.0.0-1 → v1.0.0-2
+update-build:
+	@BUILD_VAL=$$(cat BUILD); \
+	BASE_VERSION=$${BUILD_VAL%-*}; \
+	BUILD_NUM=$${BUILD_VAL##*-}; \
+	NEW_BUILD=$$((BUILD_NUM + 1)); \
+	NEW_VAL=$${BASE_VERSION}-$$NEW_BUILD; \
+	echo "Updating BUILD: $$BUILD_VAL → $$NEW_VAL"; \
+	echo "$$NEW_VAL" > BUILD

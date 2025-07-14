@@ -1,0 +1,68 @@
+name: Trigger Release Candidate Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      TARGET_BRANCH:
+        description: 'RELEASE_BRANCH to checkout (e.g. release-1.17)'
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  prepare-rc-build:
+    permissions:
+      contents: write  # for peter-evans/create-pull-request to create branch
+      pull-requests: write  # for peter-evans/create-pull-request to create a PR
+    name: Automatically generate RC version tag for ${{ inputs.TARGET_BRANCH }}
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@8410ad0602e1e429cee44a835ae9f77f654a6694  # v4.0.0
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ inputs.TARGET_BRANCH }}
+      
+      - name: Set up Git config
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Update BUILD file
+        run: make update-build
+
+      - name: Read build from BUILD file
+        id: build
+        run: |
+          BUILD=$(cat BUILD)
+          echo "build=$BUILD" >> $GITHUB_OUTPUT
+
+      - name: Commit and push changes
+        run: |
+          BRANCH_NAME=rc/build-${{ steps.build.outputs.build }}-${{ github.run_id }}
+          git checkout -b $BRANCH_NAME
+          git add BUILD
+          git commit -m "chore(build): bump to ${{ steps.build.outputs.build }}"
+          git push origin $BRANCH_NAME
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(build): bump to ${{ steps.build.outputs.build }}"
+          branch: rc/build-${{ steps.build.outputs.build }}-${{ github.run_id }}
+          delete-branch: true
+          title: "chore(build): bump to ${{ steps.build.outputs.build }}"
+          body: |
+            This PR updates the `BUILD` file with the next release candidate build:
+
+            **Build:** `${{ steps.build.outputs.build }}`
+
+            Automatically generated for `${{ inputs.TARGET_BRANCH }}`.
+          labels: |
+            release
+            build:${{ steps.build.outputs.build }}
+          base: ${{ inputs.TARGET_BRANCH }}
