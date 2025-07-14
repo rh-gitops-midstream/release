@@ -55,6 +55,5 @@ jobs:
 
             Automatically generated for `${{ inputs.TARGET_BRANCH }}`.
           labels: |
-            release
-            build:${{ steps.build.outputs.build }}
+            release-candidate
           base: ${{ inputs.TARGET_BRANCH }}
