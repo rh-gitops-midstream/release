@@ -11,7 +11,7 @@ on:
 permissions: {}
 
 jobs:
-  prepare-rc-tag:
+  prepare-rc-build:
     permissions:
       contents: write  # for peter-evans/create-pull-request to create branch
       pull-requests: write  # for peter-evans/create-pull-request to create a PR
@@ -42,27 +42,27 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          BRANCH_NAME=rc/build-${{ steps.version.outputs.version }}
+          BRANCH_NAME=rc/build-${{ steps.build.outputs.build }}-${{ github.run_id }}
           git checkout -b $BRANCH_NAME
           git add BUILD
-          git commit -m "chore(release): bump to ${{ steps.version.outputs.version }}"
+          git commit -m "chore(build): bump to ${{ steps.build.outputs.build }}"
           git push origin $BRANCH_NAME
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(release): bump to ${{ steps.version.outputs.version }}"
-          branch: rc/build-${{ steps.version.outputs.version }}
+          commit-message: "chore(build): bump to ${{ steps.build.outputs.build }}"
+          branch: rc/build-${{ steps.build.outputs.build }}-${{ github.run_id }}
           delete-branch: true
-          title: "chore(release): bump to ${{ steps.version.outputs.version }}"
+          title: "chore(build): bump to ${{ steps.build.outputs.build }}"
           body: |
             This PR updates the `BUILD` file with the next release candidate build:
 
-            **Build:** `${{ steps.version.outputs.version }}`
+            **Build:** `${{ steps.build.outputs.build }}`
 
             Automatically generated for `${{ inputs.TARGET_BRANCH }}`.
           labels: |
             release
-            build:${{ steps.version.outputs.build }}
+            build:${{ steps.build.outputs.build }}
           base: ${{ inputs.TARGET_BRANCH }}
