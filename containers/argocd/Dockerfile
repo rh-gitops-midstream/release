@@ -45,8 +45,7 @@ RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' $YARN build
 # Argo CD Build stage which performs the actual build of Argo CD binaries
 ####################################################################################################
 # TODO: switch to registry.redhat.io once the image is available
-FROM brew.registry.redhat.io/rh-osbs/rhel8-go-toolset:1.24.4-2 as argocd-build
-USER root
+FROM registry.redhat.io/rhel8/go-toolset:1.24.4 as argocd-build
 
 COPY sources/argo-cd /go/src/github.com/argoproj/argo-cd
 WORKDIR /go/src/github.com/argoproj/argo-cd

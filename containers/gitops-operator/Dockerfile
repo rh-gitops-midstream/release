@@ -15,8 +15,7 @@
 # --
 
 # TODO: switch to registry.redhat.io once the image is available
-FROM brew.registry.redhat.io/rh-osbs/rhel8-go-toolset:1.24.4-2  AS builder
-USER root
+FROM registry.redhat.io/rhel8/go-toolset:1.24.4  AS builder
 
 # Copy source code
 COPY sources/gitops-operator /workspace
