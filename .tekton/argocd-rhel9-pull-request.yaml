@@ -60,7 +60,7 @@ spec:
   pipelineRef:
     name: build-multi-platform-image
   taskRunTemplate: 
-    serviceAccountName: build-pipeline-argocd-rhel9--main
+    serviceAccountName: build-pipeline-argocd-rhel9-main
   workspaces:
   - name: git-auth
     secret:
