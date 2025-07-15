@@ -19,6 +19,7 @@ metadata:
         "sources/tini".pathChanged() ||
         "containers/argocd/***".pathChanged() ||
         ".tekton/argocd-push.yaml".pathChanged() ||
+        "prefetch/rpms/ubi8/***".pathChanged() ||
         "BUILD".pathChanged() ||
         ".tekton/build-multi-platform-image.yaml".pathChanged() ||
         ".tekton/tasks/***".pathChanged()
