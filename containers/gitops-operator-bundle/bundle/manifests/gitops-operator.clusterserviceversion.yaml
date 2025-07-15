@@ -179,7 +179,7 @@ metadata:
       ]
     capabilities: Deep Insights
     console.openshift.io/plugins: '["gitops-plugin"]'
-    containerImage: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator@sha256:3c34542a9bdd0e19e395b4d58079fb7f1b67b05c902b47ae76766160a91a5437
+    containerImage: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator@sha256:381adc986fd89f88687f5fb578156aa054050bee4d61301574b9017edc4b7c5f
     createdAt: "2025-07-10T04:40:01Z"
     description: Enables teams to adopt GitOps principles for managing cluster configurations and application delivery across hybrid multi-cluster Kubernetes environments.
     features.operators.openshift.io/disconnected: "true"
@@ -869,7 +869,7 @@ spec:
                         value: registry.redhat.io/openshift-gitops-1/must-gather-rhel8@sha256:5de85cd5d955485681ac02b20f6aa5ae7da5b588342e067cb067e2b691e4e8e8
                       - name: RELATED_IMAGE_KUBE_RBAC_PROXY_IMAGE
                         value: registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:71c2421379d1573fd2b94d5d05809935db272465d6b5f9a4c4deb70ea53f1213
-                    image: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator@sha256:3c34542a9bdd0e19e395b4d58079fb7f1b67b05c902b47ae76766160a91a5437
+                    image: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator@sha256:381adc986fd89f88687f5fb578156aa054050bee4d61301574b9017edc4b7c5f
                     livenessProbe:
                       httpGet:
                         path: /healthz
@@ -1004,7 +1004,7 @@ spec:
       webhookPath: /convert
   relatedImages:
     - name: manager
-      image: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator@sha256:3c34542a9bdd0e19e395b4d58079fb7f1b67b05c902b47ae76766160a91a5437
+      image: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator@sha256:381adc986fd89f88687f5fb578156aa054050bee4d61301574b9017edc4b7c5f
     - name: kube-rbac-proxy
       image: registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:71c2421379d1573fd2b94d5d05809935db272465d6b5f9a4c4deb70ea53f1213
     - name: kube_rbac_proxy_image
