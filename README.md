@@ -9,3 +9,6 @@ This repository contains the configurations used to release the RedHat OpenShift
 
 - [Source Repositories Guide](docs/sources-guide.md)  
   Overview and instructions for managing source entries used in builds.
+
+- [Development/Stage Catalog Installation](docs/catalog-installation.md)  
+  Instructions to install the GitOps Operator using a development/stage catalog.
