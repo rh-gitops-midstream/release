@@ -104,6 +104,9 @@ externalImages:
   - name: "kube-rbac-proxy"
     image: registry.redhat.io/openshift4/ose-kube-rbac-proxy
     version: v4.15
+  - name: "must-gather"
+    image: registry.redhat.io/openshift4/ose-must-gather
+    version: v4.15
 
 # Konflux images are images that are built from the source in this repository
 konfluxImages:
