@@ -1,0 +1,66 @@
+name: Trigger Bundle Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      TARGET_BRANCH:
+        description: 'RELEASE_BRANCH to checkout (e.g. release-1.17)'
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  prepare-bundle-build:
+    permissions:
+      contents: write  # for peter-evans/create-pull-request to create branch
+      pull-requests: write  # for peter-evans/create-pull-request to create a PR
+    name: Trigger Bundle build for ${{ inputs.TARGET_BRANCH }}
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@8410ad0602e1e429cee44a835ae9f77f654a6694  # v4.0.0
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ inputs.TARGET_BRANCH }}
+          submodules: true  
+      
+      - name: Set up Git config
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install skopeo
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y skopeo
+
+      - name: Update bundle with latest image SHAs
+        shell: bash
+        run: make bundle
+
+      - name: Prepare metadata for PR
+        id: metadata
+        run: |
+          BUILD=$(cat BUILD)
+          TIMESTAMP=$(date -u +"%Y%m%d-%H%M%S")
+          echo "build=$BUILD" >> $GITHUB_OUTPUT
+          echo "ts=$TIMESTAMP" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(bundle): latest bundle updates for ${{ steps.metadata.outputs.build }}"
+          branch: build/bundle-${{ steps.metadata.outputs.build }}-${{ steps.metadata.outputs.ts }}
+          delete-branch: true
+          title: "chore(bundle): latest bundle updates for ${{ steps.metadata.outputs.build }}"
+          body: |
+            This PR updates the bundle files with the latest image shas for ${{ inputs.TARGET_BRANCH }} tag.
+
+            Automatically generated from `${{ inputs.TARGET_BRANCH }}` branch using GitHub Actions.
+          #labels: |
+          #  release-candidate
+          base: ${{ inputs.TARGET_BRANCH }}
