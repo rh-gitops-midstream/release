@@ -1,4 +1,4 @@
-name: Trigger Release Candidate Build
+name: Trigger Operator Build
 
 on:
   workflow_dispatch:
@@ -11,12 +11,12 @@ on:
 permissions: {}
 
 jobs:
-  prepare-rc-build:
-    permissions:
-      contents: write  # for peter-evans/create-pull-request to create branch
-      pull-requests: write  # for peter-evans/create-pull-request to create a PR
-    name: Automatically generate RC version tag for ${{ inputs.TARGET_BRANCH }}
+  prepare-operator-build:
+    name: Trigger Operator build for ${{ inputs.TARGET_BRANCH }}
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write         # To push branches
+      pull-requests: write    # To create PRs
 
     steps:
       - name: Checkout code
@@ -34,26 +34,28 @@ jobs:
       - name: Update BUILD file
         run: make update-build
 
-      - name: Read build from BUILD file
-        id: build
+      - name: Prepare metadata for PR
+        id: metadata
         run: |
           BUILD=$(cat BUILD)
+          TIMESTAMP=$(date -u +"%Y%m%d-%H%M%S")
           echo "build=$BUILD" >> $GITHUB_OUTPUT
+          echo "ts=$TIMESTAMP" >> $GITHUB_OUTPUT
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(build): bump to ${{ steps.build.outputs.build }}"
-          branch: rc/build-${{ steps.build.outputs.build }}-${{ github.run_id }}
+          commit-message: "chore(operator): bump to ${{ steps.metadata.outputs.build }}"
+          branch: build/operator-${{ steps.metadata.outputs.build }}-${{ steps.metadata.outputs.ts }}
           delete-branch: true
-          title: "chore(build): bump to ${{ steps.build.outputs.build }}"
+          title: "chore(operator): bump to ${{ steps.metadata.outputs.build }}"
           body: |
-            This PR updates the `BUILD` file with the next release candidate build:
+            This PR updates the `BUILD` file with the next operator build version.
 
-            **Build:** `${{ steps.build.outputs.build }}`
+            **Build:** `${{ steps.metadata.outputs.build }}`
 
-            Automatically generated for `${{ inputs.TARGET_BRANCH }}`.
-          labels: |
-            release-candidate
+            Automatically generated for `${{ inputs.TARGET_BRANCH }}` using GitHub Actions..
+          #labels: |
+          #  release-candidate
           base: ${{ inputs.TARGET_BRANCH }}
