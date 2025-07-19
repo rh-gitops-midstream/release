@@ -388,6 +388,8 @@ spec:
       value: $(tasks.prefetch-dependencies.results.SOURCE_ARTIFACT)
     - name: CACHI2_ARTIFACT
       value: $(tasks.prefetch-dependencies.results.CACHI2_ARTIFACT)
+    - name: ARGS
+      value: "--project-name=portfolio-and-delivery-red-hat-openshift-gitops --report --org=1c11db74-1ffa-4b66-b80a-21d644643e70"
     runAfter:
     - build-image-index
     taskRef:
