@@ -4,7 +4,7 @@ set -eu
 echo ">>> Performing dependency check..."
 
 OS=$(uname | tr '[:upper:]' '[:lower:]')
-ARCH=$(uname -m)
+ARCH=$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')
 
 BIN_DIR="./bin"
 mkdir -p "$BIN_DIR"
