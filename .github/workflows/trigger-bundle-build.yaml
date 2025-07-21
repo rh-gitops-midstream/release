@@ -35,7 +35,13 @@ jobs:
       - name: Install skopeo
         run: |
           sudo apt-get update
-          sudo apt-get install -y skopeo
+          sudo apt-get install -y skopeo podman
+
+      - name: Log in to registry.redhat.io
+        run: |
+          mkdir -p ~/.config/containers
+          podman login registry.redhat.io -u ${{ secrets.RH_USERNAME }} -p ${{ secrets.RH_PASSWORD }}
+
 
       - name: Update bundle with latest image SHAs
         shell: bash
