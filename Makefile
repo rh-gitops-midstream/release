@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+.SHELLFLAGS := -eu -o pipefail -c
 OS := $(shell uname | tr '[:upper:]' '[:lower:]')
 ARCH := $(shell uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
 
@@ -16,7 +18,7 @@ bundle: deps
 # Install required deps in ./bin directory
 .PHONY: deps
 deps:
-	@. ./hack/deps.sh
+	. ./hack/deps.sh
 
 # Build container images locally
 .PHONY: container
