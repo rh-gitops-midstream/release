@@ -24,12 +24,12 @@ release:
 sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
-    ref: tmp-v1.17
-    commit: 43c91c234c4a6beea16b027cf7e057a67e006135
+    ref: v1.17.0-rc1
+    commit: 46c43ce213a7e7444b545c57663f30afe07fb251
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.0.9
-    commit: a1faf0265f5256f0b09e045f8486421359e3211f
+    ref: v3.0.11
+    commit: 240a1833c0f3ce73078575d692146673e69b6990
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
     ref: v1.8.3
@@ -77,15 +77,15 @@ sources:
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
-    commit: 4b954166b1ccab7dd628df912e5be13381b57211
+    commit: 528651290fdee6d6ebe67ec826ad3c8fc47767c2
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
     ref: master
     commit: 6f6289da54237a7ed084b22f3161317bfa9a9b4f
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
-    ref: main
-    commit: f3cb7f51e50bb8124748e9b39b29b44f49276925
+    ref: v0.2.1
+    commit: 0e2e5642fba63baffd0743e2f2e90bd30a641f1c
 
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
