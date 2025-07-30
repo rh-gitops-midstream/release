@@ -24,12 +24,12 @@ release:
 sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
-    ref: v1.17.0-rc1
-    commit: 46c43ce213a7e7444b545c57663f30afe07fb251
+    ref: v1.17.0-rc2
+    commit: 993483076e169307b4b2d8d1d2a8286e6e963a09
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.0.11
-    commit: 240a1833c0f3ce73078575d692146673e69b6990
+    ref: v3.0.12
+    commit: ed1e2397ef9af6d23b284e39d504308cdda1957b
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
     ref: v1.8.3
