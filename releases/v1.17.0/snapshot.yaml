@@ -1,0 +1,123 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Snapshot
+metadata:
+  annotations:
+    build.appstudio.openshift.io/repo: https://github.com/rh-gitops-midstream/release?rev=c0cf1cfa58befdb76695d10006c0da0e63b90e51
+    build.appstudio.redhat.com/commit_sha: c0cf1cfa58befdb76695d10006c0da0e63b90e51
+    build.appstudio.redhat.com/pull_request_number: '{{pull_request_number}}'
+    build.appstudio.redhat.com/target_branch: release-1.17
+  generateName: gitops-1-17-
+  generation: 1
+  labels:
+    appstudio.openshift.io/application: gitops-1-17
+    appstudio.openshift.io/build-pipelinerun: gitops-operator-bundle-1-17-on-push-h848n
+    appstudio.openshift.io/component: gitops-operator-bundle-1-17
+    pac.test.appstudio.openshift.io/event-type: push
+    pac.test.appstudio.openshift.io/state: completed
+    test.appstudio.openshift.io/type: component
+  name: gitops-1-17-mhcxw
+  namespace: rh-openshift-gitops-tenant
+spec:
+  application: gitops-1-17
+  artifacts: {}
+  components:
+  - containerImage: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel8@sha256:e7e117a67daa8acb6a30571b786ff92dae8191f8f1230cfc534aacc83b4b8563
+    name: argocd-1-17
+    source:
+      git:
+        dockerfileUrl: containers/argocd/Dockerfile
+        revision: 17757a957c3b6b585f26b67d8eca1171a89e961b
+        url: https://github.com/rh-gitops-midstream/release.git
+  - containerImage: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel8@sha256:c926d60266ba12e34e275796b679e5b3868ca6e428dc8ed668b22a2865214d60
+    name: argocd-agent-1-17
+    source:
+      git:
+        dockerfileUrl: containers/argocd-agent/Dockerfile
+        revision: 17757a957c3b6b585f26b67d8eca1171a89e961b
+        url: https://github.com/rh-gitops-midstream/release.git
+  - containerImage: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel9@sha256:5f697c1246542f864e021ec59d2b090e2e0313bd20f68b5281fc7565c8b19a2a
+    name: argocd-rhel9-1-17
+    source:
+      git:
+        dockerfileUrl: containers/argocd-rhel9/Dockerfile
+        revision: 0fc411d06e97b7d5925e53d165d376180fa901bc
+        url: https://github.com/rh-gitops-midstream/release.git
+  - containerImage: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel8-operator@sha256:e687c595910b16550cb4f784e538db93b11e8778e67100e79f2ca04404bda80e
+    name: gitops-operator-1-17
+    source:
+      git:
+        dockerfileUrl: containers/gitops-operator/Dockerfile
+        revision: 17757a957c3b6b585f26b67d8eca1171a89e961b
+        url: https://github.com/rh-gitops-midstream/release.git
+  - containerImage: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle@sha256:58cfcb4b920d75b83ed2662a8e226724075518ad105f42f2f497dc4463a3221f
+    name: gitops-operator-bundle-1-17
+    source:
+      git:
+        revision: c0cf1cfa58befdb76695d10006c0da0e63b90e51
+        url: https://github.com/rh-gitops-midstream/release
+  - containerImage: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts-rhel8@sha256:0a5a1bdad98eb87477db93b7bb8eac5039a9739bb31258a4fc578873e99ef75e
+    name: argo-rollouts-1-17
+    source:
+      git:
+        dockerfileUrl: containers/argo-rollouts/Dockerfile
+        revision: 17757a957c3b6b585f26b67d8eca1171a89e961b
+        url: https://github.com/rh-gitops-midstream/release.git
+  - containerImage: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-rhel8@sha256:3d291b9cb5041c44ddff26eaa93af9e7343eef3d95643d367f81e6df47d4b56f
+    name: console-plugin-1-17
+    source:
+      git:
+        dockerfileUrl: containers/console-plugin/Dockerfile
+        revision: 17757a957c3b6b585f26b67d8eca1171a89e961b
+        url: https://github.com/rh-gitops-midstream/release.git
+  - containerImage: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex-rhel8@sha256:159a54e7ef025bb84a6dad81c8c231cce5deb49c7837af29ea9dbd174e77b601
+    name: dex-1-17
+    source:
+      git:
+        dockerfileUrl: containers/dex/Dockerfile
+        revision: 17757a957c3b6b585f26b67d8eca1171a89e961b
+        url: https://github.com/rh-gitops-midstream/release.git
+  - containerImage: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel8@sha256:4fb9586b66bbd1b708047402cc1bebb6bd1ad628c12703d49c757490b9885622
+    name: gitops-1-17
+    source:
+      git:
+        dockerfileUrl: containers/gitops/Dockerfile
+        revision: 17757a957c3b6b585f26b67d8eca1171a89e961b
+        url: https://github.com/rh-gitops-midstream/release.git
+  - containerImage: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/must-gather-rhel8@sha256:54cb97fd42320389cdc874c1b6d225b95189e76169a2f5375e3ca5bc18fa4863
+    name: must-gather-1-17
+    source:
+      git:
+        dockerfileUrl: containers/must-gather/Dockerfile
+        revision: 17757a957c3b6b585f26b67d8eca1171a89e961b
+        url: https://github.com/rh-gitops-midstream/release.git
+  - containerImage: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extensions-rhel8@sha256:5099d104a1c73011662274864a1f640b28bbc2e19fd2394ec5955b7dcd36e128
+    name: argocd-extensions-1-17
+    source:
+      git:
+        dockerfileUrl: containers/argocd-extensions/Dockerfile
+        revision: 17757a957c3b6b585f26b67d8eca1171a89e961b
+        url: https://github.com/rh-gitops-midstream/release.git
+status:
+  conditions:
+  - lastTransitionTime: "2025-08-06T08:25:54Z"
+    message: The Snapshot's component(s) was/were added to the global candidate list
+    reason: Added
+    status: "True"
+    type: AddedToGlobalCandidateList
+  - lastTransitionTime: "2025-08-06T08:31:34Z"
+    message: Snapshot integration status condition is finished since all testing pipelines
+      completed
+    reason: Finished
+    status: "True"
+    type: AppStudioIntegrationStatus
+  - lastTransitionTime: "2025-08-06T08:31:34Z"
+    message: All Integration Pipeline tests passed
+    reason: Passed
+    status: "True"
+    type: AppStudioTestSucceeded
+  - lastTransitionTime: "2025-08-06T08:31:34Z"
+    message: Skipping auto-release of the Snapshot because no ReleasePlans have the
+      'auto-release' label set to 'true'
+    reason: AutoReleased
+    status: "True"
+    type: AutoReleased

@@ -1,0 +1,110 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.17.0-5-prod-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-17-prod
+  snapshot: gitops-1-17-mhcxw
+  data:
+    releaseNotes:
+      type: RHEA
+      issues:
+        fixed:
+          - id: GITOPS-7374
+            source: issues.redhat.com
+          - id: GITOPS-5961
+            source: issues.redhat.com
+          - id: GITOPS-6630
+            source: issues.redhat.com
+          - id: GITOPS-6858
+            source: issues.redhat.com
+          - id: GITOPS-5016
+            source: issues.redhat.com
+          - id: GITOPS-6239
+            source: issues.redhat.com
+          - id: GITOPS-7361
+            source: issues.redhat.com
+          - id: GITOPS-6248
+            source: issues.redhat.com
+          - id: GITOPS-6675
+            source: issues.redhat.com
+          - id: GITOPS-6703
+            source: issues.redhat.com
+          - id: GITOPS-6881
+            source: issues.redhat.com
+          - id: GITOPS-6889
+            source: issues.redhat.com
+          - id: GITOPS-7009
+            source: issues.redhat.com
+          - id: GITOPS-5872
+            source: issues.redhat.com
+          - id: GITOPS-5969
+            source: issues.redhat.com
+          - id: GITOPS-6326
+            source: issues.redhat.com
+          - id: GITOPS-6662
+            source: issues.redhat.com
+          - id: GITOPS-6777
+            source: issues.redhat.com
+          - id: GITOPS-6806
+            source: issues.redhat.com
+          - id: GITOPS-7018
+            source: issues.redhat.com
+          - id: GITOPS-5870
+            source: issues.redhat.com
+          - id: GITOPS-5873
+            source: issues.redhat.com
+          - id: GITOPS-5874
+            source: issues.redhat.com
+          - id: GITOPS-6668
+            source: issues.redhat.com
+          - id: GITOPS-6775
+            source: issues.redhat.com
+          - id: GITOPS-6886
+            source: issues.redhat.com
+          - id: GITOPS-6887
+            source: issues.redhat.com
+          - id: GITOPS-6978
+            source: issues.redhat.com
+          - id: GITOPS-7010
+            source: issues.redhat.com
+          - id: GITOPS-7070
+            source: issues.redhat.com
+          - id: GITOPS-7112
+            source: issues.redhat.com
+          - id: GITOPS-7124
+            source: issues.redhat.com
+          - id: GITOPS-7158
+            source: issues.redhat.com
+      #cves:
+      #  - key: CVE-2024-13484
+      #    component: gitops-operator-1-17
+      topic: "Red Hat OpenShift GitOps v1.17.0 release"
+      synopsis: "Red Hat OpenShift GitOps enhancement update"
+      description: |
+        An update is now available for Red Hat OpenShift GitOps.
+
+        This release includes several enhancements and bug fixes to improve the stability and security of the GitOps Operator.
+
+        Notable changes in this release include:
+        - Major version upgrade of Argo CD from v2.14 to v3.0
+        - Minor version upgrade of Argo CD Rollouts from v1.7 to v1.8
+        - Tech Preview release of Argo CD Agent
+        - Support for OpenShift 4.19
+        - Updated documentation on using HashiCorp Vault with OpenShift GitOps
+        - Deprecation of the Keycloak SSO provider in OpenShift GitOps
+        - Removal of support for `.spec.initialRepositories` and `.spec.repositoryCredentials` fields in the Argo CD CRD
+
+        Please note that this release includes a major version upgrade of Argo CD, which may introduce breaking changes. It is strongly recommended to review the release notes to assess any potential impact on your existing configurations.
+
+        Refer to the release notes in the references section for more details.
+      solution: |
+        Before applying this update, make sure all previously released errata relevant to your system have been applied.
+        
+        For details on how to apply this update, refer to:
+        
+        https://access.redhat.com/articles/11258
+      references:
+        - https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.17/
