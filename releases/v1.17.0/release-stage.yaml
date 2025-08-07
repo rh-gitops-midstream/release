@@ -88,16 +88,26 @@ spec:
 
         This release includes several enhancements and bug fixes to improve the stability and security of the GitOps Operator.
 
+
         Notable changes in this release include:
+
         - Major version upgrade of Argo CD from v2.14 to v3.0
+
         - Minor version upgrade of Argo CD Rollouts from v1.7 to v1.8
+
         - Tech Preview release of Argo CD Agent
+
         - Support for OpenShift 4.19
+
         - Updated documentation on using HashiCorp Vault with OpenShift GitOps
+
         - Deprecation of the Keycloak SSO provider in OpenShift GitOps
+
         - Removal of support for `.spec.initialRepositories` and `.spec.repositoryCredentials` fields in the Argo CD CRD
 
+
         Please note that this release includes a major version upgrade of Argo CD, which may introduce breaking changes. It is strongly recommended to review the release notes to assess any potential impact on your existing configurations.
+
 
         Refer to the release notes in the references section for more details.
       solution: |
