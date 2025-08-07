@@ -32,27 +32,27 @@ arches:
     name: cmake-rpm-macros
     evr: 3.26.5-2.el8
     sourcerpm: cmake-3.26.5-2.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/Packages/g/git-2.43.5-3.el8_10.aarch64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/Packages/g/git-2.43.7-1.el8_10.aarch64.rpm
     repoid: ubi-8-for-aarch64-appstream-rpms
-    size: 94728
-    checksum: sha256:09e1ddcb4293b75e1b86b6976d81e2826b5919403a83bf3cd121bd855af4e5d5
+    size: 94860
+    checksum: sha256:360e8689c9a9f5c286b4428a3c46f7017eea21751a9499ae168462a41e1e17a0
     name: git
-    evr: 2.43.5-3.el8_10
-    sourcerpm: git-2.43.5-3.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/Packages/g/git-core-2.43.5-3.el8_10.aarch64.rpm
+    evr: 2.43.7-1.el8_10
+    sourcerpm: git-2.43.7-1.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/Packages/g/git-core-2.43.7-1.el8_10.aarch64.rpm
     repoid: ubi-8-for-aarch64-appstream-rpms
-    size: 11214036
-    checksum: sha256:c4e6cc16d2a7148726259cbe3ff897d2914fec7e93fad5386087f1ab616a6e5f
+    size: 11216788
+    checksum: sha256:d23f02a074c97383eda8f833f8a3f1916b4b1c55ba5149d0cbfd4ee69254d471
     name: git-core
-    evr: 2.43.5-3.el8_10
-    sourcerpm: git-2.43.5-3.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/Packages/g/git-core-doc-2.43.5-3.el8_10.noarch.rpm
+    evr: 2.43.7-1.el8_10
+    sourcerpm: git-2.43.7-1.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/Packages/g/git-core-doc-2.43.7-1.el8_10.noarch.rpm
     repoid: ubi-8-for-aarch64-appstream-rpms
-    size: 3214732
-    checksum: sha256:1935f96e42763fea2b844b207785662d9c023d5294343f65ffa9f69d698da58e
+    size: 3216756
+    checksum: sha256:09202aba03724180992d4cb6a3c617423ee25dc61f2c162990a25d7781977058
     name: git-core-doc
-    evr: 2.43.5-3.el8_10
-    sourcerpm: git-2.43.5-3.el8_10.src.rpm
+    evr: 2.43.7-1.el8_10
+    sourcerpm: git-2.43.7-1.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/Packages/j/jq-1.6-11.el8_10.aarch64.rpm
     repoid: ubi-8-for-aarch64-appstream-rpms
     size: 194428
@@ -95,13 +95,13 @@ arches:
     name: perl-Error
     evr: 1:0.17025-2.el8
     sourcerpm: perl-Error-0.17025-2.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/Packages/p/perl-Git-2.43.5-3.el8_10.noarch.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/Packages/p/perl-Git-2.43.7-1.el8_10.noarch.rpm
     repoid: ubi-8-for-aarch64-appstream-rpms
-    size: 80992
-    checksum: sha256:d3a1a82a6aaac2025c6e7f672adffe7588db2634e33644a7635f418cc73b06ba
+    size: 81136
+    checksum: sha256:cc2b622933dabf0579711ce3fdccfd5b485483b8b0f8ed4dc2df3d59842ba735
     name: perl-Git
-    evr: 2.43.5-3.el8_10
-    sourcerpm: git-2.43.5-3.el8_10.src.rpm
+    evr: 2.43.7-1.el8_10
+    sourcerpm: git-2.43.7-1.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/Packages/p/perl-IO-Socket-IP-0.39-5.el8.noarch.rpm
     repoid: ubi-8-for-aarch64-appstream-rpms
     size: 47972
@@ -172,13 +172,13 @@ arches:
     name: cracklib-dicts
     evr: 2.9.6-15.el8
     sourcerpm: cracklib-2.9.6-15.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/e/emacs-filesystem-26.1-13.el8_10.noarch.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/e/emacs-filesystem-26.1-15.el8_10.noarch.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
-    size: 72256
-    checksum: sha256:00cd8d7a426bfd9c80fc94077b0c87a8a7d60cd90442dc7665f6f8676452bcd7
+    size: 72500
+    checksum: sha256:3752a72be8d33b701a01e746dc2f8d56e2ba7829baa5f2bf3f1a590d8267c60a
     name: emacs-filesystem
-    evr: 1:26.1-13.el8_10
-    sourcerpm: emacs-26.1-13.el8_10.src.rpm
+    evr: 1:26.1-15.el8_10
+    sourcerpm: emacs-26.1-15.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/e/expat-2.2.5-17.el8_10.aarch64.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
     size: 107844
@@ -340,13 +340,13 @@ arches:
     name: perl-Encode
     evr: 4:2.97-3.el8
     sourcerpm: perl-Encode-2.97-3.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/perl-Errno-1.28-422.el8.aarch64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/perl-Errno-1.28-423.el8_10.aarch64.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
-    size: 78336
-    checksum: sha256:b647f930044bbf2a21ae5d8d83f241718bcb2739501980e38c3dd7c68313453c
+    size: 78544
+    checksum: sha256:15c4ab8fca38fe06e463927af8936ed755e7994ee3f286f50e63f5a428701163
     name: perl-Errno
-    evr: 1.28-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
+    evr: 1.28-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/perl-Exporter-5.72-396.el8.noarch.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
     size: 34844
@@ -382,13 +382,13 @@ arches:
     name: perl-HTTP-Tiny
     evr: 0.074-3.el8
     sourcerpm: perl-HTTP-Tiny-0.074-3.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/perl-IO-1.38-422.el8.aarch64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/perl-IO-1.38-423.el8_10.aarch64.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
-    size: 145624
-    checksum: sha256:915a1a459cf79330e2bd93b719c76059720142aff672132da7fffba5048b9415
+    size: 145836
+    checksum: sha256:60bd454ea141b73759aedca4836fc6359757aa9984097fd6bb4e361944ac765b
     name: perl-IO
-    evr: 1.38-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
+    evr: 1.38-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/perl-MIME-Base64-3.15-396.el8.aarch64.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
     size: 31380
@@ -501,27 +501,27 @@ arches:
     name: perl-constant
     evr: 1.33-396.el8
     sourcerpm: perl-constant-1.33-396.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/perl-interpreter-5.26.3-422.el8.aarch64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/perl-interpreter-5.26.3-423.el8_10.aarch64.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
-    size: 6614324
-    checksum: sha256:b4246b067de35370fa1c0d95076ee69ce0ba977447eb7f5a4a34ba9b6bf00ff4
+    size: 6614856
+    checksum: sha256:28ed32c7428a2eb0d0d84f36428b260c193fbe7bdc0e5efc09333235704b1a58
     name: perl-interpreter
-    evr: 4:5.26.3-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/perl-libs-5.26.3-422.el8.aarch64.rpm
+    evr: 4:5.26.3-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/perl-libs-5.26.3-423.el8_10.aarch64.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
-    size: 1536420
-    checksum: sha256:67ad7382491bf07e4f83bab6e05c231f6941364e34a004e9247d9f6b8d600086
+    size: 1536308
+    checksum: sha256:71a603b90fc7b08d8ff4696840eb78f2cfae6b023c7546bf8d1407b9bba7ee5a
     name: perl-libs
-    evr: 4:5.26.3-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/perl-macros-5.26.3-422.el8.aarch64.rpm
+    evr: 4:5.26.3-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/perl-macros-5.26.3-423.el8_10.aarch64.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
-    size: 74252
-    checksum: sha256:7f2f04b183b8bf643a532dee7cfe91b6fdc2f9a908a26637e45ffdcd4809d6c0
+    size: 74452
+    checksum: sha256:658b34b93f6fc5fd7f5ae43c5f6f14684b2bab74416dac0277d6f79f56791b8d
     name: perl-macros
-    evr: 4:5.26.3-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
+    evr: 4:5.26.3-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/perl-parent-0.237-1.el8.noarch.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
     size: 20520
@@ -564,13 +564,13 @@ arches:
     name: platform-python-pip
     evr: 9.0.3-24.el8
     sourcerpm: python-pip-9.0.3-24.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/platform-python-setuptools-39.2.0-8.el8_10.noarch.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/platform-python-setuptools-39.2.0-9.el8_10.noarch.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
-    size: 647476
-    checksum: sha256:8f330a8602613473b6e4c0bc57cb3012932a9a9399ea7a3fa65175453a6580ab
+    size: 647688
+    checksum: sha256:c809d773ee4709e911391552c2a162d04381848603a69102eb785a235b1c66be
     name: platform-python-setuptools
-    evr: 39.2.0-8.el8_10
-    sourcerpm: python-setuptools-39.2.0-8.el8_10.src.rpm
+    evr: 39.2.0-9.el8_10
+    sourcerpm: python-setuptools-39.2.0-9.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/python3-libs-3.6.8-70.el8_10.aarch64.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
     size: 8117032
@@ -585,13 +585,13 @@ arches:
     name: python3-pip-wheel
     evr: 9.0.3-24.el8
     sourcerpm: python-pip-9.0.3-24.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/python3-setuptools-wheel-39.2.0-8.el8_10.noarch.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/python3-setuptools-wheel-39.2.0-9.el8_10.noarch.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
-    size: 296040
-    checksum: sha256:833dcb68b1eea48bfb8853886236753647743258fd74cc538ffa72408aab9213
+    size: 296208
+    checksum: sha256:eed50a1612ab8303c50f62d7c3409020b2ff829037cc651725562afa95e56e05
     name: python3-setuptools-wheel
-    evr: 39.2.0-8.el8_10
-    sourcerpm: python-setuptools-39.2.0-8.el8_10.src.rpm
+    evr: 39.2.0-9.el8_10
+    sourcerpm: python-setuptools-39.2.0-9.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/s/shadow-utils-4.6-22.el8.aarch64.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
     size: 1272288
@@ -615,10 +615,10 @@ arches:
     sourcerpm: util-linux-2.32.1-46.el8.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/repodata/08d1f5587b403e6ba336aec7f3b5a603e8dc5754f174241219dd0bb1ca32f288-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/repodata/3926a08f8fba223c74e311ad91fd2b385c50b236dfc838d3d368ea059be687e8-modules.yaml.gz
     repoid: ubi-8-for-aarch64-appstream-rpms
-    size: 56488
-    checksum: sha256:08d1f5587b403e6ba336aec7f3b5a603e8dc5754f174241219dd0bb1ca32f288
+    size: 56552
+    checksum: sha256:3926a08f8fba223c74e311ad91fd2b385c50b236dfc838d3d368ea059be687e8
 - arch: ppc64le
   packages:
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/c/cmake-3.26.5-2.el8.ppc64le.rpm
@@ -649,27 +649,27 @@ arches:
     name: cmake-rpm-macros
     evr: 3.26.5-2.el8
     sourcerpm: cmake-3.26.5-2.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/g/git-2.43.5-3.el8_10.ppc64le.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/g/git-2.43.7-1.el8_10.ppc64le.rpm
     repoid: ubi-8-for-ppc64le-appstream-rpms
-    size: 94724
-    checksum: sha256:dcb4ac9331cbb6ec8c4c4451da31ffcc49920ead6c1b646dba91f24efe4ef102
+    size: 94860
+    checksum: sha256:82c5a684aa3de13e7bba7e0c544351036599d864a55326a3832e209f3d13b935
     name: git
-    evr: 2.43.5-3.el8_10
-    sourcerpm: git-2.43.5-3.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/g/git-core-2.43.5-3.el8_10.ppc64le.rpm
+    evr: 2.43.7-1.el8_10
+    sourcerpm: git-2.43.7-1.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/g/git-core-2.43.7-1.el8_10.ppc64le.rpm
     repoid: ubi-8-for-ppc64le-appstream-rpms
-    size: 13146292
-    checksum: sha256:ae1bb68c7b067414723b04dbf1fc3a943ea852f1d45305a6827986c7634ea610
+    size: 13149784
+    checksum: sha256:2b64e0733bb2e2098121db7b1d6f2f86f8053261f4e0cd40e977f64a0c49fb91
     name: git-core
-    evr: 2.43.5-3.el8_10
-    sourcerpm: git-2.43.5-3.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/g/git-core-doc-2.43.5-3.el8_10.noarch.rpm
+    evr: 2.43.7-1.el8_10
+    sourcerpm: git-2.43.7-1.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/g/git-core-doc-2.43.7-1.el8_10.noarch.rpm
     repoid: ubi-8-for-ppc64le-appstream-rpms
-    size: 3214732
-    checksum: sha256:1935f96e42763fea2b844b207785662d9c023d5294343f65ffa9f69d698da58e
+    size: 3216756
+    checksum: sha256:09202aba03724180992d4cb6a3c617423ee25dc61f2c162990a25d7781977058
     name: git-core-doc
-    evr: 2.43.5-3.el8_10
-    sourcerpm: git-2.43.5-3.el8_10.src.rpm
+    evr: 2.43.7-1.el8_10
+    sourcerpm: git-2.43.7-1.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/j/jq-1.6-11.el8_10.ppc64le.rpm
     repoid: ubi-8-for-ppc64le-appstream-rpms
     size: 222152
@@ -712,13 +712,13 @@ arches:
     name: perl-Error
     evr: 1:0.17025-2.el8
     sourcerpm: perl-Error-0.17025-2.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/p/perl-Git-2.43.5-3.el8_10.noarch.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/p/perl-Git-2.43.7-1.el8_10.noarch.rpm
     repoid: ubi-8-for-ppc64le-appstream-rpms
-    size: 80992
-    checksum: sha256:d3a1a82a6aaac2025c6e7f672adffe7588db2634e33644a7635f418cc73b06ba
+    size: 81136
+    checksum: sha256:cc2b622933dabf0579711ce3fdccfd5b485483b8b0f8ed4dc2df3d59842ba735
     name: perl-Git
-    evr: 2.43.5-3.el8_10
-    sourcerpm: git-2.43.5-3.el8_10.src.rpm
+    evr: 2.43.7-1.el8_10
+    sourcerpm: git-2.43.7-1.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/p/perl-IO-Socket-IP-0.39-5.el8.noarch.rpm
     repoid: ubi-8-for-ppc64le-appstream-rpms
     size: 47972
@@ -964,13 +964,13 @@ arches:
     name: perl-Encode
     evr: 4:2.97-3.el8
     sourcerpm: perl-Encode-2.97-3.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/p/perl-Errno-1.28-422.el8.ppc64le.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/p/perl-Errno-1.28-423.el8_10.ppc64le.rpm
     repoid: ubi-8-for-ppc64le-baseos-rpms
-    size: 78356
-    checksum: sha256:57dd645ef12850ad5a499f0aa49e30e796b3c75e505704df57074f9743ca2f3d
+    size: 78560
+    checksum: sha256:d29c5b60625a6faaf7c0a1aae9465af300c633833d6d519caa04bdd3010baff6
     name: perl-Errno
-    evr: 1.28-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
+    evr: 1.28-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/p/perl-Exporter-5.72-396.el8.noarch.rpm
     repoid: ubi-8-for-ppc64le-baseos-rpms
     size: 34844
@@ -1006,13 +1006,13 @@ arches:
     name: perl-HTTP-Tiny
     evr: 0.074-3.el8
     sourcerpm: perl-HTTP-Tiny-0.074-3.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/p/perl-IO-1.38-422.el8.ppc64le.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/p/perl-IO-1.38-423.el8_10.ppc64le.rpm
     repoid: ubi-8-for-ppc64le-baseos-rpms
-    size: 146432
-    checksum: sha256:d92a845b46a5ad9f64b46cdc735b7471a24672251407153312f4f471ac9b94f8
+    size: 146620
+    checksum: sha256:73ad1e301d52e0cdd3a0d292ea8bdeda66441661baa680f225941a76604a44ef
     name: perl-IO
-    evr: 1.38-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
+    evr: 1.38-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/p/perl-MIME-Base64-3.15-396.el8.ppc64le.rpm
     repoid: ubi-8-for-ppc64le-baseos-rpms
     size: 32240
@@ -1125,27 +1125,27 @@ arches:
     name: perl-constant
     evr: 1.33-396.el8
     sourcerpm: perl-constant-1.33-396.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/p/perl-interpreter-5.26.3-422.el8.ppc64le.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/p/perl-interpreter-5.26.3-423.el8_10.ppc64le.rpm
     repoid: ubi-8-for-ppc64le-baseos-rpms
-    size: 6633656
-    checksum: sha256:f45b6796e4c5d35f234f540c3d28e4d44db89db318abd253c9b66eda9daae981
+    size: 6634128
+    checksum: sha256:a01254fd14fb9d98c380b9853fe9e710a7d0c00065babea4160cce85d23076f6
     name: perl-interpreter
-    evr: 4:5.26.3-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/p/perl-libs-5.26.3-422.el8.ppc64le.rpm
+    evr: 4:5.26.3-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/p/perl-libs-5.26.3-423.el8_10.ppc64le.rpm
     repoid: ubi-8-for-ppc64le-baseos-rpms
-    size: 1657456
-    checksum: sha256:ad4198a5ea9fdeca890c41a4014948b1cf64af9f40c3699ba79f1d1a543d4ed6
+    size: 1657264
+    checksum: sha256:e4531d816f79aa1e151ec788f3b609bf12b1fdfd7e84032ac54ba27916b3adea
     name: perl-libs
-    evr: 4:5.26.3-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/p/perl-macros-5.26.3-422.el8.ppc64le.rpm
+    evr: 4:5.26.3-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/p/perl-macros-5.26.3-423.el8_10.ppc64le.rpm
     repoid: ubi-8-for-ppc64le-baseos-rpms
-    size: 74268
-    checksum: sha256:175edb97b4aa4e0eda35c13b58df0cbd252e8ecb0d6739ce6a4e37eae8a81dee
+    size: 74456
+    checksum: sha256:460ab3ad02225239e16c022d8ef68e3b3bc834792aea357a39cc391619203a33
     name: perl-macros
-    evr: 4:5.26.3-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
+    evr: 4:5.26.3-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/p/perl-parent-0.237-1.el8.noarch.rpm
     repoid: ubi-8-for-ppc64le-baseos-rpms
     size: 20520
@@ -1239,10 +1239,10 @@ arches:
     sourcerpm: util-linux-2.32.1-46.el8.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/repodata/b0f0776ba018d320d244a3070ff008162260c28b6dedcbde88c61da00c1dcbe8-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/repodata/930fc9eebc4076647a77959697500fdcc30185d2465079fffad4a0e551e7db94-modules.yaml.gz
     repoid: ubi-8-for-ppc64le-appstream-rpms
-    size: 56627
-    checksum: sha256:b0f0776ba018d320d244a3070ff008162260c28b6dedcbde88c61da00c1dcbe8
+    size: 56712
+    checksum: sha256:930fc9eebc4076647a77959697500fdcc30185d2465079fffad4a0e551e7db94
 - arch: s390x
   packages:
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/c/cmake-3.26.5-2.el8.s390x.rpm
@@ -1273,27 +1273,27 @@ arches:
     name: cmake-rpm-macros
     evr: 3.26.5-2.el8
     sourcerpm: cmake-3.26.5-2.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/g/git-2.43.5-3.el8_10.s390x.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/g/git-2.43.7-1.el8_10.s390x.rpm
     repoid: ubi-8-for-s390x-appstream-rpms
-    size: 94728
-    checksum: sha256:90eed21f6fbbaf05855df9a0e75ef1a535723f1247863a22021173fdc9033a2a
+    size: 94880
+    checksum: sha256:11cb5de7f2c20cf19598ed25573c5c770e1f2111b6fb8ce2aec43069071e3fb8
     name: git
-    evr: 2.43.5-3.el8_10
-    sourcerpm: git-2.43.5-3.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/g/git-core-2.43.5-3.el8_10.s390x.rpm
+    evr: 2.43.7-1.el8_10
+    sourcerpm: git-2.43.7-1.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/g/git-core-2.43.7-1.el8_10.s390x.rpm
     repoid: ubi-8-for-s390x-appstream-rpms
-    size: 11029224
-    checksum: sha256:38cbc5e040674c6ffada2c4a2a28dc9332e2b2a5ff115d6e17f1ab5e2de77a49
+    size: 11034972
+    checksum: sha256:713ab39f22985d648d355541b3331ef10d0536910071561fae19f4950c95ba84
     name: git-core
-    evr: 2.43.5-3.el8_10
-    sourcerpm: git-2.43.5-3.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/g/git-core-doc-2.43.5-3.el8_10.noarch.rpm
+    evr: 2.43.7-1.el8_10
+    sourcerpm: git-2.43.7-1.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/g/git-core-doc-2.43.7-1.el8_10.noarch.rpm
     repoid: ubi-8-for-s390x-appstream-rpms
-    size: 3214732
-    checksum: sha256:1935f96e42763fea2b844b207785662d9c023d5294343f65ffa9f69d698da58e
+    size: 3216756
+    checksum: sha256:09202aba03724180992d4cb6a3c617423ee25dc61f2c162990a25d7781977058
     name: git-core-doc
-    evr: 2.43.5-3.el8_10
-    sourcerpm: git-2.43.5-3.el8_10.src.rpm
+    evr: 2.43.7-1.el8_10
+    sourcerpm: git-2.43.7-1.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/j/jq-1.6-11.el8_10.s390x.rpm
     repoid: ubi-8-for-s390x-appstream-rpms
     size: 213148
@@ -1336,13 +1336,13 @@ arches:
     name: perl-Error
     evr: 1:0.17025-2.el8
     sourcerpm: perl-Error-0.17025-2.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/p/perl-Git-2.43.5-3.el8_10.noarch.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/p/perl-Git-2.43.7-1.el8_10.noarch.rpm
     repoid: ubi-8-for-s390x-appstream-rpms
-    size: 80992
-    checksum: sha256:d3a1a82a6aaac2025c6e7f672adffe7588db2634e33644a7635f418cc73b06ba
+    size: 81136
+    checksum: sha256:cc2b622933dabf0579711ce3fdccfd5b485483b8b0f8ed4dc2df3d59842ba735
     name: perl-Git
-    evr: 2.43.5-3.el8_10
-    sourcerpm: git-2.43.5-3.el8_10.src.rpm
+    evr: 2.43.7-1.el8_10
+    sourcerpm: git-2.43.7-1.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/p/perl-IO-Socket-IP-0.39-5.el8.noarch.rpm
     repoid: ubi-8-for-s390x-appstream-rpms
     size: 47972
@@ -1581,13 +1581,13 @@ arches:
     name: perl-Encode
     evr: 4:2.97-3.el8
     sourcerpm: perl-Encode-2.97-3.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/perl-Errno-1.28-422.el8.s390x.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/perl-Errno-1.28-423.el8_10.s390x.rpm
     repoid: ubi-8-for-s390x-baseos-rpms
-    size: 78352
-    checksum: sha256:445eb62fa7c7cf3af9f6865dd9bb6758ae35d327557a48f3c5671b130b02a9a5
+    size: 78552
+    checksum: sha256:f60c79489fb824b5101c5108256d9e6a6378869d4b2f72de951de83d6b61cc2e
     name: perl-Errno
-    evr: 1.28-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
+    evr: 1.28-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/perl-Exporter-5.72-396.el8.noarch.rpm
     repoid: ubi-8-for-s390x-baseos-rpms
     size: 34844
@@ -1623,13 +1623,13 @@ arches:
     name: perl-HTTP-Tiny
     evr: 0.074-3.el8
     sourcerpm: perl-HTTP-Tiny-0.074-3.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/perl-IO-1.38-422.el8.s390x.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/perl-IO-1.38-423.el8_10.s390x.rpm
     repoid: ubi-8-for-s390x-baseos-rpms
-    size: 145432
-    checksum: sha256:389a964fb8cdb4bc503679fc08fd21e13bc044dc14188ad0f5039246671fec78
+    size: 145612
+    checksum: sha256:44ed6f3703f3d9bd247f616f9a32d9a4eb14e3d2cccc0bd4a785a2d18a18be47
     name: perl-IO
-    evr: 1.38-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
+    evr: 1.38-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/perl-MIME-Base64-3.15-396.el8.s390x.rpm
     repoid: ubi-8-for-s390x-baseos-rpms
     size: 31084
@@ -1742,27 +1742,27 @@ arches:
     name: perl-constant
     evr: 1.33-396.el8
     sourcerpm: perl-constant-1.33-396.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/perl-interpreter-5.26.3-422.el8.s390x.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/perl-interpreter-5.26.3-423.el8_10.s390x.rpm
     repoid: ubi-8-for-s390x-baseos-rpms
-    size: 6607440
-    checksum: sha256:69dd0edadb5a394fd6b4f73738b7d50ac8dbcea1adbe9400869b0c2b92b11065
+    size: 6608148
+    checksum: sha256:c14e38b17676af74e832879344569d3a3de70db88ab2093f1729ed1ec0059341
     name: perl-interpreter
-    evr: 4:5.26.3-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/perl-libs-5.26.3-422.el8.s390x.rpm
+    evr: 4:5.26.3-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/perl-libs-5.26.3-423.el8_10.s390x.rpm
     repoid: ubi-8-for-s390x-baseos-rpms
-    size: 1559584
-    checksum: sha256:07169949751526936b116b708f966bde68d4c6bc90e858f84655a26f7077fdb3
+    size: 1559160
+    checksum: sha256:b94bccb30f7dc32b0f357085d9650f07bf9c2105f83155ec777f2110c79c4125
     name: perl-libs
-    evr: 4:5.26.3-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/perl-macros-5.26.3-422.el8.s390x.rpm
+    evr: 4:5.26.3-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/perl-macros-5.26.3-423.el8_10.s390x.rpm
     repoid: ubi-8-for-s390x-baseos-rpms
-    size: 74272
-    checksum: sha256:ec05eb57d2548a55f04fbf8a342d37f9de955d26942760caef9a8dc243b70fa8
+    size: 74456
+    checksum: sha256:484ae21f5266c2a7dbabf89ea40744142e5924fecf0569db7712f46f2a1b8bae
     name: perl-macros
-    evr: 4:5.26.3-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
+    evr: 4:5.26.3-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/perl-parent-0.237-1.el8.noarch.rpm
     repoid: ubi-8-for-s390x-baseos-rpms
     size: 20520
@@ -1856,10 +1856,10 @@ arches:
     sourcerpm: util-linux-2.32.1-46.el8.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/repodata/43a1dafb06828209a29c9903ac918bd338f2a813b2255699d32704a8ff7e3652-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/repodata/532a410cbacd9313028e1d3e1149283e1b28ca653276d5e2b88413ae4b584a0e-modules.yaml.gz
     repoid: ubi-8-for-s390x-appstream-rpms
-    size: 56633
-    checksum: sha256:43a1dafb06828209a29c9903ac918bd338f2a813b2255699d32704a8ff7e3652
+    size: 56656
+    checksum: sha256:532a410cbacd9313028e1d3e1149283e1b28ca653276d5e2b88413ae4b584a0e
 - arch: x86_64
   packages:
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/c/cmake-3.26.5-2.el8.x86_64.rpm
@@ -1890,27 +1890,27 @@ arches:
     name: cmake-rpm-macros
     evr: 3.26.5-2.el8
     sourcerpm: cmake-3.26.5-2.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/g/git-2.43.5-3.el8_10.x86_64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/g/git-2.43.7-1.el8_10.x86_64.rpm
     repoid: ubi-8-for-x86_64-appstream-rpms
-    size: 94736
-    checksum: sha256:66aa0618e0584828c40135719d8400269d031c46e75020f9a1edb1a7712fb619
+    size: 94884
+    checksum: sha256:c9c97b1e34949a29e3ef951f9f91d583cc6e5859cd3028995ac3095b2f5051db
     name: git
-    evr: 2.43.5-3.el8_10
-    sourcerpm: git-2.43.5-3.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/g/git-core-2.43.5-3.el8_10.x86_64.rpm
+    evr: 2.43.7-1.el8_10
+    sourcerpm: git-2.43.7-1.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/g/git-core-2.43.7-1.el8_10.x86_64.rpm
     repoid: ubi-8-for-x86_64-appstream-rpms
-    size: 11627632
-    checksum: sha256:17509f78010d6daabf3ffeabcbf29492a32e8f7adb09785580d084124f527a46
+    size: 11631124
+    checksum: sha256:51124ac7ed4c97b5a62a34a3b5e6139a3012d8fd516d3d56bc83490b19aa6bc9
     name: git-core
-    evr: 2.43.5-3.el8_10
-    sourcerpm: git-2.43.5-3.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/g/git-core-doc-2.43.5-3.el8_10.noarch.rpm
+    evr: 2.43.7-1.el8_10
+    sourcerpm: git-2.43.7-1.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/g/git-core-doc-2.43.7-1.el8_10.noarch.rpm
     repoid: ubi-8-for-x86_64-appstream-rpms
-    size: 3214732
-    checksum: sha256:1935f96e42763fea2b844b207785662d9c023d5294343f65ffa9f69d698da58e
+    size: 3216756
+    checksum: sha256:09202aba03724180992d4cb6a3c617423ee25dc61f2c162990a25d7781977058
     name: git-core-doc
-    evr: 2.43.5-3.el8_10
-    sourcerpm: git-2.43.5-3.el8_10.src.rpm
+    evr: 2.43.7-1.el8_10
+    sourcerpm: git-2.43.7-1.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/j/jq-1.6-11.el8_10.x86_64.rpm
     repoid: ubi-8-for-x86_64-appstream-rpms
     size: 208552
@@ -1953,13 +1953,13 @@ arches:
     name: perl-Error
     evr: 1:0.17025-2.el8
     sourcerpm: perl-Error-0.17025-2.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/p/perl-Git-2.43.5-3.el8_10.noarch.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/p/perl-Git-2.43.7-1.el8_10.noarch.rpm
     repoid: ubi-8-for-x86_64-appstream-rpms
-    size: 80992
-    checksum: sha256:d3a1a82a6aaac2025c6e7f672adffe7588db2634e33644a7635f418cc73b06ba
+    size: 81136
+    checksum: sha256:cc2b622933dabf0579711ce3fdccfd5b485483b8b0f8ed4dc2df3d59842ba735
     name: perl-Git
-    evr: 2.43.5-3.el8_10
-    sourcerpm: git-2.43.5-3.el8_10.src.rpm
+    evr: 2.43.7-1.el8_10
+    sourcerpm: git-2.43.7-1.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/p/perl-IO-Socket-IP-0.39-5.el8.noarch.rpm
     repoid: ubi-8-for-x86_64-appstream-rpms
     size: 47972
@@ -2198,13 +2198,13 @@ arches:
     name: perl-Encode
     evr: 4:2.97-3.el8
     sourcerpm: perl-Encode-2.97-3.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/perl-Errno-1.28-422.el8.x86_64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/perl-Errno-1.28-423.el8_10.x86_64.rpm
     repoid: ubi-8-for-x86_64-baseos-rpms
-    size: 78368
-    checksum: sha256:b077b72ea9761dfd6a6d53a88ad1c2ef81c91698e6730fe4da802c93515140e5
+    size: 78572
+    checksum: sha256:1489ff9dac875ee8f6c929fe28b004912f6104ba9849603f3610d2d8e1b934ae
     name: perl-Errno
-    evr: 1.28-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
+    evr: 1.28-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/perl-Exporter-5.72-396.el8.noarch.rpm
     repoid: ubi-8-for-x86_64-baseos-rpms
     size: 34844
@@ -2240,13 +2240,13 @@ arches:
     name: perl-HTTP-Tiny
     evr: 0.074-3.el8
     sourcerpm: perl-HTTP-Tiny-0.074-3.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/perl-IO-1.38-422.el8.x86_64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/perl-IO-1.38-423.el8_10.x86_64.rpm
     repoid: ubi-8-for-x86_64-baseos-rpms
-    size: 145752
-    checksum: sha256:61c1eb74dcdbff918676bdf1ee3b7dec14f6cf3201c88b96e62e2e92cb4b3410
+    size: 145948
+    checksum: sha256:d5fc71a78e60651634d9efbfd4e5ad386aec77929ac855437ba0e1322d218763
     name: perl-IO
-    evr: 1.38-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
+    evr: 1.38-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/perl-MIME-Base64-3.15-396.el8.x86_64.rpm
     repoid: ubi-8-for-x86_64-baseos-rpms
     size: 31396
@@ -2359,27 +2359,27 @@ arches:
     name: perl-constant
     evr: 1.33-396.el8
     sourcerpm: perl-constant-1.33-396.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/perl-interpreter-5.26.3-422.el8.x86_64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/perl-interpreter-5.26.3-423.el8_10.x86_64.rpm
     repoid: ubi-8-for-x86_64-baseos-rpms
-    size: 6622284
-    checksum: sha256:1d041e2c086d3ca598a780715a15e6dd34583f5e03add5c55e1da677e9b1746c
+    size: 6622556
+    checksum: sha256:8505819ca7031e26a638e29f34e8808454a07c0828125976bdc0a3dda8291439
     name: perl-interpreter
-    evr: 4:5.26.3-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/perl-libs-5.26.3-422.el8.x86_64.rpm
+    evr: 4:5.26.3-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/perl-libs-5.26.3-423.el8_10.x86_64.rpm
     repoid: ubi-8-for-x86_64-baseos-rpms
-    size: 1633888
-    checksum: sha256:1fd03ff6a45935df8f1c93d8dd4919d46aba52ebb0d3b2dbab1bde85607c72a9
+    size: 1633784
+    checksum: sha256:34a52f691b8b1a740651589dda3643649fe54be9d1bb96337cd42b7361317b50
     name: perl-libs
-    evr: 4:5.26.3-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/perl-macros-5.26.3-422.el8.x86_64.rpm
+    evr: 4:5.26.3-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/perl-macros-5.26.3-423.el8_10.x86_64.rpm
     repoid: ubi-8-for-x86_64-baseos-rpms
-    size: 74284
-    checksum: sha256:9e8e213d365f3f4d2eb49da38757fc0798c5263af8d441b7df0bab1762f98f7b
+    size: 74476
+    checksum: sha256:458d91cfbed0495cf14355c5901ad1f1c00a7e0a20bbe7efe1aa81ce130e0371
     name: perl-macros
-    evr: 4:5.26.3-422.el8
-    sourcerpm: perl-5.26.3-422.el8.src.rpm
+    evr: 4:5.26.3-423.el8_10
+    sourcerpm: perl-5.26.3-423.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/perl-parent-0.237-1.el8.noarch.rpm
     repoid: ubi-8-for-x86_64-baseos-rpms
     size: 20520
@@ -2473,7 +2473,7 @@ arches:
     sourcerpm: util-linux-2.32.1-46.el8.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/repodata/111a6e41bbb7bb6c6d7e2165e262705605b7c9bc5e1e264020ff51a3572dfed8-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/repodata/3d61c0d7f6d78d8819bc34e02878a2bd5b20114091b62322cf8621bf60e31e26-modules.yaml.gz
     repoid: ubi-8-for-x86_64-appstream-rpms
-    size: 60185
-    checksum: sha256:111a6e41bbb7bb6c6d7e2165e262705605b7c9bc5e1e264020ff51a3572dfed8
+    size: 60209
+    checksum: sha256:3d61c0d7f6d78d8819bc34e02878a2bd5b20114091b62322cf8621bf60e31e26
