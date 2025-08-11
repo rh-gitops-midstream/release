@@ -65,7 +65,7 @@ ENV EXTRA_BUILD_INFO="{Vendor Information: Red Hat OpenShift GitOps version: $CI
 
 # Perform the build
 COPY --from=argocd-ui /usr/src/app/argo-cd/ui/dist/app /go/src/github.com/argoproj/argo-cd/ui/dist/app
-RUN export PACKAGE=github.com/argoproj/argo-cd/v3/common &&\
+RUN export PACKAGE=github.com/argoproj/argo-cd/v2/common &&\
 export VERSION=$(cat VERSION) &&\
 export BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') &&\
 export KUBECTL_VER=$(go list -m k8s.io/client-go | head -n 1 | rev | cut -d' ' -f1 | rev) &&\

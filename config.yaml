@@ -24,24 +24,24 @@ release:
 sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
-    ref: tmp-v1.17
-    commit: 59e94c8d49c5d302d51d31bc30fa5a90348f84cd
+    ref: v1.16
+    commit: ba637f02bd9777a3ec55df8b27034629dda92b56
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.0.9
-    commit: a1faf0265f5256f0b09e045f8486421359e3211f
+    ref: v2.14.15
+    commit: 6c7d6940cd19a4543e749d18ac282c7020c7c92e
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
-    ref: v1.8.3
-    commit: 49fa1516cf71672b69e265267da4e1d16e1fe114
+    ref: v1.7.2
+    commit: 59e5bd385c031600f86075beb9d77620f8d7915e
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
-    ref: kustomize/v5.6.0
-    commit: 95db4aa0edd1afb988cd10465ce15f7546ebbbdc
+    ref: kustomize/v5.4.3
+    commit: d4248b1213768c184f5ebbb8ee1a1422817478e4
   - path: sources/helm
     url: https://github.com/helm/helm.git
-    ref: v3.17.1
-    commit: 980d8ac1939e39138101364400756af2bdee1da5
+    ref: v3.16.4
+    commit: 7877b45b63f95635153b29a42c0c2f4273ec45ca
   - path: sources/dex
     ref: v2.41.1
     url: https://github.com/dexidp/dex.git
@@ -65,7 +65,7 @@ sources:
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: main
-    commit: a5f99b1de9bebe9db1640a7e2c4fdb282b40226d
+    commit: d858af08d29c94618e6ad63bd3c9330420422088
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master
