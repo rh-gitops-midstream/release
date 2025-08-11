@@ -1,16 +1,16 @@
 # Release Metadata
 release:
   name: OpenShift GitOps Operator
-  version: "99.99.99"
+  version: "1.16.3"
   olm:
     # TODO: Compute olm data automatically
-    channel: "latest,gitops-99.99"
-    replaces: "openshift-gitops-operator.v99.99.98"
+    channel: "gitops-1.16"
+    replaces: "openshift-gitops-operator.v1.16.2"
     skip-range: "" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
-    branch: main
-    application: gitops-main
+    branch: release-1.16
+    application: gitops-1-16
   managers:
     - name: "Siddhesh Ghadi"
       github: svghadi
@@ -82,10 +82,6 @@ sources:
     url: https://github.com/argoproj-labs/rollout-extension.git
     ref: master
     commit: 6f6289da54237a7ed084b22f3161317bfa9a9b4f
-  - path: sources/argocd-agent
-    url: https://github.com/argoproj-labs/argocd-agent.git
-    ref: main
-    commit: f3cb7f51e50bb8124748e9b39b29b44f49276925
 
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
@@ -119,9 +115,6 @@ konfluxImages:
   - name: argocd-rhel9
     buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel9"
     releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-rhel9"
-  - name: argocd-agent
-    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel8"
-    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8"
   - name: console-plugin
     buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-rhel8"
     releaseRef: "registry.redhat.io/openshift-gitops-1/console-plugin-rhel8"

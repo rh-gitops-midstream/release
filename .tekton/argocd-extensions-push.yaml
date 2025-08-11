@@ -9,7 +9,7 @@ metadata:
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: >-
       event == "push" &&
-      target_branch == "main" &&
+      target_branch == "release-1.16" &&
       (
         "sources/argocd-extension-installer".pathChanged() ||
         "sources/rollout-extension".pathChanged() ||
@@ -22,10 +22,10 @@ metadata:
       )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: gitops-main
-    appstudio.openshift.io/component: argocd-extensions-main
+    appstudio.openshift.io/application: gitops-1-16
+    appstudio.openshift.io/component: argocd-extensions-1-16
     pipelines.appstudio.openshift.io/type: build
-  name: argocd-extensions-main-on-push
+  name: argocd-extensions-1-16-on-push
   namespace: rh-openshift-gitops-tenant
 spec:
   params:
@@ -49,7 +49,7 @@ spec:
   pipelineRef:
     name: build-multi-platform-image
   taskRunTemplate: 
-    serviceAccountName: build-pipeline-argocd-extensions-main
+    serviceAccountName: build-pipeline-argocd-extensions-1-16
   workspaces:
   - name: git-auth
     secret:

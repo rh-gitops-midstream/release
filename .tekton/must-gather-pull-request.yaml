@@ -10,7 +10,7 @@ metadata:
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: >-
       event == "pull_request" &&
-      target_branch == "main" &&
+      target_branch == "release-1.16" &&
       (
         "sources/must-gather".pathChanged() ||
         "containers/must-gather/***".pathChanged() ||
@@ -21,10 +21,10 @@ metadata:
       )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: gitops-main
-    appstudio.openshift.io/component: must-gather-main
+    appstudio.openshift.io/application: gitops-1-16
+    appstudio.openshift.io/component: must-gather-1-16
     pipelines.appstudio.openshift.io/type: build
-  name: must-gather-main-on-pull-request
+  name: must-gather-1-16-on-pull-request
   namespace: rh-openshift-gitops-tenant
 spec:
   params:
@@ -47,7 +47,7 @@ spec:
   pipelineRef:
     name: build-multi-platform-image
   taskRunTemplate: 
-    serviceAccountName: build-pipeline-must-gather-main
+    serviceAccountName: build-pipeline-must-gather-1-16
   workspaces:
   - name: git-auth
     secret:
