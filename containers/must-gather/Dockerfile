@@ -39,3 +39,4 @@ COPY sources/gitops-must-gather/gather_gitops.sh /usr/bin/gather
 RUN chmod +x /usr/bin/gather
 
 ENTRYPOINT /usr/bin/gather
+
