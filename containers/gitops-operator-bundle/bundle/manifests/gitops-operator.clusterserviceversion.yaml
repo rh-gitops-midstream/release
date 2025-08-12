@@ -869,7 +869,7 @@ spec:
                       - name: RELATED_IMAGE_MUST_GATHER_IMAGE
                         value: registry.redhat.io/openshift-gitops-1/must-gather-rhel8@sha256:54cb97fd42320389cdc874c1b6d225b95189e76169a2f5375e3ca5bc18fa4863
                       - name: RELATED_IMAGE_KUBE_RBAC_PROXY_IMAGE
-                        value: registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:9b7aabfbead92df3a4afeb1854e45a92f23da52321d1705fce444510fa856145
+                        value: registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:56653df97e4498ecd67b9645d75e44f65c625594e312dbcf0f09937b57d76010
                     image: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator@sha256:e687c595910b16550cb4f784e538db93b11e8778e67100e79f2ca04404bda80e
                     livenessProbe:
                       httpGet:
@@ -904,7 +904,7 @@ spec:
                       - --logtostderr=true
                       - --allow-paths=/metrics
                       - --http2-disable
-                    image: registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:9b7aabfbead92df3a4afeb1854e45a92f23da52321d1705fce444510fa856145
+                    image: registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:56653df97e4498ecd67b9645d75e44f65c625594e312dbcf0f09937b57d76010
                     name: kube-rbac-proxy
                     ports:
                       - containerPort: 8443
@@ -1007,9 +1007,9 @@ spec:
     - name: manager
       image: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator@sha256:e687c595910b16550cb4f784e538db93b11e8778e67100e79f2ca04404bda80e
     - name: kube-rbac-proxy
-      image: registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:9b7aabfbead92df3a4afeb1854e45a92f23da52321d1705fce444510fa856145
+      image: registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:56653df97e4498ecd67b9645d75e44f65c625594e312dbcf0f09937b57d76010
     - name: kube_rbac_proxy_image
-      image: registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:9b7aabfbead92df3a4afeb1854e45a92f23da52321d1705fce444510fa856145
+      image: registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:56653df97e4498ecd67b9645d75e44f65c625594e312dbcf0f09937b57d76010
     - name: argocd_dex_image
       image: registry.redhat.io/openshift-gitops-1/dex-rhel8@sha256:159a54e7ef025bb84a6dad81c8c231cce5deb49c7837af29ea9dbd174e77b601
     - name: argocd_keycloak_image
