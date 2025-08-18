@@ -107,7 +107,7 @@ checksum_url="${EXTENSION_CHECKSUM_URL:-}"
 download_max_sec="${MAX_DOWNLOAD_SEC:-30}"
 
 ext_filename=$(basename -- "$ext_url")
-download_dir=`mktemp -d -t extension-XXXXXX`
+download_dir=`mktemp -d -t extension-XXXXXX` || exit 1
 ext_file="$download_dir/$ext_filename"
 if [ -f $ext_file ]; then
     rm $ext_file
