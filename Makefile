@@ -13,7 +13,9 @@ sources:
 .PHONY: bundle
 bundle: deps
 	cp -rf sources/gitops-operator/bundle containers/gitops-operator-bundle/
-	python3 containers/gitops-operator-bundle/patch-bundle.py
+	python3 containers/gitops-operator-bundle/patch-bundle.py \
+		$(if $(ARGOCD_SHA),--argocd-sha $(ARGOCD_SHA)) \
+		$(if $(ARGOCD_VERSION),--argocd-version $(ARGOCD_VERSION))
 
 # Install required deps in ./bin directory
 .PHONY: deps
