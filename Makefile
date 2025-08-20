@@ -47,3 +47,8 @@ update-build:
 	NEW_VAL=$${BASE_VERSION}-$$NEW_BUILD; \
 	echo "Updating BUILD: $$BUILD_VAL → $$NEW_VAL"; \
 	echo "$$NEW_VAL" > BUILD
+
+.PHONY: update-tekton-task-bundles
+update-tekton-task-bundles: deps
+	@echo "Updating Tekton Task Bundles..."
+	@./hack/update-tekton-task-bundles.sh .tekton/*.yaml
