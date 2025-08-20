@@ -24,11 +24,9 @@ COPY sources/gitops-operator /workspace
 WORKDIR /workspace
 ARG VERBOSE=2
 ENV GOFLAGS="-mod=mod"
-ENV CGO_ENABLED=1
-ENV GOEXPERIMENT=strictfipsruntime
 ENV GOOS=linux
 RUN go mod download
-RUN go build -tags strictfipsruntime -o bin/manager ./cmd/main.go
+RUN go build -o bin/manager ./cmd/main.go
     
 FROM registry.access.redhat.com/ubi8/ubi-minimal
 

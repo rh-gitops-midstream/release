@@ -24,11 +24,9 @@ COPY sources/rollouts-plugin-trafficrouter-openshift/ /go/src/github.com/argopro
 WORKDIR /go/src/github.com/argoproj/rollouts-plugin-trafficrouter-openshift/
 
 ENV GOFLAGS="-mod=mod"
-ENV CGO_ENABLED=1
-ENV GOEXPERIMENT=strictfipsruntime
 
 # Perform the build
-RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime go build -v -tags strictfipsruntime  -o ./dist/rollouts-plugin-trafficrouter-openshift .
+RUN go build -v -o ./dist/rollouts-plugin-trafficrouter-openshift .
 
 ####################################################################################################
 # Argo Rollouts Build stage which performs the actual build of Argo Rollouts binaries
@@ -43,26 +41,23 @@ ARG CI_ARGO_ROLLOUTS_VERSION
 ARG CI_ARGO_ROLLOUTS_COMMIT
 ENV GOFLAGS="-mod=mod"
 ENV CGO_ENABLED=1
-ENV GOEXPERIMENT=strictfipsruntime
 
 # Perform the build
-RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime \
-go build -v -ldflags "-X github.com/argoproj/argo-rollouts/utils/version.version=${CI_ARGO_ROLLOUTS_VERSION} \
+RUN go build -v -ldflags "-X github.com/argoproj/argo-rollouts/utils/version.version=${CI_ARGO_ROLLOUTS_VERSION} \
   -X github.com/argoproj/argo-rollouts/utils/version.buildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
   -X github.com/argoproj/argo-rollouts/utils/version.gitCommit=${CI_ARGO_ROLLOUTS_COMMIT} \
   -X github.com/argoproj/argo-rollouts/utils/version.gitTreeState=clean \
   -X github.com/argoproj/argo-rollouts.gitTag=${CI_ARGO_ROLLOUTS_VERSION}" \
-  -tags strictfipsruntime -o ./dist/rollouts-controller ./cmd/rollouts-controller
+  -o ./dist/rollouts-controller ./cmd/rollouts-controller
 
 # build git-lfs
 COPY sources/git-lfs/ /go/src/github.com/argoproj/git-lfs
 WORKDIR /go/src/github.com/argoproj/git-lfs/
 RUN ls -lha
 ARG CI_GIT_LFS_COMMIT
-RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 \
- go build -ldflags="-w -s -X 'github.com/git-lfs/git-lfs/v3/config.Vendor=Red Hat Inc' \
+RUN go build -ldflags="-w -s -X 'github.com/git-lfs/git-lfs/v3/config.Vendor=Red Hat Inc' \
  -X github.com/git-lfs/git-lfs/v3/config.GitCommit=${CI_GIT_LFS_COMMIT}" \
- -gcflags="" -tags strictfipsruntime -trimpath  -o ./bin/git-lfs ./git-lfs.go
+ -gcflags="" -trimpath  -o ./bin/git-lfs ./git-lfs.go
 
 ####################################################################################################
 # Final image

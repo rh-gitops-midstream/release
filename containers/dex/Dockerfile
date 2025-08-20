@@ -23,7 +23,7 @@ WORKDIR /app/dex
 ARG CI_DEX_VERSION
 ARG CI_DEX_COMMIT
 ENV GOFLAGS=""
-RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 GOOS=linux go build -mod=mod -o /tmp/dex -ldflags "-w -X main.version=$CI_DEX_VERSION -X main.commit=$CI_DEX_COMMIT" -tags strictfipsruntime ./cmd/dex
+RUN GOOS=linux go build -mod=mod -o /tmp/dex -ldflags "-w -X main.version=$CI_DEX_VERSION -X main.commit=$CI_DEX_COMMIT" ./cmd/dex
 
 # --- start build stage #2
 FROM registry.access.redhat.com/ubi8/ubi-minimal

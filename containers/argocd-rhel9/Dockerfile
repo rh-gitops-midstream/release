@@ -53,10 +53,6 @@ WORKDIR /go/src/github.com/argoproj/argo-cd
 
 ENV GOFLAGS="-mod=mod"
 
-# build with strictfips
-ENV GOEXPERIMENT=strictfipsruntime
-ENV CGO_ENABLED=1
-ENV CGO_FLAG=1
 
 ARG CI_VERSION
 ARG CI_ARGO_CD_COMMIT
@@ -69,8 +65,6 @@ RUN export PACKAGE=github.com/argoproj/argo-cd/v2/common &&\
 export VERSION=$(cat VERSION) &&\
 export BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') &&\
 export KUBECTL_VER=$(go list -m k8s.io/client-go | head -n 1 | rev | cut -d' ' -f1 | rev) &&\
-export GOEXPERIMENT=strictfipsruntime &&\
-export CGO_ENABLED=1 &&\
 export GODEBUG="tarinsecurepath=0,zipinsecurepath=0" &&\
 export LDFLAGS="-X ${PACKAGE}.version=${VERSION} \
   -X ${PACKAGE}.buildDate=${BUILD_DATE} \
@@ -78,7 +72,7 @@ export LDFLAGS="-X ${PACKAGE}.version=${VERSION} \
   -X ${PACKAGE}.gitTreeState=clean \
   -X ${PACKAGE}.kubectlVersion=${KUBECTL_VER}\
   -X \"${PACKAGE}.extraBuildInfo=${EXTRA_BUILD_INFO}\"" &&\
-go build -gcflags="all=-N -l" -v -ldflags "${LDFLAGS}" -tags strictfipsruntime -o ./dist/argocd ./cmd
+go build -gcflags="all=-N -l" -v -ldflags "${LDFLAGS}" -o ./dist/argocd ./cmd
 
 # Create static linked binary to be called from different base images.
 RUN export PACKAGE=github.com/argoproj/argo-cd/v2/common &&\
@@ -107,17 +101,17 @@ COPY sources/kustomize /go/src/github.com/argoproj/kustomize
 WORKDIR /go/src/github.com/argoproj/kustomize/kustomize
 ARG CI_KUSTOMIZE_VERSION
 ENV GOSUMDB=off
-RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -mod=readonly -buildvcs=true -ldflags="-s -X sigs.k8s.io/kustomize/api/provenance.version=${CI_KUSTOMIZE_VERSION#kustomize/} \
+RUN go build -mod=readonly -buildvcs=true -ldflags="-s -X sigs.k8s.io/kustomize/api/provenance.version=${CI_KUSTOMIZE_VERSION#kustomize/} \
 -X sigs.k8s.io/kustomize/api/provenance.buildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
--tags strictfipsruntime -o kustomize .
+-o kustomize .
 
 # build helm
 COPY sources/helm /go/src/github.com/argoproj/helm
 WORKDIR /go/src/github.com/argoproj/helm
 ARG CI_HELM_VERSION
 ARG CI_HELM_COMMIT
-RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -ldflags="-w -s -X helm.sh/helm/v3/internal/version.version=${CI_HELM_VERSION} \
--X helm.sh/helm/v3/internal/version.gitCommit=${CI_HELM_COMMIT}" -tags strictfipsruntime ./cmd/helm
+RUN go build -ldflags="-w -s -X helm.sh/helm/v3/internal/version.version=${CI_HELM_VERSION} \
+-X helm.sh/helm/v3/internal/version.gitCommit=${CI_HELM_COMMIT}" ./cmd/helm
 
 # build tini
 COPY sources/tini /go/src/github.com/argoproj/tini
@@ -136,10 +130,9 @@ RUN gcc -v connect.c -o connect-proxy
 COPY sources/git-lfs /go/src/github.com/argoproj/git-lfs
 WORKDIR /go/src/github.com/argoproj/git-lfs
 ARG CI_GIT_LFS_COMMIT
-RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 \
- go build -ldflags="-w -s -X 'github.com/git-lfs/git-lfs/v3/config.Vendor=Red Hat Inc' \
+RUN go build -ldflags="-w -s -X 'github.com/git-lfs/git-lfs/v3/config.Vendor=Red Hat Inc' \
  -X github.com/git-lfs/git-lfs/v3/config.GitCommit=${CI_GIT_LFS_COMMIT}" \
- -gcflags="" -tags strictfipsruntime -trimpath  -o ./bin/git-lfs ./git-lfs.go
+ -gcflags="" -trimpath  -o ./bin/git-lfs ./git-lfs.go
 
 ####################################################################################################
 # Final image
