@@ -1,0 +1,36 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.17.1-2-stage-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-17-stage
+  snapshot: gitops-1-17-cwdgh
+  data:
+    releaseNotes:
+      type: RHBA
+      issues:
+        fixed:
+          - id: GITOPS-7315
+            source: issues.redhat.com
+      #cves:
+      #  - key: CVE-2024-13484
+      #    component: gitops-operator-1-17
+      topic: "Red Hat OpenShift GitOps v1.17.1 release"
+      synopsis: "Red Hat OpenShift GitOps enhancement update"
+      description: |
+        An update is now available for Red Hat OpenShift GitOps.
+
+        This release includes several enhancements and bug fixes to improve the stability and security of the GitOps Operator.
+
+
+        Refer to the release notes in the references section for more details.
+      solution: |
+        Before applying this update, make sure all previously released errata relevant to your system have been applied.
+        
+        For details on how to apply this update, refer to:
+        
+        https://access.redhat.com/articles/11258
+      references:
+        - https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.17/
