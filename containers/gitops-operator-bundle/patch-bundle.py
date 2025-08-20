@@ -15,7 +15,7 @@ if bool(args.argocd_sha) != bool(args.argocd_version):
     print("[error] --argocd-sha and --argocd-version must be set together")
     sys.exit(1)
 if args.argocd_sha:
-    if not re.fullmatch(r"@sha256:[0-9a-f]+", args.argocd_sha):
+    if not re.fullmatch(r"sha256:[0-9a-f]+", args.argocd_sha):
         print(f"[error] Invalid SHA format: {args.argocd_sha} (should be @sha256:...)")
         sys.exit(1)
 
