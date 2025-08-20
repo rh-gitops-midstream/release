@@ -1,12 +1,12 @@
 apiVersion: appstudio.redhat.com/v1alpha1
 kind: Release
 metadata:
-  generateName: gitops-1.17.1-2-stage-
+  generateName: gitops-1.17.1-stage-
   namespace: rh-openshift-gitops-tenant
 spec:
   gracePeriodDays: 7
   releasePlan: gitops-1-17-stage
-  snapshot: gitops-1-17-cwdgh
+  snapshot: gitops-1-17-qrcl2
   data:
     releaseNotes:
       type: RHBA
