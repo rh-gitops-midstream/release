@@ -10,17 +10,17 @@ metadata:
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: >-
       event == "push" &&
-      target_branch == "release-1.16" &&
+      target_branch == "release-1.15" &&
       (
         "containers/gitops-operator-bundle/***".pathChanged() ||
         ".tekton/gitops-operator-bundle-push.yaml".pathChanged()
       )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: gitops-1-16
-    appstudio.openshift.io/component: gitops-operator-bundle-1-16
+    appstudio.openshift.io/application: gitops-1-15
+    appstudio.openshift.io/component: gitops-operator-bundle-1-15
     pipelines.appstudio.openshift.io/type: build
-  name: gitops-operator-bundle-1-16-on-push
+  name: gitops-operator-bundle-1-15-on-push
   namespace: rh-openshift-gitops-tenant
 spec:
   params:
@@ -46,7 +46,7 @@ spec:
   pipelineRef:
     name: build-multi-platform-image
   taskRunTemplate: 
-    serviceAccountName: build-pipeline-gitops-operator-bundle-1-16
+    serviceAccountName: build-pipeline-gitops-operator-bundle-1-15
   workspaces:
   - name: git-auth
     secret:

@@ -10,7 +10,7 @@ metadata:
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: >-
       event == "pull_request" &&
-      target_branch == "release-1.16" &&
+      target_branch == "release-1.15" &&
       (
         "sources/gitops-operator".pathChanged() ||
         "containers/gitops-operator/***".pathChanged() ||
@@ -21,10 +21,10 @@ metadata:
       )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: gitops-1-16
-    appstudio.openshift.io/component: gitops-operator-1-16
+    appstudio.openshift.io/application: gitops-1-15
+    appstudio.openshift.io/component: gitops-operator-1-15
     pipelines.appstudio.openshift.io/type: build
-  name: gitops-operator-1-16-on-pull-request
+  name: gitops-operator-1-15-on-pull-request
   namespace: rh-openshift-gitops-tenant
 spec:
   params:
@@ -49,7 +49,7 @@ spec:
   pipelineRef:
     name: build-multi-platform-image
   taskRunTemplate: 
-    serviceAccountName: build-pipeline-gitops-operator-1-16
+    serviceAccountName: build-pipeline-gitops-operator-1-15
   workspaces:
   - name: git-auth
     secret:
