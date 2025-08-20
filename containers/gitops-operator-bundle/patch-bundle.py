@@ -3,6 +3,22 @@ from pathlib import Path
 import subprocess
 import json
 import sys
+import argparse
+import re
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--argocd-sha", type=str, help="Specify the Argo CD Image SHA to use in the CSV.")
+parser.add_argument("--argocd-version", type=str, help="Argo CD version (e.g., v2.14.0)",
+)
+args = parser.parse_args()
+if bool(args.argocd_sha) != bool(args.argocd_version):
+    print("[error] --argocd-sha and --argocd-version must be set together")
+    sys.exit(1)
+if args.argocd_sha:
+    if not re.fullmatch(r"@sha256:[0-9a-f]+", args.argocd_sha):
+        print(f"[error] Invalid SHA format: {args.argocd_sha} (should be @sha256:...)")
+        sys.exit(1)
+
 
 # --- Skopeo check ---
 try:
@@ -68,6 +84,9 @@ for id, img in list(images.items()):
         print(f">>> Skipping digest conversion for {base} as it is a bundle image.")
         continue
     digest = get_digest(img)
+    if id == 'argocd' and args.argocd_sha:
+        print(f">>> Using provided Argo CD SHA: {args.argocd_sha}")
+        digest = args.argocd_sha
     image_ref = replacements.get(base, base)
     images[id] = f"{image_ref}@{digest}"
     print(f">>> Final Image: {images[id]}")
@@ -132,6 +151,9 @@ for source in config.get("sources", []):
     if source.get("path") == "sources/argo-cd":
         argocd_version = source.get("ref")
         break
+# Use provided Argo CD version if specified using --argocd-version cli argument
+if args.argocd_version:
+    argocd_version = args.argocd_version
 
 # --- Patch Dockerfile ---
 
