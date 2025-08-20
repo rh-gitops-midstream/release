@@ -84,8 +84,8 @@ sources:
     commit: 6f6289da54237a7ed084b22f3161317bfa9a9b4f
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
-    ref: v0.3.1
-    commit: ccdcafa37648da361548e2eaec3afa4c9f914613
+    ref: v0.2.1
+    commit: 0e2e5642fba63baffd0743e2f2e90bd30a641f1c
 
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
