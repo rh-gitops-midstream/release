@@ -24,24 +24,24 @@ release:
 sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
-    ref: v1.16
-    commit: ba637f02bd9777a3ec55df8b27034629dda92b56
+    ref: v1.15
+    commit: 3888ab37d28396604ea304f8d580d4bb9508e58a
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
-    ref: v2.14.15
-    commit: 6c7d6940cd19a4543e749d18ac282c7020c7c92e
+    ref: v2.13.8
+    commit: 612d345cd926d0b05d1755e3e0717b01ccd20740
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
     ref: v1.7.2
-    commit: 59e5bd385c031600f86075beb9d77620f8d7915e
+    commit: 13decc22c1055ad80f0f2b7126685ff06b3b64ce
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
     ref: kustomize/v5.4.3
     commit: d4248b1213768c184f5ebbb8ee1a1422817478e4
   - path: sources/helm
     url: https://github.com/helm/helm.git
-    ref: v3.16.4
-    commit: 7877b45b63f95635153b29a42c0c2f4273ec45ca
+    ref: v3.15.4
+    commit: fa9efb07d9d8debbb4306d72af76a383895aa8c4
   - path: sources/dex
     ref: v2.41.1
     url: https://github.com/dexidp/dex.git
@@ -57,7 +57,7 @@ sources:
   - path: sources/tini
     url: https://github.com/krallin/tini.git
     ref: master
-    commit: 0b44d3665869e46ccbac7414241b8256d6234dc4
+    commit: de40ad007797e0dcd8b7126f27bb87401d224240
   - path: sources/argocd-extension-installer
     url: https://github.com/argoproj-labs/argocd-extension-installer.git
     ref: main
