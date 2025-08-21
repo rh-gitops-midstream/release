@@ -6,7 +6,7 @@ metadata:
 spec:
   gracePeriodDays: 7
   releasePlan: gitops-1-16-stage
-  snapshot: gitops-1-16-552br
+  snapshot: gitops-1-16-9d2hq
   data:
     releaseNotes:
       type: RHBA
