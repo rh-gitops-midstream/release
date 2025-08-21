@@ -1006,11 +1006,11 @@ spec:
                       - name: BACKEND_IMAGE
                         value: registry.redhat.io/openshift-gitops-1/gitops-rhel8@sha256:c37aa141387c847eac825363dddda3eb59203d3694120dba439b00cf0c66f320
                       - name: RELATED_IMAGE_ARGOCD_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argocd-rhel8@sha256:99eed0c43cd8cf8e99163e9b928ad36d61069f7f4fad378431089739a324e67c
+                        value: registry.redhat.io/openshift-gitops-1/argocd-rhel8@sha256:cab809fd1288d31c93f4f5c4facb7efaff9f844e21a859d1e4557831575a13c8
                       - name: ARGOCD_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argocd-rhel8@sha256:99eed0c43cd8cf8e99163e9b928ad36d61069f7f4fad378431089739a324e67c
+                        value: registry.redhat.io/openshift-gitops-1/argocd-rhel8@sha256:cab809fd1288d31c93f4f5c4facb7efaff9f844e21a859d1e4557831575a13c8
                       - name: ARGOCD_REPOSERVER_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argocd-rhel8@sha256:99eed0c43cd8cf8e99163e9b928ad36d61069f7f4fad378431089739a324e67c
+                        value: registry.redhat.io/openshift-gitops-1/argocd-rhel8@sha256:cab809fd1288d31c93f4f5c4facb7efaff9f844e21a859d1e4557831575a13c8
                       - name: RELATED_IMAGE_ARGOCD_REDIS_IMAGE
                         value: registry.redhat.io/rhel9/redis-7@sha256:2fca0decc49230122f044afb2e7cd8f64921a00141c8c22c2f1402f3564f87f8
                       - name: ARGOCD_REDIS_IMAGE
@@ -1184,7 +1184,7 @@ spec:
     - name: backend_image
       image: registry.redhat.io/openshift-gitops-1/gitops-rhel8@sha256:c37aa141387c847eac825363dddda3eb59203d3694120dba439b00cf0c66f320
     - name: argocd_image
-      image: registry.redhat.io/openshift-gitops-1/argocd-rhel8@sha256:99eed0c43cd8cf8e99163e9b928ad36d61069f7f4fad378431089739a324e67c
+      image: registry.redhat.io/openshift-gitops-1/argocd-rhel8@sha256:cab809fd1288d31c93f4f5c4facb7efaff9f844e21a859d1e4557831575a13c8
     - name: argocd_redis_image
       image: registry.redhat.io/rhel9/redis-7@sha256:2fca0decc49230122f044afb2e7cd8f64921a00141c8c22c2f1402f3564f87f8
     - name: argocd_redis_ha_proxy_image
