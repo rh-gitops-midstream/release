@@ -82,7 +82,7 @@ RUN export PACKAGE=github.com/argoproj/argo-cd/v2/common &&\
     export GOEXPERIMENT='' &&\
     export CGO_ENABLED=0 &&\
     export GODEBUG="tarinsecurepath=0,zipinsecurepath=0" &&\
-    export LDFLAGS="-extldflags \"-static\" -X ${PACKAGE}.version=${VERSION} \
+    export LDFLAGS="-extldflags '-static' -X ${PACKAGE}.version=${VERSION} \
         -X ${PACKAGE}.buildDate=${BUILD_DATE} \
         -X ${PACKAGE}.gitCommit=${CI_ARGO_CD_COMMIT} \
         -X ${PACKAGE}.gitTreeState=clean \
