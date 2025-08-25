@@ -7,21 +7,21 @@ Releasing final artifacts for OpenShift GitOps with Konflux is a two-step proces
 2. Release the catalog images for supported OCP versions
 
 
-## Step 1: Release Component Images
+### Step 1: Release Component Images
 
 Component images are released by applying a **Release CR** on the Konflux cluster.
-The Release CRs are located in the repository under `releases/<version>/`.
+The Release CRs are located in the repository under `releases/<version>/`.  
 Each Release CR contains:
 - Snapshot details (component images to be released)
 - Errata information
 
-### Pre-Release Checklist
+##### Pre-Release Checklist
 
 Before starting the release, ensure that:
 - You have checked out the desired `release-*` branch of this repository.
 - You are logged into the Konflux cluster with sufficient permissions.
 
-### Apply the Production Release CR
+##### Apply the Production Release CR
 
 To trigger a production release, apply the corresponding CR:
 
@@ -33,7 +33,7 @@ oc create -f releases/v1.15.4/prod-release.yaml
 > You can also use `stage-release.yaml` for a **staging release**.
 This is recommended to validate artifacts before pushing them into production, reducing the risk of failure during the final release.
 
-### Monitor the Release
+##### Monitor the Release
 
 You can monitor the newly created release object via the **Konflux UI**:
 - Navigate to: **Applications → gitops-x.y → Releases**
@@ -46,7 +46,7 @@ To track execution details:
 
 ![Component Release](assets/component-release.png)
 
-### Errata Details Post Release
+##### Errata Details Post Release
 
 Once the Release has successfully completed, the errata will be automatically generated using the data provided in the Release object.
 
@@ -57,13 +57,13 @@ You can find the generated errata link by:
 
 TODO: <IMAGE>
 
-## Step 2: Release Catalog Images
+### Step 2: Release Catalog Images
 
 Once the component images are available on registry.redhat.io, proceed with the catalog release.
 
 The Release CRs for catalogs are maintained in the [catalog repository](https://github.com/rh-gitops-midstream/catalog) under `releases/<ocp-version>/` directory.
 
-### Pre-Release Checklist
+##### Pre-Release Checklist
 
 Before starting the catalog release, ensure that:
 - You have cloned the [catalog repository](https://github.com/rh-gitops-midstream/catalog) and checked out the main branch.
@@ -72,21 +72,21 @@ Before starting the catalog release, ensure that:
 > [!IMPORTANT] 
 > For the catalog repo, main is the only branch. Ensure you are on main when applying release objects.
 
-### Apply the Production Release CR
+##### Apply the Production Release CR
 
 ```bash
 oc create -f releases/v4.19/prod-release.yaml
 ```
 
 > [!CAUTION]
-> If you are performing simulation releases for multiple versions, ensure that all component versions referenced in the catalog have been successfully released before triggering the catalog release.
+> If you are performing simultaneous releases for multiple versions, ensure that all component versions referenced in the catalog have been successfully released before triggering the catalog release.
 Otherwise, the catalog pipeline may fail due to missing or unpublished images.
 
 > [!TIP]
 > You can also use `stage-release.yaml` for a **staging release**.
 This is recommended to validate artifacts before pushing them into production, reducing the risk of failure during the final release.
 
-### Monitor the release
+##### Monitor the release
 
 You can monitor the newly created release object via the **Konflux UI**:
 - Navigate to: **Applications → catalog-x.y → Releases**
@@ -99,11 +99,11 @@ To track execution details:
 
 ![Catalog Release](assets/catalog-release.png)
 
-## Post Release Validation
+### Post Release Validation
 
 TODO
 
-## TroubleShooting
+### TroubleShooting
 
 TODO
 
