@@ -18,7 +18,7 @@ spec:
       #  - key: CVE-2024-13484
       #    component: gitops-operator-1-17
       topic: "Red Hat OpenShift GitOps v1.15.4 release"
-      synopsis: "Red Hat OpenShift GitOps enhancement update"
+      synopsis: "Red Hat OpenShift GitOps update"
       description: |
         An update is now available for Red Hat OpenShift GitOps.
 
