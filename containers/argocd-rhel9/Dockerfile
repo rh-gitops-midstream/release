@@ -61,34 +61,7 @@ ENV EXTRA_BUILD_INFO="{Vendor Information: Red Hat OpenShift GitOps version: $CI
 
 # Perform the build
 COPY --from=argocd-ui /usr/src/app/argo-cd/ui/dist/app /go/src/github.com/argoproj/argo-cd/ui/dist/app
-RUN export PACKAGE=github.com/argoproj/argo-cd/v2/common &&\
-export VERSION=$(cat VERSION) &&\
-export BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') &&\
-export KUBECTL_VER=$(go list -m k8s.io/client-go | head -n 1 | rev | cut -d' ' -f1 | rev) &&\
-export GODEBUG="tarinsecurepath=0,zipinsecurepath=0" &&\
-export LDFLAGS="-X ${PACKAGE}.version=${VERSION} \
-  -X ${PACKAGE}.buildDate=${BUILD_DATE} \
-  -X ${PACKAGE}.gitCommit=${CI_ARGO_CD_COMMIT} \
-  -X ${PACKAGE}.gitTreeState=clean \
-  -X ${PACKAGE}.kubectlVersion=${KUBECTL_VER}\
-  -X \"${PACKAGE}.extraBuildInfo=${EXTRA_BUILD_INFO}\"" &&\
-go build -gcflags="all=-N -l" -v -ldflags "${LDFLAGS}" -o ./dist/argocd ./cmd
-
-# Create static linked binary to be called from different base images.
-RUN export PACKAGE=github.com/argoproj/argo-cd/v2/common &&\
-    export VERSION=$(cat VERSION) &&\
-    export BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') &&\
-    export KUBECTL_VER=$(go list -m k8s.io/client-go | head -n 1 | rev | cut -d' ' -f1 | rev) &&\
-    export GOEXPERIMENT='' &&\
-    export CGO_ENABLED=0 &&\
-    export GODEBUG="tarinsecurepath=0,zipinsecurepath=0" &&\
-    export LDFLAGS="-extldflags '-static' -X ${PACKAGE}.version=${VERSION} \
-        -X ${PACKAGE}.buildDate=${BUILD_DATE} \
-        -X ${PACKAGE}.gitCommit=${CI_ARGO_CD_COMMIT} \
-        -X ${PACKAGE}.gitTreeState=clean \
-        -X ${PACKAGE}.kubectlVersion=${KUBECTL_VER}\
-        -X \"${PACKAGE}.extraBuildInfo=${EXTRA_BUILD_INFO}\"" &&\
-    go build -gcflags="all=-N -l" -v -ldflags "${LDFLAGS}" -o ./dist/argocd-cmp-server ./cmd
+RUN make GIT_COMMIT=${CI_ARGO_CD_COMMIT} EXTRA_BUILD_INFO="${EXTRA_BUILD_INFO}" cli-local server controller repo-server
 
 ARG BUILD_ALL_CLIS=false
 RUN if [ "$BUILD_ALL_CLIS" = "true" ] ; then \
@@ -178,9 +151,9 @@ ENV USER=argocd
 WORKDIR /home/argocd
 
 COPY --from=argocd-build /go/src/github.com/argoproj/argo-cd/dist/argocd /usr/local/bin/
-COPY --from=argocd-build /go/src/github.com/argoproj/argo-cd/dist/argocd-cmp-server /usr/local/bin/
 RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-server
 RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-repo-server
+RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-cmp-server
 RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-application-controller
 RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-dex
 RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-notifications
