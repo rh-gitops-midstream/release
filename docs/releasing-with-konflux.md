@@ -61,12 +61,12 @@ TODO: <IMAGE>
 
 Once the component images are available on registry.redhat.io, proceed with the catalog release.
 
-The Release CRs for catalogs are maintained in the catalog repo under `releases/<ocp-version>/` directory
+The Release CRs for catalogs are maintained in the [catalog repository](https://github.com/rh-gitops-midstream/catalog) under `releases/<ocp-version>/` directory.
 
 ### Pre-Release Checklist
 
 Before starting the catalog release, ensure that:
-- You have cloned the catalog repository and checked out the main branch.
+- You have cloned the [catalog repository](https://github.com/rh-gitops-midstream/catalog) and checked out the main branch.
 - You are logged into the Konflux cluster with sufficient permissions.
 
 > [!IMPORTANT] 
@@ -77,6 +77,10 @@ Before starting the catalog release, ensure that:
 ```bash
 oc create -f releases/v4.19/prod-release.yaml
 ```
+
+> [!CAUTION]
+> If you are performing simulation releases for multiple versions, ensure that all component versions referenced in the catalog have been successfully released before triggering the catalog release.
+Otherwise, the catalog pipeline may fail due to missing or unpublished images.
 
 > [!TIP]
 > You can also use `stage-release.yaml` for a **staging release**.
