@@ -1,16 +1,16 @@
 # Release Metadata
 release:
   name: OpenShift GitOps Operator
-  version: "99.99.99"
+  version: "1.18.0"
   olm:
     # TODO: Compute olm data automatically
-    channel: "latest,gitops-99.99"
-    replaces: "openshift-gitops-operator.v99.99.98"
+    channel: "latest,gitops-1.18"
+    replaces: "openshift-gitops-operator.v1.18.0"
     skip-range: "" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
-    branch: main
-    application: gitops-main
+    branch: release-1.18
+    application: gitops-1-18
   managers:
     - name: "Siddhesh Ghadi"
       github: svghadi
@@ -24,12 +24,12 @@ release:
 sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
-    ref: tmp-v1.17
-    commit: 59e94c8d49c5d302d51d31bc30fa5a90348f84cd
+    ref: v1.18
+    commit: 0bbf75d4c6ddfaf841766e1aa295505067f84296
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.0.9
-    commit: a1faf0265f5256f0b09e045f8486421359e3211f
+    ref: v3.1.1
+    commit: fa342d153e0e7942938256aea491a68439a53c44
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
     ref: v1.8.3
@@ -40,12 +40,12 @@ sources:
     commit: 95db4aa0edd1afb988cd10465ce15f7546ebbbdc
   - path: sources/helm
     url: https://github.com/helm/helm.git
-    ref: v3.17.1
-    commit: 980d8ac1939e39138101364400756af2bdee1da5
+    ref: v3.18.4
+    commit: d80839cf37d860c8aa9a0503fe463278f26cd5e2
   - path: sources/dex
-    ref: v2.41.1
+    ref: v2.43.0
     url: https://github.com/dexidp/dex.git
-    commit: 43956db7fd75c488a82c70cf231f44287300a75d
+    commit: 8e96058e71257eb0a32e1b0a42303094dea9d8fb
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
     ref: v3.6.1
@@ -64,28 +64,28 @@ sources:
     commit: 44a5ab8e6998df0beb6f293b3607262db53aa8c7
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
-    ref: main
-    commit: a5f99b1de9bebe9db1640a7e2c4fdb282b40226d
+    ref: v1.18
+    commit: ef7e1ffe8f3477678fc8c89f30672b395ffc3ab1
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master
-    commit: d83d568a6131e2564353a6ec1294d28635783616
+    commit: ff716dd2ebf9540fc4e36997219bc67e2ec27a36
   - path: sources/rollouts-plugin-trafficrouter-openshift
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
     ref: main
-    commit: 142230a39d74119ccfc7414f6812bdac2fc09449
+    commit: 1495bbad184a05cde955fb21dcf35d05c3e58d98
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
-    commit: 4b954166b1ccab7dd628df912e5be13381b57211
+    commit: 528651290fdee6d6ebe67ec826ad3c8fc47767c2
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
     ref: master
     commit: 6f6289da54237a7ed084b22f3161317bfa9a9b4f
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
-    ref: main
-    commit: f3cb7f51e50bb8124748e9b39b29b44f49276925
+    ref: v0.3.2
+    commit: 562405f9e5d953284e21481d422474908dbf6044
 
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
