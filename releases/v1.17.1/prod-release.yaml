@@ -9,21 +9,38 @@ spec:
   snapshot: gitops-1-17-9n2xp
   data:
     releaseNotes:
-      type: RHBA
+      type: RHSA
       issues:
         fixed:
           - id: GITOPS-7571
-            source: issues.redhat.com
-      #cves:
-      #  - key: CVE-2024-13484
-      #    component: gitops-operator-1-17
+            source: issues.redhat.com 
+          - id: GITOPS-7582
+            source: issues.redhat.com 
+          - id: GITOPS-7585
+            source: issues.redhat.com 
+          - id: GITOPS-7594
+            source: issues.redhat.com 
+          - id: GITOPS-7600
+            source: issues.redhat.com 
+      cves:
+        - key: CVE-2025-55190
+          component: argocd-1-17
+        - key: CVE-2025-55190
+          component: argocd-rhel9-1-17
+        - key: CVE-2025-55190
+          component: gitops-operator-1-17
+        - key: CVE-2025-55190
+          component: gitops-operator-bundle-1-17
       topic: "Red Hat OpenShift GitOps v1.17.1 release"
-      synopsis: "Red Hat OpenShift GitOps update"
+      synopsis: "Red Hat OpenShift GitOps security update"
       description: |
-        An update is now available for Red Hat OpenShift GitOps.
-
-
-        Refer to the release notes in the references section for more details.
+        An update is now available for Red Hat OpenShift GitOps.  
+          
+        Security Fix(es):  
+        * openshift-gitops-1/argocd-rhel8: Project API Token Exposes Repository Credentials [gitops-1.17](CVE-2025-55190) 
+        * openshift-gitops-1/argocd-rhel9: Project API Token Exposes Repository Credentials [gitops-1.17](CVE-2025-55190) 
+        * openshift-gitops-1/gitops-operator-bundle: Project API Token Exposes Repository Credentials [gitops-1.17](CVE-2025-55190) 
+        * openshift-gitops-1/gitops-rhel8-operator: Project API Token Exposes Repository Credentials [gitops-1.17](CVE-2025-55190)
       solution: |
         Before applying this update, make sure all previously released errata relevant to your system have been applied.
         
@@ -31,4 +48,5 @@ spec:
         
         https://access.redhat.com/articles/11258
       references:
+        - https://access.redhat.com/security/cve/CVE-2025-55190
         - https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.17/
