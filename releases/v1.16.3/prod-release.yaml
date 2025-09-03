@@ -9,21 +9,47 @@ spec:
   snapshot: gitops-1-16-9d2hq
   data:
     releaseNotes:
-      type: RHBA
+      type: RHSA
       issues:
         fixed:
-          - id: GITOPS-7570
+          - id: GITOPS-7182
             source: issues.redhat.com
-      #cves:
-      #  - key: CVE-2024-13484
-      #    component: gitops-operator-1-17
+          - id: GITOPS-7188
+            source: issues.redhat.com 
+          - id: GITOPS-7570
+            source: issues.redhat.com 
+          - id: GITOPS-7583
+            source: issues.redhat.com 
+          - id: GITOPS-7586
+            source: issues.redhat.com 
+          - id: GITOPS-7595
+            source: issues.redhat.com 
+          - id: GITOPS-7601
+            source: issues.redhat.com 
+      cves:
+        - key: CVE-2025-55190
+          component: argocd-1-16
+        - key: CVE-2025-55190
+          component: argocd-rhel9-1-16
+        - key: CVE-2025-55190
+          component: gitops-operator-1-16
+        - key: CVE-2025-55190
+          component: gitops-operator-bundle-1-16
       topic: "Red Hat OpenShift GitOps v1.16.3 release"
-      synopsis: "Red Hat OpenShift GitOps update"
+      synopsis: "Red Hat OpenShift GitOps security update"
       description: |
-        An update is now available for Red Hat OpenShift GitOps.
-
-
-        Refer to the release notes in the references section for more details.
+        An update is now available for Red Hat OpenShift GitOps.  
+          
+        Security Fix(es):  
+        * openshift-gitops-1/argocd-rhel8: Project API Token Exposes Repository Credentials [gitops-1.16](CVE-2025-55190) 
+        * openshift-gitops-1/argocd-rhel9: Project API Token Exposes Repository Credentials [gitops-1.16](CVE-2025-55190) 
+        * openshift-gitops-1/gitops-operator-bundle: Project API Token Exposes Repository Credentials [gitops-1.16](CVE-2025-55190) 
+        * openshift-gitops-1/gitops-rhel8-operator: Project API Token Exposes Repository Credentials [gitops-1.16](CVE-2025-55190)
+          
+        Bug Fix(es):  
+        * ose-kube-rbac-proxy in OpenShift GitOps pulling from outdated v4.13 stream
+        * Update must gather base image
+        * Update Argo CD to latest 2.14.z 
       solution: |
         Before applying this update, make sure all previously released errata relevant to your system have been applied.
         
@@ -31,4 +57,5 @@ spec:
         
         https://access.redhat.com/articles/11258
       references:
-        - https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.17/
+        - https://access.redhat.com/security/cve/CVE-2025-55190
+        - https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.16/
