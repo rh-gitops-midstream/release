@@ -28,8 +28,8 @@ sources:
     commit: 0bbf75d4c6ddfaf841766e1aa295505067f84296
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.1.1
-    commit: fa342d153e0e7942938256aea491a68439a53c44
+    ref: v3.1.4
+    commit: 20dd73af349fa4ff65ee939f71c03d3f467bce60
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
     ref: v1.8.3
@@ -77,7 +77,7 @@ sources:
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
-    commit: 528651290fdee6d6ebe67ec826ad3c8fc47767c2
+    commit: 1b0595fe1ce6dd70fe62bb810ce6eadaef7ac454
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
     ref: master
