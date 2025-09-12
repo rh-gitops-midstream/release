@@ -1,0 +1,72 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  annotations:
+    build.appstudio.openshift.io/repo: https://github.com/nmirasch/release?rev={{revision}}
+    build.appstudio.redhat.com/commit_sha: '{{revision}}'
+    build.appstudio.redhat.com/target_branch: '{{target_branch}}'
+    pipelinesascode.tekton.dev/cancel-in-progress: "false"
+    pipelinesascode.tekton.dev/max-keep-runs: "3"
+    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
+      == "main" && ( "rpms/microshift-gitops/***".pathChanged() || ".tekton/rpm-microshift-gitops-push.yaml".pathChanged())
+  creationTimestamp: null
+  labels:
+    appstudio.openshift.io/application: testing-rpms-builds
+    appstudio.openshift.io/component: microshift-gitops-rpm-dev-main
+    pipelines.appstudio.openshift.io/type: build
+  name: microshift-gitops-rpm-dev-main-on-push
+  namespace: rh-openshift-gitops-tenant
+spec:
+  params:
+  - name: git-url
+    value: '{{source_url}}'
+  - name: revision
+    value: '{{revision}}'
+  - name: ociStorage
+    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/microshift-gitops-rpm-dev-main:{{revision}}
+  - name: path-context
+    value: rpms/microshift-gitops
+  - name: package-name
+    value: microshift-gitops
+  - name: target-branch
+    value: "{{ target_branch }}"
+  - name: hermetic
+    value: "true"
+  - name: build-architectures
+    value:
+    - aarch64
+    - x86_64
+  - name: pre-build-script-image
+    value: "registry.access.redhat.com/ubi9/ubi:latest"
+  - name: pre-build-script-content
+    value: |
+      #!/usr/bin/env bash
+      set -euxo pipefail
+      
+      echo "--- Preparing sources for RPM build ---"
+      mv ./rpms/microshift-gitops/microshift-gitops.spec .
+      
+      echo "--- Creating argo-cd-sources.tar.gz with correct internal directory ---"
+      tar -czvf argo-cd-sources.tar.gz --transform="s,^argo-cd,argo-cd," -C ./sources argo-cd
+      
+      echo "--- Cleaning up original source directory ---"
+      rm -rf ./sources
+  pipelineRef:
+    resolver: git
+    params:
+    - name: url
+      value: "https://github.com/nmirasch/rpmbuild-pipeline.git"
+    - name: revision
+      value: main
+    - name: pathInRepo
+      value: pipeline/build-rpm-package.yaml
+  taskRunTemplate:
+    serviceAccountName: build-pipeline-microshift-gitops-rpm-dev-main
+  workspaces:
+  - name: sources
+    persistentVolumeClaim:
+      claimName: "{{pvc_name}}"
+  - name: git-auth
+    secret:
+      secretName: '{{ git_auth_secret }}'
+status: {}
