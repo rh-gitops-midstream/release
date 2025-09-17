@@ -45,9 +45,12 @@ spec:
       set -euxo pipefail
       
       echo "--- Preparing sources for RPM build ---"
+      cd rpms/microshift-gitops
+      ./static-pre-build-script.sh
+      cd ../..
       mv ./rpms/microshift-gitops/microshift-gitops.spec .
       
-      echo "--- Creating argo-cd-sources.tar.gz with correct internal directory ---"
+      echo "--- Creating argo-cd-sources.tar.gz with correct internal directory  ---"
       tar -czvf argo-cd-sources.tar.gz --transform="s,^argo-cd,argo-cd," -C ./sources argo-cd
       
       echo "--- Cleaning up original source directory ---"

@@ -2,36 +2,29 @@
 
 set -euxo pipefail
 
-# Prerequisites: 
-# - jq
+# Prerequisites:
 # - sed
-# - skopeo
-# installed in the image via Dockerfile(https://gitlab.cee.redhat.com/rhprod/rhprod-cli/-/raw/main/Dockerfile)
 
 # Get the container image url and its tag.
 ARGO_CD_IMAGE_URL='registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:5f697c1246542f864e021ec59d2b090e2e0313bd20f68b5281fc7565c8b19a2a'
 ARGO_CD_IMAGE_TAG='v1.17.0-5'
 CI_ARGO_CD_UPSTREAM_URL=https://github.com/argoproj/argo-cd
-GITOPS_VERSION="1.17.0-5" # "1.16"
-GITOPS_RELEASE="1.17.0" # "1.16"
+GITOPS_VERSION="1.17.0-5"
+GITOPS_RELEASE="1.17.0"
 CI_ARGO_CD_UPSTREAM_COMMIT='5f697c1246542f864e021ec59d2b090e2e0313bd20f68b5281fc7565c8b19a2a'
 
+cat microshift-gitops.spec.in > microshift-gitops.spec
+# ARGO-CD build steps
 # Get the SHA id for the respective processor architectures.
 ARGO_CD_IMAGE_SHA_X86='sha256:5f35a4ed723fa364bd58bc56a9491915ec8bed256a056b07429e1957580b1c4f'
 ARGO_CD_IMAGE_SHA_ARM='sha256:8168018c4ffadcda01fea61ec2bf005b556a28966dfdf60cf922a37392bcc987'
 
-# Update the vars to be replaced in spec.in template file.
-sed -i "s/REPLACE_ARGO_CD_CONTAINER_SHA_X86/${ARGO_CD_IMAGE_SHA_X86}/g" microshift-gitops.spec.in
-sed -i "s/REPLACE_ARGO_CD_CONTAINER_SHA_ARM/${ARGO_CD_IMAGE_SHA_ARM}/g" microshift-gitops.spec.in
-sed -i "s/REPLACE_ARGO_CD_VERSION/${ARGO_CD_IMAGE_TAG}/g" microshift-gitops.spec.in
-
 # Update spec file too, as the file generation from the template spec.in file is run prior to the pre-build-script execution.
-sed -i "s/REPLACE_ARGO_CD_CONTAINER_SHA_X86/${ARGO_CD_IMAGE_SHA_X86}/g" microshift-gitops.spec
-sed -i "s/REPLACE_ARGO_CD_CONTAINER_SHA_ARM/${ARGO_CD_IMAGE_SHA_ARM}/g" microshift-gitops.spec
-sed -i "s/REPLACE_ARGO_CD_VERSION/${ARGO_CD_IMAGE_TAG}/g" microshift-gitops.spec
+sed -i "s|REPLACE_ARGO_CD_CONTAINER_SHA_X86|${ARGO_CD_IMAGE_SHA_X86}|g" microshift-gitops.spec
+sed -i "s|REPLACE_ARGO_CD_CONTAINER_SHA_ARM|${ARGO_CD_IMAGE_SHA_ARM}|g" microshift-gitops.spec
+sed -i "s|REPLACE_ARGO_CD_VERSION|${ARGO_CD_IMAGE_TAG}|g" microshift-gitops.spec
 
 # REDIS build steps
-
 # Get the container image url.
 REDIS_IMAGE_URL='registry.redhat.io/rhel9/redis-7@sha256:05b04b313acf533b81bbc4d26003db6c02705932cfd36a3f7034557920cfcb9e'
 REDIS_IMAGE_TAG='9.6-1755009825'
@@ -40,17 +33,16 @@ REDIS_IMAGE_TAG='9.6-1755009825'
 REDIS_IMAGE_SHA_X86='sha256:300c0fd54f8f49eba19e6a16745fa7e225f1f66b571c8e02cd098ef45e03d1c8'
 REDIS_IMAGE_SHA_ARM='sha256:c796538bad7613deb1fba2bb76e736a6376b25ab97b2f944e67af00e01f5d965'
 
-# Update the vars to be replaced in spec.in template file.
-sed -i "s/REPLACE_REDIS_CONTAINER_SHA_X86/${REDIS_IMAGE_SHA_X86}/g" microshift-gitops.spec.in
-sed -i "s/REPLACE_REDIS_CONTAINER_SHA_ARM/${REDIS_IMAGE_SHA_ARM}/g" microshift-gitops.spec.in
-
 # Update spec file too, as the file generation from the template spec.in file is run prior to the pre-build-script execution.
-sed -i "s/REPLACE_REDIS_CONTAINER_SHA_X86/${REDIS_IMAGE_SHA_X86}/g" microshift-gitops.spec
-sed -i "s/REPLACE_REDIS_CONTAINER_SHA_ARM/${REDIS_IMAGE_SHA_ARM}/g" microshift-gitops.spec
+sed -i "s|REPLACE_ARGO_CD_IMAGE_URL|${ARGO_CD_IMAGE_URL}|g" microshift-gitops.spec
+
+sed -i "s|REPLACE_REDIS_CONTAINER_SHA_X86|${REDIS_IMAGE_SHA_X86}|g" microshift-gitops.spec
+sed -i "s|REPLACE_REDIS_CONTAINER_SHA_ARM|${REDIS_IMAGE_SHA_ARM}|g" microshift-gitops.spec
+sed -i "s|REPLACE_REDIS_IMAGE_URL|${REDIS_IMAGE_URL}|g" microshift-gitops.spec
 
 sed -i "s|REPLACE_MICROSHIFT_GITOPS_RELEASE|${GITOPS_RELEASE}|g" microshift-gitops.spec
 sed -i "s|REPLACE_MICROSHIFT_GITOPS_VERSION|${GITOPS_VERSION}|g" microshift-gitops.spec
 sed -i "s|REPLACE_CI_ARGO_CD_UPSTREAM_URL|${CI_ARGO_CD_UPSTREAM_URL}|g" microshift-gitops.spec
 sed -i "s|REPLACE_CI_ARGO_CD_UPSTREAM_COMMIT|${CI_ARGO_CD_UPSTREAM_COMMIT}|g" microshift-gitops.spec
 
-echo "generate-spec-file finished successfully."
+echo "pre-build-script finished successfully."

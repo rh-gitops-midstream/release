@@ -12,7 +12,7 @@ set -euxo pipefail
 # inspects them to find the correct image digests for different architectures,
 # and then updates the RPM spec file with these values.
 
-CI_ARGO_CD_UPSTREAM_COMMIT="-"
+CI_ARGO_CD_UPSTREAM_COMMIT="5f697c1246542f864e021ec59d2b090e2e0313bd20f68b5281fc7565c8b19a2a"
 GITOPS_TAG_PREFIX="v${GITOPS_VERSION}"
 CI_ARGO_CD_UPSTREAM_URL=https://github.com/argoproj/argo-cd
 
