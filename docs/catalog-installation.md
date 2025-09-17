@@ -74,6 +74,16 @@ spec:
   publisher: Red Hat
 ```
 
+Available development/pre-release catalog images:
+- OCP v4.12: `quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.12`
+- OCP v4.13: `quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.13`
+- OCP v4.14: `quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.14`
+- OCP v4.15: `quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.15`
+- OCP v4.16: `quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.16`
+- OCP v4.17: `quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.17`
+- OCP v4.18: `quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.18`
+- OCP v4.19: `quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.19`
+
 Apply using:
 ```bash
 oc apply -f catalog-source.yaml
