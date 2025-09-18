@@ -28,8 +28,8 @@ sources:
     commit: ce33d8af598e18d2c09185d151aea0fb43f2bbaa
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.1.4
-    commit: 20dd73af349fa4ff65ee939f71c03d3f467bce60
+    ref: v3.1.5
+    commit: c21141a51f3f96ade64ac60732ca729c086ce7c0
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
     ref: v1.8.3
@@ -84,8 +84,8 @@ sources:
     commit: 6f6289da54237a7ed084b22f3161317bfa9a9b4f
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
-    ref: v0.3.2
-    commit: 562405f9e5d953284e21481d422474908dbf6044
+    ref: v0.4.1
+    commit: e0c406a25559fcae2f397519bc51b10f8d06709e
 
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
