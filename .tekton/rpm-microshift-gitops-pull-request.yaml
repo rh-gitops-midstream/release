@@ -40,6 +40,8 @@ spec:
     - x86_64
   - name: enableSymlinkCheck
     value: false
+  - name: self-ref-revision
+    value: c72ee40961ce7ddd7c013080426a9a240e228bc5
   pipelineRef:
     name: build-rpm-package
   taskRunTemplate:
