@@ -38,32 +38,10 @@ spec:
     value:
     - aarch64
     - x86_64
-  - name: pre-build-script-image
-    value: "registry.access.redhat.com/ubi9/ubi:latest"
-  - name: pre-build-script-content
-    value: |
-      #!/usr/bin/env bash
-      set -euxo pipefail
-      
-      echo "--- Preparing sources for RPM build ---"
-      mv ./rpms/microshift-gitops/microshift-gitops.spec .
-      
-      echo "--- Creating argo-cd-sources.tar.gz with correct internal directory  ---"
-      tar -czvf argo-cd-sources.tar.gz --transform="s,^argo-cd,argo-cd," -C ./sources argo-cd
-      
-      echo "--- Cleaning up original source directory ---"
-      rm -rf ./sources
   - name: enableSymlinkCheck
     value: false
   pipelineRef:
-    resolver: git
-    params:
-    - name: url
-      value: "https://github.com/nmirasch/rpmbuild-pipeline.git"
-    - name: revision
-      value: main
-    - name: pathInRepo
-      value: pipeline/build-rpm-package.yaml
+    name: build-rpm-package
   taskRunTemplate:
     serviceAccountName: build-pipeline-rpm-microshift-gitops-main
   workspaces:
