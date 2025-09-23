@@ -1,0 +1,591 @@
+---
+# yamllint disable rule:line-length
+# This is a modified version of https://github.com/konflux-ci/rpmbuild-pipeline/blob/main/pipeline/build-rpm-package.yaml
+# to include a pre-build-task which generates the required tar ball of the source-code
+# TODO: make the pre-build-task generic and upstream it so that we don't have to maintain our own fork pipeline for rpm builds
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: build-rpm-package
+  labels:
+    build.appstudio.redhat.com/pipeline: "build-rpm-package"
+    pipelines.appstudio.openshift.io/type: build
+    appstudio.openshift.io/application: rpms
+spec:
+  finally:
+    - name: show-summary
+      params:
+        - name: pipelinerun-name
+          value: $(context.pipelineRun.name)
+        - name: git-url
+          value: $(tasks.clone-repository.results.url)?rev=$(tasks.clone-repository.results.commit)
+        - name: image-url
+          value: $(tasks.upload-to-quay.results.IMAGE_URL)
+      taskRef:
+        params:
+          - name: name
+            value: summary
+          - name: bundle
+            value: quay.io/redhat-appstudio-tekton-catalog/task-summary:0.2@sha256:599d8b12c4f34ca3c386cb5c18af532cdc5f0773c0477044bbf4fe8591940725
+          - name: kind
+            value: task
+        resolver: bundles
+    - name: show-sbom
+      params:
+        - name: IMAGE_URL
+          value: $(tasks.upload-to-quay.results.IMAGE_URL)
+      taskRef:
+        params:
+          - name: name
+            value: show-sbom
+          - name: bundle
+            value: quay.io/konflux-ci/tekton-catalog/task-show-sbom:0.1@sha256:beb0616db051952b4b861dd8c3e00fa1c0eccbd926feddf71194d3bb3ace9ce7
+          - name: kind
+            value: task
+        resolver: bundles
+  params:
+    - name: package-name
+      description: The name of the package we want to build
+    - description: Source Repository URL
+      name: git-url
+      type: string
+    - description: Revision of the Source Repository
+      name: revision
+      type: string
+    - description: The branch name we build against/from
+      name: target-branch
+      type: string
+    - name: build-architectures
+      type: array
+      default:
+        - aarch64
+        - ppc64le
+        - s390x
+        - x86_64
+    - description: Koji target to use
+      name: koji-target
+      type: string
+      default: DEFAULT
+    - default: "false"
+      description: Force rebuild image
+      name: rebuild
+      type: string
+    - default: "false"
+      description: Skip checks against built image
+      name: skip-checks
+      type: string
+    - default: "true"
+      description: Execute the build with network isolation
+      name: hermetic
+      type: string
+    - name: self-ref-url
+      description: |
+        Testing-only.  This must be filled as parameter in tests so we can point
+        at the Tasks for the same git-revision.
+      type: string
+      default: "https://github.com/konflux-ci/rpmbuild-pipeline.git"
+    - name: self-ref-revision
+      description: |
+        Testing-only.  This must be filled as parameter in tests so we can point
+        at the Tasks for the same git-revision.  For production it defaults to "main".
+      type: string
+      default: "main"
+    - description: |
+        Multi-arch container image that ships Mock + the needed Mock
+        configuration, dist-git-client, koji-client, and other RPM-build related
+        tooling.
+      name: script-environment-image
+      default: quay.io/redhat-user-workloads/rpm-build-pipeline-tenant/environment:latest@sha256:246ebd3e82c1996e7dbaab1e8754af4887fe5aeb18825282c8e6149bba708745
+      type: string
+    - name: ociStorage
+      description: |
+        OCI registry URL where the pipeline stores trusted artifacts, including
+        both resulting artifacts and intermediary by-products.
+      default: quay.io/redhat-user-workloads/$(context.taskRun.namespace)/$(params.package-name)
+
+    # This part is commented out because the parameter is not usable.  We don't
+    # seem to be able to pass the given parameter down to override
+    # `spec.tasks.{taskname}.timeout` defaults.  That's why we hardcode (for
+    # now?) '72h' in the Task parameters below.  The error is:
+    #     Error retrieving pipeline for pipelinerun ...: resolver failed to get
+    #     Pipeline : invalid runtime object: time: invalid duration
+    #     "$(params.rpmbuild-timeout)"
+    # - default: "1h"
+    #   description: Timeout for the architecture-specific RPM build tasks.
+    #   name: rpmbuild-timeout
+    #   type: string
+    #
+    # The calculate-deps timeouts are not parametrized at all here, we expect
+    # that these steps finish quickly enough for all packages (within the
+    # default Tekton Task timeout).
+    - name: test-suffix
+      description: |
+        Testing-only.  In some places we don't want to mix-up "real" component builds
+        with "testing" component builds.  If we are testing, set this to some value.
+      type: string
+      default: ""
+    - name: enableSymlinkCheck
+      description: |
+        Whether to enable symlink checks when cloning the git repository.
+        Disabling this check is insecure and should only be done in trusted
+        environments.
+      type: string
+      default: true
+  results:
+    - description: ""
+      name: CHAINS-GIT_URL
+      value: $(tasks.clone-repository.results.url)
+    - description: ""
+      name: CHAINS-GIT_COMMIT
+      value: $(tasks.clone-repository.results.commit)
+    - description: ""
+      name: IMAGE_URL
+      value: $(tasks.upload-to-quay.results.IMAGE_URL)
+    - description: ""
+      name: IMAGE_DIGEST
+      value: $(tasks.upload-to-quay.results.IMAGE_DIGEST)
+    - name: SBOM_BLOB_URL
+      description: SPDX SBOM
+      value: $(tasks.upload-to-quay.results.SBOM_BLOB_URL)
+    - description: ""
+      name: PULP-IMAGE_URL
+      value: $(tasks.upload-to-quay.results.PULP-IMAGE_URL)
+    - description: ""
+      name: PULP-IMAGE_DIGEST
+      value: $(tasks.upload-to-quay.results.PULP-IMAGE_DIGEST)
+  tasks:
+    - name: store-start-time
+      retries: 3
+      taskSpec:
+        results:
+          - name: timestamp
+            description: Timestamp for pipeline start
+        steps:
+          - name: store-timestamp
+            image: registry.access.redhat.com/ubi9
+            script: |
+              #!/usr/bin/env bash
+              set -e
+              date "+%s" | tr -d '\n' | tee $(results.timestamp.path)
+    - name: init
+      retries: 3
+      params:
+        - name: rebuild
+          value: $(params.rebuild)
+        - name: skip-checks
+          value: $(params.skip-checks)
+        - name: image-url
+          value: todo - drop
+      runAfter:
+        - store-start-time
+      taskRef:
+        params:
+          - name: name
+            value: init
+          - name: bundle
+            value: quay.io/redhat-appstudio-tekton-catalog/task-init:0.2@sha256:ebfb603b73c2e1500fa1d2c757a585bc2da5043afe0798abdf61466e26fd2b0c
+          - name: kind
+            value: task
+        resolver: bundles
+    - name: clone-repository
+      retries: 3
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: revision
+          value: $(params.revision)
+        - name: depth
+          value: 0
+        - name: ociStorage
+          value: $(params.ociStorage).git
+        - name: ociArtifactExpiresAfter
+          value: 14d
+        - name: enableSymlinkCheck
+          value: $(params.enableSymlinkCheck}
+      runAfter:
+        - init
+      taskRef:
+        params:
+          - name: name
+            value: git-clone-oci-ta
+          - name: bundle
+            value: quay.io/konflux-ci/tekton-catalog/task-git-clone-oci-ta:0.1@sha256:4a601aeec58a1dd89c271e728fd8f0d84777825b46940c3aec27f15bab3edacf
+          - name: kind
+            value: task
+        resolver: bundles
+      workspaces:
+        - name: basic-auth
+          workspace: git-auth
+    # custom step to generate required tarball for get-rpm-sources task
+    - name: generate-source-tarball
+      runAfter:
+        - clone-repository
+      params:
+        - name: ociStorage
+          value: $(params.ociStorage).script
+        - name: SOURCE_ARTIFACT
+          value: $(tasks.clone-repository.results.SOURCE_ARTIFACT)
+        - name: SCRIPT_RUNNER_IMAGE
+          value: "registry.access.redhat.com/ubi8/ubi:latest"
+        - name: SCRIPT
+          value: "./rpms/microshift-gitops/generate-source-tarball.sh"
+        - name: enableSymlinkCheck
+          value: $(params.enableSymlinkCheck}
+      taskRef:
+        params:
+        - name: name
+          value: run-script-oci-ta
+        - name: bundle
+          value: quay.io/konflux-ci/tekton-catalog/task-run-script-oci-ta:0.1@sha256:1a05ca9081a785a6bc1d551293b56bb47e62dde572472c34a2afe2b4f2ab36e4
+        - name: kind
+          value: task
+        resolver: bundles
+    - name: get-rpm-sources
+      retries: 3
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: $(params.self-ref-url)
+          - name: revision
+            value: $(params.self-ref-revision)
+          - name: pathInRepo
+            value: task/get-rpm-sources.yaml
+          - name: ociArtifactExpiresAfter
+            value: 14d
+      runAfter:
+        - generate-source-tarball
+      params:
+        - name: package-name
+          value: $(params.package-name)
+        - name: source-artifact
+          value: $(tasks.generate-source-tarball.results.SCRIPT_ARTIFACT)
+        - name: ociStorage
+          value: $(params.ociStorage).rpm-sources
+        - name: ociArtifactExpiresAfter
+          value: 14d
+        - name: script-environment-image
+          value: $(params.script-environment-image)
+        - name: hermetic
+          value: $(params.hermetic)
+        - name: build-architectures
+          value: ["$(params.build-architectures[*])"]
+    - name: calculate-deps-x86-64
+      runAfter:
+        - get-rpm-sources
+      params:
+        - name: package-name
+          value: $(params.package-name)
+        - name: target-branch
+          value: $(params.target-branch)
+        - name: koji-target
+          value: $(params.koji-target)
+        - name: PLATFORM
+          value: $(tasks.get-rpm-sources.results.skip-mpc-tasks.deps-x86_64)
+        - name: script-environment-image
+          value: $(params.script-environment-image)
+        - name: dependencies-artifact
+          value: $(tasks.get-rpm-sources.results.dependencies-artifact)
+        - name: ociStorage
+          value: $(params.ociStorage).calculation-x86_64
+        - name: ociArtifactExpiresAfter
+          value: 14d
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: $(params.self-ref-url)
+          - name: revision
+            value: $(params.self-ref-revision)
+          - name: pathInRepo
+            value: task/calculate-deps.yaml
+    - name: rpmbuild-x86-64
+      runAfter:
+        - calculate-deps-x86-64
+      timeout: "72h"
+      params:
+        - name: package-name
+          value: $(params.package-name)
+        - name: target-branch
+          value: $(params.target-branch)
+        - name: koji-target
+          value: $(params.koji-target)
+        - name: PLATFORM
+          value: $(tasks.get-rpm-sources.results.skip-mpc-tasks.build-x86_64)
+        - name: script-environment-image
+          value: $(params.script-environment-image)
+        - name: hermetic
+          value: $(params.hermetic)
+        - name: dependencies-artifact
+          value: $(tasks.get-rpm-sources.results.dependencies-artifact)
+        - name: calculation-artifact
+          value: $(tasks.calculate-deps-x86-64.results.calculation-artifact)
+        - name: ociStorage
+          value: $(params.ociStorage).rpmbuild-x86_64
+        - name: ociArtifactExpiresAfter
+          value: 14d
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: $(params.self-ref-url)
+          - name: revision
+            value: $(params.self-ref-revision)
+          - name: pathInRepo
+            value: task/rpmbuild.yaml
+    - name: calculate-deps-aarch64
+      runAfter:
+        - get-rpm-sources
+      params:
+        - name: package-name
+          value: $(params.package-name)
+        - name: target-branch
+          value: $(params.target-branch)
+        - name: koji-target
+          value: $(params.koji-target)
+        - name: PLATFORM
+          value: $(tasks.get-rpm-sources.results.skip-mpc-tasks.deps-aarch64)
+        - name: script-environment-image
+          value: $(params.script-environment-image)
+        - name: dependencies-artifact
+          value: $(tasks.get-rpm-sources.results.dependencies-artifact)
+        - name: ociStorage
+          value: $(params.ociStorage).calculation-aarch64
+        - name: ociArtifactExpiresAfter
+          value: 14d
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: $(params.self-ref-url)
+          - name: revision
+            value: $(params.self-ref-revision)
+          - name: pathInRepo
+            value: task/calculate-deps.yaml
+    - name: rpmbuild-aarch64
+      runAfter:
+        - calculate-deps-aarch64
+      timeout: "72h"
+      params:
+        - name: package-name
+          value: $(params.package-name)
+        - name: target-branch
+          value: $(params.target-branch)
+        - name: koji-target
+          value: $(params.koji-target)
+        - name: PLATFORM
+          value: $(tasks.get-rpm-sources.results.skip-mpc-tasks.build-aarch64)
+        - name: script-environment-image
+          value: $(params.script-environment-image)
+        - name: hermetic
+          value: $(params.hermetic)
+        - name: dependencies-artifact
+          value: $(tasks.get-rpm-sources.results.dependencies-artifact)
+        - name: calculation-artifact
+          value: $(tasks.calculate-deps-aarch64.results.calculation-artifact)
+        - name: ociStorage
+          value: $(params.ociStorage).rpmbuild-aarch64
+        - name: ociArtifactExpiresAfter
+          value: 14d
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: $(params.self-ref-url)
+          - name: revision
+            value: $(params.self-ref-revision)
+          - name: pathInRepo
+            value: task/rpmbuild.yaml
+    - name: calculate-deps-s390x
+      runAfter:
+        - get-rpm-sources
+      params:
+        - name: package-name
+          value: $(params.package-name)
+        - name: target-branch
+          value: $(params.target-branch)
+        - name: koji-target
+          value: $(params.koji-target)
+        - name: PLATFORM
+          value: $(tasks.get-rpm-sources.results.skip-mpc-tasks.deps-s390x)
+        - name: script-environment-image
+          value: $(params.script-environment-image)
+        - name: dependencies-artifact
+          value: $(tasks.get-rpm-sources.results.dependencies-artifact)
+        - name: ociStorage
+          value: $(params.ociStorage).calculation-s390x
+        - name: ociArtifactExpiresAfter
+          value: 14d
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: $(params.self-ref-url)
+          - name: revision
+            value: $(params.self-ref-revision)
+          - name: pathInRepo
+            value: task/calculate-deps.yaml
+    - name: rpmbuild-s390x
+      runAfter:
+        - calculate-deps-s390x
+      timeout: "72h"
+      params:
+        - name: package-name
+          value: $(params.package-name)
+        - name: target-branch
+          value: $(params.target-branch)
+        - name: koji-target
+          value: $(params.koji-target)
+        - name: PLATFORM
+          value: $(tasks.get-rpm-sources.results.skip-mpc-tasks.build-s390x)
+        - name: script-environment-image
+          value: $(params.script-environment-image)
+        - name: hermetic
+          value: $(params.hermetic)
+        - name: dependencies-artifact
+          value: $(tasks.get-rpm-sources.results.dependencies-artifact)
+        - name: calculation-artifact
+          value: $(tasks.calculate-deps-s390x.results.calculation-artifact)
+        - name: ociStorage
+          value: $(params.ociStorage).rpmbuild-s390x
+        - name: ociArtifactExpiresAfter
+          value: 14d
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: $(params.self-ref-url)
+          - name: revision
+            value: $(params.self-ref-revision)
+          - name: pathInRepo
+            value: task/rpmbuild.yaml
+    - name: calculate-deps-ppc64le
+      runAfter:
+        - get-rpm-sources
+      params:
+        - name: package-name
+          value: $(params.package-name)
+        - name: target-branch
+          value: $(params.target-branch)
+        - name: koji-target
+          value: $(params.koji-target)
+        - name: PLATFORM
+          value: $(tasks.get-rpm-sources.results.skip-mpc-tasks.deps-ppc64le)
+        - name: script-environment-image
+          value: $(params.script-environment-image)
+        - name: dependencies-artifact
+          value: $(tasks.get-rpm-sources.results.dependencies-artifact)
+        - name: ociStorage
+          value: $(params.ociStorage).calculation-ppc64le
+        - name: ociArtifactExpiresAfter
+          value: 14d
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: $(params.self-ref-url)
+          - name: revision
+            value: $(params.self-ref-revision)
+          - name: pathInRepo
+            value: task/calculate-deps.yaml
+    - name: rpmbuild-ppc64le
+      runAfter:
+        - calculate-deps-ppc64le
+      timeout: "72h"
+      params:
+        - name: package-name
+          value: $(params.package-name)
+        - name: target-branch
+          value: $(params.target-branch)
+        - name: koji-target
+          value: $(params.koji-target)
+        - name: PLATFORM
+          value: $(tasks.get-rpm-sources.results.skip-mpc-tasks.build-ppc64le)
+        - name: script-environment-image
+          value: $(params.script-environment-image)
+        - name: hermetic
+          value: $(params.hermetic)
+        - name: dependencies-artifact
+          value: $(tasks.get-rpm-sources.results.dependencies-artifact)
+        - name: calculation-artifact
+          value: $(tasks.calculate-deps-ppc64le.results.calculation-artifact)
+        - name: ociStorage
+          value: $(params.ociStorage).rpmbuild-ppc64le
+        - name: ociArtifactExpiresAfter
+          value: 14d
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: $(params.self-ref-url)
+          - name: revision
+            value: $(params.self-ref-revision)
+          - name: pathInRepo
+            value: task/rpmbuild.yaml
+    - name: upload-to-quay
+      params:
+        - name: ociStorage
+          value: $(params.ociStorage)
+        - name: git-url
+          value: $(params.git-url)
+        - name: revision
+          value: $(params.revision)
+        - name: package-name
+          value: $(params.package-name)
+        - name: start-time
+          value: $(tasks.store-start-time.results.timestamp)
+        - name: pipelinerun-id
+          value: $(context.pipelineRun.namespace)/$(context.pipelineRun.name)
+        - name: x86_64-artifact
+          value: $(tasks.rpmbuild-x86-64.results.rpmbuild-artifact)
+        - name: aarch64-artifact
+          value: $(tasks.rpmbuild-aarch64.results.rpmbuild-artifact)
+        - name: s390x-artifact
+          value: $(tasks.rpmbuild-s390x.results.rpmbuild-artifact)
+        - name: ppc64le-artifact
+          value: $(tasks.rpmbuild-ppc64le.results.rpmbuild-artifact)
+        - name: script-environment-image
+          value: $(params.script-environment-image)
+      runAfter:
+        - rpmbuild-s390x
+        - rpmbuild-x86-64
+        - rpmbuild-aarch64
+        - rpmbuild-ppc64le
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: $(params.self-ref-url)
+          - name: revision
+            value: $(params.self-ref-revision)
+          - name: pathInRepo
+            value: task/import-to-quay.yaml
+    - name: check-noarch-rpms
+      runAfter:
+        - rpmbuild-s390x
+        - rpmbuild-x86-64
+        - rpmbuild-aarch64
+        - rpmbuild-ppc64le
+      params:
+        - name: x86_64-artifact
+          value: $(tasks.rpmbuild-x86-64.results.rpmbuild-artifact)
+        - name: aarch64-artifact
+          value: $(tasks.rpmbuild-aarch64.results.rpmbuild-artifact)
+        - name: s390x-artifact
+          value: $(tasks.rpmbuild-s390x.results.rpmbuild-artifact)
+        - name: ppc64le-artifact
+          value: $(tasks.rpmbuild-ppc64le.results.rpmbuild-artifact)
+        - name: script-environment-image
+          value: $(params.script-environment-image)
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: $(params.self-ref-url)
+          - name: revision
+            value: $(params.self-ref-revision)
+          - name: pathInRepo
+            value: task/check-noarch.yaml
+  workspaces:
+    - name: git-auth
+      optional: true
