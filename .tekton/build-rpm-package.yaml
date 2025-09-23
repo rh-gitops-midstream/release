@@ -277,7 +277,7 @@ spec:
         - name: koji-target
           value: $(params.koji-target)
         - name: PLATFORM
-          value: $(tasks.get-rpm-sources.results.skip-mpc-tasks.deps-x86_64)
+          value: $(tasks.get-rpm-sources.results.skip-mpc-tasks.deps-x86-64)
         - name: script-environment-image
           value: $(params.script-environment-image)
         - name: dependencies-artifact
