@@ -7,10 +7,6 @@ apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
   name: build-rpm-package
-  labels:
-    build.appstudio.redhat.com/pipeline: "build-rpm-package"
-    pipelines.appstudio.openshift.io/type: build
-    appstudio.openshift.io/application: rpms
 spec:
   finally:
     - name: show-summary
@@ -95,7 +91,7 @@ spec:
         configuration, dist-git-client, koji-client, and other RPM-build related
         tooling.
       name: script-environment-image
-      default: quay.io/redhat-user-workloads/rpm-build-pipeline-tenant/environment:latest@sha256:246ebd3e82c1996e7dbaab1e8754af4887fe5aeb18825282c8e6149bba708745
+      default: quay.io/redhat-user-workloads/rpm-build-pipeline-tenant/environment:latest@sha256:7518abf7655547318259a24bebc89aa76b409fe3961a34e55ba8e0f10e650246
       type: string
     - name: ociStorage
       description: |

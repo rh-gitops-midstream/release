@@ -39,16 +39,11 @@ spec:
     - aarch64
   - name: enableSymlinkCheck
     value: false
-  - name: self-ref-revision
-    value: c72ee40961ce7ddd7c013080426a9a240e228bc5
   pipelineRef:
     name: build-rpm-package
   taskRunTemplate:
     serviceAccountName: build-pipeline-rpm-microshift-gitops-main
   workspaces:
-  - name: sources
-    persistentVolumeClaim:
-      claimName: "{{pvc_name}}"
   - name: git-auth
     secret:
       secretName: '{{ git_auth_secret }}'
