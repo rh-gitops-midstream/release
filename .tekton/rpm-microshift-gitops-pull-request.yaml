@@ -37,7 +37,6 @@ spec:
   - name: build-architectures
     value:
     - aarch64
-    - x86_64
   - name: enableSymlinkCheck
     value: false
   - name: self-ref-revision
