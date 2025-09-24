@@ -6,6 +6,6 @@ ls -l
 
 echo "Running tarball script"
 
-tar -czvf ./rpm/microshift-gitops/argocd-sources.tar.gz -C ./sources argo-cd
+tar -czvf ./rpms/microshift-gitops/argocd-sources.tar.gz -C ./sources argo-cd
 
-ls -l ./rpm/microshift-gitops/
+ls -l ./rpms/microshift-gitops/
