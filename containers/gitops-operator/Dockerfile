@@ -52,6 +52,7 @@ LABEL \
     summary="Openshift GitOps Operator Dockerfile Template" \
     description="Red Hat OpenShift GitOps Operator" \
     maintainer="William Tam <wtam@redhat.com>"  \
+    cpe="cpe:/a:redhat:openshift_gitops:1.17::el8" \
     com.redhat.component="openshift-gitops-operator-container" \
     io.openshift.tags="openshift,gitops-operator" \
     io.k8s.display-name="Red Hat OpenShift GitOps Operator" \
