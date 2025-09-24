@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 
-pwd
-ls -l
-
 echo "Running tarball script"
 
-tar -czvf ./rpms/microshift-gitops/argocd-sources.tar.gz -C ./sources argo-cd
+#tar -czvf ./rpms/microshift-gitops/argocd-sources.tar.gz -C ./sources argo-cd
 
-ls -l ./rpms/microshift-gitops/
+#ls -l ./rpms/microshift-gitops/
+
+mv ./rpms/microshift-gitops/microshift-gitops.spec .
+tar -czvf argocd-sources.tar.gz -C ./sources argo-cd
+rm -rf ./sources
