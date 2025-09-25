@@ -46,7 +46,8 @@ COPY --from=builder /workspace/gitops-console-plugin/dist /var/www/html/plugin
 CMD run-httpd
     
 LABEL \
-    name="openshift-gitops-1/gitops-console-plugin-rhel8" \
+    name="openshift-gitops-1/console-plugin-rhel8" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.15::el8" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-console-plugin-container" \
     com.redhat.delivery.appregistry="false" \
