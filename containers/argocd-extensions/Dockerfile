@@ -65,4 +65,5 @@ LABEL \
     io.k8s.display-name="Red Hat OpenShift GitOps ArgoCD Extensions" \
     maintainer="William Tam <wtam@redhat.com>" \
     description="Red Hat OpenShift GitOps ArgoCD Extensions" \
-    io.k8s.description="Red Hat OpenShift GitOps ArgoCD Extensions"
+    io.k8s.description="Red Hat OpenShift GitOps ArgoCD Extensions" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.17::el8"
