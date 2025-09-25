@@ -107,6 +107,7 @@ LABEL \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-argo-rollouts-container" \
     com.redhat.delivery.appregistry="false" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.15::el8" \
     upstream-vcs-type="git" \
     summary="Red Hat Openshift GitOps Argo Rollouts" \
     io.openshift.expose-services="" \
