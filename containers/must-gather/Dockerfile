@@ -19,7 +19,8 @@ LABEL \
     name="openshift-gitops-1/must-gather-rhel8" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-must-gather-container" \
-    com.redhat.delivery.appregistry="false" \ 
+    com.redhat.delivery.appregistry="false" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.16::el8" \
     upstream-vcs-type="git" \
     summary="OpenShift GitOps Must Gather" \
     description="Red Hat OpenShift GitOps Must Gather" \
