@@ -24,8 +24,7 @@ LABEL com.redhat.delivery.appregistry=true
 
 COPY sources/argocd-agent /app/argocd-agent
 WORKDIR /app/argocd-agent
-
-RUN CGO_ENABLED=0 go build -mod=mod -o dist/argocd-agent -ldflags "-extldflags=-static" ./cmd/argocd-agent
+RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime go build -tags strictfipsruntime -mod=mod -o dist/argocd-agent ./cmd/argocd-agent
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal
 
