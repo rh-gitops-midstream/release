@@ -20,6 +20,7 @@ LABEL \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-container" \
     com.redhat.delivery.appregistry="false" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.16::el8" \
     upstream-vcs-type="git" \
     summary="Red Hat OpenShift GitOps Backend Service" \
     io.openshift.expose-services="" \
