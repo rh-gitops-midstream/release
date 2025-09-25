@@ -53,6 +53,7 @@ LABEL \
     name="openshift-gitops-1/dex-rhel8" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-dex-container" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.17::el8" \
     com.redhat.delivery.appregistry="false" \
     summary="Red Hat OpenShift GitOps Dex" \
     downstream-vcs-type="git" \
