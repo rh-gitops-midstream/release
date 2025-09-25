@@ -44,12 +44,13 @@ ENTRYPOINT [ "/usr/local/bin/manager" ]
 LABEL \
     name="openshift-gitops-1/gitops-rhel8-operator" \
     License="Apache 2.0" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.15::el8" \
     com.redhat.component="openshift-gitops-operator-container" \
     com.redhat.delivery.appregistry="false" \
     upstream-vcs-type="git" \
     summary="Openshift GitOps Operator Dockerfile Template" \
     description="Red Hat OpenShift GitOps Operator" \
-    maintainer="William Tam <wtam@redhat.com>"  \
+    maintainer="William Tam <wtam@redhat.com>" \
     com.redhat.component="openshift-gitops-operator-container" \
     io.openshift.tags="openshift,gitops-operator" \
     io.k8s.display-name="Red Hat OpenShift GitOps Operator" \
