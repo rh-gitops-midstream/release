@@ -62,4 +62,5 @@ LABEL \
     io.k8s.display-name="Red Hat OpenShift GitOps Dex" \
     io.k8s.description="Red Hat OpenShift GitOps Dex" \
     maintainer="William Tam <wtam@redhat.com>" \
-    description="Red Hat OpenShift GitOps Dex"
+    description="Red Hat OpenShift GitOps Dex" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.15::el8"
