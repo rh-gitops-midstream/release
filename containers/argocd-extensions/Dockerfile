@@ -59,6 +59,7 @@ LABEL \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-argocd-extensions-container" \
     com.redhat.delivery.appregistry="false" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.15::el8" \
     summary="Red Hat OpenShift GitOps Argocd Extensions" \
     io.openshift.expose-services="" \
     io.openshift.tags="openshift,gitops,extensions,argocd" \
