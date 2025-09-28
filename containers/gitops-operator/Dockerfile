@@ -48,6 +48,7 @@ LABEL \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-operator-container" \
     com.redhat.delivery.appregistry="false" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.16::el8" \
     upstream-vcs-type="git" \
     summary="Openshift GitOps Operator Dockerfile Template" \
     description="Red Hat OpenShift GitOps Operator" \
