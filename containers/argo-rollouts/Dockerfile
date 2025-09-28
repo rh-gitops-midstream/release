@@ -119,6 +119,7 @@ LABEL \
     io.k8s.display-name="openshift-gitops-argo-rollouts" \
     io.k8s.description="Red Hat Openshift GitOps Argo Rollouts" \
     maintainer="William Tam <wtam@redhat.com>" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.16::el8" \
     description="Red Hat Openshift GitOps Argo Rollouts"
 
 ENTRYPOINT [ "/usr/local/bin/rollouts-controller"]
