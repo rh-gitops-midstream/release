@@ -46,4 +46,5 @@ LABEL \
     io.k8s.display-name="openshift-gitops-argo-agent" \
     io.k8s.description="Red Hat OpenShift GitOps Argo CD Agent" \
     maintainer="William Tam <wtam@redhat.com>" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.17::el8" \
     description="Red Hat OpenShift GitOps Argo CD Agent"
