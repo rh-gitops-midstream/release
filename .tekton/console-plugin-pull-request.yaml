@@ -15,7 +15,6 @@ metadata:
         "sources/gitops-console-plugin".pathChanged() ||
         "containers/console-plugin/***".pathChanged() ||
         ".tekton/console-plugin-pull-request.yaml".pathChanged() ||
-        "BUILD".pathChanged() ||
         ".tekton/build-multi-platform-image.yaml".pathChanged() ||
         ".tekton/tasks/***".pathChanged()
       )

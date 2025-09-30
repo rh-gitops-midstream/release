@@ -15,7 +15,6 @@ metadata:
         "sources/must-gather".pathChanged() ||
         "containers/must-gather/***".pathChanged() ||
         ".tekton/must-gather-pull-request.yaml".pathChanged() ||
-        "BUILD".pathChanged() ||
         ".tekton/build-multi-platform-image.yaml".pathChanged() ||
         ".tekton/tasks/***".pathChanged()
       )
