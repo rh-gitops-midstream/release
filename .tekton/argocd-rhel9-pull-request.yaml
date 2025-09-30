@@ -21,7 +21,6 @@ metadata:
         "containers/argocd-rhel9/***".pathChanged() ||
         ".tekton/argocd-rhel9-pull-request.yaml".pathChanged() ||
         "prefetch/rpms/ubi9/***".pathChanged() ||
-        "BUILD".pathChanged() ||
         ".tekton/build-multi-platform-image.yaml".pathChanged() ||
         ".tekton/tasks/***".pathChanged()
       )

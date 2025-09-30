@@ -16,7 +16,6 @@ metadata:
         "containers/dex/***".pathChanged() ||
         ".tekton/dex-pull-request.yaml".pathChanged() ||
         "prefetch/rpms/ubi8/***".pathChanged() ||
-        "BUILD".pathChanged() ||
         ".tekton/build-multi-platform-image.yaml".pathChanged() ||
         ".tekton/tasks/***".pathChanged()
       )

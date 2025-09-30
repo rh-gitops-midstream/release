@@ -15,7 +15,6 @@ metadata:
         "sources/gitops-operator".pathChanged() ||
         "containers/gitops-operator/***".pathChanged() ||
         ".tekton/gitops-operator-pull-request.yaml".pathChanged() ||
-        "BUILD".pathChanged() ||
         ".tekton/build-multi-platform-image.yaml".pathChanged() ||
         ".tekton/tasks/***".pathChanged()
       )
