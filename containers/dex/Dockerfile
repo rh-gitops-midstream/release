@@ -15,7 +15,7 @@
 # ------------------------------------------------------------------------
 
 # --- start build stage #1
-FROM registry.redhat.io/rhel8/go-toolset:1.22 as builder
+FROM registry.redhat.io/rhel8/go-toolset:1.23 as builder
 
 COPY sources/dex /app/dex
 WORKDIR /app/dex
