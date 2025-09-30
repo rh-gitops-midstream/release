@@ -15,7 +15,6 @@ metadata:
         "sources/argocd-agent".pathChanged() ||
         "containers/argocd-agent/***".pathChanged() ||
         ".tekton/argocd-agent-pull-request.yaml".pathChanged() ||
-        "BUILD".pathChanged() ||
         ".tekton/build-multi-platform-image.yaml".pathChanged() ||
         ".tekton/tasks/***".pathChanged()
       )
