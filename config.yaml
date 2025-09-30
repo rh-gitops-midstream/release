@@ -1,20 +1,20 @@
 # Release Metadata
 release:
   name: OpenShift GitOps Operator
-  version: "1.17.1"
+  version: "1.17.2"
   olm:
     # TODO: Compute olm data automatically
-    channel: "latest,gitops-1.17"
-    replaces: "openshift-gitops-operator.v1.17.0"
+    channel: "gitops-1.17"
+    replaces: "openshift-gitops-operator.v1.17.1"
     skip-range: "" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
     branch: release-1.17
     application: gitops-1-17
   managers:
-    - name: "Siddhesh Ghadi"
-      github: svghadi
-      email: "sghadi@redhat.com"
+    - name: "Neus Miras"
+      github: nmirasch
+      email: "nmirasch@redhat.com"
 
 # Source code repositories
 # This section defines the source repositories for GitOps Operator artifacts built from source.
