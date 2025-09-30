@@ -15,7 +15,6 @@ metadata:
         "sources/gitops-backend".pathChanged() ||
         "containers/gitops/***".pathChanged() ||
         ".tekton/gitops-pull-request.yaml".pathChanged() ||
-        "BUILD".pathChanged() ||
         ".tekton/build-multi-platform-image.yaml".pathChanged() ||
         ".tekton/tasks/***".pathChanged()
       )
