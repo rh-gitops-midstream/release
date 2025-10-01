@@ -28,8 +28,8 @@ sources:
     commit: 569a70667f5ad9eab218d72f8470ef75bc27f579
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.1.6
-    commit: 96797ba84644b2b182f48d11075771c93f44b42a
+    ref: v3.1.8
+    commit: becb020064fe9be5381bf6e5818ff8587ca8f377
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
     ref: v1.8.3
