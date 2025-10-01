@@ -32,6 +32,14 @@ metadata:
   name: argocd-rhel9-1-18-on-push
   namespace: rh-openshift-gitops-tenant
 spec:
+  taskRunSpecs:
+    - pipelineTaskName: build-source-image
+      computeResources:
+        requests:
+          cpu: '1'
+          memory: 4Gi
+        limits:
+          memory: 4Gi
   params:
   - name: git-url
     value: '{{source_url}}'
