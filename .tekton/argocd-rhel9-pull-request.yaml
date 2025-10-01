@@ -33,6 +33,13 @@ metadata:
   namespace: rh-openshift-gitops-tenant
 spec:
   taskRunSpecs:
+    - pipelineTaskName: prefetch-dependencies
+      computeResources:
+        requests:
+          cpu: '1'
+          memory: 4Gi
+        limits:
+          memory: 4Gi
     - pipelineTaskName: build-source-image
       computeResources:
         requests:
