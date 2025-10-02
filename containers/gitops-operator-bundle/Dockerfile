@@ -27,4 +27,4 @@ LABEL \
     com.redhat.component="openshift-gitops-operator-bundle-container" \
     description="Red Hat OpenShift GitOps Operator Bundle" \
     distribution-scope="restricted" \
-    io.k8s.description="Red Hat OpenShift GitOps Operator Bundle" \
+    io.k8s.description="Red Hat OpenShift GitOps Operator Bundle"
