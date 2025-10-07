@@ -76,8 +76,10 @@ If not already present, add source under the `sources/` directory. Refer [Adding
 #### 2.2 Add Downstream Dockerfile
 
 - Place Dockerfile in `containers/<new-component>/`
+- Update the paths in the Dockerfile to reference the source code from the `sources/<new-component>/` directory. Refer to existing component Dockerfiles for guidance.
+- Build the container locally using `make container name=<new-component>` to verify that the Dockerfile works as expected.
 
-#### 2.3 Configure CI Pipelines
+#### 2.4 Configure CI Pipelines
 
 - Path: `.tekton/`
 - Rename to match your new component:
@@ -107,7 +109,7 @@ spec:
     - name: dockerfile
       value: containers/<new-component>/Dockerfile
     - name: prefetch-input
-      value: <path-to-gomod-or-yarn.lock>
+      value: <path-to-gomod-or-yarn.lock-or-rpm-lock>
     - name: git-metadata-directories
       value:
         - <source-directory>
@@ -115,7 +117,11 @@ spec:
     serviceAccountName: build-pipeline-<new-component>-main
 ```
 
-#### 2.3 Submit PR
+See PRs [#91](https://github.com/rh-gitops-midstream/release/pull/91) and [#182](https://github.com/rh-gitops-midstream/release/pull/182) for reference. 
+
+Note: If the component requires RPMs, they must be prefetched. Refer to the `prefetch/rpms/README.md` file for more details.
+
+#### 2.5 Submit PR
 
 - Commit your changes to a new branch.
 - Open a Pull Request for review.
