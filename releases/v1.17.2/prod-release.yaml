@@ -1,0 +1,45 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.17.2-prod-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-17-prod
+  snapshot: gitops-1-17-k6smq
+  data:
+    releaseNotes:
+      type: RHSA
+      cves:
+      - key: CVE-2025-22874
+        component: argo-rollouts-1-17
+      - key: CVE-2025-22874
+        component: dex-1-17
+      - key: CVE-2025-22874
+        component: gitops-1-17
+      - key: CVE-2025-22874
+        component: gitops-rhel8-operator
+      - key: CVE-2025-47907
+        component: dex-1-17
+      - key: CVE-2025-59538
+        component: argocd-1-17
+      - key: CVE-2025-59537
+        component: argocd-1-17
+      - key: CVE-2025-59538
+        component: argocd-rhel9-1-17
+      - key: CVE-2025-59537
+        component: argocd-rhel9-1-17
+      - key: CVE-2025-59538
+        component: gitops-operator-bundle-1-17
+      - key: CVE-2025-59537
+        component: gitops-operator-bundle-1-17
+      - key: CVE-2025-59538
+        component: gitops-operator-1-17
+      - key: CVE-2025-59537
+        component: gitops-operator-1-17
+      - key: CVE-2025-59531
+        component: argocd-1-17
+      - key: CVE-2025-59531
+        component: argocd-rhel9-1-17
+      - key: CVE-2025-59531
+        component: gitops-operator-bundle-1-17
