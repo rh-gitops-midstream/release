@@ -1,0 +1,133 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.17.1-stage-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-17-stage
+  snapshot: gitops-1-17-k6smq
+  data:
+    releaseNotes:
+      type: RHSA
+      issues:
+          - id: GITOPS-7271
+            source: issues.redhat.com
+          - id: GITOPS-7283
+            source: issues.redhat.com
+          - id: GITOPS-7286
+            source: issues.redhat.com
+          - id: GITOPS-7289
+            source: issues.redhat.com
+          - id: GITOPS-7424 # in_progress ???
+            source: issues.redhat.com
+          - id: GITOPS-7614
+            source: issues.redhat.com
+          - id: GITOPS-7180
+            source: issues.redhat.com
+          - id: GITOPS-7564
+            source: issues.redhat.com
+          - id: GITOPS-7606
+            source: issues.redhat.com
+          - id: GITOPS-7331
+            source: issues.redhat.com
+          - id: GITOPS-7461
+            source: issues.redhat.com
+          - id: GITOPS-7829
+            source: issues.redhat.com
+          - id: GITOPS-7976
+            source: issues.redhat.com
+          - id: GITOPS-7977
+            source: issues.redhat.com
+          - id: GITOPS-7978
+            source: issues.redhat.com
+          - id: GITOPS-7979
+            source: issues.redhat.com
+          - id: GITOPS-7984
+            source: issues.redhat.com
+          - id: GITOPS-7985
+            source: issues.redhat.com
+          - id: GITOPS-7988
+            source: issues.redhat.com
+          - id: GITOPS-7989
+            source: issues.redhat.com
+          - id: GITOPS-8007
+            source: issues.redhat.com
+          - id: GITOPS-8010
+            source: issues.redhat.com
+          - id: GITOPS-8013
+            source: issues.redhat.com
+      cves:
+          - key: CVE-2025-22874
+            component: argo-rollouts-1-17
+          - key: CVE-2025-22874
+            component: dex-1-17
+          - key: CVE-2025-22874
+            component: gitops-1-17
+          - key: CVE-2025-22874
+            component: gitops-rhel8-operator
+          - key: CVE-2024-46981
+            component: ??? CVE-2024-46981 is affecting openshift-gitops-redis image
+          - key: CVE-2025-47907
+            component: dex-1-17
+          - key: CVE-2025-59538
+            component: argocd-1-17
+          - key: CVE-2025-59537
+            component: argocd-1-17
+          - key: CVE-2025-59538
+            component: argocd-rhel9-1-17
+          - key: CVE-2025-59537
+            component: argocd-rhel9-1-17
+          - key: CVE-2025-59538
+            component: gitops-operator-bundle-1-17
+          - key: CVE-2025-59537
+            component: gitops-operator-bundle-1-17
+          - key: CVE-2025-59538
+            component: gitops-operator-1-17
+          - key: CVE-2025-59537
+            component: gitops-operator-1-17
+          - key: CVE-2025-59531
+            component: argocd-1-17
+          - key: CVE-2025-59531
+            component: argocd-rhel9-1-17
+          - key: CVE-2025-59531
+            component: gitops-operator-bundle-1-17
+            
+      topic: "Red Hat OpenShift GitOps v1.17.2 release"
+      synopsis: "Red Hat OpenShift GitOps security update"
+      description: |
+        An update is now available for Red Hat OpenShift GitOps.  
+          
+        Security Fix(es):
+        * openshift-gitops-1/argo-rollouts-rhel8: Usage of ExtKeyUsageAny disables policy validation in crypto/x509 [gitops-1.17](CVE-2025-22874)
+        * openshift-gitops-1/dex-rhel8: Usage of ExtKeyUsageAny disables policy validation in crypto/x509 [gitops-1.17](CVE-2025-22874)
+        * openshift-gitops-1/gitops-rhel8: Usage of ExtKeyUsageAny disables policy validation in crypto/x509 [gitops-1.17](CVE-2025-22874)
+        * openshift-gitops-1/gitops-rhel8-operator: Usage of ExtKeyUsageAny disables policy validation in crypto/x509 [gitops-1.17](CVE-2025-22874)
+        * is affecting openshift-gitops-redis image (CVE-2024-46981) #?????
+        * openshift-gitops-1/dex-rhel8: Postgres Scan Race Condition CVE-2025-47907 [gitops-1.17] (CVE-2025-47907)
+        * openshift-gitops-1/argocd-rhel8: Argo CD unauthenticated Remote Denial of Service [gitops-1.17](CVE-2025-59538)
+        * openshift-gitops-1/argocd-rhel8: Argo CD unauthenticated Denial of Service [gitops-1.17] (CVE-2025-59537)
+        * openshift-gitops-1/argocd-rhel9: Argo CD unauthenticated Remote Denial of Service [gitops-1.17](CVE-2025-59538)
+        * openshift-gitops-1/argocd-rhel9: Argo CD unauthenticated Denial of Service [gitops-1.17](CVE-2025-59537)
+        * openshift-gitops-1/gitops-operator-bundle: Argo CD unauthenticated Remote Denial of Service [gitops-1.17](CVE-2025-59538)
+        * openshift-gitops-1/gitops-operator-bundle: Argo CD unauthenticated Denial of Service [gitops-1.17](CVE-2025-59537)
+        * openshift-gitops-1/gitops-rhel8-operator: Argo CD unauthenticated Remote Denial of Service [gitops-1.17](CVE-2025-59538)
+        * openshift-gitops-1/gitops-rhel8-operator: Argo CD unauthenticated Denial of Service [gitops-1.17](CVE-2025-59537)
+        * openshift-gitops-1/argocd-rhel8: Unauthenticated argocd-server panic via a malicious Bitbucket-Server webhook payload [gitops-1.17](CVE-2025-59531)
+        * openshift-gitops-1/argocd-rhel9: Unauthenticated argocd-server panic via a malicious Bitbucket-Server webhook payload [gitops-1.17](CVE-2025-59531)
+        * openshift-gitops-1/gitops-operator-bundle: Unauthenticated argocd-server panic via a malicious Bitbucket-Server webhook payload [gitops-1.17](CVE-2025-59531)
+      
+      solution: |
+        Before applying this update, make sure all previously released errata relevant to your system have been applied.
+        
+        For details on how to apply this update, refer to:
+        
+        https://access.redhat.com/articles/11258
+      references:
+        - https://access.redhat.com/security/cve/CVE-2025-22874
+        - https://access.redhat.com/security/cve/CVE-2024-46981
+        - https://access.redhat.com/security/cve/CVE-2025-47907
+        - https://access.redhat.com/security/cve/CVE-2025-59538
+        - https://access.redhat.com/security/cve/CVE-2025-59537
+        - https://access.redhat.com/security/cve/CVE-2025-59531
+        - https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.17/
