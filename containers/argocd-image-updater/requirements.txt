@@ -1,1 +1,1 @@
-awscli
+awscli==1.34.34

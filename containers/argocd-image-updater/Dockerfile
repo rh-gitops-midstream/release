@@ -37,7 +37,7 @@ FROM registry.access.redhat.com/ubi8/ubi-minimal
 USER root
 RUN microdnf install -y shadow-utils ca-certificates git openssh-clients gnupg2 tar python38 python38-pip && \
     microdnf clean all && \
-    python3.8 -m pip install --no-cache-dir awscli && \
+    python3 -m pip install --no-cache-dir awscli && \
     rm -rf /tmp/* /var/tmp/* /root/.cache
 
 RUN useradd -l -r -u 1000 -d /app argocd && \
