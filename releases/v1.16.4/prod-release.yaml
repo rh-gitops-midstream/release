@@ -1,7 +1,7 @@
 apiVersion: appstudio.redhat.com/v1alpha1
 kind: Release
 metadata:
-  generateName: gitops-1.16.3-prod-
+  generateName: gitops-1.16.4-prod-
   namespace: rh-openshift-gitops-tenant
 spec:
   gracePeriodDays: 7
@@ -17,3 +17,9 @@ spec:
           component: argocd-rhel9-1-16
         - key: CVE-2025-59531
           component: gitops-operator-bundle-1-16
+      solution: |
+        Before applying this update, make sure all previously released errata relevant to your system have been applied.
+        
+        For details on how to apply this update, refer to:
+        
+        https://access.redhat.com/articles/11258
