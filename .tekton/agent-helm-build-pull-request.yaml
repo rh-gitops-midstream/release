@@ -109,7 +109,7 @@ spec:
       type: string
     - default: "sources/argocd-agent/install/helm-repo/argocd-agent-agent"
       description: directory where the chart is stored 
-      name: CHART_CONTEXT
+      name: chart-context
       type: string
     results:
     - description: ""
