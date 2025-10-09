@@ -13,7 +13,7 @@ metadata:
       ( 
         "sources/argocd-agent/***".pathChanged() ||
         ".tekton/agent-helm-build-pull-request.yaml".pathChanged() ||
-        "helm-chart/***.pathChanged()"
+        "helm-chart/argocd-agent-agent/***".pathChanged()
       )
   creationTimestamp: null
   labels:
