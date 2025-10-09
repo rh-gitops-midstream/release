@@ -86,6 +86,10 @@ sources:
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: main
     commit: f3cb7f51e50bb8124748e9b39b29b44f49276925
+  - path: sources/argocd-image-updater
+    url: https://github.com/argoproj-labs/argocd-image-updater.git
+    ref: crd
+    commit: 24f5e51fed964b1138960aa2b1b8526851062e61
 
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
@@ -122,6 +126,9 @@ konfluxImages:
   - name: argocd-agent
     buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel8"
     releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8"
+  - name: argocd-image-updater
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-image-updater-rhel8"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel8"
   - name: console-plugin
     buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-rhel8"
     releaseRef: "registry.redhat.io/openshift-gitops-1/console-plugin-rhel8"

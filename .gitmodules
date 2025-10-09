@@ -46,3 +46,6 @@
 [submodule "sources/argocd-agent"]
 	path = sources/argocd-agent
 	url = https://github.com/argoproj-labs/argocd-agent.git
+[submodule "sources/argocd-image-updater"]
+	path = sources/argocd-image-updater
+	url = https://github.com/argoproj-labs/argocd-image-updater.git
