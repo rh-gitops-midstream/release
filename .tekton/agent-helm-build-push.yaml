@@ -10,9 +10,8 @@ metadata:
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
       == "main" &&  ( 
         "sources/argocd-agent/***".pathChanged() ||
-        ".tekton/agent-helm-build-push.yaml".pathChanged() ||
-        "./helm-chart/agent.yaml"
-      )
+        ".tekton/agent-helm-build-push.yaml".pathChanged() 
+        )
   creationTimestamp: null
   labels:
     appstudio.openshift.io/application: test-argocd-agent-helmchart
