@@ -1,0 +1,89 @@
+apiVersion: tekton.dev/v1alpha1
+kind: StepAction
+metadata:
+  name: install-gitops-operator-bundle
+spec:
+  params:
+    - name: bundleImage
+      type: string
+    - name: namespace
+      type: string
+      default: "openshift-gitops-operator"
+    - name: installTimeout
+      type: string
+      default: "30m"
+    - name: credentials
+      type: string
+      description: A volume to which the remote cluster credentials will be written.
+    - name: kubeconfig
+      type: string
+      description: A path to the kubeconfig in the credentials volume
+  volumeMounts:
+    - name: "$(params.credentials)"
+      mountPath: /credentials
+  env:
+    - name: BUNDLE_IMAGE
+      value: $(params.bundleImage)
+    - name: KONFLUX_COMPONENT_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.labels['appstudio.openshift.io/component']
+    - name: NAMESPACE
+      value: $(params.namespace)
+    - name: INSTALL_TIMEOUT
+      value: $(params.installTimeout)
+    - name: KUBECONFIG
+      value: "/credentials/$(params.kubeconfig)"
+  image: registry.redhat.io/openshift4/ose-cli:latest
+  script: |
+    set -x
+    echo "---------------------------------------------"
+    cat  /credentials/*
+    echo "---------------------------------------------"
+    dnf -y install jq python3-pip
+    export OPERATOR_SDK_VERSION=1.36.1
+    export ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
+    export OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/download/v${OPERATOR_SDK_VERSION}
+    curl -Lo /usr/local/bin/operator-sdk ${OPERATOR_SDK_DL_URL}/operator-sdk_linux_${ARCH}
+    chmod +x /usr/local/bin/operator-sdk
+    operator-sdk version
+    echo "---------------------------------------------"
+    oc status
+    oc whoami
+    echo "---------------------------------------------"
+    env
+    echo "---------------------------------------------"    
+    oc create namespace ${NAMESPACE} || true
+    oc label namespaces ${NAMESPACE} openshift.io/cluster-monitoring=true --overwrite=true
+    export IMAGE_DIGEST_MIRROR_SET=https://raw.githubusercontent.com/rh-gitops-midstream/catalog/refs/heads/main/.tekton/images-mirror-set.yaml
+    curl -Lo /usr/tmp/imagedigestmirrorset "$IMAGE_DIGEST_MIRROR_SET"
+    oc apply -f /usr/tmp/imagedigestmirrorset
+    echo "---------------------------------------------"
+    echo ${KONFLUX_COMPONENT_NAME}
+    # We get the bundle image as a param
+    # export BUNDLE_IMAGE="$(jq -r --arg component_name "$KONFLUX_COMPONENT_NAME" '.components[] | select(.name == $component_name) | .containerImage' <<< "$SNAPSHOT")"
+    echo "${BUNDLE_IMAGE}"
+    echo "---------------------------------------------"
+    operator-sdk run bundle --timeout="$INSTALL_TIMEOUT" --namespace "${NAMESPACE}" "$BUNDLE_IMAGE" --verbose
+    echo "---------------------------------------------"
+    # Wait for the controller pod
+    for i in {0..30}; do
+      sleep 3
+      oc get pod -n  "${NAMESPACE}" | grep gitops > /dev/null 2>&1 && break
+    done
+    controller_pod=$(oc get pod -n "${NAMESPACE}" -l control-plane=gitops-operator -o 'jsonpath={.items[0].metadata.name}') || exit 1
+    echo $controller_pod
+    for i in {0..30}; do
+      sleep 3
+      oc get ns openshift-gitops > /dev/null 2>&1 && break
+    done
+    oc wait --for=jsonpath='{.status.phase}'=Active ns/openshift-gitops --timeout=120s
+    sleep 10
+    # Check for various resources
+    deployments=($(echo $(oc get deployments -n openshift-gitops --no-headers -o custom-columns=':metadata.name')))
+    for deployment in "${deployments[@]}"; do
+      oc rollout status deployment/"${deployment}" -n openshift-gitops --timeout=60s
+    done
+    sleep 5
+    oc rollout status statefulset/openshift-gitops-application-controller -n openshift-gitops --timeout=60s
+    oc wait argocd openshift-gitops -n openshift-gitops --for=jsonpath='{.status.phase}'="Available" --timeout=600s
