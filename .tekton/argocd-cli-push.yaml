@@ -12,9 +12,8 @@ metadata:
       target_branch == "main" &&
       (
         "sources/argo-cd".pathChanged() ||
-        "containers/argocd-cli/***".pathChanged() ||
+        "clis/argocd/***".pathChanged() ||
         ".tekton/argocd-cli-push.yaml".pathChanged() ||
-        "prefetch/rpms/ubi8/***".pathChanged() ||
         "BUILD".pathChanged() ||
         ".tekton/build-multi-platform-image.yaml".pathChanged() ||
         ".tekton/tasks/***".pathChanged()
@@ -43,9 +42,9 @@ spec:
     value:
     - '{{target_branch}}'
   - name: dockerfile
-    value: containers/argocd-cli/Dockerfile
+    value: clis/argocd/Dockerfile
   - name: prefetch-input
-    value: '[{"type":"gomod","path":"./sources/argo-cd"}, {"type":"yarn","path":"./sources/argo-cd/ui"},{"type":"rpm","path":"prefetch/rpms/ubi8"}, {"type":"npm","path":"prefetch/yarn"}]'
+    value: '[{"type":"gomod","path":"./sources/argo-cd"}]'
   - name: git-metadata-directories
     value:
     - sources/argo-cd
