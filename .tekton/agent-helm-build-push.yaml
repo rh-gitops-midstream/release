@@ -188,6 +188,8 @@ spec:
       - name: netrc
         workspace: netrc
     - name: update-digest-for-helm
+      taskRef:
+        name: update-digest-for-helm
       params:
       - name: CHART_CONTEXT
         value: $(params.chart-context) 

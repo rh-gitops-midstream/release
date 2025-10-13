@@ -200,6 +200,8 @@ spec:
       - name: netrc
         workspace: netrc
     - name: update-digest-for-helm
+      taskRef:
+        name: update-digest-for-helm
       params:
       - name: CHART_CONTEXT
         value: $(params.chart-context) 
@@ -209,7 +211,7 @@ spec:
         value: $(tasks.clone-repository.results.SOURCE_ARTIFACT)
         description: The Trusted Artifact URI pointing to the artifact with the application source code.
       runAfter:
-      - prefetch-dependencies
+      - prefetch-dependencies   
     - name: build-helm-chart
       params:
       - name: CHART_CONTEXT
