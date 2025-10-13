@@ -8,7 +8,10 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "main" && ( "sources/argocd-agent/***".pathChanged() || ".tekton/agent-helm-build-push.yaml".pathChanged()
+      == "main" &&  ( 
+        "sources/argocd-agent/***".pathChanged() ||
+        ".tekton/agent-helm-build-push.yaml".pathChanged() ||
+        "./config.yaml"
       )
   creationTimestamp: null
   labels:
@@ -184,43 +187,45 @@ spec:
         workspace: git-auth
       - name: netrc
         workspace: netrc
-    - name: build-container
+    - name: update-digest-for-helm
       params:
-      - name: IMAGE
-        value: $(params.output-image)
-      - name: DOCKERFILE
-        value: $(params.dockerfile)
-      - name: CONTEXT
-        value: $(params.path-context)
-      - name: HERMETIC
-        value: $(params.hermetic)
-      - name: PREFETCH_INPUT
-        value: $(params.prefetch-input)
-      - name: IMAGE_EXPIRES_AFTER
-        value: $(params.image-expires-after)
-      - name: COMMIT_SHA
-        value: $(tasks.clone-repository.results.commit)
-      - name: BUILD_ARGS
-        value:
-        - $(params.build-args[*])
-      - name: BUILD_ARGS_FILE
-        value: $(params.build-args-file)
-      - name: PRIVILEGED_NESTED
-        value: $(params.privileged-nested)
-      - name: SOURCE_URL
-        value: $(tasks.clone-repository.results.url)
+      - name: CHART_CONTEXT
+        value: $(params.chart-context) 
+        description: Directory where helm chart resources are stored
       - name: SOURCE_ARTIFACT
-        value: $(tasks.prefetch-dependencies.results.SOURCE_ARTIFACT)
-      - name: CACHI2_ARTIFACT
-        value: $(tasks.prefetch-dependencies.results.CACHI2_ARTIFACT)
+        type: string
+        value: $(tasks.clone-repository.results.SOURCE_ARTIFACT)
+        description: The Trusted Artifact URI pointing to the artifact with the application source code.
       runAfter:
       - prefetch-dependencies
+    - name: build-helm-chart
+      params:
+      - name: CHART_CONTEXT
+        value: $(params.chart-context) 
+      - name: IMAGE
+        value: $(params.output-image)
+      - name: COMMIT_SHA
+        value: $(tasks.clone-repository.results.commit)
+      - name: SOURCE_ARTIFACT
+        value: $(tasks.prefetch-dependencies.results.SOURCE_ARTIFACT)
+      - name: RELEASE_BRANCH
+        value: $(params.target_branch)
+      - name: IMAGE_MAPPINGS
+        value: |
+          [
+            {
+              "source": "ghcr.io/argoproj-labs/argocd-agent/argocd-agent",
+              "target": "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel8"
+            }
+          ]
+      runAfter:
+      - update-digest-for-helm
       taskRef:
         params:
         - name: name
-          value: buildah-oci-ta
+          value: build-helm-chart-oci-ta
         - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-buildah-oci-ta:0.5@sha256:fdd3f39c8ea97de0d77bcde160704dbd33fdcb9cd235836927bbb170aaefb80f
+          value: quay.io/konflux-ci/tekton-catalog/task-build-helm-chart-oci-ta:0.3@sha256:5ba1f6a566e332533f1214abd750e47bf1608e8763e498c51f8600a40c4a67db
         - name: kind
           value: task
         resolver: bundles
@@ -241,9 +246,9 @@ spec:
         value: $(params.build-image-index)
       - name: IMAGES
         value:
-        - $(tasks.build-container.results.IMAGE_URL)@$(tasks.build-container.results.IMAGE_DIGEST)
+        - $(tasks.build-helm-chart.results.IMAGE_URL)@$(tasks.build-helm-chart.results.IMAGE_DIGEST)
       runAfter:
-      - build-container
+      - build-helm-chart
       taskRef:
         params:
         - name: name
