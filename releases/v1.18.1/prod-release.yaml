@@ -17,11 +17,3 @@ spec:
           component: argocd-rhel9-1-18
         - key: CVE-2025-59531
           component: gitops-operator-bundle-1-18
-      solution: |
-        Before applying this update, make sure all previously released errata relevant to your system have been applied.
-        
-        For details on how to apply this update, refer to:
-        
-        https://access.redhat.com/articles/11258
-      references:
-      - https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.18/
