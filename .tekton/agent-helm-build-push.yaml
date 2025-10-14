@@ -186,19 +186,19 @@ spec:
         workspace: git-auth
       - name: netrc
         workspace: netrc
-    - name: update-digest-for-helm
-      taskRef:
-        name: update-digest-for-helm
-      params:
-      - name: CHART_CONTEXT
-        value: $(params.chart-context) 
-        description: Directory where helm chart resources are stored
-      - name: SOURCE_ARTIFACT
-        type: string
-        value: $(tasks.clone-repository.results.SOURCE_ARTIFACT)
-        description: The Trusted Artifact URI pointing to the artifact with the application source code.
-      runAfter:
-      - prefetch-dependencies
+    # - name: update-digest-for-helm
+    #   taskRef:
+    #     name: update-digest-for-helm
+    #   params:
+    #   - name: CHART_CONTEXT
+    #     value: $(params.chart-context) 
+    #     description: Directory where helm chart resources are stored
+    #   - name: SOURCE_ARTIFACT
+    #     type: string
+    #     value: $(tasks.clone-repository.results.SOURCE_ARTIFACT)
+    #     description: The Trusted Artifact URI pointing to the artifact with the application source code.
+    #   runAfter:
+    #   - prefetch-dependencies
     - name: build-helm-chart
       params:
       - name: CHART_CONTEXT
@@ -216,11 +216,12 @@ spec:
           [
             {
               "source": "ghcr.io/argoproj-labs/argocd-agent/argocd-agent",
-              "target": "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel8"
+              "target": "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8:'{{target_branch}}'"
             }
           ]
       runAfter:
-      - update-digest-for-helm
+      # - update-digest-for-helm
+      - prefetch-dependencies   
       taskRef:
         params:
         - name: name
