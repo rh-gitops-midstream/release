@@ -10,6 +10,9 @@ spec:
     - name: CHART_CONTEXT
       type: string
       description: Path to Chart directory.
+    - name: RELEASE_BRANCH
+      type: string
+      description: branch/tag associated to build. e.g. 1.18 branch is for 1.18 gitops release
   steps:
     - name: use-trusted-artifact
       # pin the image to a digest, Konflux will automatically send you updates
@@ -28,14 +31,12 @@ spec:
         #!/bin/bash
         set -euo pipefail
 
-        microdnf -y install skopeo yq
-
         echo "--> Parsing values.yaml in Directory ..."
 
         VALUES_FILE="$(params.CHART_CONTEXT)/values.yaml"
         CONFIG_FILE="./config.yaml"
         IMAGE=$(yq  eval '.konfluxImages[] | select(.name == "argocd-agent") | .buildRef' config.yaml)
-        RELEASE_TAG=$(yq  eval '.sources[] | select(.path == "sources/argocd-agent") | .ref' config.yaml)
+        RELEASE_TAG=$(params.RELEASE_BRANCH)
 
         NEW_IMAGE_DIGEST=$(skopeo inspect --override-os linux --override-arch amd64  docker://${NEW_IMAGE}:${RELEASE_TAG}  | yq '.Digest')
 
