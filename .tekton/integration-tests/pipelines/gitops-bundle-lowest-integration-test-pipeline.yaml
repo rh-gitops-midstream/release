@@ -70,6 +70,35 @@ spec:
                 - name: pathInRepo
                   value: stepactions/eaas-get-supported-ephemeral-cluster-versions/0.1/eaas-get-supported-ephemeral-cluster-versions.yaml
             params:
+              - name: imageContentSources
+                value: |
+                      - source: registry.redhat.io/openshift-gitops-1/gitops-rhel8
+                        mirrors:
+                          - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-backend
+                      - source: registry.redhat.io/openshift-gitops-1/console-plugin-rhel8
+                        mirrors:
+                          - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-console-plugin
+                      - source: registry.redhat.io/openshift-gitops-1/dex-rhel8
+                        mirrors:
+                          - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex
+                      - source: registry.redhat.io/openshift-gitops-1/must-gather-rhel8
+                        mirrors:
+                          - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-must-gather
+                      - source: registry.redhat.io/openshift-gitops-1/argocd-rhel8
+                        mirrors:
+                          - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-cd
+                      - source: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8
+                        mirrors:
+                          - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts
+                      - source: registry.redhat.io/openshift-gitops-1/gitops-operator-bundle
+                        mirrors:
+                          - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle
+                      - source: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator
+                        mirrors:
+                          - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator
+                      - source: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel8
+                        mirrors:
+                          - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extension-installer
               - name: eaasSpaceSecretRef
                 value: $(tasks.provision-eaas-space.results.secretRef)
           - name: pick-version
