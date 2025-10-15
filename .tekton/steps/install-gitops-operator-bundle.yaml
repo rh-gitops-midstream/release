@@ -68,41 +68,41 @@ spec:
     --namespace "${NAMESPACE}" \
     "$BUNDLE_IMAGE" \
     --verbose; then
-    
-    echo "❌ Operator bundle installation failed. Gathering diagnostics..."
-    echo "================================================"
-    
-    # Namespace events
-    echo "Namespace Events:"
-    oc get events -n "${NAMESPACE}" --sort-by='.lastTimestamp'
-    
-    # OLM-specific resources
-    echo -e "\nOperator Subscriptions:"
-    oc get subscriptions -n "${NAMESPACE}"
-    
-    echo -e "\nInstallPlans:"
-    oc get installplans -n "${NAMESPACE}"
-    
-    echo -e "\nClusterServiceVersions:"
-    oc get csv -n "${NAMESPACE}"
-    
-    echo -e "\nCatalogSources:"
-    oc get catalogsources -n "${NAMESPACE}"
-    
-    # Pods and logs
-    echo -e "\nPods:"
-    oc get pods -n "${NAMESPACE}" -o wide
-    
-    echo -e "\nRecent logs from all pods:"
-    oc logs -n "${NAMESPACE}" --all-containers=true --prefix=true --tail=50 -l 'app' --ignore-errors=true
-    
-    # Use oc adm inspect for comprehensive debugging info
-    echo -e "\nCollecting comprehensive namespace data with oc adm inspect..."
-    oc adm inspect ns/"${NAMESPACE}" --dest-dir=/tmp/must-gather-"${NAMESPACE}" || echo "oc adm inspect failed"
-    
-    echo "================================================"
-    exit 1
-fi
+      
+      echo "❌ Operator bundle installation failed. Gathering diagnostics..."
+      echo "================================================"
+      
+      # Namespace events
+      echo "Namespace Events:"
+      oc get events -n "${NAMESPACE}" --sort-by='.lastTimestamp'
+      
+      # OLM-specific resources
+      echo -e "\nOperator Subscriptions:"
+      oc get subscriptions -n "${NAMESPACE}"
+      
+      echo -e "\nInstallPlans:"
+      oc get installplans -n "${NAMESPACE}"
+      
+      echo -e "\nClusterServiceVersions:"
+      oc get csv -n "${NAMESPACE}"
+      
+      echo -e "\nCatalogSources:"
+      oc get catalogsources -n "${NAMESPACE}"
+      
+      # Pods and logs
+      echo -e "\nPods:"
+      oc get pods -n "${NAMESPACE}" -o wide
+      
+      echo -e "\nRecent logs from all pods:"
+      oc logs -n "${NAMESPACE}" --all-containers=true --prefix=true --tail=50 -l 'app' --ignore-errors=true
+      
+      # Use oc adm inspect for comprehensive debugging info
+      echo -e "\nCollecting comprehensive namespace data with oc adm inspect..."
+      oc adm inspect ns/"${NAMESPACE}" --dest-dir=/tmp/must-gather-"${NAMESPACE}" || echo "oc adm inspect failed"
+      
+      echo "================================================"
+      exit 1
+    fi
     echo "---------------------------------------------"
     # Wait for the controller pod
     for i in {0..30}; do
