@@ -17,3 +17,21 @@ spec:
           component: argocd-rhel9-1-18
         - key: CVE-2025-59531
           component: gitops-operator-bundle-1-18
+        - key: CVE-2025-59538
+          component: argocd-1-18
+        - key: CVE-2025-59538
+          component: argocd-rhel9-1-18
+        - key: CVE-2025-59538
+          component: gitops-operator-bundle-1-18
+        - key: CVE-2025-59537
+          component: argocd-1-18
+        - key: CVE-2025-59537
+          component: argocd-rhel9-1-18
+        - key: CVE-2025-59537
+          component: gitops-operator-bundle-1-18
+        - key: CVE-2025-55191
+          component: argocd-1-18
+        - key: CVE-2025-55191
+          component: argocd-rhel9-1-18
+        - key: CVE-2025-55191
+          component: gitops-operator-bundle-1-18
