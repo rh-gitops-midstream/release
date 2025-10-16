@@ -100,6 +100,41 @@ spec:
                 value: $(tasks.provision-eaas-space.results.secretRef)
               - name: version
                 value: "$(steps.pick-version.results.version)"
+              - name: imageContentSources
+                value: |
+                  - source: registry.redhat.io/openshift-gitops-1/gitops-rhel8
+                      mirrors:
+                        - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel8
+                    - source: registry.redhat.io/openshift-gitops-1/console-plugin-rhel8
+                      mirrors:
+                        - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-rhel8
+                    - source: registry.redhat.io/openshift-gitops-1/dex-rhel8
+                      mirrors:
+                        - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex-rhel8
+                    - source: registry.redhat.io/openshift-gitops-1/must-gather-rhel8
+                      mirrors:
+                        - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/must-gather-rhel8
+                    - source: registry.redhat.io/openshift-gitops-1/argocd-rhel8
+                      mirrors:
+                        - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel8
+                    - source: registry.redhat.io/openshift-gitops-1/argocd-rhel9
+                      mirrors:
+                        - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel9
+                    - source: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8
+                      mirrors:
+                        - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel8
+                    - source: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8
+                      mirrors:
+                        - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts-rhel8
+                    - source: registry.redhat.io/openshift-gitops-1/gitops-operator-bundle
+                      mirrors:
+                        - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle
+                    - source: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator
+                      mirrors:
+                        - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel8-operator
+                    - source: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel8
+                      mirrors:
+                        - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extensions-rhel8
     - name: deploy-and-test-operator
       runAfter:
         - provision-cluster
