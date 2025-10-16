@@ -55,9 +55,9 @@ spec:
     echo "---------------------------------------------"    
     oc create namespace ${NAMESPACE} || true
     oc label namespaces ${NAMESPACE} openshift.io/cluster-monitoring=true --overwrite=true
-    export IMAGE_DIGEST_MIRROR_SET=https://raw.githubusercontent.com/rh-gitops-midstream/catalog/refs/heads/main/.tekton/images-mirror-set.yaml
-    curl -Lo /usr/tmp/imagedigestmirrorset "$IMAGE_DIGEST_MIRROR_SET"
-    oc apply -f /usr/tmp/imagedigestmirrorset
+    # export IMAGE_DIGEST_MIRROR_SET=https://raw.githubusercontent.com/rh-gitops-midstream/catalog/refs/heads/main/.tekton/images-mirror-set.yaml
+    # curl -Lo /usr/tmp/imagedigestmirrorset "$IMAGE_DIGEST_MIRROR_SET"
+    # oc apply -f /usr/tmp/imagedigestmirrorset
     echo "---------------------------------------------"
     echo ${KONFLUX_COMPONENT_NAME}
     # We get the bundle image as a param
