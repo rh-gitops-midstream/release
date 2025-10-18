@@ -85,8 +85,10 @@ spec:
             params:
               - name: eaasSpaceSecretRef
                 value: $(tasks.provision-eaas-space.results.secretRef)
+              - name: timeout
+                value: "60m"
               - name: version
-                value: "4.17.41"
+                value: "4.14.57"
               - name: imageContentSources
                 value: |
                   - source: registry.redhat.io/openshift-gitops-1/gitops-rhel8
