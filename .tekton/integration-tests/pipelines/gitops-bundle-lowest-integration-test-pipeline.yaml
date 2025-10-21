@@ -110,7 +110,7 @@ spec:
                       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle
                   - source: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator
                     mirrors:
-                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel8-operator
                   - source: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel8
                     mirrors:
                       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extension-installer
