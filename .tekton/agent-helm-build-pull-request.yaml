@@ -235,7 +235,7 @@ spec:
       - name: IMAGE
         value: $(params.output-image)
       - name: COMMIT_SHA
-        value: $(tasks.clone-repository.results.commit)
+        value: "a62e7e098c5150ea655ce64b5fed51ec12c65b79"
       - name: SOURCE_ARTIFACT
         value: $(tasks.prefetch-dependencies.results.SOURCE_ARTIFACT)
       - name: RELEASE_BRANCH
