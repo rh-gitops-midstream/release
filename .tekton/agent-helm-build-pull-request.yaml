@@ -107,7 +107,7 @@ spec:
       name: privileged-nested
       type: string
     - default: "sources/argocd-agent/install/helm-repo/argocd-agent-agent"
-      description: directory where the chart is stored 
+      description: directory where the chart is stored
       name: chart-context
       type: string
     results:
@@ -198,6 +198,36 @@ spec:
         workspace: git-auth
       - name: netrc
         workspace: netrc
+# debug
+    - name: check-helm-dir
+      runAfter: 
+      - prefetch-dependencies
+      taskRef:
+        params:
+          - name: name
+            value: run-script-oci-ta
+          - name: bundle
+            value: quay.io/konflux-ci/tekton-catalog/run-script-oci-ta:0.1
+          - name: kind
+            value: task
+        resolver: bundles
+      params:
+      - name: ociStorage
+        value: $(params.output-image).prefetch
+      - name: SOURCE_ARTIFACT
+        value: $(tasks.prefetch-dependencies.results.SOURCE_ARTIFACT)
+      - name: SCRIPT
+        value: ls /var/workdir/source
+      - name: SCRIPT_RUNNER_IMAGE
+        value: registry.access.redhat.com/ubi9/ubi-minimal:9.5@sha256:a50731d3397a4ee28583f1699842183d4d24fadcc565c4688487af9ee4e13a44
+    #   taskSpec:
+    #       steps:
+    #         - name: run-my-script
+    #           image: registry.access.redhat.com/ubi9/ubi:9.5
+    #           script: |
+    #             #!/bin/bash
+    #             cd  /var/workdir/source
+    #             ls
     - name: build-helm-chart
       params:
       - name: CHART_CONTEXT
