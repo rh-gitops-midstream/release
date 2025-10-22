@@ -85,11 +85,14 @@ sources:
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: main
-    commit: 94faa6a43804c7ccf8f49dd77ecec08884b4692a
+    commit: a62e7e098c5150ea655ce64b5fed51ec12c65b79
+    # update the chartVersion for never version of release
+    chartVersion: 0.1.0
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
     ref: master
     commit: 70406ed7af925a9b2fa0143a4fa2d9f7abfbce5c
+
 
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
