@@ -125,3 +125,27 @@ spec:
     #sleep 5
     #oc rollout status statefulset/openshift-gitops-application-controller -n openshift-gitops --timeout=120s
     oc wait argocd openshift-gitops -n openshift-gitops --for=jsonpath='{.status.phase}'="Available" --timeout=600s
+    if ! oc wait argocd openshift-gitops -n openshift-gitops --for=jsonpath='{.status.phase}'="Available" --timeout=600s \
+    --verbose; then
+      
+      echo "❌ Argocd installation failed. Gathering diagnostics..."
+      echo "================================================"
+      
+      # Namespace events
+      echo "Namespace Events:"
+      oc get events -n "openshift-gitops" --sort-by='.lastTimestamp'
+      
+      # Pods and logs
+      echo -e "\nPods:"
+      oc get pods -n "openshift-gitops" -o wide
+      
+      echo -e "\nRecent logs from all pods:"
+      oc logs -n "openshift-gitops" --all-containers=true --prefix=true --tail=50 -l 'app' --ignore-errors=true
+      
+      # Use oc adm inspect for comprehensive debugging info
+      echo -e "\nCollecting comprehensive namespace data with oc adm inspect..."
+      oc adm inspect ns/"openshift-gitops" --dest-dir=/tmp/must-gather-"${NAMESPACE}" || echo "oc adm inspect failed"
+      
+      echo "================================================"
+      exit 1
+    fi
