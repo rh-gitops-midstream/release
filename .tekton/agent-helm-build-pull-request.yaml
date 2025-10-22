@@ -106,6 +106,10 @@ spec:
         VMs
       name: privileged-nested
       type: string
+    - default: "sources/argocd-agent/install/helm-repo/argocd-agent-agent"
+      description: directory where the chart is stored 
+      name: chart-context
+      type: string
     results:
     - description: ""
       name: IMAGE_URL
@@ -119,10 +123,6 @@ spec:
     - description: ""
       name: CHAINS-GIT_COMMIT
       value: $(tasks.clone-repository.results.commit)
-    - default: "sources/argocd-agent/install/helm-repo/argocd-agent-agent"
-      description: directory where the chart is stored 
-      name: chart-context
-      type: string
     tasks:
     - name: init
       params:
