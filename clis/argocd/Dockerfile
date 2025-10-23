@@ -27,26 +27,23 @@ WORKDIR /go/src/github.com/argoproj/argo-cd
 ARG CI_ARGO_CD_VERSION
 ARG CI_ARGO_CD_COMMIT
 ARG CI_VERSION
-ENV EXTRA_BUILD_INFO="{Vendor Information: Red Hat OpenShift GitOps version: $CI_VERSION}"
 
 ENV PACKAGE="github.com/argoproj/argo-cd/v3/common" \
     GIT_TREE_STATE="clean"
 
-ENV LDFLAGS="-X ${PACKAGE}.Version=${CI_ARGO_CD_VERSION} \
-    -X ${PACKAGE}.gitCommit=${CI_ARGO_CD_COMMIT} \
-    -X ${PACKAGE}.gitTreeState=clean \
-    -X ${PACKAGE}.buildDate=$(date +%Y-%m-%dT%H:%M:%SZ) \
-    -X ${PACKAGE}.extraBuildInfo=${EXTRA_BUILD_INFO}"
+ENV GOFLAGS="-mod=mod" 
+
+ENV EXTRA_BUILD_INFO="{Vendor Information: Red Hat OpenShift GitOps version: $CI_VERSION}"
 
 RUN go mod download
-RUN make GIT_TAG="v$(cat VERSION)" GOFLAGS="-mod=mod" LDFLAGS="$LDFLAGS" BIN_NAME=argocd-linux-amd64 GOOS=linux GOARCH=amd64 argocd-all    && \
-    make GIT_TAG="v$(cat VERSION)" GOFLAGS="-mod=mod" LDFLAGS="$LDFLAGS"  BIN_NAME=argocd-linux-arm64 GOOS=linux GOARCH=arm64 argocd-all    && \
-    make GIT_TAG="v$(cat VERSION)" GOFLAGS="-mod=mod" LDFLAGS="$LDFLAGS"  BIN_NAME=argocd-linux-ppc64le GOOS=linux GOARCH=ppc64le argocd-all    && \
-    make GIT_TAG="v$(cat VERSION)" GOFLAGS="-mod=mod" LDFLAGS="$LDFLAGS"  BIN_NAME=argocd-linux-s390x GOOS=linux GOARCH=s390x argocd-all    && \
-    make GIT_TAG="v$(cat VERSION)" GOFLAGS="-mod=mod" LDFLAGS="$LDFLAGS"  BIN_NAME=argocd-windows-amd64.exe GOOS=windows GOARCH=amd64 argocd-all
+RUN make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-linux-amd64 GOOS=linux GOARCH=amd64 argocd-all    && \
+    make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-linux-arm64 GOOS=linux GOARCH=arm64 argocd-all    && \
+    make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-linux-ppc64le GOOS=linux GOARCH=ppc64le argocd-all    && \
+    make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-linux-s390x GOOS=linux GOARCH=s390x argocd-all    && \
+    make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-windows-amd64.exe GOOS=windows GOARCH=amd64 argocd-all
     # TODO: Enable Darwin builds
-    #make GIT_TAG="v$(cat VERSION)" GOFLAGS="-mod=mod" LDFLAGS="$LDFLAGS"  BIN_NAME=argocd-darwin-amd64 GOOS=darwin GOARCH=amd64 argocd-all          && \
-    #make GIT_TAG="v$(cat VERSION)" GOFLAGS="-mod=mod" LDFLAGS="$LDFLAGS"  BIN_NAME=argocd-darwin-arm64 GOOS=darwin GOARCH=arm64 argocd-all            
+    #make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-darwin-amd64 GOOS=darwin GOARCH=amd64 argocd-all          && \
+    #make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-darwin-arm64 GOOS=darwin GOARCH=arm64 argocd-all            
 
 ####################################################################################################
 # Package the binaries into the image using UBI (Universal Base Image)
@@ -61,6 +58,7 @@ USER 999
 
 WORKDIR /releases
 
+# TODO: update the paths once konflux supports releasing clis
 # Copy the built plugin binaries into the final image
 COPY --from=argo-cd-cli-build /go/src/github.com/argoproj/argo-cd/dist/argocd-linux-amd64 /releases
 COPY --from=argo-cd-cli-build /go/src/github.com/argoproj/argo-cd/dist/argocd-linux-arm64 /releases
