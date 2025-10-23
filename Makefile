@@ -3,6 +3,10 @@ SHELL := /bin/bash
 OS := $(shell uname | tr '[:upper:]' '[:lower:]')
 ARCH := $(shell uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
 
+# Default to podman if available, fallback to docker
+CONTAINER_RUNTIME := $(shell command -v podman 2>/dev/null || command -v docker)
+TAG ?= local
+
 # Sync & verify source code repositories from config.yaml
 .PHONY: sources
 sources:
@@ -22,9 +26,6 @@ deps:
 
 # Build container images locally
 .PHONY: container
-# Default to podman if available, fallback to docker
-CONTAINER_RUNTIME := $(shell command -v podman 2>/dev/null || command -v docker)
-TAG ?= local
 container:
 	@if [ -z "$(name)" ]; then \
 		echo "Error: Container name not specified."; \
@@ -34,6 +35,18 @@ container:
 		exit 1; \
 	fi
 	$(CONTAINER_RUNTIME) build -t $(name):$(TAG) -f containers/$(name)/Dockerfile .
+
+# Build container images locally
+.PHONY: cli
+cli:
+	@if [ -z "$(name)" ]; then \
+		echo "Error: CLI name not specified."; \
+		echo "Usage:    make cli name=<name>"; \
+		echo "Available cli names:"; \
+		ls clis/; \
+		exit 1; \
+	fi
+	$(CONTAINER_RUNTIME) build -t $(name):$(TAG) -f clis/$(name)/Dockerfile .
 
 .PHONY: update-build
 # Increment the build version in the BUILD file

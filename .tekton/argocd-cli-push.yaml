@@ -32,9 +32,9 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-cli-main:{{revision}}
+    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-cli:{{revision}}
   - name: image-expires-after
-    value: 5d
+    value: 30d
   - name: build-platforms
     value:
     - linux/x86_64
