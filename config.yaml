@@ -114,7 +114,7 @@ konfluxImages:
   - name: argo-rollouts
     buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts-rhel8"
     releaseRef: "registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8"
-  - name: argocd-extensions
+  - name: argocd-extenstions
     buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extensions-rhel8"
     releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel8"
   - name: argocd
