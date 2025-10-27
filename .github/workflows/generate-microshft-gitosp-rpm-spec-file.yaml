@@ -1,5 +1,6 @@
 name: Generate rpm microshift-gitops.spec file
 
+# TODO: compute input data at runtime using config.yaml
 on:
   workflow_dispatch:
     inputs:

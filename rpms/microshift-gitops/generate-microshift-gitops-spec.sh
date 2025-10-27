@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+
+# TODO: refactor the script 
+
 set -euxo pipefail
 CONFIG=../../config.yaml
 
