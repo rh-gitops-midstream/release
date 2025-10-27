@@ -28,4 +28,4 @@ jobs:
     uses: ./.github/workflows/trigger-bundle-build.yaml
     with:
       TARGET_BRANCH: ${{ github.ref_name }}
-      secrets: inherit
+      #secrets: inherit
