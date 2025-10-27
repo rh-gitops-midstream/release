@@ -1,4 +1,4 @@
-name: Wait for Component Builds and Trigger Bundle
+name: Auto Trigger Bundle
 
 on:
   push:
