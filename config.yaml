@@ -24,28 +24,28 @@ release:
 sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
-    ref: tmp-v1.17
-    commit: 59e94c8d49c5d302d51d31bc30fa5a90348f84cd
+    ref: master
+    commit: 8bd51cfb797cd4cb16d9567e49395fda3f4455e6
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.0.9
-    commit: a1faf0265f5256f0b09e045f8486421359e3211f
+    ref: v3.1.9
+    commit: 8665140f96f6b238a20e578dba7f9aef91ddac51
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
     ref: v1.8.3
     commit: 49fa1516cf71672b69e265267da4e1d16e1fe114
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
-    ref: kustomize/v5.6.0
-    commit: 95db4aa0edd1afb988cd10465ce15f7546ebbbdc
+    ref: kustomize/v5.7.0
+    commit: 7f30f0e23a350bd4ad66bbe7bc38208f311d5461
   - path: sources/helm
     url: https://github.com/helm/helm.git
-    ref: v3.17.1
-    commit: 980d8ac1939e39138101364400756af2bdee1da5
+    ref: v3.18.4
+    commit: d80839cf37d860c8aa9a0503fe463278f26cd5e2
   - path: sources/dex
-    ref: v2.41.1
+    ref: v2.43.0
     url: https://github.com/dexidp/dex.git
-    commit: 43956db7fd75c488a82c70cf231f44287300a75d
+    commit: 8e96058e71257eb0a32e1b0a42303094dea9d8fb
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
     ref: v3.6.1
@@ -65,11 +65,11 @@ sources:
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: main
-    commit: a5f99b1de9bebe9db1640a7e2c4fdb282b40226d
+    commit: 2211da2c414561a6d0c6a06d9fc8a6a95eed0840
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master
-    commit: d83d568a6131e2564353a6ec1294d28635783616
+    commit: 64f9e01d291357675141ffe298c369a521ff3d98
   - path: sources/rollouts-plugin-trafficrouter-openshift
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
     ref: main
@@ -77,7 +77,7 @@ sources:
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
-    commit: 4b954166b1ccab7dd628df912e5be13381b57211
+    commit: 1b0595fe1ce6dd70fe62bb810ce6eadaef7ac454
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
     ref: master
@@ -85,11 +85,11 @@ sources:
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: main
-    commit: f3cb7f51e50bb8124748e9b39b29b44f49276925
+    commit: 94faa6a43804c7ccf8f49dd77ecec08884b4692a
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
-    ref: crd
-    commit: 24f5e51fed964b1138960aa2b1b8526851062e61
+    ref: master
+    commit: 70406ed7af925a9b2fa0143a4fa2d9f7abfbce5c
 
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
