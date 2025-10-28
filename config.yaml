@@ -99,9 +99,6 @@ externalImages:
   - name: "haproxy"
     image: registry.redhat.io/openshift4/ose-haproxy-router
     version: v4.14
-  - name: "keycloak"
-    image: registry.redhat.io/rh-sso-7/sso76-openshift-rhel8
-    version: 7.6
   - name: "redis"
     image: registry.redhat.io/rhel9/redis-7
     version: 9.6
