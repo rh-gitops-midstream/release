@@ -87,6 +87,8 @@ relatedImages = [
     {'name': 'argocd_extension_image', 'image': images['argocd-extenstions']},
     {'name': 'argo_rollouts_image', 'image': images['argo-rollouts']},
     {'name': 'must_gather_image', 'image': images['must-gather']},
+    {'name': 'argocd_principal_image', 'image': images['argocd-agent']},
+    {'name': 'argocd_image_updater_image', 'image': images['argocd-image-updater']},
 ]
 
 new_env = [
@@ -113,6 +115,10 @@ new_env = [
     {'name': 'ARGO_ROLLOUTS_IMAGE', 'value': images['argo-rollouts']},
     {'name': 'RELATED_IMAGE_MUST_GATHER_IMAGE', 'value': images['must-gather']},
     {'name': 'RELATED_IMAGE_KUBE_RBAC_PROXY_IMAGE', 'value': images['kube-rbac-proxy']},
+    {'name': 'ARGOCD_PRINCIPAL_IMAGE', 'value': images['argocd-agent']},
+    {'name': 'RELATED_IMAGE_ARGOCD_PRINCIPAL_IMAGE', 'value': images['argocd-agent']},
+    {'name': 'ARGOCD_IMAGE_UPDATER_IMAGE', 'value': images['argocd-image-updater']},
+    {'name': 'RELATED_IMAGE_ARGOCD_IMAGE_UPDATER_IMAGE', 'value': images['argocd-image-updater']},
 ]
 
 # --- OLM fields ---
