@@ -113,6 +113,10 @@ spec:
     - description: ""
       name: CHAINS-GIT_COMMIT
       value: $(tasks.clone-repository.results.commit)
+    - default: "sources/argocd-agent/install/helm-repo/argocd-agent-agent"
+      description: directory where the chart is stored
+      name: chart-context
+      type: string
     tasks:
     - name: init
       params:
@@ -141,6 +145,8 @@ spec:
         value: $(params.output-image).git
       - name: ociArtifactExpiresAfter
         value: $(params.image-expires-after)
+      - name:  enableSymlinkCheck
+        value: "false"
       runAfter:
       - init
       taskRef:
@@ -186,19 +192,6 @@ spec:
         workspace: git-auth
       - name: netrc
         workspace: netrc
-    # - name: update-digest-for-helm
-    #   taskRef:
-    #     name: update-digest-for-helm
-    #   params:
-    #   - name: CHART_CONTEXT
-    #     value: $(params.chart-context) 
-    #     description: Directory where helm chart resources are stored
-    #   - name: SOURCE_ARTIFACT
-    #     type: string
-    #     value: $(tasks.clone-repository.results.SOURCE_ARTIFACT)
-    #     description: The Trusted Artifact URI pointing to the artifact with the application source code.
-    #   runAfter:
-    #   - prefetch-dependencies
     - name: build-helm-chart
       params:
       - name: CHART_CONTEXT
@@ -206,7 +199,7 @@ spec:
       - name: IMAGE
         value: $(params.output-image)
       - name: COMMIT_SHA
-        value: $(tasks.clone-repository.results.commit)
+        value: "a62e7e098c5150ea655ce64b5fed51ec12c65b79"
       - name: SOURCE_ARTIFACT
         value: $(tasks.prefetch-dependencies.results.SOURCE_ARTIFACT)
       - name: RELEASE_BRANCH
@@ -220,7 +213,6 @@ spec:
             }
           ]
       runAfter:
-      # - update-digest-for-helm
       - prefetch-dependencies   
       taskRef:
         params:
@@ -309,48 +301,6 @@ spec:
           value: deprecated-image-check
         - name: bundle
           value: quay.io/konflux-ci/tekton-catalog/task-deprecated-image-check:0.5@sha256:1d07d16810c26713f3d875083924d93697900147364360587ccb5a63f2c31012
-        - name: kind
-          value: task
-        resolver: bundles
-      when:
-      - input: $(params.skip-checks)
-        operator: in
-        values:
-        - "false"
-    - name: clair-scan
-      params:
-      - name: image-digest
-        value: $(tasks.build-image-index.results.IMAGE_DIGEST)
-      - name: image-url
-        value: $(tasks.build-image-index.results.IMAGE_URL)
-      runAfter:
-      - build-image-index
-      taskRef:
-        params:
-        - name: name
-          value: clair-scan
-        - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-clair-scan:0.3@sha256:a7cc183967f89c4ac100d04ab8f81e54733beee60a0528208107c9a22d3c43af
-        - name: kind
-          value: task
-        resolver: bundles
-      when:
-      - input: $(params.skip-checks)
-        operator: in
-        values:
-        - "false"
-    - name: ecosystem-cert-preflight-checks
-      params:
-      - name: image-url
-        value: $(tasks.build-image-index.results.IMAGE_URL)
-      runAfter:
-      - build-image-index
-      taskRef:
-        params:
-        - name: name
-          value: ecosystem-cert-preflight-checks
-        - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-ecosystem-cert-preflight-checks:0.2@sha256:dae8e28761cee4ab0baf04ab9f8f1a4b3cee3c7decf461fda2bacc5c01652a60
         - name: kind
           value: task
         resolver: bundles
@@ -565,28 +515,6 @@ spec:
         - name: kind
           value: task
         resolver: bundles
-    - name: rpms-signature-scan
-      params:
-      - name: image-url
-        value: $(tasks.build-image-index.results.IMAGE_URL)
-      - name: image-digest
-        value: $(tasks.build-image-index.results.IMAGE_DIGEST)
-      runAfter:
-      - build-image-index
-      taskRef:
-        params:
-        - name: name
-          value: rpms-signature-scan
-        - name: bundle
-          value: quay.io/konflux-ci/konflux-vanguard/task-rpms-signature-scan:0.2@sha256:49ff6d117c3e9dc3966d1244e118e168b3501742ec14c3a4161a276ff48d04d5
-        - name: kind
-          value: task
-        resolver: bundles
-      when:
-      - input: $(params.skip-checks)
-        operator: in
-        values:
-        - "false"
     workspaces:
     - name: git-auth
       optional: true

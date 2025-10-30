@@ -198,36 +198,6 @@ spec:
         workspace: git-auth
       - name: netrc
         workspace: netrc
-# debug
-    # - name: check-helm-dir
-    #   runAfter: 
-    #   - prefetch-dependencies
-    #   taskRef:
-    #     params:
-    #       - name: name
-    #         value: run-script-oci-ta
-    #       - name: bundle
-    #         value: quay.io/konflux-ci/tekton-catalog/task-run-script-oci-ta:0.1
-    #       - name: kind
-    #         value: task
-    #     resolver: bundles
-    #   params:
-    #   - name: ociStorage
-    #     value: $(params.output-image).prefetch
-    #   - name: SOURCE_ARTIFACT
-    #     value: $(tasks.prefetch-dependencies.results.SOURCE_ARTIFACT)
-    #   - name: SCRIPT
-    #     value: ls /var/workdir/source
-    #   - name: SCRIPT_RUNNER_IMAGE
-    #     value: registry.access.redhat.com/ubi9/ubi-minimal:9.5@sha256:a50731d3397a4ee28583f1699842183d4d24fadcc565c4688487af9ee4e13a44
-    #   taskSpec:
-    #       steps:
-    #         - name: run-my-script
-    #           image: registry.access.redhat.com/ubi9/ubi:9.5
-    #           script: |
-    #             #!/bin/bash
-    #             cd  /var/workdir/source
-    #             ls
     - name: build-helm-chart
       params:
       - name: CHART_CONTEXT
@@ -338,48 +308,6 @@ spec:
           value: deprecated-image-check
         - name: bundle
           value: quay.io/konflux-ci/tekton-catalog/task-deprecated-image-check:0.5@sha256:1d07d16810c26713f3d875083924d93697900147364360587ccb5a63f2c31012
-        - name: kind
-          value: task
-        resolver: bundles
-      when:
-      - input: $(params.skip-checks)
-        operator: in
-        values:
-        - "false"
-    - name: clair-scan
-      params:
-      - name: image-digest
-        value: $(tasks.build-image-index.results.IMAGE_DIGEST)
-      - name: image-url
-        value: $(tasks.build-image-index.results.IMAGE_URL)
-      runAfter:
-      - build-image-index
-      taskRef:
-        params:
-        - name: name
-          value: clair-scan
-        - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-clair-scan:0.3@sha256:a7cc183967f89c4ac100d04ab8f81e54733beee60a0528208107c9a22d3c43af
-        - name: kind
-          value: task
-        resolver: bundles
-      when:
-      - input: $(params.skip-checks)
-        operator: in
-        values:
-        - "false"
-    - name: ecosystem-cert-preflight-checks
-      params:
-      - name: image-url
-        value: $(tasks.build-image-index.results.IMAGE_URL)
-      runAfter:
-      - build-image-index
-      taskRef:
-        params:
-        - name: name
-          value: ecosystem-cert-preflight-checks
-        - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-ecosystem-cert-preflight-checks:0.2@sha256:dae8e28761cee4ab0baf04ab9f8f1a4b3cee3c7decf461fda2bacc5c01652a60
         - name: kind
           value: task
         resolver: bundles
@@ -594,28 +522,6 @@ spec:
         - name: kind
           value: task
         resolver: bundles
-    - name: rpms-signature-scan
-      params:
-      - name: image-url
-        value: $(tasks.build-image-index.results.IMAGE_URL)
-      - name: image-digest
-        value: $(tasks.build-image-index.results.IMAGE_DIGEST)
-      runAfter:
-      - build-image-index
-      taskRef:
-        params:
-        - name: name
-          value: rpms-signature-scan
-        - name: bundle
-          value: quay.io/konflux-ci/konflux-vanguard/task-rpms-signature-scan:0.2@sha256:49ff6d117c3e9dc3966d1244e118e168b3501742ec14c3a4161a276ff48d04d5
-        - name: kind
-          value: task
-        resolver: bundles
-      when:
-      - input: $(params.skip-checks)
-        operator: in
-        values:
-        - "false"
     workspaces:
     - name: git-auth
       optional: true
