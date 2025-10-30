@@ -85,9 +85,7 @@ sources:
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: main
-    commit: a62e7e098c5150ea655ce64b5fed51ec12c65b79
-    # update the chartVersion for never version of release
-    chartVersion: 0.1.0
+    commit: 591bcce1befb6d0d8f05edeba6f0266ff7a98d6a
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
     ref: master

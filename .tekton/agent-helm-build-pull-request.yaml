@@ -204,8 +204,9 @@ spec:
         value: $(params.chart-context) 
       - name: IMAGE
         value: $(params.output-image)
+      # update this COMMIT_SHA with agent repo commit id 
       - name: COMMIT_SHA
-        value: "a62e7e098c5150ea655ce64b5fed51ec12c65b79"
+        value: "591bcce1befb6d0d8f05edeba6f0266ff7a98d6a"
       - name: SOURCE_ARTIFACT
         value: $(tasks.prefetch-dependencies.results.SOURCE_ARTIFACT)
       - name: RELEASE_BRANCH
