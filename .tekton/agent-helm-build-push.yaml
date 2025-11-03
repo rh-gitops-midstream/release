@@ -210,7 +210,7 @@ spec:
           [
             {
               "source": "ghcr.io/argoproj-labs/argocd-agent/argocd-agent",
-              "target": "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8:'{{target_branch}}'"
+              "target": "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8:{{target_branch}}"
             }
           ]
       runAfter:
