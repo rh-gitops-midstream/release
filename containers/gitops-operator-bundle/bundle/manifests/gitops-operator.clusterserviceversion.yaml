@@ -198,6 +198,7 @@ metadata:
     support: Red Hat
     operators.openshift.io/valid-subscription: '["OpenShift Container Platform", "OpenShift Platform Plus"]'
     operators.operatorframework.io/internal-objects: '["gitopsservices.pipelines.openshift.io"]'
+    operators.openshift.io/must-gather-image: registry.redhat.io/openshift-gitops-1/must-gather-rhel8@sha256:f3a7816f558dde623321cf8136ffdb905921851f2c38cbb0623005bee639d006
     features.operators.openshift.io/cnf: 'false'
     features.operators.openshift.io/cni: 'false'
     features.operators.openshift.io/csi: 'false'
@@ -851,9 +852,9 @@ spec:
                       - name: ARGOCD_REDIS_HA_IMAGE
                         value: registry.redhat.io/rhel9/redis-7@sha256:66ab0e509e35a76b292585599c2e80da2f24c6389daec4ab1d6d29c5ddb38a2e
                       - name: RELATED_IMAGE_ARGOCD_REDIS_HA_PROXY_IMAGE
-                        value: registry.redhat.io/openshift4/ose-haproxy-router@sha256:5ca16b5d521ca60461e8e85d8af09ce940d4346e51e09296c5a2bc2f2d162b5c
+                        value: registry.redhat.io/openshift4/ose-haproxy-router@sha256:a6b795e91da68dcc389ca85ec05da8780afb7d88479cbb5532b529505be897ec
                       - name: ARGOCD_REDIS_HA_PROXY_IMAGE
-                        value: registry.redhat.io/openshift4/ose-haproxy-router@sha256:5ca16b5d521ca60461e8e85d8af09ce940d4346e51e09296c5a2bc2f2d162b5c
+                        value: registry.redhat.io/openshift4/ose-haproxy-router@sha256:a6b795e91da68dcc389ca85ec05da8780afb7d88479cbb5532b529505be897ec
                       - name: RELATED_IMAGE_GITOPS_CONSOLE_PLUGIN_IMAGE
                         value: registry.redhat.io/openshift-gitops-1/console-plugin-rhel8@sha256:1377a9b7a7fc282792e7c07da04e69585a281cd9c565c531af84b712adedd393
                       - name: GITOPS_CONSOLE_PLUGIN_IMAGE
@@ -1027,7 +1028,7 @@ spec:
     - name: argocd_redis_image
       image: registry.redhat.io/rhel9/redis-7@sha256:66ab0e509e35a76b292585599c2e80da2f24c6389daec4ab1d6d29c5ddb38a2e
     - name: argocd_redis_ha_proxy_image
-      image: registry.redhat.io/openshift4/ose-haproxy-router@sha256:5ca16b5d521ca60461e8e85d8af09ce940d4346e51e09296c5a2bc2f2d162b5c
+      image: registry.redhat.io/openshift4/ose-haproxy-router@sha256:a6b795e91da68dcc389ca85ec05da8780afb7d88479cbb5532b529505be897ec
     - name: gitops_console_plugin_image
       image: registry.redhat.io/openshift-gitops-1/console-plugin-rhel8@sha256:1377a9b7a7fc282792e7c07da04e69585a281cd9c565c531af84b712adedd393
     - name: argocd_extension_image
