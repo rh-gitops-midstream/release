@@ -1,4 +1,4 @@
-name: Trigger Operator Build
+name: Trigger Component Builds
 
 on:
   workflow_dispatch:
@@ -11,8 +11,8 @@ on:
 permissions: {}
 
 jobs:
-  prepare-operator-build:
-    name: Trigger Operator build for ${{ inputs.TARGET_BRANCH }}
+  prepare-component-builds:
+    name: Trigger Component Builds for ${{ inputs.TARGET_BRANCH }}
     runs-on: ubuntu-22.04
     permissions:
       contents: write         # To push branches
@@ -46,10 +46,10 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(operator): bump to ${{ steps.metadata.outputs.build }}"
-          branch: build/operator-${{ steps.metadata.outputs.build }}-${{ steps.metadata.outputs.ts }}
+          commit-message: "chore(build): bump to ${{ steps.metadata.outputs.build }}"
+          branch: build/component-${{ steps.metadata.outputs.build }}-${{ steps.metadata.outputs.ts }}
           delete-branch: true
-          title: "chore(operator): bump to ${{ steps.metadata.outputs.build }}"
+          title: "chore(build): bump to ${{ steps.metadata.outputs.build }}"
           body: |
             This PR updates the `BUILD` file with the next operator build version.
 

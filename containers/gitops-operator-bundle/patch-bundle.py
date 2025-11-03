@@ -79,7 +79,6 @@ relatedImages = [
     {'name': 'kube-rbac-proxy', 'image': images['kube-rbac-proxy']},
     {'name': 'kube_rbac_proxy_image', 'image': images['kube-rbac-proxy']},
     {'name': 'argocd_dex_image', 'image': images['dex']},
-    {'name': 'argocd_keycloak_image', 'image': images['keycloak']},
     {'name': 'backend_image', 'image': images['gitops']},
     {'name': 'argocd_image', 'image': images['argocd']},
     {'name': 'argocd_redis_image', 'image': images['redis']},
@@ -88,6 +87,8 @@ relatedImages = [
     {'name': 'argocd_extension_image', 'image': images['argocd-extenstions']},
     {'name': 'argo_rollouts_image', 'image': images['argo-rollouts']},
     {'name': 'must_gather_image', 'image': images['must-gather']},
+    {'name': 'argocd_principal_image', 'image': images['argocd-agent']},
+    {'name': 'argocd_image_updater_image', 'image': images['argocd-image-updater']},
 ]
 
 new_env = [
@@ -96,8 +97,6 @@ new_env = [
     {'name': 'ENABLE_CONVERSION_WEBHOOK', 'value': 'true'},
     {'name': 'RELATED_IMAGE_ARGOCD_DEX_IMAGE', 'value': images['dex']},
     {'name': 'ARGOCD_DEX_IMAGE', 'value': images['dex']},
-    {'name': 'RELATED_IMAGE_ARGOCD_KEYCLOAK_IMAGE', 'value': images['keycloak']},
-    {'name': 'ARGOCD_KEYCLOAK_IMAGE', 'value': images['keycloak']},
     {'name': 'RELATED_IMAGE_BACKEND_IMAGE', 'value': images['gitops']},
     {'name': 'BACKEND_IMAGE', 'value': images['gitops']},
     {'name': 'RELATED_IMAGE_ARGOCD_IMAGE', 'value': images['argocd']},
@@ -116,6 +115,10 @@ new_env = [
     {'name': 'ARGO_ROLLOUTS_IMAGE', 'value': images['argo-rollouts']},
     {'name': 'RELATED_IMAGE_MUST_GATHER_IMAGE', 'value': images['must-gather']},
     {'name': 'RELATED_IMAGE_KUBE_RBAC_PROXY_IMAGE', 'value': images['kube-rbac-proxy']},
+    {'name': 'ARGOCD_PRINCIPAL_IMAGE', 'value': images['argocd-agent']},
+    {'name': 'RELATED_IMAGE_ARGOCD_PRINCIPAL_IMAGE', 'value': images['argocd-agent']},
+    {'name': 'ARGOCD_IMAGE_UPDATER_IMAGE', 'value': images['argocd-image-updater']},
+    {'name': 'RELATED_IMAGE_ARGOCD_IMAGE_UPDATER_IMAGE', 'value': images['argocd-image-updater']},
 ]
 
 # --- OLM fields ---
@@ -166,6 +169,7 @@ csv['metadata'].setdefault('labels', {})
 
 csv['metadata']['annotations']['operators.openshift.io/valid-subscription'] = '["OpenShift Container Platform", "OpenShift Platform Plus"]'
 csv['metadata']['annotations']['operators.operatorframework.io/internal-objects'] = '["gitopsservices.pipelines.openshift.io"]'
+csv['metadata']['annotations']['operators.openshift.io/must-gather-image'] = images['must-gather']
 csv['metadata']['annotations']['features.operators.openshift.io/fips-compliant'] = 'true'
 csv['metadata']['annotations']['features.operators.openshift.io/cnf'] = 'false'
 csv['metadata']['annotations']['features.operators.openshift.io/cni'] = 'false'

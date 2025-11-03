@@ -7,6 +7,13 @@ on:
         description: 'RELEASE_BRANCH to checkout (e.g. release-1.17)'
         required: true
         type: string
+  
+  # For reusable workflows
+  workflow_call:
+    inputs:
+      TARGET_BRANCH:
+        required: true
+        type: string
 
 permissions: {}
 

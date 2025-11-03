@@ -1,0 +1,32 @@
+name: Auto Trigger Bundle
+
+on:
+  push:
+    paths:
+      - 'BUILD'
+
+permissions:
+  checks: read
+  contents: write
+  pull-requests: write
+
+jobs:
+  wait-for-component-builds:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wait for konflux builds to complete
+        uses: jitterbit/await-check-suites@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          intervalSeconds: 300        # 5 minutes
+          timeoutSeconds: 14400       # 4 hours
+          failStepIfUnsuccessful: true
+
+  trigger-bundle:
+    needs: wait-for-component-builds
+    uses: ./.github/workflows/trigger-bundle-build.yaml
+    with:
+      TARGET_BRANCH: ${{ github.ref_name }}
+    secrets: inherit
