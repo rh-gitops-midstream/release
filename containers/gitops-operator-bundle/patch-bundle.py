@@ -188,6 +188,7 @@ csv['metadata'].setdefault('labels', {})
 
 csv['metadata']['annotations']['operators.openshift.io/valid-subscription'] = '["OpenShift Container Platform", "OpenShift Platform Plus"]'
 csv['metadata']['annotations']['operators.operatorframework.io/internal-objects'] = '["gitopsservices.pipelines.openshift.io"]'
+csv['metadata']['annotations']['operators.openshift.io/must-gather-image'] = images['must-gather']
 csv['metadata']['annotations']['features.operators.openshift.io/fips-compliant'] = 'true'
 csv['metadata']['annotations']['features.operators.openshift.io/cnf'] = 'false'
 csv['metadata']['annotations']['features.operators.openshift.io/cni'] = 'false'
