@@ -118,14 +118,13 @@ spec:
     oc wait --for=jsonpath='{.status.phase}'=Active ns/openshift-gitops --timeout=120s
     sleep 10
     # Check for various resources
-    #deployments=($(echo $(oc get deployments -n openshift-gitops --no-headers -o custom-columns=':metadata.name')))
-    #for deployment in "${deployments[@]}"; do
-    #  oc rollout status deployment/"${deployment}" -n openshift-gitops --timeout=120s
-    #done
-    #sleep 5
-    #oc rollout status statefulset/openshift-gitops-application-controller -n openshift-gitops --timeout=120s
-    if ! oc wait argocd openshift-gitops -n openshift-gitops --for=jsonpath='{.status.phase}'="Available" --timeout=600s \
-    --verbose; then
+    deployments=($(echo $(oc get deployments -n openshift-gitops --no-headers -o custom-columns=':metadata.name')))
+    for deployment in "${deployments[@]}"; do
+     oc rollout status deployment/"${deployment}" -n openshift-gitops --timeout=120s
+    done
+    sleep 5
+    oc rollout status statefulset/openshift-gitops-application-controller -n openshift-gitops --timeout=120s
+    if ! oc wait argocd openshift-gitops -n openshift-gitops --for=jsonpath='{.status.phase}'="Available" --timeout=600s --verbose; then
       
       echo "❌ Argocd installation failed. Gathering diagnostics..."
       echo "================================================"
