@@ -89,22 +89,22 @@ spec:
                 value: |
                   - source: registry.redhat.io/openshift-gitops-1/gitops-rhel8
                     mirrors:
-                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-backend
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel8
                   - source: registry.redhat.io/openshift-gitops-1/console-plugin-rhel8
                     mirrors:
-                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-console-plugin
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-console-plugin-rhel8
                   - source: registry.redhat.io/openshift-gitops-1/dex-rhel8
                     mirrors:
-                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex-rhel8
                   - source: registry.redhat.io/openshift-gitops-1/must-gather-rhel8
                     mirrors:
-                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-must-gather
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/must-gather-rhel8
                   - source: registry.redhat.io/openshift-gitops-1/argocd-rhel8
                     mirrors:
-                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-cd
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel8
                   - source: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8
                     mirrors:
-                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts-rhel8
                   - source: registry.redhat.io/openshift-gitops-1/gitops-operator-bundle
                     mirrors:
                       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle
@@ -113,7 +113,7 @@ spec:
                       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel8-operator
                   - source: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel8
                     mirrors:
-                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extension-installer
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extensions-rhel8
               - name: timeout
                 value: "60m"
               - name: version
