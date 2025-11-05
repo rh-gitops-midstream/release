@@ -124,7 +124,6 @@ spec:
     #done
     #sleep 5
     #oc rollout status statefulset/openshift-gitops-application-controller -n openshift-gitops --timeout=120s
-    oc wait argocd openshift-gitops -n openshift-gitops --for=jsonpath='{.status.phase}'="Available" --timeout=600s
     if ! oc wait argocd openshift-gitops -n openshift-gitops --for=jsonpath='{.status.phase}'="Available" --timeout=600s \
     --verbose; then
       
