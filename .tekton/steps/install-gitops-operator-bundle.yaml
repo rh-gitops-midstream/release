@@ -124,7 +124,7 @@ spec:
     done
     sleep 5
     oc rollout status statefulset/openshift-gitops-application-controller -n openshift-gitops --timeout=120s
-    if ! oc wait argocd openshift-gitops -n openshift-gitops --for=jsonpath='{.status.phase}'="Available" --timeout=600s --verbose; then
+    if ! oc wait argocd openshift-gitops -n openshift-gitops --for=jsonpath='{.status.phase}'="Available" --timeout=600s; then
       
       echo "❌ Argocd installation failed. Gathering diagnostics..."
       echo "================================================"
