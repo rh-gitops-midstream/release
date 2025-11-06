@@ -29,6 +29,8 @@ spec:
       value: "$(params.test_dir)"
     - name: KUBECONFIG
       value: "/credentials/$(params.kubeconfig)"
+    - name: NON_OLM
+      value: "true"
   volumeMounts:
     - name: "$(params.credentials)"
       mountPath: /credentials
