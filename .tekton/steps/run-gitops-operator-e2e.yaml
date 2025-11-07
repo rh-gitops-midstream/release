@@ -39,5 +39,8 @@ spec:
     set +x
     oc status
     cd /testsuites/gitops-operator/
+    git remote add test git@github.com:adamsaleh/gitops-operator.git
+    git fetch --all
     git checkout "${BRANCH}"
+    git checkout rm_env_across_containers
     /testsuites/gitops-operator/bin/ginkgo -p -v -procs=5 --trace --timeout $TIMEOUT -r "${TEST_DIR}"
