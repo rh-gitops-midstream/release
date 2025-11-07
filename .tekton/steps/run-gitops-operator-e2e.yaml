@@ -31,6 +31,8 @@ spec:
       value: "/credentials/$(params.kubeconfig)"
     - name: NON_OLM
       value: "true"
+    - name: CI
+      value: prow
   volumeMounts:
     - name: "$(params.credentials)"
       mountPath: /credentials
