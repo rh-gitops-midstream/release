@@ -39,7 +39,7 @@ spec:
     set +x
     oc status
     cd /testsuites/gitops-operator/
-    git remote add test git@github.com:adamsaleh/gitops-operator.git
+    git remote add test https://github.com/AdamSaleh/gitops-operator.git
     git fetch --all
     git checkout "${BRANCH}"
     git checkout rm_env_across_containers
