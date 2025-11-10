@@ -20,7 +20,7 @@ spec:
       description: A volume to which the remote cluster credentials will be written.
   env:
     - name: CI
-      value: "true"
+      value: "prow"
     - name: TIMEOUT
       value: "$(params.timeout)"
     - name: BRANCH
