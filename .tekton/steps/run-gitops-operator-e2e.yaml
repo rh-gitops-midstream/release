@@ -22,8 +22,8 @@ spec:
       type: string
       default: "1"
   env:
-    - name: CI
-      value: "prow"
+    #- name: CI
+    # value: "prow"
     - name: TIMEOUT
       value: "$(params.timeout)"
     - name: BRANCH
@@ -34,8 +34,8 @@ spec:
       value: "$(params.procs)"
     - name: KUBECONFIG
       value: "/credentials/$(params.kubeconfig)"
-    #- name: NON_OLM
-      #  value: "true"
+    - name: NON_OLM
+      value: "true"
   volumeMounts:
     - name: "$(params.credentials)"
       mountPath: /credentials
