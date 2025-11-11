@@ -2,7 +2,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: gitops-bundle-lowest-parallel-integration-test-pipeline
+  name: gitops-bundle-dast-pipeline
 spec:
   description: |
     An integration test which provisions an ephemeral Hypershift cluster and deploys an Operator
@@ -178,7 +178,7 @@ spec:
                 value: credentials
               - name: kubeconfig
                 value: "$(steps.get-kubeconfig.results.kubeconfig)"
-          - name: test-operator
+          - name: test-dast
             ref:
               resolver: git
               params:
@@ -187,13 +187,15 @@ spec:
                 - name: revision
                   value: konflux
                 - name: pathInRepo
-                  value: .tekton/steps/run-gitops-operator-e2e.yaml
+                  value: .tekton/steps/run-dast.yaml
             params:
               - name: credentials
                 value: credentials
-              - name: procs
-                value: 5
               - name: kubeconfig
                 value: "$(steps.get-kubeconfig.results.kubeconfig)"
-              - name: test_dir
-                value: "./test/openshift/e2e/ginkgo/parallel"
+              - name: pwdpath
+                value: "$(steps.get-kubeconfig.results.passwordPath)"
+              - name: apiurl
+                value: "$(steps.get-kubeconfig.results.apiServerURL)"
+              - name: clusterurl
+                value: "$(steps.get-kubeconfig.results.consoleURL)"

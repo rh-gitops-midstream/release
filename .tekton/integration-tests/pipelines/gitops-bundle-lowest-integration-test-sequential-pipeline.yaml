@@ -2,7 +2,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: gitops-bundle-lowest-parallel-integration-test-pipeline
+  name: gitops-bundle-lowest-sequential-integration-test-pipeline
 spec:
   description: |
     An integration test which provisions an ephemeral Hypershift cluster and deploys an Operator
@@ -191,9 +191,7 @@ spec:
             params:
               - name: credentials
                 value: credentials
-              - name: procs
-                value: 5
               - name: kubeconfig
                 value: "$(steps.get-kubeconfig.results.kubeconfig)"
               - name: test_dir
-                value: "./test/openshift/e2e/ginkgo/parallel"
+                value: "./test/openshift/e2e/ginkgo/sequential"
