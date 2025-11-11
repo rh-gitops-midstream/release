@@ -43,9 +43,6 @@ spec:
     cat <<EOF | tee /tmp/config.yaml
     config:
         configVersion: 6
-        googleCloudStorage:
-          keyFile: "/gcp/key.json"                           # optional: path to the GCS key file (alternatively: use GOOGLE_APPLICATION_CREDENTIALS)
-          bucketName: "gitops-results"
     application:
         shortName: "gitops"
         url: $URL
