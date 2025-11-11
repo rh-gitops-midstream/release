@@ -15,6 +15,11 @@ spec:
     - name: credentials
       type: string
       description: A volume to which the remote cluster credentials will be written.
+  computeResources:
+    requests:
+      memory: 8Gi
+    limits:
+      memory: 8Gi
   volumeMounts:
     - name: "$(params.credentials)"
       mountPath: /credentials
