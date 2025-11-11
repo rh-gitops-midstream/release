@@ -194,7 +194,7 @@ spec:
               - name: kubeconfig
                 value: "$(steps.get-kubeconfig.results.kubeconfig)"
               - name: pwdpath
-                value: "$(steps.get-kubeconfig.results.passwordPath)"
+                value: "/credentials/$(steps.get-kubeconfig.results.passwordPath)"
               - name: apiurl
                 value: "$(steps.get-kubeconfig.results.apiServerURL)"
               - name: clusterurl
