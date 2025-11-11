@@ -30,9 +30,6 @@ spec:
       value: "$(params.clusterurl)"
     - name: PWD_PATH
       value: "$(params.pwdpath)"
-  volumeMounts:
-    - name: credentials
-      mountPath: /credentials
   script: |
     export KPWD=$(cat $PWD_PATH)
     export APPSURL=${CLUSTERURL#*console-openshift-console.}
