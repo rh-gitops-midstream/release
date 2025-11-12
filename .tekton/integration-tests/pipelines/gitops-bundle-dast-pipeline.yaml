@@ -136,11 +136,6 @@ spec:
             type: string
           - name: installTimeout
             type: string
-        computeResources:
-              requests:
-                memory: 8Gi
-              limits:
-                memory: 8Gi
         volumes:
           - name: credentials
             emptyDir: {}
@@ -184,6 +179,11 @@ spec:
               - name: kubeconfig
                 value: "$(steps.get-kubeconfig.results.kubeconfig)"
           - name: test-dast
+            resources:
+              requests:
+                memory: "128Mi"
+              limits:
+                memory: "256Mi"
             ref:
               resolver: git
               params:
