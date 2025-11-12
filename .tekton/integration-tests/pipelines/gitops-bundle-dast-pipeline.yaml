@@ -181,9 +181,9 @@ spec:
           - name: test-dast
             resources:
               requests:
-                memory: "128Mi"
+                memory: "4128Mi"
               limits:
-                memory: "256Mi"
+                memory: "4256Mi"
             ref:
               resolver: git
               params:
