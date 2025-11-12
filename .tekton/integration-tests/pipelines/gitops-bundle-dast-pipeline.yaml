@@ -179,6 +179,11 @@ spec:
               - name: kubeconfig
                 value: "$(steps.get-kubeconfig.results.kubeconfig)"
           - name: test-dast
+            computeResources:
+              requests:
+                memory: 8Gi
+              limits:
+                memory: 8Gi
             ref:
               resolver: git
               params:
