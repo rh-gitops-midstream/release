@@ -89,7 +89,7 @@ sources:
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
     ref: master
-    commit: 9c26131d12821484ed772f0aeb886cf8a111a4ec
+    commit: 77f92be2551775e5337f508288fce9c5984d3bc4
 
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
