@@ -2,6 +2,9 @@ name: Auto Trigger Bundle
 
 on:
   push:
+    branches:
+      - main
+      - release-*
     paths:
       - 'BUILD'
 
