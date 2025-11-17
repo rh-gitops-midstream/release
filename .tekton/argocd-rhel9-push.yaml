@@ -9,7 +9,7 @@ metadata:
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: >-
       event == "push" &&
-      target_branch == "release-1.19" &&
+      target_branch == "main" &&
       (
         "sources/argo-cd".pathChanged() ||
         "sources/git-lfs".pathChanged() ||
@@ -26,10 +26,10 @@ metadata:
       )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: gitops-1-19
-    appstudio.openshift.io/component: argocd-rhel9-1-19
+    appstudio.openshift.io/application: gitops-main
+    appstudio.openshift.io/component: argocd-rhel9-main
     pipelines.appstudio.openshift.io/type: build
-  name: argocd-rhel9-1-19-on-push
+  name: argocd-rhel9-main-on-push
   namespace: rh-openshift-gitops-tenant
 spec:
   taskRunSpecs:
@@ -72,7 +72,7 @@ spec:
   pipelineRef:
     name: build-multi-platform-image
   taskRunTemplate: 
-    serviceAccountName: build-pipeline-argocd-rhel9-1-19
+    serviceAccountName: build-pipeline-argocd-rhel9-main
   workspaces:
   - name: git-auth
     secret:
