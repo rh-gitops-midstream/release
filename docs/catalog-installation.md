@@ -16,7 +16,7 @@ kind: ImageContentSourcePolicy
 metadata:
   name: gitops-testing-icsp
 spec:
-  repositoryDigestMirrors:
+  imageDigestMirrors:
   - source: registry.redhat.io/openshift-gitops-1/gitops-rhel8
     mirrors:
       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel8
@@ -50,6 +50,9 @@ spec:
   - source: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel8
     mirrors:
       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extensions-rhel8
+  - source: registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel8
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-image-updater-rhel8
 ```
 
 Apply it using:
