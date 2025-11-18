@@ -36,17 +36,15 @@ spec:
     - pipelineTaskName: prefetch-dependencies
       computeResources:
         requests:
-          cpu: '1'
           memory: 4Gi
         limits:
-          memory: 4Gi
+          memory: 8Gi
     - pipelineTaskName: build-source-image
       computeResources:
         requests:
-          cpu: '1'
           memory: 4Gi
         limits:
-          memory: 4Gi
+          memory: 8Gi
   params:
   - name: git-url
     value: '{{source_url}}'
