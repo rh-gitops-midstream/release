@@ -204,6 +204,7 @@ spec:
         value: $(params.chart-context) 
       - name: IMAGE
         value: $(params.output-image)
+      # TODO: determine this at runtime using a custom task
       # update this COMMIT_SHA with agent repo commit id 
       - name: COMMIT_SHA
         value: "591bcce1befb6d0d8f05edeba6f0266ff7a98d6a"
@@ -211,6 +212,7 @@ spec:
         value: $(tasks.prefetch-dependencies.results.SOURCE_ARTIFACT)
       - name: RELEASE_BRANCH
         value: $(params.target_branch)
+      #TODO: use a SHA here instead of a tag for image mapping
       - name: IMAGE_MAPPINGS
         value: |
           [
