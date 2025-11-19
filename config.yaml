@@ -43,9 +43,9 @@ sources:
     ref: v3.17.1
     commit: 980d8ac1939e39138101364400756af2bdee1da5
   - path: sources/dex
-    ref: v2.41.1
+    ref: v2.42.1
     url: https://github.com/dexidp/dex.git
-    commit: 43956db7fd75c488a82c70cf231f44287300a75d
+    commit: 4c3e83b90135339575b66d7cf878fb1a6326c243
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
     ref: v3.6.1
