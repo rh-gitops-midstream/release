@@ -179,13 +179,13 @@ arches:
     name: emacs-filesystem
     evr: 1:26.1-15.el8_10
     sourcerpm: emacs-26.1-15.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/e/expat-2.2.5-17.el8_10.aarch64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/e/expat-2.5.0-1.el8_10.aarch64.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
-    size: 107844
-    checksum: sha256:7a560a41ad9b82fbbe3a5dd65c31ce5b996a76732d856561567d9ba795d04868
+    size: 124144
+    checksum: sha256:b5791923f62b8666b34052bd76a3ff745d3733110fdd4a7a3502a9a777afac2f
     name: expat
-    evr: 2.2.5-17.el8_10
-    sourcerpm: expat-2.2.5-17.el8_10.src.rpm
+    evr: 2.5.0-1.el8_10
+    sourcerpm: expat-2.5.0-1.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/f/file-5.33-27.el8_10.aarch64.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
     size: 79708
@@ -615,10 +615,10 @@ arches:
     sourcerpm: util-linux-2.32.1-46.el8.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/repodata/960ebb1c4c917ec6e223f602cac3731bc09b8ebf939abbf9ef8c980236224977-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/repodata/d09d4895506a27c73d4acc1bc7e59b360e26387758924bb15614d69e65f41311-modules.yaml.gz
     repoid: ubi-8-for-aarch64-appstream-rpms
-    size: 57035
-    checksum: sha256:960ebb1c4c917ec6e223f602cac3731bc09b8ebf939abbf9ef8c980236224977
+    size: 58174
+    checksum: sha256:d09d4895506a27c73d4acc1bc7e59b360e26387758924bb15614d69e65f41311
 - arch: ppc64le
   packages:
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/c/cmake-3.26.5-2.el8.ppc64le.rpm
@@ -796,13 +796,13 @@ arches:
     name: emacs-filesystem
     evr: 1:26.1-15.el8_10
     sourcerpm: emacs-26.1-15.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/e/expat-2.2.5-17.el8_10.ppc64le.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/e/expat-2.5.0-1.el8_10.ppc64le.rpm
     repoid: ubi-8-for-ppc64le-baseos-rpms
-    size: 119236
-    checksum: sha256:c7fad5d488549d79f4566b701be1f65c322096b55fd021abb4fe662eb08bf9d6
+    size: 136140
+    checksum: sha256:2568a6eca06a1d26161eb976577b719cbdb979690f1b6f3dbeecb2ad75402029
     name: expat
-    evr: 2.2.5-17.el8_10
-    sourcerpm: expat-2.2.5-17.el8_10.src.rpm
+    evr: 2.5.0-1.el8_10
+    sourcerpm: expat-2.5.0-1.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/f/file-5.33-27.el8_10.ppc64le.rpm
     repoid: ubi-8-for-ppc64le-baseos-rpms
     size: 80200
@@ -1239,10 +1239,10 @@ arches:
     sourcerpm: util-linux-2.32.1-46.el8.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/repodata/9df89d14bba9b76059cd39f1474c7ea111bb016c2749fa1de2ac9bfec987f23b-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/repodata/7006286e8c383f284c3c41a270552b0cab3e5c7efde54424c052be264e3ccfb5-modules.yaml.gz
     repoid: ubi-8-for-ppc64le-appstream-rpms
-    size: 55946
-    checksum: sha256:9df89d14bba9b76059cd39f1474c7ea111bb016c2749fa1de2ac9bfec987f23b
+    size: 56043
+    checksum: sha256:7006286e8c383f284c3c41a270552b0cab3e5c7efde54424c052be264e3ccfb5
 - arch: s390x
   packages:
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/c/cmake-3.26.5-2.el8.s390x.rpm
@@ -1420,13 +1420,13 @@ arches:
     name: emacs-filesystem
     evr: 1:26.1-15.el8_10
     sourcerpm: emacs-26.1-15.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/e/expat-2.2.5-17.el8_10.s390x.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/e/expat-2.5.0-1.el8_10.s390x.rpm
     repoid: ubi-8-for-s390x-baseos-rpms
-    size: 112836
-    checksum: sha256:14984a7a7991b4c31d71c853e6390386bed64d70b00616e1c3f8761d271b9663
+    size: 129316
+    checksum: sha256:557227064a4eeb6065f44be3e84f1320540bf816d4790bc328995e69992b2319
     name: expat
-    evr: 2.2.5-17.el8_10
-    sourcerpm: expat-2.2.5-17.el8_10.src.rpm
+    evr: 2.5.0-1.el8_10
+    sourcerpm: expat-2.5.0-1.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/f/file-5.33-27.el8_10.s390x.rpm
     repoid: ubi-8-for-s390x-baseos-rpms
     size: 79180
@@ -1856,10 +1856,10 @@ arches:
     sourcerpm: util-linux-2.32.1-46.el8.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/repodata/98df1b3dbe98b227360e9de9e35613b1836186f1f18c44e062abe3ccfa9bc192-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/repodata/0e7ce40f094e65aaa70055a86fa2e0dda22337218c1b1c577ed2f558f792bafe-modules.yaml.gz
     repoid: ubi-8-for-s390x-appstream-rpms
-    size: 56989
-    checksum: sha256:98df1b3dbe98b227360e9de9e35613b1836186f1f18c44e062abe3ccfa9bc192
+    size: 57030
+    checksum: sha256:0e7ce40f094e65aaa70055a86fa2e0dda22337218c1b1c577ed2f558f792bafe
 - arch: x86_64
   packages:
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/c/cmake-3.26.5-2.el8.x86_64.rpm
@@ -2037,13 +2037,13 @@ arches:
     name: emacs-filesystem
     evr: 1:26.1-15.el8_10
     sourcerpm: emacs-26.1-15.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/e/expat-2.2.5-17.el8_10.x86_64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/e/expat-2.5.0-1.el8_10.x86_64.rpm
     repoid: ubi-8-for-x86_64-baseos-rpms
-    size: 117960
-    checksum: sha256:d01df6f542762d94bd73a87f61d19fb98a6304eb9a2eb114a872a91d3312ea34
+    size: 134428
+    checksum: sha256:ea9b034a79279668a1eca4be141617e6a9f04ffc616033f035380f80c073837a
     name: expat
-    evr: 2.2.5-17.el8_10
-    sourcerpm: expat-2.2.5-17.el8_10.src.rpm
+    evr: 2.5.0-1.el8_10
+    sourcerpm: expat-2.5.0-1.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/f/file-5.33-27.el8_10.x86_64.rpm
     repoid: ubi-8-for-x86_64-baseos-rpms
     size: 79492
@@ -2473,7 +2473,7 @@ arches:
     sourcerpm: util-linux-2.32.1-46.el8.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/repodata/1dabe41a8af580b94ffbd31ac31e271e8a612f412ef673ee0e9af7f2d3b93a88-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/repodata/9215ac8d1279f1de1cb37d8eac3ca002ecb3b43ed292a8b7b36f22c2ace314c3-modules.yaml.gz
     repoid: ubi-8-for-x86_64-appstream-rpms
-    size: 59092
-    checksum: sha256:1dabe41a8af580b94ffbd31ac31e271e8a612f412ef673ee0e9af7f2d3b93a88
+    size: 59446
+    checksum: sha256:9215ac8d1279f1de1cb37d8eac3ca002ecb3b43ed292a8b7b36f22c2ace314c3
