@@ -4,7 +4,7 @@
     "main",
     "release-1.19",
     "release-1.18",
-    "release-1.17",
+    "release-1.17"
   ],
   "packageRules": [
     {
