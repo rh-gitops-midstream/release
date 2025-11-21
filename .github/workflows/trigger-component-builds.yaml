@@ -56,6 +56,6 @@ jobs:
             **Build:** `${{ steps.metadata.outputs.build }}`
 
             Automatically generated for `${{ inputs.TARGET_BRANCH }}` using GitHub Actions..
-          #labels: |
-          #  release-candidate
+          labels: |
+            auto-merge
           base: ${{ inputs.TARGET_BRANCH }}
