@@ -41,7 +41,13 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      - name: Install skopeo
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y skopeo podman
+
       - name: Generate catalog
+        shell: bash
         run: make catalog
       
       - name: Prepare metadata for PR
@@ -61,6 +67,8 @@ jobs:
           branch: build/catalog-${{ steps.metadata.outputs.build }}-${{ steps.metadata.outputs.ts }}
           delete-branch: true
           title: "chore(nightly): update catalog for build ${{ steps.metadata.outputs.build }}"
+          committer: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+          author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
           body: |
             This PR updates the catalog using the nightly bundle build.
 
