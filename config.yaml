@@ -4,6 +4,7 @@ release:
   version: "99.99.99"
   olm:
     # TODO: Compute olm data automatically
+    name: "openshift-gitops-operator.v99.99.99"
     channel: "latest,gitops-99.99"
     replaces: "openshift-gitops-operator.v99.99.98"
     skip-range: "" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
