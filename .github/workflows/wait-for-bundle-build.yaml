@@ -1,0 +1,26 @@
+name: Monitor Bundle Build
+
+on:
+  pull_request:
+    branches:
+      - main
+      - release-*
+    paths:
+      - 'containers/gitops-operator-bundle/**'
+
+
+permissions:
+  checks: read
+  contents: read
+
+jobs:
+  wait-for-bundle-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Konflux bundle build to complete
+        uses: jitterbit/await-check-suites@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          intervalSeconds: 300        # 5 minutes
+          timeoutSeconds: 14400       # 4 hours
+          failStepIfUnsuccessful: true
