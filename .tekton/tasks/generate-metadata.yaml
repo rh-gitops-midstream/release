@@ -72,7 +72,10 @@ spec:
         "downstream-source-url=$DOWNSTREAM_SOURCE_URL", \
         "downstream-source-ref=$DOWNSTREAM_COMMIT_REF", \
         "upstream-source-url=$UPSTREAM_SOURCE_URL", \
-        "upstream-source-ref=$UPSTREAM_COMMIT_REF"]
+        "upstream-source-ref=$UPSTREAM_COMMIT_REF", \
+        "distribution-scope=public", \
+        "url=https://catalog.redhat.com/en/search?searchType=containers", \
+        "vendor=Red Hat, Inc."]
         EOF
         )
         echo "$labels" > "$LABELS_RESULT"
