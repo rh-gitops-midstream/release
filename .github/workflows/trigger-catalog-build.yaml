@@ -46,7 +46,7 @@ jobs:
       - name: Create catalog pull request
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}    # Default GITHUB_TOKEN has insufficient permissions to create PRs in other repos
           path: catalog
           commit-message: "chore(nightly): update catalog for build ${{ steps.metadata.outputs.build }}"
           branch: build/catalog-${{ steps.metadata.outputs.build }}-${{ steps.metadata.outputs.ts }}
