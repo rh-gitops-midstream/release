@@ -85,7 +85,9 @@ sources:
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: main
-    commit: 94faa6a43804c7ccf8f49dd77ecec08884b4692a
+    # when updating commit-id also update argocd-agent helm tekton pipeline 
+    #  yq  eval '.spec.pipelineSpec.tasks[] | select(.name == "build-helm-chart" ) | .params[] | select(.name == "COMMIT_SHA") | .value' .tekton/agent-helm-build-pull-request.yaml
+    commit: 5c4c2e4d4500f138fd714dcc4c2c8c1f4d708379
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
     ref: master
