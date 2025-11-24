@@ -1,4 +1,4 @@
-name: Monitor Bundle Build
+name: Wait Bundle Build
 
 on:
   pull_request:
@@ -8,10 +8,10 @@ on:
     paths:
       - 'containers/gitops-operator-bundle/**'
 
+  workflow_dispatch: {}
 
 permissions:
   checks: read
-  contents: read
 
 jobs:
   wait-for-bundle-build:

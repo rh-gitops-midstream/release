@@ -66,7 +66,7 @@ jobs:
         id: create_pr
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}    # Default GITHUB_TOKEN has insufficient permissions to enable GHA workflow and block auto-merge until Konflux check suite passes
           commit-message: "chore(bundle): latest bundle updates for ${{ steps.metadata.outputs.build }}"
           branch: build/bundle-${{ steps.metadata.outputs.build }}-${{ steps.metadata.outputs.ts }}
           delete-branch: true
@@ -75,8 +75,8 @@ jobs:
             This PR updates the bundle files with the latest image shas for ${{ inputs.TARGET_BRANCH }} tag.
 
             Automatically generated from `${{ inputs.TARGET_BRANCH }}` branch using GitHub Actions.
-          #labels: |
-          #  release-candidate
+          labels: |
+            auto-merge
           base: ${{ inputs.TARGET_BRANCH }}
 
       # TODO: migrate to gh cli
