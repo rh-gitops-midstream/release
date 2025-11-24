@@ -54,4 +54,6 @@ COPY --from=builder /src/argocd-agentctl/dist/argocd-agentctl_darwin-arm64 /rele
 # Add required labels
 LABEL name="Argo agentctl binaries" \
     summary="Argo agentctl binaries" \
-    description="Argo agentctl binaries for various platforms, including Darwin and Linux."
+    description="Argo agentctl binaries for various platforms, including Darwin and Linux." \
+    component="openshift-gitops-argocd-agentctl-container" \
+    io.k8s.description="Red Hat Openshift GitOps Argo CD AgentCTL"

@@ -72,4 +72,6 @@ COPY --from=argo-cd-cli-build /go/src/github.com/argoproj/argo-cd/dist/argocd-wi
 # Add required labels
 LABEL name="Argo CD CLI binaries" \
     summary="Argo CD CLI binaries" \
-    description="Argo CD CLI binaries for various platforms, including Darwin and Linux."
+    description="Argo CD CLI binaries for various platforms, including Darwin and Linux." \
+    com.redhat.component="openshift-gitops-argocd-cli-container" \
+    io.k8s.description="Red Hat Openshift GitOps Argo CD CLI"
