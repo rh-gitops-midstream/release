@@ -44,7 +44,7 @@ tag = release_config.get('release', {}).get('konflux', {}).get('branch', 'latest
 base = "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle"   # TODO: read from config.yaml
 image = f"{base}:{tag}"
 digest =  get_digest(image)
-bundle = f"{image}@{digest}"
+bundle = f"{base}@{digest}"
 
 version_entry = {
     "name": name,
