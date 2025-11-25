@@ -46,7 +46,7 @@ RUN make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-linux-amd64 GOOS=linux GOARCH
     #make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-darwin-arm64 GOOS=darwin GOARCH=arm64 argocd-all  
 
 # Make binaries executable and package them
-RUN mkdir -p dist && \
+RUN cd dist && \
     chmod +x argocd-linux-amd64 && tar -czvf argocd-linux-amd64.tar.gz argocd-linux-amd64 && \
     chmod +x argocd-linux-arm64 && tar -czvf argocd-linux-arm64.tar.gz argocd-linux-arm64 && \
     chmod +x argocd-linux-ppc64le && tar -czvf argocd-linux-ppc64le.tar.gz argocd-linux-ppc64le && \
