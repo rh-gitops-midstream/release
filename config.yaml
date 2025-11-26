@@ -25,7 +25,7 @@ sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.19
-    commit: 1ef358507ecb0c906597be339ea792b04f2eb9f6
+    commit: 5d9306f3f2e84aedb54210760dedd1d79a390650
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
     ref: v3.1.9
@@ -43,9 +43,9 @@ sources:
     ref: v3.18.4
     commit: d80839cf37d860c8aa9a0503fe463278f26cd5e2
   - path: sources/dex
-    ref: v2.43.0
+    ref: v2.43.1
     url: https://github.com/dexidp/dex.git
-    commit: 8e96058e71257eb0a32e1b0a42303094dea9d8fb
+    commit: 6e602d3315ea09d0cdeef6b51e61f2fd4ae52502
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
     ref: v3.7.1
