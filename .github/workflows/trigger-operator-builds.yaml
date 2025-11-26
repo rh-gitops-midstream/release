@@ -1,4 +1,4 @@
-name: Trigger Component Builds
+name: Trigger Operator Builds
 
 on:
   workflow_dispatch:
