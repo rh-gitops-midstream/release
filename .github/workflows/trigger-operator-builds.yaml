@@ -1,4 +1,4 @@
-name: Trigger Component Builds
+name: Trigger Operator Builds
 
 on:
   workflow_dispatch:
@@ -43,6 +43,7 @@ jobs:
           echo "ts=$TIMESTAMP" >> $GITHUB_OUTPUT
 
       - name: Create Pull Request
+        id: create_pr
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -56,6 +57,16 @@ jobs:
             **Build:** `${{ steps.metadata.outputs.build }}`
 
             Automatically generated for `${{ inputs.TARGET_BRANCH }}` using GitHub Actions..
-          #labels: |
-          #  release-candidate
+          labels: |
+            auto-merge
           base: ${{ inputs.TARGET_BRANCH }}
+
+      # TODO: migrate to gh cli
+      # ref: https://github.com/peter-evans/enable-pull-request-automerge?tab=readme-ov-file#enable-pull-request-auto-merge 
+      - name: Enable auto-merge
+        if: steps.create_pr.outputs.pull-request-number != ''
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          merge-method: squash
+          pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}

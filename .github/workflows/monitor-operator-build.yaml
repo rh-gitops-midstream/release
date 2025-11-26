@@ -1,7 +1,10 @@
-name: Auto Trigger Bundle
+name: Monitor Operator Build
 
 on:
   push:
+    branches:
+      - main
+      - release-*
     paths:
       - 'BUILD'
 
