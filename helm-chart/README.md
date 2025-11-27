@@ -42,7 +42,8 @@ The scripts in this directory automate the process of:
 5. Updates `Chart.yaml` with RedHat-specific metadata:
    - Sets description to "RedHat Argo CD Agent for connecting managed clusters to a Principal"
    - Adds annotation `charts.openshift.io/name` = "RedHat Argo CD Agent - Agent Component"
-   - Sets version to the ref value from `config.yaml` (e.g., `v0.5.1`)
+   - Sets version to the ref value from `config.yaml` with "v" prefix removed (e.g., `v0.5.1` → `0.5.1`)
+   - Sets appVersion to the same version value (without "v" prefix)
 6. Updates `values.yaml` with production image repository:
    - Image repository: `registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8`
    - Image tag: Provided as argument, should be similar to what is present on the catalog. e.g. v1.18.1, v1.18.1-2
@@ -83,7 +84,8 @@ The scripts in this directory automate the process of:
 4. Updates `Chart.yaml` with RedHat-specific metadata:
    - Sets description to "RedHat Argo CD Agent for connecting managed clusters to a Principal"
    - Adds annotation `charts.openshift.io/name` = "RedHat Argo CD Agent - Agent Component"
-   - Sets version to the ref value from `config.yaml` (e.g., `v0.5.1`)
+   - Sets version to the ref value from `config.yaml` with "v" prefix removed (e.g., `v0.5.1` → `0.5.1`)
+   - Sets appVersion to the same version value (without "v" prefix)
 5. Updates `values.yaml` with stage image repository:
    - Image repository: `quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel8`
    - Image tag: Provided as argument
