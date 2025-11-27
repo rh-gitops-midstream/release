@@ -162,9 +162,12 @@ TEMP_VALUES_YAML="${HELM_CHART_OUTPUT_DIR}/values.yaml"
 
 # Update Chart.yaml in the copy
 info "Updating Chart.yaml in the copy..."
+# Remove 'v' prefix from ref for version (e.g., v0.5.1 -> 0.5.1)
+CHART_VERSION="${ARGOCD_AGENT_REF#v}"
 "${YQ}" eval '.description = "RedHat Argo CD Agent for connecting managed clusters to a Principal"' -i "${TEMP_CHART_YAML}"
 "${YQ}" eval '.annotations."charts.openshift.io/name" = "RedHat Argo CD Agent - Agent Component"' -i "${TEMP_CHART_YAML}"
-"${YQ}" eval ".version = \"${ARGOCD_AGENT_REF}\"" -i "${TEMP_CHART_YAML}"
+"${YQ}" eval ".version = \"${CHART_VERSION}\"" -i "${TEMP_CHART_YAML}"
+"${YQ}" eval ".appVersion = \"${CHART_VERSION}\"" -i "${TEMP_CHART_YAML}"
 
 info "Chart.yaml updated successfully"
 
