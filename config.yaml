@@ -86,11 +86,12 @@ sources:
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: main
-    commit: 94faa6a43804c7ccf8f49dd77ecec08884b4692a
+    commit: 591bcce1befb6d0d8f05edeba6f0266ff7a98d6a
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
     ref: master
     commit: d19e1dfc55e8c6a66747ffcb89fb47786422e4fd
+
 
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
