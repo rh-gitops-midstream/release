@@ -49,7 +49,7 @@ bundle = f"{base}@{digest}"
 version_entry = {
     "name": name,
     "replaces": replaces,
-    "skip_range": skip_range,
+    "skipRange": skip_range,
     "bundle": bundle
 }
 
