@@ -34,10 +34,10 @@ catalog_config = yaml.load(CATALOG_CONFIG_FILE.read_text())
 
 olm = release_config.get("release", {}).get("olm", {})
 
-name = olm.get("name", "")
-replaces = olm.get("replaces", "")
-skip_range = olm.get("skip-range", "")
-channel = re.sub(r'\blatest\b,?', '', olm.get("channel", "")).lstrip(',')  # Remove 'latest' from channel list
+name = olm.get("name", "").strip('"\'')
+replaces = olm.get("replaces", "").strip('"\'')
+skip_range = olm.get("skip-range", "").strip('"\'')
+channel = re.sub(r'\blatest\b,?', '', olm.get("channel", "").strip('"\'')).lstrip(',')  # Remove 'latest' from channel list
 
 # Bundle image
 tag = release_config.get('release', {}).get('konflux', {}).get('branch', 'latest')
