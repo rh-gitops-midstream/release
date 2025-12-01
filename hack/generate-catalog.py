@@ -34,17 +34,17 @@ catalog_config = yaml.load(CATALOG_CONFIG_FILE.read_text())
 
 olm = release_config.get("release", {}).get("olm", {})
 
-name = olm.get("name", "")
-replaces = olm.get("replaces", "")
-skip_range = olm.get("skip-range", "")
-channel = re.sub(r'\blatest\b,?', '', olm.get("channel", "")).lstrip(',')  # Remove 'latest' from channel list
+name = olm.get("name", "").strip('"\'')
+replaces = olm.get("replaces", "").strip('"\'')
+skip_range = olm.get("skip-range", "").strip('"\'')
+channel = re.sub(r'\blatest\b,?', '', olm.get("channel", "").strip('"\'')).lstrip(',')  # Remove 'latest' from channel list
 
 # Bundle image
 tag = release_config.get('release', {}).get('konflux', {}).get('branch', 'latest')
 base = "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle"   # TODO: read from config.yaml
 image = f"{base}:{tag}"
 digest =  get_digest(image)
-bundle = f"{image}@{digest}"
+bundle = f"{base}@{digest}"
 
 version_entry = {
     "name": name,
