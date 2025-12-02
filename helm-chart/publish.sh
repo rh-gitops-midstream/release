@@ -6,15 +6,19 @@
 # The script accepts the image tag as input parameter.
 #
 # Usage:
-#   ./helm-chart/publish.sh <tag>
+#   ./helm-chart/publish.sh [--stage] <tag>
 #
 # Arguments:
 #   tag - The image tag (e.g., v1.18.1-2) to use for the argocd-agent image
+#
+# Options:
+#   --stage - Enable stage mode (packages and pushes chart to OCI registry)
 #
 # Prerequisites:
 #   - git submodule initialized
 #   - yq installed (available in bin/yq)
 #   - helm-docs installed and available in PATH
+#   - helm installed and available in PATH (required for --stage mode)
 #
 
 set -euo pipefail
@@ -24,6 +28,11 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 CHART_DIR="${REPO_ROOT}/sources/argocd-agent/install/helm-repo/argocd-agent-agent"
 CONFIG_YAML="${REPO_ROOT}/config.yaml"
 YQ="${REPO_ROOT}/bin/yq"
+# Use HELM_OCI_REGISTRY environment variable if set, otherwise use default
+HELM_OCI_REGISTRY="${HELM_OCI_REGISTRY:-oci://quay.io/anandrkskd/argocd-agent}"
+
+# Default to release mode
+STAGE_MODE=false
 
 # Colors for output
 RED='\033[0;31m'
@@ -45,14 +54,34 @@ error() {
 }
 
 # Parse command-line arguments
-if [ $# -eq 0 ]; then
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --stage)
+            STAGE_MODE=true
+            shift
+            ;;
+        *)
+            if [ -z "${TAG:-}" ]; then
+                TAG="$1"
+            else
+                error "Unexpected argument: $1"
+                echo "Usage: $0 [--stage] <tag>"
+                echo "Example: $0 v1.18.1-2"
+                echo "Example: $0 --stage v1.18.1-2"
+                exit 1
+            fi
+            shift
+            ;;
+    esac
+done
+
+if [ -z "${TAG:-}" ]; then
     error "Tag argument is required"
-    echo "Usage: $0 <tag>"
+    echo "Usage: $0 [--stage] <tag>"
     echo "Example: $0 v1.18.1-2"
+    echo "Example: $0 --stage v1.18.1-2"
     exit 1
 fi
-
-TAG="$1"
 
 # Validate tag format (should be like v1.18.1-2)
 if [[ ! "${TAG}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9]+)?$ ]]; then
@@ -62,6 +91,11 @@ if [[ ! "${TAG}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9]+)?$ ]]; then
     exit 1
 fi
 
+if [ "${STAGE_MODE}" = true ]; then
+    info "Running in STAGE mode"
+else
+    info "Running in RELEASE mode"
+fi
 info "Using image tag: ${TAG}"
 
 # Check if yq is available
@@ -75,6 +109,15 @@ if ! command -v helm-docs &> /dev/null; then
     error "helm-docs is not installed. Please install helm-docs."
     error "Installation: go install github.com/norwoodj/helm-docs/cmd/helm-docs@latest"
     exit 1
+fi
+
+# Check if helm is available (required for stage mode)
+if [ "${STAGE_MODE}" = true ]; then
+    if ! command -v helm &> /dev/null; then
+        error "helm is not installed. Please install helm."
+        error "Installation: https://helm.sh/docs/intro/install/"
+        exit 1
+    fi
 fi
 
 # Check if config.yaml exists
@@ -139,7 +182,11 @@ if [ ! -f "${VALUES_YAML}" ]; then
 fi
 
 # Copy helm chart to directory under helm-chart with commit-ref naming
-HELM_CHART_OUTPUT_DIR="${SCRIPT_DIR}/${ARGOCD_AGENT_COMMIT}-${ARGOCD_AGENT_REF}"
+if [ "${STAGE_MODE}" = true ]; then
+    HELM_CHART_OUTPUT_DIR="${SCRIPT_DIR}/${ARGOCD_AGENT_COMMIT}-${ARGOCD_AGENT_REF}-stage"
+else
+    HELM_CHART_OUTPUT_DIR="${SCRIPT_DIR}/${ARGOCD_AGENT_COMMIT}-${ARGOCD_AGENT_REF}"
+fi
 info "Copying helm chart to directory: ${HELM_CHART_OUTPUT_DIR}"
 
 # Create output directory
@@ -193,10 +240,52 @@ helm-docs --chart-search-root . --output-file README.md || {
 cd "${REPO_ROOT}"
 info "Helm chart documentation generated successfully"
 
-info "Helm chart update completed successfully!"
-info "Chart name: redhat-argocd-agent"
-info "Image repository: ${IMAGE_REPO}"
-info "Image tag: ${TAG}"
-info "Full image: ${IMAGE_FULL}"
-info "Output chart directory: ${HELM_CHART_OUTPUT_DIR}"
+# Package and push the helm chart to OCI registry (only in stage mode)
+if [ "${STAGE_MODE}" = true ]; then
+    info "Packaging helm chart..."
+    cd "${HELM_CHART_OUTPUT_DIR}"
+    helm package . || {
+        error "Failed to package helm chart"
+        exit 1
+    }
+    cd "${REPO_ROOT}"
+
+    # Get the chart name and version from Chart.yaml
+    CHART_NAME=$("${YQ}" eval '.name' "${TEMP_CHART_YAML}")
+    CHART_VERSION=$("${YQ}" eval '.version' "${TEMP_CHART_YAML}")
+    CHART_PACKAGE="${HELM_CHART_OUTPUT_DIR}/${CHART_NAME}-${CHART_VERSION}.tgz"
+
+    if [ ! -f "${CHART_PACKAGE}" ]; then
+        error "Chart package not found: ${CHART_PACKAGE}"
+        exit 1
+    fi
+
+    info "Chart packaged successfully: ${CHART_PACKAGE}"
+
+    # Push the chart to OCI registry
+    info "Pushing helm chart to OCI registry: ${HELM_OCI_REGISTRY}"
+    helm push "${CHART_PACKAGE}" "${HELM_OCI_REGISTRY}" || {
+        error "Failed to push helm chart to OCI registry"
+        exit 1
+    fi
+
+    info "Helm chart pushed successfully to: ${HELM_OCI_REGISTRY}"
+    
+    info "Helm chart stage release completed successfully!"
+    info "Chart name: ${CHART_NAME}"
+    info "Chart version: ${CHART_VERSION}"
+    info "Image repository: ${IMAGE_REPO}"
+    info "Image tag: ${TAG}"
+    info "Full image: ${IMAGE_FULL}"
+    info "Output chart directory: ${HELM_CHART_OUTPUT_DIR}"
+    info "Chart package: ${CHART_PACKAGE}"
+    info "OCI registry: ${HELM_OCI_REGISTRY}"
+else
+    info "Helm chart update completed successfully!"
+    info "Chart name: redhat-argocd-agent"
+    info "Image repository: ${IMAGE_REPO}"
+    info "Image tag: ${TAG}"
+    info "Full image: ${IMAGE_FULL}"
+    info "Output chart directory: ${HELM_CHART_OUTPUT_DIR}"
+fi
 

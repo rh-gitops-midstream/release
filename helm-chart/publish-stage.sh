@@ -173,10 +173,10 @@ info "Chart.yaml updated successfully"
 
 # Update values.yaml in the copy - set image repository for stage release
 info "Updating values.yaml in the copy with new image repository for stage release..."
-IMAGE_REPO="quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel8"
+IMAGE_REPO="registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8"
 IMAGE_FULL="${IMAGE_REPO}:${TAG}"
 info "Setting image repository to: ${IMAGE_REPO}"
-"${YQ}" eval '.image.repository = "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel8"' -i "${TEMP_VALUES_YAML}"
+"${YQ}" eval '.image.repository = "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8"' -i "${TEMP_VALUES_YAML}"
 
 # Update values.yaml in the copy - set image tag
 info "Setting image tag to: ${TAG}"
