@@ -26,7 +26,7 @@ sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.18
-    commit: 66b8a8bf28f14320798166dc1f6253b8c71a1441
+    commit: 48ac9cb0916ffc0d132e15dd34c1f90718b4a827
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
     ref: v3.1.8
@@ -66,7 +66,7 @@ sources:
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: v1.18
-    commit: ef7e1ffe8f3477678fc8c89f30672b395ffc3ab1
+    commit: 3059e2bf1ce07c8b5bd5c5fcb559d72d333c45fd
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master
