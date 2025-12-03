@@ -1,4 +1,4 @@
-name: Trigger Operator Build
+name: 1 - Trigger Operator Builds
 
 on:
   workflow_dispatch:
@@ -11,8 +11,8 @@ on:
 permissions: {}
 
 jobs:
-  prepare-operator-build:
-    name: Trigger Operator build for ${{ inputs.TARGET_BRANCH }}
+  prepare-component-builds:
+    name: Trigger Component Builds for ${{ inputs.TARGET_BRANCH }}
     runs-on: ubuntu-22.04
     permissions:
       contents: write         # To push branches
@@ -43,19 +43,30 @@ jobs:
           echo "ts=$TIMESTAMP" >> $GITHUB_OUTPUT
 
       - name: Create Pull Request
+        id: create_pr
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(operator): bump to ${{ steps.metadata.outputs.build }}"
-          branch: build/operator-${{ steps.metadata.outputs.build }}-${{ steps.metadata.outputs.ts }}
+          commit-message: "chore(build): bump to ${{ steps.metadata.outputs.build }}"
+          branch: build/component-${{ steps.metadata.outputs.build }}-${{ steps.metadata.outputs.ts }}
           delete-branch: true
-          title: "chore(operator): bump to ${{ steps.metadata.outputs.build }}"
+          title: "chore(build): bump to ${{ steps.metadata.outputs.build }}"
           body: |
             This PR updates the `BUILD` file with the next operator build version.
 
             **Build:** `${{ steps.metadata.outputs.build }}`
 
             Automatically generated for `${{ inputs.TARGET_BRANCH }}` using GitHub Actions..
-          #labels: |
-          #  release-candidate
+          labels: |
+            auto-merge
           base: ${{ inputs.TARGET_BRANCH }}
+
+      # TODO: migrate to gh cli
+      # ref: https://github.com/peter-evans/enable-pull-request-automerge?tab=readme-ov-file#enable-pull-request-auto-merge 
+      - name: Enable auto-merge
+        if: steps.create_pr.outputs.pull-request-number != ''
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          merge-method: squash
+          pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}

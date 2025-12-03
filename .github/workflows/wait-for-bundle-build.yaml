@@ -1,0 +1,31 @@
+name: Wait Bundle Build
+
+on:
+  pull_request:
+    branches:
+      - main
+      - release-*
+    paths:
+      - 'containers/gitops-operator-bundle/**'
+
+  workflow_call: {}
+
+permissions:
+  checks: read
+
+jobs:
+  wait-for-bundle-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sleep before monitoring (give Konflux time to start builds)
+        run: |
+          echo "Sleeping for 3 minutes before checking Konflux builds..."
+          sleep 180
+
+      - name: Wait for Konflux bundle build to complete
+        uses: jitterbit/await-check-suites@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          intervalSeconds: 300        # 5 minutes
+          timeoutSeconds: 14400       # 4 hours
+          failStepIfUnsuccessful: true
