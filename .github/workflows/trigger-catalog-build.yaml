@@ -1,4 +1,4 @@
-name: Trigger Catalog Build
+name: 3 - Trigger Catalog Build
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ on:
       BUILD_TYPE:
         description: 'Type of build'
         required: false
-        default: nightly
+        default: release-candidate
         type: choice
         options:
           - nightly
@@ -25,7 +25,7 @@ on:
       BUILD_TYPE:
         description: 'Type of build - nightly or release-candidate'
         required: false
-        default: nightly
+        default: release-candidate
         type: string
 
 permissions: 

@@ -1,4 +1,4 @@
-name: Trigger Operator Builds
+name: 1 - Trigger Operator Builds
 
 on:
   workflow_dispatch:

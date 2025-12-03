@@ -1,4 +1,4 @@
-name: Trigger Bundle Build
+name: 2 - Trigger Bundle Build
 
 on:
   workflow_dispatch:
