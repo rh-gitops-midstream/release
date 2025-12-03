@@ -1,0 +1,21 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.16.5-prod-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-16-prod
+  snapshot: <to-be-updated>
+  data:
+    releaseNotes:
+      type: RHSA
+      cves:
+        - key: CVE-2025-49844
+          component: gitops-operator-1-16
+        - key: CVE-2024-45337
+          component: argocd-1-16
+        - key: CVE-2024-45337
+          component: argocd-rhel9-1-16
+        - key: CVE-2024-45338
+          component: dex-1-16
