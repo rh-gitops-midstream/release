@@ -54,3 +54,11 @@ update-build:
 update-tekton-task-bundles: deps
 	@echo "Updating Tekton Task Bundles..."
 	@./hack/update-tekton-task-bundles.sh .tekton/*.yaml
+
+.PHONY: catalog
+catalog: deps
+	@echo "Generating Operator Catalog..."
+	rm -rf catalog
+	git clone --branch main --depth 1 https://github.com/rh-gitops-midstream/catalog.git catalog
+	python3 hack/generate-catalog.py
+	cd catalog && make catalog-template && git status

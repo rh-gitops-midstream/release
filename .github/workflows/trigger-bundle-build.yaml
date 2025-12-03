@@ -1,0 +1,90 @@
+name: 2 - Trigger Bundle Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      TARGET_BRANCH:
+        description: 'RELEASE_BRANCH to checkout (e.g. release-1.17)'
+        required: true
+        type: string
+  
+  # For reusable workflows
+  workflow_call:
+    inputs:
+      TARGET_BRANCH:
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  prepare-bundle-build:
+    permissions:
+      contents: write  # for peter-evans/create-pull-request to create branch
+      pull-requests: write  # for peter-evans/create-pull-request to create a PR
+    name: Trigger Bundle build for ${{ inputs.TARGET_BRANCH }}
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@8410ad0602e1e429cee44a835ae9f77f654a6694  # v4.0.0
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ inputs.TARGET_BRANCH }}
+          submodules: true  
+      
+      - name: Set up Git config
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install skopeo
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y skopeo podman
+
+      - name: Log in to registry.redhat.io
+        run: |
+          mkdir -p ~/.config/containers
+          podman login registry.redhat.io -u ${{ secrets.RH_USERNAME }} -p ${{ secrets.RH_PASSWORD }}
+
+
+      - name: Update bundle with latest image SHAs
+        shell: bash
+        run: make bundle
+
+      - name: Prepare metadata for PR
+        id: metadata
+        run: |
+          BUILD=$(cat BUILD)
+          TIMESTAMP=$(date -u +"%Y%m%d-%H%M%S")
+          echo "build=$BUILD" >> $GITHUB_OUTPUT
+          echo "ts=$TIMESTAMP" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        id: create_pr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GH_TOKEN }}    # Default GITHUB_TOKEN has insufficient permissions to enable GHA workflow and block auto-merge until Konflux check suite passes
+          commit-message: "chore(bundle): latest bundle updates for ${{ steps.metadata.outputs.build }}"
+          branch: build/bundle-${{ steps.metadata.outputs.build }}-${{ steps.metadata.outputs.ts }}
+          delete-branch: true
+          title: "chore(bundle): latest bundle updates for ${{ steps.metadata.outputs.build }}"
+          body: |
+            This PR updates the bundle files with the latest image shas for ${{ inputs.TARGET_BRANCH }} tag.
+
+            Automatically generated from `${{ inputs.TARGET_BRANCH }}` branch using GitHub Actions.
+          labels: |
+            auto-merge
+          base: ${{ inputs.TARGET_BRANCH }}
+
+      # TODO: migrate to gh cli
+      # ref: https://github.com/peter-evans/enable-pull-request-automerge?tab=readme-ov-file#enable-pull-request-auto-merge 
+      - name: Enable auto-merge
+        if: steps.create_pr.outputs.pull-request-number != ''
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          merge-method: squash
+          pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}
