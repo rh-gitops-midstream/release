@@ -1,0 +1,26 @@
+name: Monitor Bundle Build
+
+on:
+  push:
+    branches:
+      - main
+      - release-*
+    paths:
+      - 'containers/gitops-operator-bundle/**'
+
+permissions:
+  checks: read
+  contents: write
+  pull-requests: write
+
+jobs:
+  wait-for-bundle-build:
+    uses: ./.github/workflows/wait-for-bundle-build.yaml
+
+  create-catalog-pr:
+    needs: wait-for-bundle-build
+    uses: ./.github/workflows/trigger-catalog-build.yaml
+    with:
+      TARGET_BRANCH: ${{ github.ref_name }}
+    secrets: inherit
+    
