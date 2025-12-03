@@ -1,0 +1,149 @@
+apiVersion: tekton.dev/v1alpha1
+kind: StepAction
+metadata:
+  name: install-gitops-operator-bundle
+spec:
+  params:
+    - name: bundleImage
+      type: string
+    - name: namespace
+      type: string
+      default: "openshift-gitops-operator"
+    - name: installTimeout
+      type: string
+      default: "30m"
+    - name: credentials
+      type: string
+      description: A volume to which the remote cluster credentials will be written.
+    - name: kubeconfig
+      type: string
+      description: A path to the kubeconfig in the credentials volume
+  volumeMounts:
+    - name: "$(params.credentials)"
+      mountPath: /credentials
+  env:
+    - name: BUNDLE_IMAGE
+      value: $(params.bundleImage)
+    - name: KONFLUX_COMPONENT_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.labels['appstudio.openshift.io/component']
+    - name: NAMESPACE
+      value: $(params.namespace)
+    - name: INSTALL_TIMEOUT
+      value: $(params.installTimeout)
+    - name: KUBECONFIG
+      value: "/credentials/$(params.kubeconfig)"
+  image: registry.redhat.io/openshift4/ose-cli:latest
+  script: |
+    set -x
+    echo "---------------------------------------------"
+    cat  /credentials/*
+    echo "---------------------------------------------"
+    dnf -y install jq python3-pip
+    export OPERATOR_SDK_VERSION=1.36.1
+    export ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
+    export OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/download/v${OPERATOR_SDK_VERSION}
+    curl -Lo /usr/local/bin/operator-sdk ${OPERATOR_SDK_DL_URL}/operator-sdk_linux_${ARCH}
+    chmod +x /usr/local/bin/operator-sdk
+    operator-sdk version
+    echo "---------------------------------------------"
+    oc status
+    oc whoami
+    echo "---------------------------------------------"
+    env
+    echo "---------------------------------------------"    
+    oc create namespace ${NAMESPACE} || true
+    oc label namespaces ${NAMESPACE} openshift.io/cluster-monitoring=true --overwrite=true
+    # export IMAGE_DIGEST_MIRROR_SET=https://raw.githubusercontent.com/rh-gitops-midstream/catalog/refs/heads/main/.tekton/images-mirror-set.yaml
+    # curl -Lo /usr/tmp/imagedigestmirrorset "$IMAGE_DIGEST_MIRROR_SET"
+    # oc apply -f /usr/tmp/imagedigestmirrorset
+    echo "---------------------------------------------"
+    echo ${KONFLUX_COMPONENT_NAME}
+    # We get the bundle image as a param
+    # export BUNDLE_IMAGE="$(jq -r --arg component_name "$KONFLUX_COMPONENT_NAME" '.components[] | select(.name == $component_name) | .containerImage' <<< "$SNAPSHOT")"
+    echo "${BUNDLE_IMAGE}"
+    echo "---------------------------------------------"
+    if ! operator-sdk run bundle --timeout="$INSTALL_TIMEOUT" \
+    --namespace "${NAMESPACE}" \
+    "$BUNDLE_IMAGE" \
+    --verbose; then
+      
+      echo "❌ Operator bundle installation failed. Gathering diagnostics..."
+      echo "================================================"
+      
+      # Namespace events
+      echo "Namespace Events:"
+      oc get events -n "${NAMESPACE}" --sort-by='.lastTimestamp'
+      
+      # OLM-specific resources
+      echo -e "\nOperator Subscriptions:"
+      oc get subscriptions -n "${NAMESPACE}"
+      
+      echo -e "\nInstallPlans:"
+      oc get installplans -n "${NAMESPACE}"
+      
+      echo -e "\nClusterServiceVersions:"
+      oc get csv -n "${NAMESPACE}"
+      
+      echo -e "\nCatalogSources:"
+      oc get catalogsources -n "${NAMESPACE}"
+      
+      # Pods and logs
+      echo -e "\nPods:"
+      oc get pods -n "${NAMESPACE}" -o wide
+      
+      echo -e "\nRecent logs from all pods:"
+      oc logs -n "${NAMESPACE}" --all-containers=true --prefix=true --tail=50 -l 'app' --ignore-errors=true
+      
+      # Use oc adm inspect for comprehensive debugging info
+      echo -e "\nCollecting comprehensive namespace data with oc adm inspect..."
+      oc adm inspect ns/"${NAMESPACE}" --dest-dir=/tmp/must-gather-"${NAMESPACE}" || echo "oc adm inspect failed"
+      
+      echo "================================================"
+      exit 1
+    fi
+    echo "---------------------------------------------"
+    # Wait for the controller pod
+    for i in {0..30}; do
+      sleep 3
+      oc get pod -n  "${NAMESPACE}" | grep gitops > /dev/null 2>&1 && break
+    done
+    controller_pod=$(oc get pod -n "${NAMESPACE}" -l control-plane=gitops-operator -o 'jsonpath={.items[0].metadata.name}') || exit 1
+    echo $controller_pod
+    for i in {0..30}; do
+      sleep 3
+      oc get ns openshift-gitops > /dev/null 2>&1 && break
+    done
+    oc wait --for=jsonpath='{.status.phase}'=Active ns/openshift-gitops --timeout=120s
+    sleep 10
+    # Check for various resources
+    deployments=($(echo $(oc get deployments -n openshift-gitops --no-headers -o custom-columns=':metadata.name')))
+    for deployment in "${deployments[@]}"; do
+     oc rollout status deployment/"${deployment}" -n openshift-gitops --timeout=120s
+    done
+    sleep 5
+    oc rollout status statefulset/openshift-gitops-application-controller -n openshift-gitops --timeout=120s
+    if ! oc wait argocd openshift-gitops -n openshift-gitops --for=jsonpath='{.status.phase}'="Available" --timeout=600s; then
+      
+      echo "❌ Argocd installation failed. Gathering diagnostics..."
+      echo "================================================"
+      
+      # Namespace events
+      echo "Namespace Events:"
+      oc get events -n "openshift-gitops" --sort-by='.lastTimestamp'
+      
+      # Pods and logs
+      echo -e "\nPods:"
+      oc get pods -n "openshift-gitops" -o wide
+      
+      echo -e "\nRecent logs from all pods:"
+      oc logs -n "openshift-gitops" --all-containers=true --prefix=true --tail=50 -l 'app' --ignore-errors=true
+      
+      # Use oc adm inspect for comprehensive debugging info
+      echo -e "\nCollecting comprehensive namespace data with oc adm inspect..."
+      oc adm inspect ns/"openshift-gitops" --dest-dir=/tmp/must-gather-"${NAMESPACE}" || echo "oc adm inspect failed"
+      
+      echo "================================================"
+      exit 1
+    fi
