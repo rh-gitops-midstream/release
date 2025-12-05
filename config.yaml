@@ -16,6 +16,9 @@ release:
     - name: "Siddhesh Ghadi"
       github: svghadi
       email: "sghadi@redhat.com"
+    - name: "Neus Miras"
+      github: nmirasch
+      email: "nmirasch@redhat.com"
 
 # Source code repositories
 # This section defines the source repositories for GitOps Operator artifacts built from source.
@@ -26,11 +29,11 @@ sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.16
-    commit: 1a490e39d70b18f67f3bfebba9ac1d33df13cb8e
+    commit: a16e0cd509ef2b9b6b8d253a01942fa53bc3605f
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
-    ref: v2.14.20
-    commit: 879895af786513ae25ba22f36f861cc1afe3b435
+    ref: v2.14.21
+    commit: 206a6eeca509bbf7f239301f3d3fa498c23251a4
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
     ref: v1.7.2
