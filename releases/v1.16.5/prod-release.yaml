@@ -6,7 +6,7 @@ metadata:
 spec:
   gracePeriodDays: 7
   releasePlan: gitops-1-16-prod
-  snapshot: <to-be-updated>
+  snapshot: gitops-1-16-zhn2c
   data:
     releaseNotes:
       type: RHSA
