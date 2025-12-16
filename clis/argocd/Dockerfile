@@ -15,9 +15,9 @@
 # ------------------------------------------------------------------------
 
 ####################################################################################################
-# Argo CD Build stage which performs the actual build of Argocd-cli binaries
+# Builder stage which performs the build of Argocd-cli binaries
 ####################################################################################################
-FROM registry.redhat.io/rhel8/go-toolset:1.24.6 AS argo-cd-cli-build
+FROM registry.redhat.io/rhel8/go-toolset:1.24.6 AS builder
 
 USER root
 
@@ -40,10 +40,19 @@ RUN make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-linux-amd64 GOOS=linux GOARCH
     make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-linux-arm64 GOOS=linux GOARCH=arm64 argocd-all    && \
     make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-linux-ppc64le GOOS=linux GOARCH=ppc64le argocd-all    && \
     make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-linux-s390x GOOS=linux GOARCH=s390x argocd-all    && \
-    make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-windows-amd64.exe GOOS=windows GOARCH=amd64 argocd-all
-    # TODO: Enable Darwin builds
-    #make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-darwin-amd64 GOOS=darwin GOARCH=amd64 argocd-all          && \
-    #make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-darwin-arm64 GOOS=darwin GOARCH=arm64 argocd-all            
+    make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-windows-amd64.exe GOOS=windows GOARCH=amd64 argocd-all   && \
+    make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-darwin-amd64 GOOS=darwin GOARCH=amd64 argocd-all          && \
+    make GIT_TAG="v$(cat VERSION)" BIN_NAME=argocd-darwin-arm64 GOOS=darwin GOARCH=arm64 argocd-all  
+
+# Make binaries executable and package them
+RUN cd dist && \
+    chmod +x argocd-linux-amd64 && tar -czvf argocd-linux-amd64.tar.gz argocd-linux-amd64 && \
+    chmod +x argocd-linux-arm64 && tar -czvf argocd-linux-arm64.tar.gz argocd-linux-arm64 && \
+    chmod +x argocd-linux-ppc64le && tar -czvf argocd-linux-ppc64le.tar.gz argocd-linux-ppc64le && \
+    chmod +x argocd-linux-s390x && tar -czvf argocd-linux-s390x.tar.gz argocd-linux-s390x && \
+    chmod +x argocd-darwin-amd64 && tar -czvf argocd-darwin-amd64.tar.gz argocd-darwin-amd64 && \
+    chmod +x argocd-darwin-arm64  && tar -czvf argocd-darwin-arm64.tar.gz argocd-darwin-arm64 && \
+    tar -czvf argocd-windows-amd64.tar.gz argocd-windows-amd64.exe     
 
 ####################################################################################################
 # Package the binaries into the image using UBI (Universal Base Image)
@@ -58,15 +67,14 @@ USER 999
 
 WORKDIR /releases
 
-# TODO: update the paths once konflux supports releasing clis
 # Copy the built plugin binaries into the final image
-COPY --from=argo-cd-cli-build /go/src/github.com/argoproj/argo-cd/dist/argocd-linux-amd64 /releases
-COPY --from=argo-cd-cli-build /go/src/github.com/argoproj/argo-cd/dist/argocd-linux-arm64 /releases
-COPY --from=argo-cd-cli-build /go/src/github.com/argoproj/argo-cd/dist/argocd-linux-ppc64le /releases
-COPY --from=argo-cd-cli-build /go/src/github.com/argoproj/argo-cd/dist/argocd-linux-s390x /releases
-COPY --from=argo-cd-cli-build /go/src/github.com/argoproj/argo-cd/dist/argocd-windows-amd64.exe /releases
-#COPY --from=argo-cd-cli-build /go/src/github.com/argoproj/argo-cd/dist/argocd-darwin-amd64 /releases
-#COPY --from=argo-cd-cli-build /go/src/github.com/argoproj/argo-cd/dist/argocd-darwin-arm64 /releases
+COPY --from=builder /go/src/github.com/argoproj/argo-cd/dist/argocd-linux-amd64.tar.gz /releases
+COPY --from=builder /go/src/github.com/argoproj/argo-cd/dist/argocd-linux-arm64.tar.gz /releases
+COPY --from=builder /go/src/github.com/argoproj/argo-cd/dist/argocd-linux-ppc64le.tar.gz /releases
+COPY --from=builder /go/src/github.com/argoproj/argo-cd/dist/argocd-linux-s390x.tar.gz /releases
+COPY --from=builder /go/src/github.com/argoproj/argo-cd/dist/argocd-windows-amd64.tar.gz /releases
+COPY --from=builder /go/src/github.com/argoproj/argo-cd/dist/argocd-darwin-amd64.tar.gz  /releases
+COPY --from=builder /go/src/github.com/argoproj/argo-cd/dist/argocd-darwin-arm64.tar.gz  /releases
 
 
 # Add required labels
