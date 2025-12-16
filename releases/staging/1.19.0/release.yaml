@@ -1,0 +1,14 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.19.0-8-stage-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-19-stage
+  snapshot: gitops-1-19-9mjl2
+  data:
+    releaseNotes:
+      type: RHEA
+      #cves: []
+       
