@@ -15,9 +15,9 @@
 # ------------------------------------------------------------------------
 
 ####################################################################################################
-# Argo CD Build stage which performs the actual build of Argocd-cli binaries
+# Builder stage which performs the build of Argocd-cli binaries
 ####################################################################################################
-FROM registry.redhat.io/rhel8/go-toolset:1.24.6 AS build
+FROM registry.redhat.io/rhel8/go-toolset:1.24.6 AS builder
 
 USER root
 
@@ -67,15 +67,14 @@ USER 999
 
 WORKDIR /releases
 
-# TODO: update the paths once konflux supports releasing clis
 # Copy the built plugin binaries into the final image
-COPY --from=build /go/src/github.com/argoproj/argo-cd/dist/argocd-linux-amd64.tar.gz /releases
-COPY --from=build /go/src/github.com/argoproj/argo-cd/dist/argocd-linux-arm64.tar.gz /releases
-COPY --from=build /go/src/github.com/argoproj/argo-cd/dist/argocd-linux-ppc64le.tar.gz /releases
-COPY --from=build /go/src/github.com/argoproj/argo-cd/dist/argocd-linux-s390x.tar.gz /releases
-COPY --from=build /go/src/github.com/argoproj/argo-cd/dist/argocd-windows-amd64.tar.gz /releases
-COPY --from=build /go/src/github.com/argoproj/argo-cd/dist/argocd-darwin-amd64.tar.gz  /releases
-COPY --from=build /go/src/github.com/argoproj/argo-cd/dist/argocd-darwin-arm64.tar.gz  /releases
+COPY --from=builder /go/src/github.com/argoproj/argo-cd/dist/argocd-linux-amd64.tar.gz /releases
+COPY --from=builder /go/src/github.com/argoproj/argo-cd/dist/argocd-linux-arm64.tar.gz /releases
+COPY --from=builder /go/src/github.com/argoproj/argo-cd/dist/argocd-linux-ppc64le.tar.gz /releases
+COPY --from=builder /go/src/github.com/argoproj/argo-cd/dist/argocd-linux-s390x.tar.gz /releases
+COPY --from=builder /go/src/github.com/argoproj/argo-cd/dist/argocd-windows-amd64.tar.gz /releases
+COPY --from=builder /go/src/github.com/argoproj/argo-cd/dist/argocd-darwin-amd64.tar.gz  /releases
+COPY --from=builder /go/src/github.com/argoproj/argo-cd/dist/argocd-darwin-arm64.tar.gz  /releases
 
 
 # Add required labels
