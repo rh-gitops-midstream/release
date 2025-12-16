@@ -29,6 +29,14 @@ ENV GOFLAGS="-mod=mod"
 RUN go mod download
 RUN make cli-all
 
+# Make binaries executable and package them
+RUN cd dist && \
+    chmod +x argocd-agentctl_linux-amd64 && tar -czvf argocd-agentctl-linux-amd64.tar.gz argocd-agentctl_linux-amd64 && \
+    chmod +x argocd-agentctl_linux-arm64 && tar -czvf argocd-agentctl-linux-arm64.tar.gz argocd-agentctl_linux-arm64 && \
+    chmod +x argocd-agentctl_darwin-amd64 && tar -czvf argocd-agentctl-darwin-amd64.tar.gz argocd-agentctl_darwin-amd64 && \
+    chmod +x argocd-agentctl_darwin-arm64 && tar -czvf argocd-agentctl-darwin-arm64.tar.gz argocd-agentctl_darwin-arm64 && \
+    chmod +x argocd-agentctl_linux-arm && tar -czvf argocd-agentctl-linux-arm.tar.gz argocd-agentctl_linux-arm
+
 ####################################################################################################
 # Package the binaries into the image using UBI (Universal Base Image)
 ####################################################################################################
@@ -42,14 +50,12 @@ USER 999
 
 WORKDIR /releases
 
-# TODO: update the paths once konflux supports releasing clis
 # Copy the built plugin binaries into the final image
-COPY --from=builder /src/argocd-agentctl/dist/argocd-agentctl_linux-amd64 /releases
-COPY --from=builder /src/argocd-agentctl/dist/argocd-agentctl_linux-arm64 /releases
-COPY --from=builder /src/argocd-agentctl/dist/argocd-agentctl_linux-arm /releases
-COPY --from=builder /src/argocd-agentctl/dist/argocd-agentctl_darwin-amd64 /releases
-COPY --from=builder /src/argocd-agentctl/dist/argocd-agentctl_darwin-arm64 /releases
-
+COPY --from=builder /src/argocd-agentctl/dist/argocd-agentctl-linux-amd64.tar.gz /releases
+COPY --from=builder /src/argocd-agentctl/dist/argocd-agentctl-linux-arm64.tar.gz /releases
+COPY --from=builder /src/argocd-agentctl/dist/argocd-agentctl-darwin-amd64.tar.gz /releases
+COPY --from=builder /src/argocd-agentctl/dist/argocd-agentctl-darwin-arm64.tar.gz /releases
+COPY --from=builder /src/argocd-agentctl/dist/argocd-agentctl-linux-arm.tar.gz /releases
 
 # Add required labels
 LABEL name="Argo agentctl binaries" \
