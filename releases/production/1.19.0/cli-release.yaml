@@ -1,0 +1,68 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-clis-1.19.0-5-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-clis-1-19-prod
+  snapshot: gitops-1-19-tr5wv
+  data:
+    releaseNotes:
+      type: RHEA
+      content: 
+        artifacts:
+          # argocd-cli
+          - component: argocd-cli-1-19
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: amd64
+          - component: argocd-cli-1-19
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: arm64
+          - component: argocd-cli-1-19
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: ppc64le
+          - component: argocd-cli-1-19
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: s390x
+          - component: argocd-cli-1-19
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: amd64
+            architecture: darwin
+          - component: argocd-cli-1-19
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: arm64
+            architecture: darwin
+          - component: argocd-cli-1-19
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: amd64
+            architecture: windows
+          # argocd-agentctl
+          - component: argocd-cli-1-19
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: amd64
+          - component: argocd-agentctl-1-19
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: amd64
+          - component: argocd-agentctl-1-19
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: arm64
+          - component: argocd-agentctl-1-19
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: arm
+          - component: argocd-agentctl-cli-1-19
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: amd64
+            architecture: darwin
+          - component: argocd-agentctl-cli-1-19
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: arm64
+            architecture: darwin
