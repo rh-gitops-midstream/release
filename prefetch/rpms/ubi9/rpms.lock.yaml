@@ -648,20 +648,20 @@ arches:
     name: ncurses
     evr: 6.2-12.20210508.el9
     sourcerpm: ncurses-6.2-12.20210508.el9.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/aarch64/baseos/os/Packages/o/openssh-8.7p1-46.el9.aarch64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/aarch64/baseos/os/Packages/o/openssh-8.7p1-47.el9_7.aarch64.rpm
     repoid: ubi-9-for-aarch64-baseos-rpms
-    size: 457771
-    checksum: sha256:71b112b493a770c81e108afd8ce6616c8a941c6f4332cc5db75731d9b830ccaf
+    size: 457197
+    checksum: sha256:80f3b5be41982ee637ffba3354170b4873c46c47460149c82f9821cd3a1ebf8e
     name: openssh
-    evr: 8.7p1-46.el9
-    sourcerpm: openssh-8.7p1-46.el9.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/aarch64/baseos/os/Packages/o/openssh-clients-8.7p1-46.el9.aarch64.rpm
+    evr: 8.7p1-47.el9_7
+    sourcerpm: openssh-8.7p1-47.el9_7.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/aarch64/baseos/os/Packages/o/openssh-clients-8.7p1-47.el9_7.aarch64.rpm
     repoid: ubi-9-for-aarch64-baseos-rpms
-    size: 697157
-    checksum: sha256:2f94f61ef0cfd8089ce58040586e894ec3c0f1d7aa46e63659901d4c0eea9287
+    size: 696884
+    checksum: sha256:5c294f4427bb2f80b699d6f8c6163659413b2821ac6db38cc8fa21c544694503
     name: openssh-clients
-    evr: 8.7p1-46.el9
-    sourcerpm: openssh-8.7p1-46.el9.src.rpm
+    evr: 8.7p1-47.el9_7
+    sourcerpm: openssh-8.7p1-47.el9_7.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/aarch64/baseos/os/Packages/o/openssl-3.5.1-4.el9_7.aarch64.rpm
     repoid: ubi-9-for-aarch64-baseos-rpms
     size: 1531255
@@ -1387,20 +1387,20 @@ arches:
     name: ncurses
     evr: 6.2-12.20210508.el9
     sourcerpm: ncurses-6.2-12.20210508.el9.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/ppc64le/baseos/os/Packages/o/openssh-8.7p1-46.el9.ppc64le.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/ppc64le/baseos/os/Packages/o/openssh-8.7p1-47.el9_7.ppc64le.rpm
     repoid: ubi-9-for-ppc64le-baseos-rpms
-    size: 481305
-    checksum: sha256:ca957d3f56714d44fe290ab425002bea3414abce333c38046f6199823215af9c
+    size: 480572
+    checksum: sha256:61f60d1c4e0fd54fbd9fe2cbb3a824af06837c4b925a603421cb84c74cdbe8ce
     name: openssh
-    evr: 8.7p1-46.el9
-    sourcerpm: openssh-8.7p1-46.el9.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/ppc64le/baseos/os/Packages/o/openssh-clients-8.7p1-46.el9.ppc64le.rpm
+    evr: 8.7p1-47.el9_7
+    sourcerpm: openssh-8.7p1-47.el9_7.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/ppc64le/baseos/os/Packages/o/openssh-clients-8.7p1-47.el9_7.ppc64le.rpm
     repoid: ubi-9-for-ppc64le-baseos-rpms
-    size: 755337
-    checksum: sha256:041b76d153931bf752a94eb6a1236239600d7eeb2f8311b91ce611425a6c0bc9
+    size: 754554
+    checksum: sha256:f6c7c3a1408c0de2fa4eec2c6f53636cd71f0da730a87ec3e02051fe91e3976c
     name: openssh-clients
-    evr: 8.7p1-46.el9
-    sourcerpm: openssh-8.7p1-46.el9.src.rpm
+    evr: 8.7p1-47.el9_7
+    sourcerpm: openssh-8.7p1-47.el9_7.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/ppc64le/baseos/os/Packages/o/openssl-3.5.1-4.el9_7.ppc64le.rpm
     repoid: ubi-9-for-ppc64le-baseos-rpms
     size: 1556422
@@ -2119,20 +2119,20 @@ arches:
     name: ncurses
     evr: 6.2-12.20210508.el9
     sourcerpm: ncurses-6.2-12.20210508.el9.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/s390x/baseos/os/Packages/o/openssh-8.7p1-46.el9.s390x.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/s390x/baseos/os/Packages/o/openssh-8.7p1-47.el9_7.s390x.rpm
     repoid: ubi-9-for-s390x-baseos-rpms
-    size: 453495
-    checksum: sha256:9e69512c7967f983d276e56d3a06034e6168cfc682defd67deee5627e2eb7b99
+    size: 452850
+    checksum: sha256:304d07af2fd37c108dcbb16cb998211d78b4617bc366d263401daf58a272f07f
     name: openssh
-    evr: 8.7p1-46.el9
-    sourcerpm: openssh-8.7p1-46.el9.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/s390x/baseos/os/Packages/o/openssh-clients-8.7p1-46.el9.s390x.rpm
+    evr: 8.7p1-47.el9_7
+    sourcerpm: openssh-8.7p1-47.el9_7.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/s390x/baseos/os/Packages/o/openssh-clients-8.7p1-47.el9_7.s390x.rpm
     repoid: ubi-9-for-s390x-baseos-rpms
-    size: 684336
-    checksum: sha256:5d3eb92e75f822a9403ba8e61b451cd7d8eb85cbaaaa686c028eb65995416367
+    size: 681961
+    checksum: sha256:f8a9c90a9516ce6a5cff8b5d8122993fa37bc2539edc4557d63a0384862c95d0
     name: openssh-clients
-    evr: 8.7p1-46.el9
-    sourcerpm: openssh-8.7p1-46.el9.src.rpm
+    evr: 8.7p1-47.el9_7
+    sourcerpm: openssh-8.7p1-47.el9_7.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/s390x/baseos/os/Packages/o/openssl-3.5.1-4.el9_7.s390x.rpm
     repoid: ubi-9-for-s390x-baseos-rpms
     size: 1538384
