@@ -2,7 +2,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: gitops-bundle-lowest-parallel-integration-test-pipeline
+  name: gitops-bundle-lowest-rollouts-test-pipeline
 spec:
   description: |
     An integration test which provisions an ephemeral Hypershift cluster and deploys an Operator
@@ -187,7 +187,7 @@ spec:
                 - name: revision
                   value: konflux
                 - name: pathInRepo
-                  value: .tekton/steps/run-gitops-operator-e2e.yaml
+                  value: .tekton/steps/run-gitops-rollouts-e2e.yaml
             params:
               - name: credentials
                 value: credentials
