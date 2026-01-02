@@ -20,6 +20,7 @@ COPY containers/gitops-operator-bundle/bundle/manifests /manifests/
 COPY containers/gitops-operator-bundle/bundle/metadata /metadata/
 COPY containers/gitops-operator-bundle/bundle/tests/scorecard /tests/scorecard/
 
+# Vacuus update to trigger the ci
 LABEL \
     name="openshift-gitops-1/gitops-rhel8-operator" \
     url="" \
