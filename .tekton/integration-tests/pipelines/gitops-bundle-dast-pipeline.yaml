@@ -10,7 +10,7 @@ spec:
   params:
     - description: Snapshot of the application
       name: SNAPSHOT
-      default: '{"components": [{"name":"gitops-operator-bundle-main", "containerImage": "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle:latest"}]}'
+      default: '{"components": [{"name":"gitops-operator-bundle-1-19", "containerImage": "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle:latest"}]}'
       type: string
     - description: Namespace where the the Operator bundle will be deployed.
       name: NAMESPACE
@@ -128,6 +128,7 @@ spec:
           value: "openshift-gitops-operator"
         - name: installTimeout
           value: "$(params.INSTALL_TIMEOUT)"
+      timeout: 600m
       taskSpec:
         params:
           - name: bundleImage
@@ -139,6 +140,9 @@ spec:
         volumes:
           - name: credentials
             emptyDir: {}
+          - name: gcp
+            secret: 
+               secretName: gcp
         steps:
           - name: get-kubeconfig
             ref:
@@ -204,3 +208,5 @@ spec:
                 value: "$(steps.get-kubeconfig.results.apiServerURL)"
               - name: clusterurl
                 value: "$(steps.get-kubeconfig.results.consoleURL)"
+              - name: gcpkey
+                value: gcp
