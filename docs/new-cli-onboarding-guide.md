@@ -36,7 +36,7 @@ spec:
 ```
 
 > [!IMPORTANT]  
-> <new-component> must exactly match the downstream binary name.
+> <new-component\> must exactly match the downstream binary name.
 
 ### 1.2 Add `Component`
 
@@ -104,7 +104,7 @@ In Konflux, CLI binaries are built inside a container and stored under the `/rel
 3. Build and validate locally: `make container name=<new-component>`
 
 > [!TIP]
-> Refer to existing CLI Dockerfiles for guidance and best practices.
+> Refer to existing CLI Dockerfiles and internal (konflux documentation)(https://konflux.pages.redhat.com/docs/users/building/build-binaries.html) for guidance and best practices.
 
 #### 2.3 Configure CI Pipelines
 
