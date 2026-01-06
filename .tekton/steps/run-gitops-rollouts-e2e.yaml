@@ -44,18 +44,8 @@ spec:
     #!/usr/bin/env bash
     set -ex
 
-    # Update the file for sending the results to the ResultsDB
-    RESULT=$(workspaces.install-dir.path)/$(params.CLUSTER_NAME)-result.txt
-
     # Login to the cluster
     echo -e "Logging in as $(params.CLUSTER_USERNAME) user"
-
-    if [[ $(echo "$(params.RUN_ARGO_ROLLOUTS_TESTS)" | tr '[:upper:]' '[:lower:]') == "false" ]]; then
-      echo "\$RUN_ARGO_ROLLOUTS_TESTS is set to false, skipping the execution"
-      echo 0 | tee $(results.result.path)
-      echo -n ${UPLOADER_HOST}/$(params.UPLOAD_PATH)/ | tee $(results.artifacts.path)
-      exit 0
-    fi
 
     exit_code=0
     failed=0
@@ -262,7 +252,7 @@ spec:
     DISABLE_METRICS=true make test-e2e-namespace-scoped | tee /tmp/rollout-manager-namespace-scoped-test.log || exit_code=$?
 
     if [[ $exit_code != 0 ]]; then
-        echo $exit_code | tee $(results.result.path)
+        echo $exit_code
         failed=$exit_code
         exit_code=0
     fi
@@ -284,7 +274,7 @@ spec:
     SKIP_RUN_STEP=true hack/run-upstream-argo-rollouts-e2e-tests.sh | tee /tmp/argo-rollouts-test.log || exit_code=$?
 
     if [[ $exit_code != 0 ]]; then
-      echo $exit_code | tee $(results.result.path)
+      echo $exit_code
       failed=$exit_code
       exit_code=0
     fi
@@ -316,7 +306,7 @@ spec:
     make test-e2e | tee /tmp/rollouts-plugin-test.log || exit_code=$?
 
     if [[ $exit_code != 0 ]]; then
-      echo $exit_code | tee $(results.result.path)
+      echo $exit_code
       failed=$exit_code
     fi
 
