@@ -148,7 +148,6 @@ spec:
             script: |
               # 1. Create unique secret name based on PipelineRun
               SECRET_NAME="creds-$(context.pipelineRun.name)"
-              echo -n "$SECRET_NAME" > $(results.secretName.path)
 
               # 2. Create the Secret from the volume
               kubectl create secret generic "$SECRET_NAME" \
