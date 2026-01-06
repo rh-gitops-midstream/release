@@ -125,6 +125,9 @@ spec:
         volumes:
           - name: credentials
             emptyDir: {}
+        results:
+          - name: secretName
+            description: Name of the secret to store kubeconfig
         steps:
           - name: get-kubeconfig
             ref:
@@ -151,7 +154,7 @@ spec:
             script: |
               # 1. Create unique secret name based on PipelineRun
               SECRET_NAME="creds-$(context.pipelineRun.name)"
-
+              echo -n "$SECRET_NAME" > $(results.secretName.path)
               # 2. Create the Secret from the volume
               kubectl create secret generic "$SECRET_NAME" \
                 --from-file=/credentials/ \
@@ -177,7 +180,7 @@ spec:
         volumes:
           - name: credentials
             secret: 
-               secretName: "creds-$(context.pipelineRun.name)"
+               secretName: "$(tasks.create-credential-secret.results.secretName.path)"
         steps:
           - name: install-operator
             ref:
@@ -207,7 +210,7 @@ spec:
         volumes:
           - name: credentials
             secret: 
-               secretName: "creds-$(context.pipelineRun.name)"
+               secretName: "$(tasks.create-credential-secret.results.secretName.path)"
         steps:
           - name: test-operator
             ref:
