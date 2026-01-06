@@ -180,7 +180,7 @@ spec:
         volumes:
           - name: credentials
             secret: 
-               secretName: "$(tasks.create-credential-secret.results.secretName.path)"
+               secretName: "$(tasks.create-credential-secret.results.secretName)"
         steps:
           - name: install-operator
             ref:
