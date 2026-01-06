@@ -148,7 +148,7 @@ spec:
                 value: credentials
           - name: create-secret-and-export-results
             volumeMounts: 
-            - name: "$(params.credentials)" 
+            - name: "credentials" 
               mountPath: /credentials
             image: quay.io/konflux-ci/release-service-utils:latest
             script: |
