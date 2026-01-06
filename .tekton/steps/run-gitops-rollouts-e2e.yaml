@@ -43,12 +43,10 @@ spec:
   script: |
     #!/usr/bin/env bash
     set -ex
-
-    # Login to the cluster
-    echo -e "Logging in as $(params.CLUSTER_USERNAME) user"
-
     exit_code=0
     failed=0
+
+    oc status
 
     operator_namespace=$(oc get deployment openshift-gitops-operator-controller-manager -n openshift-gitops-operator -o jsonpath='{.metadata.namespace}' --ignore-not-found)
 
