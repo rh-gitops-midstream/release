@@ -144,6 +144,9 @@ spec:
               - name: credentials
                 value: credentials
           - name: create-secret-and-export-results
+            volumeMounts: 
+            - name: "$(params.credentials)" 
+              mountPath: /credentials
             image: quay.io/konflux-ci/release-service-utils:latest
             script: |
               # 1. Create unique secret name based on PipelineRun
