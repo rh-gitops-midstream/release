@@ -118,24 +118,10 @@ spec:
                 value: "60m"
               - name: version
                 value: "4.14.57"
-    - name: deploy-and-test-operator
+    - name: create-credential-secret
       runAfter:
         - provision-cluster
-      params:
-        - name: bundleImage
-          value: "$(tasks.parse-metadata.results.component-container-image)"
-        - name: namespace
-          value: "openshift-gitops-operator"
-        - name: installTimeout
-          value: "$(params.INSTALL_TIMEOUT)"
       taskSpec:
-        params:
-          - name: bundleImage
-            type: string
-          - name: namespace
-            type: string
-          - name: installTimeout
-            type: string
         volumes:
           - name: credentials
             emptyDir: {}
@@ -157,6 +143,40 @@ spec:
                 value: "$(tasks.provision-cluster.results.clusterName)"
               - name: credentials
                 value: credentials
+          - name: create-secret-and-export-results
+            image: quay.io/konflux-ci/release-service-utils:latest
+            script: |
+              # 1. Create unique secret name based on PipelineRun
+              SECRET_NAME="creds-$(context.pipelineRun.name)"
+              echo -n "$SECRET_NAME" > $(results.secretName.path)
+
+              # 2. Create the Secret from the volume
+              kubectl create secret generic "$SECRET_NAME" \
+                --from-file=/credentials/ \
+                --dry-run=client -o yaml | kubectl apply -f -
+    - name: install-operator
+      runAfter:
+        - create-credential-secret
+      params:
+        - name: bundleImage
+          value: "$(tasks.parse-metadata.results.component-container-image)"
+        - name: namespace
+          value: "openshift-gitops-operator"
+        - name: installTimeout
+          value: "$(params.INSTALL_TIMEOUT)"
+      taskSpec:
+        params:
+          - name: bundleImage
+            type: string
+          - name: namespace
+            type: string
+          - name: installTimeout
+            type: string
+        volumes:
+          - name: credentials
+            secret: 
+               secretName: "creds-$(context.pipelineRun.name)"
+        steps:
           - name: install-operator
             ref:
               resolver: git
@@ -178,6 +198,15 @@ spec:
                 value: credentials
               - name: kubeconfig
                 value: "$(steps.get-kubeconfig.results.kubeconfig)"
+    - name: test-operator
+      runAfter:
+        - install-operator
+      taskSpec:
+        volumes:
+          - name: credentials
+            secret: 
+               secretName: "creds-$(context.pipelineRun.name)"
+        steps:
           - name: test-operator
             ref:
               resolver: git
