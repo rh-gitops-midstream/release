@@ -152,13 +152,16 @@ spec:
               mountPath: /credentials
             image: quay.io/konflux-ci/release-service-utils:latest
             script: |
+              set -x
+              ls /credentiala
               # 1. Create unique secret name based on PipelineRun
               SECRET_NAME="creds-$(context.pipelineRun.name)"
               echo -n "$SECRET_NAME" > $(results.secretName.path)
               # 2. Create the Secret from the volume
               kubectl create secret generic "$SECRET_NAME" \
                 --from-file=/credentials/ \
-                --dry-run=client -o yaml | kubectl apply -f -
+                --dry-run=client -o yaml | tee /tmp/secret
+              kubectl apply -f /tmp/secret
     - name: install-operator
       runAfter:
         - create-credential-secret
