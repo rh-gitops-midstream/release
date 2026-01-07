@@ -1,0 +1,22 @@
+---
+apiVersion: appstudio.redhat.com/v1beta1
+kind: IntegrationTestScenario
+metadata:
+  name: gitops-bundle-dast
+  namespace: rh-openshift-gitops-tenant
+  labels:
+    test.appstudio.openshift.io/optional: "true"
+spec:
+  application: gitops-1190
+  contexts:
+    - description: bundle testing
+      name: component_bundle
+  resolverRef:
+    resolver: git
+    params:
+      - name: url
+        value: https://github.com/rh-gitops-midstream/release
+      - name: revision
+        value: main
+      - name: pathInRepo
+        value: /.tekton/integration-tests/pipelines/gitops-bundle-dast-pipeline.yaml
