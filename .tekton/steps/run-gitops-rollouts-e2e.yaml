@@ -52,7 +52,9 @@ spec:
 
     operator_namespace=${operator_namespace:-"openshift-operators"}
 
-    oc patch subscriptions openshift-gitops-operator -n $operator_namespace --type merge --patch '{"spec": {"config": {"env": [{"name": "CLUSTER_SCOPED_ARGO_ROLLOUTS_NAMESPACES", "value": "argo-rollouts, rom-ns-1, test-rom-ns-1"}]}}}'
+    #oc patch subscriptions openshift-gitops-operator -n $operator_namespace --type merge --patch '{"spec": {"config": {"env": [{"name": "CLUSTER_SCOPED_ARGO_ROLLOUTS_NAMESPACES", "value": "argo-rollouts, rom-ns-1, test-rom-ns-1"}]}}}'
+
+    oc patch deployment gitops-operator-controller-manager -n $operator_namespace --type=json -p='[{"op": "add","path": "/spec/template/spec/containers/0/env/-","value": {"name": "CLUSTER_SCOPED_ARGO_ROLLOUTS_NAMESPACES","value": "argo-rollouts, rom-ns-1, test-rom-ns-1"}}]'
 
     # As of https://github.com/redhat-developer/gitops-operator/commit/a9e92498df15432c1989f178b6ad5807e0d767d0
     # - Runs the Operator E2E tests for cluster-scoped Argo Rollouts installs (tests are defined here: https://github.com/argoproj-labs/argo-rollouts-manager/tree/main/tests/e2e)

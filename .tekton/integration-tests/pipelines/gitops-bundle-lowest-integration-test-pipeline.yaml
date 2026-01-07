@@ -138,10 +138,8 @@ spec:
           - name: secretName
             description: Name of the secret to store kubeconfig
           - name: kubeconfig
+            value: "$(steps.get-kubeconfig.results.kubeconfig)"
             description: Path to the kubeconfig
-          - name: apiServerURL
-          - name: consoleURL
-          - name: passwordPath
         steps:
           - name: get-kubeconfig
             ref:
@@ -177,10 +175,6 @@ spec:
                 --dry-run=client -o yaml | tee /tmp/secret
               kubectl apply -f /tmp/secret
               # 3. Propagate step results to task results for downstream tasks
-              echo -n "$(steps.get-kubeconfig.results.kubeconfig)" > $(results.kubeconfig.path)
-              echo -n "$(steps.get-kubeconfig.results.apiServerURL)" > $(results.apiServerURL.path)
-              echo -n "$(steps.get-kubeconfig.results.consoleURL)" > $(results.consoleURL.path)
-              echo -n "$(steps.get-kubeconfig.results.passwordPath)" > $(results.passwordPath.path)
     - name: install-operator
       runAfter:
         - create-credential-secret
