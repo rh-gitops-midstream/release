@@ -236,7 +236,7 @@ spec:
     DISABLE_METRICS=true make test-e2e-cluster-scoped | tee /tmp/rollout-manager-cluster-scoped-test.log || exit_code=$?
 
     if [[ $exit_code != 0 ]]; then
-      echo $exit_code | tee $(results.result.path)
+      echo $exit_code
       failed=$exit_code
       exit_code=0
     fi
