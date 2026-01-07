@@ -20,6 +20,15 @@ spec:
       name: INSTALL_TIMEOUT
       default: 25m
       type: string
+  finally:
+    - name: cleanup-creds
+      taskSpec:
+        steps:
+          - name: delete-secret
+            image: quay.io/konflux-ci/release-service-utils:latest
+            script: |
+              SECRET_NAME="creds-$(context.pipelineRun.name)"
+              kubectl delete secret "$SECRET_NAME" --ignore-not-found
   tasks:
     - name: parse-metadata
       taskRef:
@@ -128,6 +137,11 @@ spec:
         results:
           - name: secretName
             description: Name of the secret to store kubeconfig
+          - name: kubeconfig
+            description: Path to the kubeconfig
+          - name: apiServerURL
+          - name: consoleURL
+          - name: passwordPath
         steps:
           - name: get-kubeconfig
             ref:
@@ -153,7 +167,7 @@ spec:
             image: quay.io/konflux-ci/release-service-utils:latest
             script: |
               set -x
-              ls /credentiala
+              ls /credentials
               # 1. Create unique secret name based on PipelineRun
               SECRET_NAME="creds-$(context.pipelineRun.name)"
               echo -n "$SECRET_NAME" > $(results.secretName.path)
@@ -162,6 +176,11 @@ spec:
                 --from-file=/credentials/ \
                 --dry-run=client -o yaml | tee /tmp/secret
               kubectl apply -f /tmp/secret
+              # 3. Propagate step results to task results for downstream tasks
+              echo -n "$(steps.get-kubeconfig.results.kubeconfig)" > $(results.kubeconfig.path)
+              echo -n "$(steps.get-kubeconfig.results.apiServerURL)" > $(results.apiServerURL.path)
+              echo -n "$(steps.get-kubeconfig.results.consoleURL)" > $(results.consoleURL.path)
+              echo -n "$(steps.get-kubeconfig.results.passwordPath)" > $(results.passwordPath.path)
     - name: install-operator
       runAfter:
         - create-credential-secret
@@ -205,7 +224,7 @@ spec:
               - name: credentials
                 value: credentials
               - name: kubeconfig
-                value: "$(steps.get-kubeconfig.results.kubeconfig)"
+                value: "$(tasks.create-credential-secret.results.kubeconfig)"
     - name: test-operator
       runAfter:
         - install-operator
@@ -233,6 +252,6 @@ spec:
               - name: branch
                 value: rm_env_across_containers
               - name: kubeconfig
-                value: "$(steps.get-kubeconfig.results.kubeconfig)"
+                value: "$(tasks.create-credential-secret.results.kubeconfig)"
               - name: test_dir
                 value: "./test/openshift/e2e/ginkgo/parallel"
