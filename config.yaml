@@ -70,7 +70,7 @@ sources:
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master
-    commit: 64f9e01d291357675141ffe298c369a521ff3d98
+    commit: 18ee1c620ddb72a282f64d682c3108f85aa82a85
   - path: sources/rollouts-plugin-trafficrouter-openshift
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
     ref: main
