@@ -19,3 +19,6 @@ spec:
           component: argocd-rhel9-1-17
         - key: CVE-2024-45338
           component: dex-1-17
+          
+        - key: CVE-2025-13888
+          component: gitops-operator-1-17
