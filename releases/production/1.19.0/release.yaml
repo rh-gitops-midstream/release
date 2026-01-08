@@ -9,6 +9,8 @@ spec:
   snapshot: gitops-1-19-tr5wv
   data:
     releaseNotes:
-      type: RHEA
-      #cves: []
+      type: RHSA
+      cves:
+        - key: CVE-2025-13888
+￼         component: gitops-operator-1-18
        
