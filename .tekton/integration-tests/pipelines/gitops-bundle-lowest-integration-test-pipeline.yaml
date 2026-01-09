@@ -20,16 +20,6 @@ spec:
       name: INSTALL_TIMEOUT
       default: 25m
       type: string
-  finally:
-    - name: cleanup-creds
-      taskSpec:
-        steps:
-          - name: delete-configmap
-            image: quay.io/konflux-ci/release-service-utils:latest
-            script: |
-              # Updated to delete ConfigMap instead of Secret
-              CM_NAME="creds-$(context.pipelineRun.name)"
-              kubectl delete configmap "$CM_NAME" --ignore-not-found
   tasks:
     - name: parse-metadata
       taskRef:
@@ -128,19 +118,36 @@ spec:
                 value: "60m"
               - name: version
                 value: "4.14.57"
-    - name: create-credential-store
+    - name: install-operator
       runAfter:
         - provision-cluster
+      params:
+        - name: bundleImage
+          value: "$(tasks.parse-metadata.results.component-container-image)"
+        - name: namespace
+          value: "openshift-gitops-operator"
+        - name: installTimeout
+          value: "$(params.INSTALL_TIMEOUT)"
+        # New params for creds
+        - name: eaasSpaceSecretRef
+          value: $(tasks.provision-eaas-space.results.secretRef)
+        - name: clusterName
+          value: "$(tasks.provision-cluster.results.clusterName)"
       taskSpec:
+        params:
+          - name: bundleImage
+            type: string
+          - name: namespace
+            type: string
+          - name: installTimeout
+            type: string
+          - name: eaasSpaceSecretRef
+            type: string
+          - name: clusterName
+            type: string
         volumes:
           - name: credentials
             emptyDir: {}
-        results:
-          - name: configMapName
-            description: Name of the ConfigMap to store kubeconfig
-          - name: kubeconfig
-            value: "$(steps.get-kubeconfig.results.kubeconfig)"
-            description: Path to the kubeconfig
         steps:
           - name: get-kubeconfig
             ref:
@@ -154,53 +161,11 @@ spec:
                   value: stepactions/eaas-get-ephemeral-cluster-credentials/0.1/eaas-get-ephemeral-cluster-credentials.yaml
             params:
               - name: eaasSpaceSecretRef
-                value: $(tasks.provision-eaas-space.results.secretRef)
+                value: $(params.eaasSpaceSecretRef)
               - name: clusterName
-                value: "$(tasks.provision-cluster.results.clusterName)"
+                value: $(params.clusterName)
               - name: credentials
                 value: credentials
-          - name: create-configmap-and-export-results
-            volumeMounts: 
-            - name: "credentials" 
-              mountPath: /credentials
-            image: quay.io/konflux-ci/release-service-utils:latest
-            script: |
-              set -x
-              ls /credentials
-              # 1. Create unique name based on PipelineRun
-              CM_NAME="creds-$(context.pipelineRun.name)"
-              echo -n "$CM_NAME" > $(results.configMapName.path)
-              
-              # 2. Create the ConfigMap from the volume
-              # Changed from 'kubectl create secret generic' to 'kubectl create configmap'
-              kubectl create configmap "$CM_NAME" \
-                --from-file=/credentials/ \
-                --dry-run=client -o yaml | tee /tmp/configmap
-              kubectl apply -f /tmp/configmap
-              # 3. Propagate step results to task results for downstream tasks
-    - name: install-operator
-      runAfter:
-        - create-credential-store
-      params:
-        - name: bundleImage
-          value: "$(tasks.parse-metadata.results.component-container-image)"
-        - name: namespace
-          value: "openshift-gitops-operator"
-        - name: installTimeout
-          value: "$(params.INSTALL_TIMEOUT)"
-      taskSpec:
-        params:
-          - name: bundleImage
-            type: string
-          - name: namespace
-            type: string
-          - name: installTimeout
-            type: string
-        volumes:
-          - name: credentials
-            configMap: 
-               name: "$(tasks.create-credential-store.results.configMapName)"
-        steps:
           - name: install-operator
             ref:
               resolver: git
@@ -213,24 +178,51 @@ spec:
                   value: .tekton/steps/install-gitops-operator-bundle.yaml
             params:
               - name: installTimeout
-                value: "$(params.INSTALL_TIMEOUT)"
+                value: "$(params.installTimeout)"
               - name: bundleImage
-                value: "$(tasks.parse-metadata.results.component-container-image)"
+                value: "$(params.bundleImage)"
               - name: namespace
                 value: "openshift-gitops-operator"
               - name: credentials
                 value: credentials
               - name: kubeconfig
-                value: "$(tasks.create-credential-store.results.kubeconfig)"
+                value: "$(steps.get-kubeconfig.results.kubeconfig)"
     - name: test-operator
       runAfter:
         - install-operator
+      params:
+        # New params for creds
+        - name: eaasSpaceSecretRef
+          value: $(tasks.provision-eaas-space.results.secretRef)
+        - name: clusterName
+          value: "$(tasks.provision-cluster.results.clusterName)"
       taskSpec:
+        params:
+          - name: eaasSpaceSecretRef
+            type: string
+          - name: clusterName
+            type: string
         volumes:
           - name: credentials
-            configMap: 
-               name: "$(tasks.create-credential-store.results.configMapName)"
+            emptyDir: {}
         steps:
+          - name: get-kubeconfig
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-get-ephemeral-cluster-credentials/0.1/eaas-get-ephemeral-cluster-credentials.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(params.eaasSpaceSecretRef)
+              - name: clusterName
+                value: $(params.clusterName)
+              - name: credentials
+                value: credentials
           - name: test-operator
             ref:
               resolver: git
@@ -249,6 +241,6 @@ spec:
               - name: branch
                 value: rm_env_across_containers
               - name: kubeconfig
-                value: "$(tasks.create-credential-store.results.kubeconfig)"
+                value: "$(steps.get-kubeconfig.results.kubeconfig)"
               - name: test_dir
                 value: "./test/openshift/e2e/ginkgo/parallel"
