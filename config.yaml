@@ -1,12 +1,12 @@
 # Release Metadata
 release:
   name: OpenShift GitOps Operator
-  version: "1.18.2"
+  version: "1.18.3"
   olm:
     # TODO: Compute olm data automatically
-    name: "openshift-gitops-operator.v1.18.2"
+    name: "openshift-gitops-operator.v1.18.3"
     channel: "latest,gitops-1.18"
-    replaces: "openshift-gitops-operator.v1.18.1"
+    replaces: "openshift-gitops-operator.v1.18.2"
     skip-range: "" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
@@ -29,11 +29,11 @@ sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.18
-    commit: 277cfbf5310ba584c393282449f5cfdcf077befd
+    commit: f19618c70a33d0e403cdd6cd229cfdd6e9f99d8c
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.1.9
-    commit: 8665140f96f6b238a20e578dba7f9aef91ddac51
+    ref: v3.1.10
+    commit: b68c9643219a723ce5461f3268e02b3e93a9ab15
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
     ref: v1.8.3
