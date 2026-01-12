@@ -1,0 +1,82 @@
+apiVersion: tekton.dev/v1beta1
+kind: Step
+name: install-operator-with-olm-simulation
+image: quay.io/operator-framework/upstream-opm-builder:latest # or a standard CLI image with opm/oc
+script: |
+  #!/bin/bash
+  set -ex
+
+  # 1. Configuration
+  CATALOG_NS="openshift-marketplace"
+  OPERATOR_NS="openshift-gitops-operator"
+  CATALOG_NAME="gitops-test-catalog"
+  BUNDLE_IMAGE="$(params.BUNDLE_IMAGE)"
+  
+  # 2. Build a File-Based Catalog (FBC) from your single bundle
+  mkdir catalog
+  opm generate dockerfile catalog
+  opm render ${BUNDLE_IMAGE} --output=yaml > catalog/operator.yaml
+  
+  # Create the Catalog Config
+  cat <<EOF > catalog/catalog.yaml
+  apiVersion: olm.operatorframework.io/v1
+  kind: Catalog
+  metadata:
+    name: ${CATALOG_NAME}
+  EOF
+
+  # 3. Apply the CatalogSource pointing to the bundle
+  # Note: For a true OLM simulation without building/pushing a new image, 
+  # we use the 'opm alpha serve' or 'operator-sdk' helper to create the Registry Pod.
+    if ! operator-sdk run bundle --timeout="$INSTALL_TIMEOUT" \
+    --namespace "${NAMESPACE}" \
+    "$BUNDLE_IMAGE" \
+    --verbose; then
+      
+      echo "❌ Operator bundle installation failed. Gathering diagnostics..."
+      echo "================================================"
+      
+      # Namespace events
+      echo "Namespace Events:"
+      oc get events -n "${NAMESPACE}" --sort-by='.lastTimestamp'
+      
+      # OLM-specific resources
+      echo -e "\nOperator Subscriptions:"
+      oc get subscriptions -n "${NAMESPACE}"
+      
+      echo -e "\nInstallPlans:"
+      oc get installplans -n "${NAMESPACE}"
+      
+      echo -e "\nClusterServiceVersions:"
+      oc get csv -n "${NAMESPACE}"
+      
+      echo -e "\nCatalogSources:"
+      oc get catalogsources -n "${NAMESPACE}"
+      
+      # Pods and logs
+      echo -e "\nPods:"
+      oc get pods -n "${NAMESPACE}" -o wide
+      
+      echo -e "\nRecent logs from all pods:"
+      oc logs -n "${NAMESPACE}" --all-containers=true --prefix=true --tail=50 -l 'app' --ignore-errors=true
+      
+      # Use oc adm inspect for comprehensive debugging info
+      echo -e "\nCollecting comprehensive namespace data with oc adm inspect..."
+      oc adm inspect ns/"${NAMESPACE}" --dest-dir=/tmp/must-gather-"${NAMESPACE}" || echo "oc adm inspect failed"
+      
+      echo "================================================"
+      exit 1
+    fi
+    echo "---------------------------------------------"
+
+  # 4. FIX: Patch the auto-generated Subscription to match test expectations
+  # The SDK creates a random name (e.g., openshift-gitops-operator-v99-99-99-sub)
+  # We need to ensure tests can find it if they look for a specific name.
+  
+  REAL_SUB=$(oc get sub -n ${OPERATOR_NS} -o jsonpath='{.items[0].metadata.name}')
+  echo "Operator installed via Subscription: ${REAL_SUB}"
+
+  # 5. Wait for CSV to be Succeeded (Standard OLM behavior)
+  CSV_NAME=$(oc get sub ${REAL_SUB} -n ${OPERATOR_NS} -o jsonpath='{.status.installedCSV}')
+  
+  oc wait --for=jsonpath='{.status.phase}'=Succeeded csv/${CSV_NAME} -n ${OPERATOR_NS} --timeout=10m
