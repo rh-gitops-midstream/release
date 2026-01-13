@@ -14,7 +14,7 @@
 #
 # ------------------------------------------------------------------------
 
-FROM registry.redhat.io/rhel8/go-toolset:1.25  AS builder
+FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:v1.24  AS builder
 USER root
 
 ENV LANG=en_US.utf8
