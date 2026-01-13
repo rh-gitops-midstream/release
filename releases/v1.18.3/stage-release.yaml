@@ -6,13 +6,11 @@ metadata:
 spec:
   gracePeriodDays: 7
   releasePlan: gitops-1-18-stage
-  snapshot: gitops-1-18-cjtvt
+  snapshot: gitops-1-18-5mwbz
   data:
     releaseNotes:
       type: RHSA
       cves:
-        - key: CVE-2025-13888
-          component: gitops-operator-1-18
         - key: CVE-2025-47913
           component: gitops-1-18
         - key: CVE-2025-58183
