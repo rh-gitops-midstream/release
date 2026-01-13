@@ -11,12 +11,18 @@ spec:
     releaseNotes:
       type: RHSA
       cves:
+        - key: CVE-2025-13888
+          component: gitops-operator-1-18
         - key: CVE-2025-47913
           component: gitops-1-18
         - key: CVE-2025-58183
           component: argocd-1-18
         - key: CVE-2025-58183
           component: dex-1-18
+        - key: CVE-2025-68156
+          component: argocd-1-18
+        - key: CVE-2025-68156
+          component: argocd-rhel9-1-18
 
 
           
