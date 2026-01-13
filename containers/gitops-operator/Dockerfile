@@ -15,7 +15,7 @@
 # --
 
 # TODO: switch to registry.redhat.io once the image is available
-FROM registry.redhat.io/rhel8/go-toolset:1.25  AS builder
+FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_1.24  AS builder
 USER root
 
 # Copy source code
