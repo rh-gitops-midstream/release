@@ -15,7 +15,7 @@
 # ------------------------------------------------------------------------
 
 # --- start build stage #1
-FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:v1.24 as builder
+FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_1.24 as builder
 USER root
 
 COPY sources/dex /app/dex

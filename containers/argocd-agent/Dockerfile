@@ -14,7 +14,7 @@
 #
 # ------------------------------------------------------------------------
 
-FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:v1.24  AS builder
+FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_1.24  AS builder
 USER root
 
 ENV LANG=en_US.utf8
