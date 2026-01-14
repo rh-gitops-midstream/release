@@ -1,0 +1,29 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.17.4-stage-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-17-stage
+  snapshot: gitops-1-17-xnvbp
+  data:
+    releaseNotes:
+      type: RHSA
+      cves:
+      - key: CVE-2025-47913
+        component: argocd-agent-1-17
+      - key: CVE-2025-58183
+        component: argocd-1-17
+      - key: CVE-2025-58183
+        component: dex-1-17
+      - key: CVE-2025-55190
+        component: argocd-1-17
+      - key: CVE-2025-68156
+        component: argocd-1-17
+      - key: CVE-2025-68156
+        component: argocd-rhel9-1-17
+      - key: CVE-2025-58754
+        component: argocd-extensions-1-17
+      - key: CVE-2025-47913
+        component: argocd-rhel9-1-17
