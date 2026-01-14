@@ -1,5 +1,5 @@
-apiVersion: tekton.dev/v1beta1
-kind: Step
+apiVersion: tekton.dev/v1alpha1
+kind: StepAction
 name: install-operator-with-olm-simulation
 image: quay.io/operator-framework/upstream-opm-builder:latest # or a standard CLI image with opm/oc
 script: |
