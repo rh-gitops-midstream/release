@@ -1,12 +1,12 @@
 # Release Metadata
 release:
   name: OpenShift GitOps Operator
-  version: "1.19.0"
+  version: "1.19.1"
   olm:
     # TODO: Compute olm data automatically
-    name: "openshift-gitops-operator.v1.19.0"
+    name: "openshift-gitops-operator.v1.19.1"
     channel: "latest,gitops-1.19"
-    replaces: "openshift-gitops-operator.v1.18.2"
+    replaces: "openshift-gitops-operator.v1.19.0"
     skip-range: ">=1.0.0 <1.19.0" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
@@ -16,6 +16,9 @@ release:
     - name: "Siddhesh Ghadi"
       github: svghadi
       email: "sghadi@redhat.com"
+    - name: "Neus Miras"
+      github: nmirasch
+      email: "nmirasch@redhat.com"
 
 # Source code repositories
 # This section defines the source repositories for GitOps Operator artifacts built from source.
@@ -26,11 +29,11 @@ sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.19
-    commit: 2693d2f865f47e079e220c6a9df1d5317f89eb0c
+    commit: 8c9bcc14591ddc271f34fb12e258275413a6602b
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.1.9
-    commit: 8665140f96f6b238a20e578dba7f9aef91ddac51
+    ref: v3.0.22
+    commit: 1eaf112dbbfea92b345117bd4ce86308048da68c
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
     ref: v1.8.3
