@@ -1,7 +1,40 @@
 apiVersion: tekton.dev/v1alpha1
 kind: StepAction
-name: install-operator-with-olm-simulation
-image: quay.io/operator-framework/upstream-opm-builder:latest # or a standard CLI image with opm/oc
+metadata:
+  name: install-operator-with-olm-simulation
+spec:
+  params:
+    - name: bundleImage
+      type: string
+    - name: namespace
+      type: string
+      default: "openshift-gitops-operator"
+    - name: installTimeout
+      type: string
+      default: "30m"
+    - name: credentials
+      type: string
+      description: A volume to which the remote cluster credentials will be written.
+    - name: kubeconfig
+      type: string
+      description: A path to the kubeconfig in the credentials volume
+  volumeMounts:
+    - name: "$(params.credentials)"
+      mountPath: /credentials
+  env:
+    - name: BUNDLE_IMAGE
+      value: $(params.bundleImage)
+    - name: KONFLUX_COMPONENT_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.labels['appstudio.openshift.io/component']
+    - name: NAMESPACE
+      value: $(params.namespace)
+    - name: INSTALL_TIMEOUT
+      value: $(params.installTimeout)
+    - name: KUBECONFIG
+      value: "/credentials/$(params.kubeconfig)"
+  image: registry.redhat.io/openshift4/ose-cli:latest
 script: |
   #!/bin/bash
   set -ex
