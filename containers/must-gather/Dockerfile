@@ -13,13 +13,13 @@
 # limitations under the License.
 #
 # ------------------------------------------------------------------------
-FROM registry.redhat.io/openshift4/ose-must-gather:v4.15.0
+FROM registry.redhat.io/openshift4/ose-must-gather-rhel9:v4.16.0
 
 LABEL \
     name="openshift-gitops-1/must-gather-rhel8" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-must-gather-container" \
-    com.redhat.delivery.appregistry="false" \ 
+    com.redhat.delivery.appregistry="false" \
     upstream-vcs-type="git" \
     summary="OpenShift GitOps Must Gather" \
     description="Red Hat OpenShift GitOps Must Gather" \
@@ -28,8 +28,8 @@ LABEL \
     io.openshift.tags="openshift,gitops-operator, must-gather" \
     io.openshift.maintainer.product="Red Hat OpenShift GitOps" \
     io.k8s.description="Red Hat OpenShift GitOps Must Gather" \
-    io.openshift.maintainer.component="William Tam <wtam@redhat.com>"  
-    
+    io.openshift.maintainer.component="William Tam <wtam@redhat.com>"
+
 # Save original gather script
 RUN mv /usr/bin/gather /usr/bin/gather_original
 
