@@ -6,7 +6,7 @@ metadata:
 spec:
   gracePeriodDays: 7
   releasePlan: gitops-1-17-prod
-  snapshot: gitops-1-17-xnvbp
+  snapshot: gitops-1-17-4-build-4
   data:
     releaseNotes:
       type: RHSA
@@ -18,7 +18,7 @@ spec:
         - key: CVE-2025-58183
           component: dex-1-17
         - key: CVE-2025-55190
-          component: argocd-1-17
+          component: gitops-1-17
         - key: CVE-2025-68156
           component: argocd-1-17
         - key: CVE-2025-68156
