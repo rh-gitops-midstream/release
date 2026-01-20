@@ -134,7 +134,7 @@ spec:
           if [[ "$actual_commit" != "$expected_commit" ]]; then
             echo "Git $actual_commit does not match expected commit $expected_commit from congif.yaml"
           fi
-          # Convert "sources/argo-cd" -> "ARGO-CD"
+          # Convert directory name to uppercase env var format (e.g., "sources/argo-cd" -> "ARGO_CD")
           name=$(basename "$dir" | tr '[:lower:]-' '[:upper:]_')
           args+=( "CI_${name}_VERSION=$ref" )
           args+=( "CI_${name}_COMMIT=$actual_commit" )
