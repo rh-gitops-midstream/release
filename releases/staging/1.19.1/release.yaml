@@ -1,0 +1,21 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.19.1-stage-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-19-stage
+  snapshot: gitops-1-19-1-build-2-1
+  data:
+    releaseNotes:
+      type: RHSA
+      cves:
+      - key: CVE-2025-58183
+        component: argocd-1-19
+      - key: CVE-2025-58183
+        component: dex-1-19
+      - key: CVE-2025-55190
+        component: gitops-1-19
+
+       
