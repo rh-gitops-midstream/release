@@ -35,7 +35,7 @@ RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime \
 FROM registry.access.redhat.com/ubi8/ubi-minimal
 
 USER root
-RUN microdnf install -y shadow-utils ca-certificates git openssh-clients gpg tar && \
+RUN microdnf install -y shadow-utils ca-certificates git-core openssh-clients gpg tar && \
     microdnf clean all && \
     rm -rf /tmp/* /var/tmp/*
 
