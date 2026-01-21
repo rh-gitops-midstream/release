@@ -25,5 +25,13 @@ spec:
           component: argocd-1-18
         - key: CVE-2025-68156
           component: argocd-rhel9-1-18
+        - key: CVE-2025-61729
+          component: gitops-operator-1-18
+        - key: CVE-2025-61729
+          component: gitops-1-18
+        - key: CVE-2025-61729
+          component: dex-1-18
+        - key: CVE-2025-61729
+          component: argo-rollouts-1-18
 
           
