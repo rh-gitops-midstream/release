@@ -27,3 +27,13 @@ spec:
           component: argocd-extensions-1-17
         - key: CVE-2025-47913
           component: argocd-rhel9-1-17
+        - key: CVE-2025-61729
+          component: gitops-operator-1-17
+        - key: CVE-2025-61729
+          component: gitops-1-17
+        - key: CVE-2025-61729
+          component: dex-1-17
+        - key: CVE-2025-61729
+          component: argocd-rhel9-1-17
+        - key: CVE-2025-61729
+          component: argocd-1-17
