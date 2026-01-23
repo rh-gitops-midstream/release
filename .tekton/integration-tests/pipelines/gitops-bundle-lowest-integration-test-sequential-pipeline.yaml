@@ -187,7 +187,7 @@ spec:
                 - name: revision
                   value: konflux
                 - name: pathInRepo
-                  value: .tekton/steps/run-gitops-operator-e2e.yaml
+                  value: .tekton/steps/run-gitops-operator-e2e-minimal.yaml
             params:
               - name: credentials
                 value: credentials
@@ -196,4 +196,4 @@ spec:
               - name: branch
                 value: rm_env_across_containers
               - name: test_dir
-                value: "./test/openshift/e2e/ginkgo/sequential"
+                value: "./test/openshift/e2e/ginkgo/parallel"
