@@ -21,6 +21,13 @@ Before starting the release, ensure that:
 - You have checked out the desired `release-*` branch of this repository.
 - You are logged into the Konflux cluster with sufficient permissions.
 
+##### GitOps Snapshot Availability (Backup/Restore)
+
+Release CRs reference a **GitOps** snapshot. Before starting the component
+release, ensure the GitOps snapshot exists in the cluster. If it was
+garbage-collected, re-create it using the backup.
+
+
 ##### Apply the Production Release CR
 
 To trigger a production release, apply the corresponding CR:
@@ -85,6 +92,35 @@ Otherwise, the catalog pipeline may fail due to missing or unpublished images.
 > [!TIP]
 > You can also use `stage-release.yaml` for a **staging release**.
 This is recommended to validate artifacts before pushing them into production, reducing the risk of failure during the final release.
+
+###### Catalog Snapshot Backup/Restore
+
+Make sure the catalog snapshot is preserved for release-time use. Catalog snapshots follow the
+`catalog-<ocp-version>-<suffix>` pattern (example: `catalog-4-12-tgjwb`).
+
+1. Back up the snapshot:
+
+   ```bash
+   oc get snapshot catalog-<ocp-version>-<suffix> -o yaml > snapshot-backup.yaml
+   ```
+
+2. If the snapshot is missing, retrieve it from
+   [kubeArchive](https://kubearchive.github.io/kubearchive/main/cli/installation.html):
+
+   ```bash
+   kubectl ka get snapshot catalog-<ocp-version>-<suffix> -o yaml > snapshot-backup.yaml
+   ```
+
+3. Edit `snapshot-backup.yaml`:
+    - Remove `ownerReferences`.
+    - Rename the snapshot to a stable name, for example
+      `catalog-<ocp-version>-<release-version_reference>`.
+
+4. Re-apply the snapshot:
+
+   ```bash
+   oc apply -f snapshot-backup.yaml
+   ```
 
 ##### Monitor the release
 
