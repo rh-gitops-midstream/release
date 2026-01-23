@@ -175,7 +175,7 @@ spec:
                 - name: revision
                   value: konflux
                 - name: pathInRepo
-                  value: .tekton/steps/install-gitops-operator-bundle.yaml
+                  value: .tekton/steps/install-gitops-operator-subscription.yaml
             params:
               - name: installTimeout
                 value: "$(params.installTimeout)"
