@@ -82,8 +82,6 @@ RUN groupadd -g 999 argo-rollouts && \
     mkdir -p /home/argo-rollouts && \
     chown argo-rollouts:0 /home/argo-rollouts && \
     chmod g=u /home/argo-rollouts && \
-    microdnf install -y git gpg tar tzdata && \
-    microdnf clean all && \
     rm -rf /tmp/* /var/tmp/*
 
 # support for mounting configuration from a configmap
