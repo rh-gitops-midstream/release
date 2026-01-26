@@ -155,6 +155,18 @@ Before triggering the RC build, update source references in `config.yaml` as req
 
 ![Github Action](assets/trigger-github-actions.png)
 
+### Build Chain Troubleshooting
+
+If the build chain fails:
+- **chore(build) bump to v1.1X.Z-B ** fails and stops the build
+  - Re-run failed component builds in Konflux UI until achieve all checks.
+  - Then trigger bundle build:
+    `https://github.com/rh-gitops-midstream/release/actions/workflows/trigger-bundle-build.yaml`
+- **chore(bundle) latest bundle updates ** fails and the catalog Pull Request is not generated
+  - Re-run failed component builds in Konflux UI.
+  - Then trigger:
+    `https://github.com/rh-gitops-midstream/release/actions/workflows/trigger-catalog-build.yaml`
+
 ## Step 6: Update Release YAMLs and Create the Staging Release
 
 Once the build workflow completes, a new PR is created in the
