@@ -17,7 +17,7 @@
 ####################################################################################################
 # Rollouts Extensions UI stage
 ####################################################################################################
-FROM registry.access.redhat.com/ubi8/ubi-minimal as rollout-extensions
+FROM registry.access.redhat.com/ubi9/ubi-minimal as rollout-extensions
 
 USER root
 
@@ -36,7 +36,7 @@ RUN tar cvf dist/extension.tar resources
 ####################################################################################################
 # Final Image
 ####################################################################################################
-FROM registry.access.redhat.com/ubi8/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal
 
 ARG USER=ext-installer
 ENV HOME=/home/$USER
@@ -55,7 +55,7 @@ ENV EXTENSION_VERSION="0.3.6"
 ENTRYPOINT ["./install.sh"]
 
 LABEL \
-    name="openshift-gitops-1/argocd-extensions-rhel8" \
+    name="openshift-gitops-1/argocd-extensions-rhel9" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-argocd-extensions-container" \
     com.redhat.delivery.appregistry="false" \

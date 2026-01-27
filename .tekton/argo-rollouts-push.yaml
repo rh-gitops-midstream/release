@@ -16,7 +16,7 @@ metadata:
         "sources/git-lfs".pathChanged() ||
         "containers/argo-rollouts/***".pathChanged() ||
         ".tekton/argo-rollouts-push.yaml".pathChanged() ||
-        "prefetch/rpms/ubi8/***".pathChanged() ||
+        "prefetch/rpms/ubi9/***".pathChanged() ||
         "BUILD".pathChanged() ||
         ".tekton/build-multi-platform-image.yaml".pathChanged() ||
         ".tekton/tasks/***".pathChanged()
@@ -35,14 +35,14 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts-rhel8:{{revision}}
+    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts-rhel9:{{revision}}
   - name: additional-tags
     value:
       - '{{target_branch}}'
   - name: dockerfile
     value: containers/argo-rollouts/Dockerfile
   - name: prefetch-input
-    value: '[{"type": "gomod", "path": "./sources/rollouts-plugin-trafficrouter-openshift"}, {"type": "gomod", "path": "./sources/argo-rollouts"}, {"type": "rpm", "path": "prefetch/rpms/ubi8"}, {"type":"gomod","path":"./sources/git-lfs"}]'
+    value: '[{"type": "gomod", "path": "./sources/rollouts-plugin-trafficrouter-openshift"}, {"type": "gomod", "path": "./sources/argo-rollouts"}, {"type": "rpm", "path": "prefetch/rpms/ubi9"}, {"type":"gomod","path":"./sources/git-lfs"}]'
   - name: git-metadata-directories
     value:
       - sources/argo-rollouts

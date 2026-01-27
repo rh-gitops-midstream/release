@@ -17,7 +17,7 @@
 ####################################################################################################
 # Builder stage which performs the build of Argocd-cli binaries
 ####################################################################################################
-FROM registry.redhat.io/rhel8/go-toolset:1.24.6 AS builder
+FROM registry.redhat.io/rhel9/go-toolset:1.25 AS builder
 
 USER root
 
@@ -57,7 +57,7 @@ RUN cd dist && \
 ####################################################################################################
 # Package the binaries into the image using UBI (Universal Base Image)
 ####################################################################################################
-FROM registry.access.redhat.com/ubi8/ubi
+FROM registry.access.redhat.com/ubi9/ubi
 
 # This directory is checked by the ecosystem-cert-preflight-checks task in Konflux
 COPY LICENSE /licenses/

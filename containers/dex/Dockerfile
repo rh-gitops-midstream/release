@@ -15,7 +15,7 @@
 # ------------------------------------------------------------------------
 
 # --- start build stage #1
-FROM registry.redhat.io/rhel8/go-toolset:1.24.6 as builder
+FROM registry.redhat.io/rhel9/go-toolset:1.25 as builder
 USER root
 
 COPY sources/dex /app/dex
@@ -27,7 +27,7 @@ ENV GOFLAGS=""
 RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 GOOS=linux go build -mod=mod -o /tmp/dex -ldflags "-w -X main.version=$CI_DEX_VERSION -X main.commit=$CI_DEX_COMMIT" -tags strictfipsruntime ./cmd/dex
 
 # --- start build stage #2
-FROM registry.access.redhat.com/ubi8/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal
 # Dex connectors, such as GitHub and Google logins require root certificates.
 # Proper installations should manage those certificates, but it's a bad user
 # experience when this doesn't work out of the box.
@@ -51,7 +51,7 @@ COPY --from=builder /app/dex/web /srv/dex/web
 USER 1001:1001
 
 LABEL \
-    name="openshift-gitops-1/dex-rhel8" \
+    name="openshift-gitops-1/dex-rhel9" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-dex-container" \
     com.redhat.delivery.appregistry="false" \

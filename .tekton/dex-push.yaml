@@ -14,7 +14,7 @@ metadata:
         "sources/dex".pathChanged() ||
         "containers/dex/***".pathChanged() ||
         ".tekton/dex-push.yaml".pathChanged() ||
-        "prefetch/rpms/ubi8/***".pathChanged() ||
+        "prefetch/rpms/ubi9/***".pathChanged() ||
         "BUILD".pathChanged() ||
         ".tekton/build-multi-platform-image.yaml".pathChanged() ||
         ".tekton/tasks/***".pathChanged()
@@ -33,14 +33,14 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex-rhel8:{{revision}}
+    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex-rhel9:{{revision}}
   - name: additional-tags
     value:
       - '{{target_branch}}'
   - name: dockerfile
     value: containers/dex/Dockerfile
   - name: prefetch-input
-    value: '[{"type": "gomod", "path": "./sources/dex"}, {"type": "rpm", "path": "prefetch/rpms/ubi8"}]'
+    value: '[{"type": "gomod", "path": "./sources/dex"}, {"type": "rpm", "path": "prefetch/rpms/ubi9"}]'
   - name: git-metadata-directories
     value:
       - sources/dex

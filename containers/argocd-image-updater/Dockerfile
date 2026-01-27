@@ -15,7 +15,7 @@
 # ------------------------------------------------------------------------
 
 # Build the manager binary
-FROM registry.redhat.io/rhel8/go-toolset:1.24.6 AS builder
+FROM registry.redhat.io/rhel9/go-toolset:1.25 AS builder
 USER root
 
 ARG CI_ARGOCD_IMAGE_UPDATER_VERSION
@@ -32,7 +32,7 @@ RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime \
     -o dist/argocd-image-updater ./cmd
 
 # Final image
-FROM registry.access.redhat.com/ubi8/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal
 
 USER root
 RUN microdnf install -y shadow-utils ca-certificates git openssh-clients gpg tar && \
@@ -52,7 +52,7 @@ USER 1000
 ENTRYPOINT ["/manager"]
 
 LABEL \
-    name="openshift-gitops-1/argocd-image-updater-rhel8" \
+    name="openshift-gitops-1/argocd-image-updater-rhel9" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-argocd-image-updater-container" \
     com.redhat.delivery.appregistry="false" \

@@ -15,7 +15,7 @@
 # --
 
 # TODO: switch to registry.redhat.io once the image is available
-FROM registry.redhat.io/rhel8/go-toolset:1.24.6  AS builder
+FROM registry.redhat.io/rhel9/go-toolset:1.25  AS builder
 USER root
 
 # Copy source code
@@ -30,7 +30,7 @@ ENV GOOS=linux
 RUN go mod download
 RUN go build -tags strictfipsruntime -o bin/manager ./cmd/main.go
     
-FROM registry.access.redhat.com/ubi8/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal
 
 ENV LANG=en_US.utf8
 
@@ -44,7 +44,7 @@ USER 10001
 ENTRYPOINT [ "/usr/local/bin/manager" ]
     
 LABEL \
-    name="openshift-gitops-1/gitops-rhel8-operator" \
+    name="openshift-gitops-1/gitops-rhel9-operator" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-operator-container" \
     com.redhat.delivery.appregistry="false" \

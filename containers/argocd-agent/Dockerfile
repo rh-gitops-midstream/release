@@ -14,7 +14,7 @@
 #
 # ------------------------------------------------------------------------
 
-FROM registry.redhat.io/rhel8/go-toolset:1.24.6  AS builder
+FROM registry.redhat.io/rhel9/go-toolset:1.25  AS builder
 USER root
 
 ENV LANG=en_US.utf8
@@ -26,7 +26,7 @@ COPY sources/argocd-agent /app/argocd-agent
 WORKDIR /app/argocd-agent
 RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime go build -tags strictfipsruntime -mod=mod -o dist/argocd-agent ./cmd/argocd-agent
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal
 
 COPY --from=builder /app/argocd-agent/dist/argocd-agent /bin/argocd-agent
 ENTRYPOINT ["./bin/argocd-agent"]
@@ -34,7 +34,7 @@ ENTRYPOINT ["./bin/argocd-agent"]
 USER 999
 
 LABEL \
-    name="openshift-gitops-1/argocd-agent-rhel8" \
+    name="openshift-gitops-1/argocd-agent-rhel9" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-argocd-agent-container" \
     com.redhat.delivery.appregistry="false" \

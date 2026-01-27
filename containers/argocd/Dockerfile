@@ -45,7 +45,7 @@ RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' $YARN build
 # Argo CD Build stage which performs the actual build of Argo CD binaries
 ####################################################################################################
 # TODO: switch to registry.redhat.io once the image is available
-FROM registry.redhat.io/rhel8/go-toolset:1.24.6 as argocd-build
+FROM registry.redhat.io/rhel9/go-toolset:1.25 as argocd-build
 USER root
 
 COPY sources/argo-cd /go/src/github.com/argoproj/argo-cd
@@ -131,7 +131,7 @@ RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 \
 ####################################################################################################
 # Argo CD Base - used as the base for both the release and dev argocd images
 ####################################################################################################
-FROM registry.access.redhat.com/ubi8/ubi-minimal AS argocd-base
+FROM registry.access.redhat.com/ubi9/ubi-minimal AS argocd-base
 
 USER root
 RUN microdnf install shadow-utils -y
@@ -186,7 +186,7 @@ COPY --from=argocd-build  /go/src/github.com/argoproj/ssh-connect/connect-proxy 
 COPY --from=argocd-build  /go/src/github.com/argoproj/git-lfs/bin/git-lfs /usr/local/bin/
 
 LABEL \
-    name="openshift-gitops-1/argocd-rhel8" \
+    name="openshift-gitops-1/argocd-rhel9" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-argocd-container" \
     com.redhat.delivery.appregistry="false" \

@@ -32,7 +32,7 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-image-updater-rhel8:on-pr-{{revision}}
+    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-image-updater-rhel9:on-pr-{{revision}}
   - name: image-expires-after
     value: 5d
   - name: build-platforms
@@ -41,7 +41,7 @@ spec:
   - name: dockerfile
     value: containers/argocd-image-updater/Dockerfile
   - name: prefetch-input
-    value: '[{"type": "gomod", "path": "./sources/argocd-image-updater"}, {"type": "rpm", "path": "prefetch/rpms/ubi8"}]'
+    value: '[{"type": "gomod", "path": "./sources/argocd-image-updater"}, {"type": "rpm", "path": "prefetch/rpms/ubi9"}]'
   - name: git-metadata-directories
     value:
       - sources/argocd-image-updater

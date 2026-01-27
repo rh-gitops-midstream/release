@@ -32,7 +32,7 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/must-gather-rhel8:{{revision}}
+    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/must-gather-rhel9:{{revision}}
   - name: additional-tags
     value:
       - '{{target_branch}}'
