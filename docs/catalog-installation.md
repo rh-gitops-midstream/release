@@ -32,9 +32,6 @@ spec:
   - source: registry.redhat.io/openshift-gitops-1/argocd-rhel8
     mirrors:
       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel8
-  - source: registry.redhat.io/openshift-gitops-1/argocd-rhel9
-    mirrors:
-      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel9
   - source: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8
     mirrors:
       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel8

@@ -14,7 +14,7 @@ metadata:
         "sources/dex".pathChanged() ||
         "containers/dex/***".pathChanged() ||
         ".tekton/dex-push.yaml".pathChanged() ||
-        "prefetch/rpms/ubi8/***".pathChanged() ||
+        "prefetch/rpms/ubi9/***".pathChanged() ||
         "BUILD".pathChanged() ||
         ".tekton/build-multi-platform-image.yaml".pathChanged() ||
         ".tekton/tasks/***".pathChanged()
@@ -40,7 +40,7 @@ spec:
   - name: dockerfile
     value: containers/dex/Dockerfile
   - name: prefetch-input
-    value: '[{"type": "gomod", "path": "./sources/dex"}, {"type": "rpm", "path": "prefetch/rpms/ubi8"}]'
+    value: '[{"type": "gomod", "path": "./sources/dex"}, {"type": "rpm", "path": "prefetch/rpms/ubi9"}]'
   - name: git-metadata-directories
     value:
       - sources/dex

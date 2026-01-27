@@ -1,5 +1,5 @@
 # Build Stage
-FROM  registry.redhat.io/rhel8/go-toolset:1.24.6 AS builder
+FROM  registry.redhat.io/rhel9/go-toolset:1.25 AS builder
 USER root
 
 COPY sources/gitops-backend /workspace
@@ -10,7 +10,7 @@ RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 GOOS=linux go build -a -mod=rea
   -ldflags "-X github.com/redhat-developer/gitops-backend/pkg/health.GitRevision=$CI_GITOPS_BACKEND_COMMIT" -tags strictfipsruntime ./cmd/backend-http
 
 # Final Stage
-FROM registry.access.redhat.com/ubi8/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal
 WORKDIR /
 COPY --from=builder /workspace/backend-http .
 EXPOSE 8080

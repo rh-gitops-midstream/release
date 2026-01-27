@@ -39,7 +39,7 @@ spec:
   - name: dockerfile
     value: containers/argocd-image-updater/Dockerfile
   - name: prefetch-input
-    value: '[{"type": "gomod", "path": "./sources/argocd-image-updater"}, {"type": "rpm", "path": "prefetch/rpms/ubi8"}]'
+    value: '[{"type": "gomod", "path": "./sources/argocd-image-updater"}, {"type": "rpm", "path": "prefetch/rpms/ubi9"}]'
   - name: git-metadata-directories
     value:
       - sources/argocd-image-updater

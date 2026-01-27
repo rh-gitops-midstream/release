@@ -118,9 +118,6 @@ konfluxImages:
   - name: argocd
     buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel8"
     releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-rhel8"
-  - name: argocd-rhel9
-    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel9"
-    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-rhel9"
   - name: argocd-agent
     buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel8"
     releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8"
