@@ -88,6 +88,7 @@ relatedImages = [
     {'name': 'argo_rollouts_image', 'image': images['argo-rollouts']},
     {'name': 'must_gather_image', 'image': images['must-gather']},
     {'name': 'argocd_principal_image', 'image': images['argocd-agent']},
+    {'name': 'argocd_agent_image', 'image': images['argocd-agent']},
     {'name': 'argocd_image_updater_image', 'image': images['argocd-image-updater']},
 ]
 
@@ -117,6 +118,8 @@ new_env = [
     {'name': 'RELATED_IMAGE_KUBE_RBAC_PROXY_IMAGE', 'value': images['kube-rbac-proxy']},
     {'name': 'ARGOCD_PRINCIPAL_IMAGE', 'value': images['argocd-agent']},
     {'name': 'RELATED_IMAGE_ARGOCD_PRINCIPAL_IMAGE', 'value': images['argocd-agent']},
+    {'name': 'ARGOCD_AGENT_IMAGE', 'value': images['argocd-agent']},
+    {'name': 'RELATED_IMAGE_ARGOCD_AGENT_IMAGE', 'value': images['argocd-agent']},
     {'name': 'ARGOCD_IMAGE_UPDATER_IMAGE', 'value': images['argocd-image-updater']},
     {'name': 'RELATED_IMAGE_ARGOCD_IMAGE_UPDATER_IMAGE', 'value': images['argocd-image-updater']},
 ]
