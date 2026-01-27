@@ -174,12 +174,10 @@ Once the build workflow completes, a new PR is created in the
 Use that PR to validate the catalog content and produce a Release Candidate (RC).
 
 1. Wait for the catalog PR checks to pass.
-2. Share the temporary build for each component using the snapshot container image
-   references provided in the PR.
-3. After the catalog PR is merged and all checks pass, install the updated catalog
+2. After the catalog PR is merged and all checks pass, install the updated catalog
    into the testing environment by following the
    [catalog installation](catalog.installation.md) guide.
-4. The RC can now be shared with QE for testing.
+3. The RC can now be shared with QE for testing.
 
 ### Preserve the Snapshot for Release Time
 
