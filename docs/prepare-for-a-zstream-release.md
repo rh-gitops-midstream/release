@@ -155,4 +155,69 @@ Before triggering the RC build, update source references in `config.yaml` as req
 
 ![Github Action](assets/trigger-github-actions.png)
 
+### Build Chain Troubleshooting
+
+If the build chain fails:
+- **chore(build) bump to v1.1X.Z-B ** fails and stops the build
+  - Re-run failed component builds in Konflux UI until achieve all checks.
+  - Then trigger bundle build:
+    `https://github.com/rh-gitops-midstream/release/actions/workflows/trigger-bundle-build.yaml`
+- **chore(bundle) latest bundle updates ** fails and the catalog Pull Request is not generated
+  - Re-run failed component builds in Konflux UI.
+  - Then trigger:
+    `https://github.com/rh-gitops-midstream/release/actions/workflows/trigger-catalog-build.yaml`
+
+## Step 6: Update Release YAMLs and Create the Staging Release
+
+Once the build workflow completes, a new PR is created in the
+[catalog repository](https://github.com/rh-gitops-midstream/catalog).
+Use that PR to validate the catalog content and produce a Release Candidate (RC).
+
+1. Wait for the catalog PR checks to pass.
+2. After the catalog PR is merged and all checks pass, install the updated catalog
+   into the testing environment by following the
+   [catalog installation](catalog.installation.md) guide.
+3. The RC can now be shared with QE for testing.
+
+### Preserve the Snapshot for Release Time
+
+To ensure the snapshot is available when the release is created, back it up and
+re-apply it in the cluster with a stable name.
+
+1. Back up the snapshot:
+
+   ```bash
+   oc get snapshot gitops-1-19-mqncq -o yaml > snapshot-backup.yaml
+   ```
+
+   If the snapshot has been garbage-collected, retrieve it via
+   [kubeArchive](https://kubearchive.github.io/kubearchive/main/cli/installation.html):
+
+   ```bash
+   kubectl ka get snapshot gitops-1-19-mqncq -o yaml > snapshot-backup.yaml
+   ```
+
+2. Edit `snapshot-backup.yaml`:
+   - Remove `ownerReferences`.
+   - Rename the snapshot to `gitops-<release-version>-build-b`.
+
+3. Re-apply the snapshot:
+
+   ```bash
+   oc apply -f snapshot-backup.yaml
+   ```
+
+### Create the Staging Release Object
+
+1. Update the staging release YAML:
+   - Set `spec.snapshot` to `gitops-<release-version>-build-b`.
+   - Ensure `spec.releasePlan` targets the **staging** plan.
+2. Create the staging release object in Konflux:
+
+   ```bash
+   oc create -f stage-release.yaml
+   ```
+
+3. Wait for the staging release to complete successfully in Konflux.
+
 > TODO: Add detailed documentation for the build pipeline stages and expected outputs.
