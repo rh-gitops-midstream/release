@@ -17,39 +17,92 @@ metadata:
   name: gitops-testing-icsp
 spec:
   imageDigestMirrors:
+  - source: registry.redhat.io/openshift-gitops-1/gitops-rhel8
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel8
+      - registry.stage.redhat.io/openshift-gitops-1/gitops-rhel8
   - source: registry.redhat.io/openshift-gitops-1/gitops-rhel9
     mirrors:
       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel9
+      - registry.stage.redhat.io/openshift-gitops-1/gitops-rhel9
+  - source: registry.redhat.io/openshift-gitops-1/console-plugin-rhel8
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-rhel8
+      - registry.stage.redhat.io/openshift-gitops-1/console-plugin-rhel8
   - source: registry.redhat.io/openshift-gitops-1/console-plugin-rhel9
     mirrors:
       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-rhel9
+      - registry.stage.redhat.io/openshift-gitops-1/console-plugin-rhel9
+  - source: registry.redhat.io/openshift-gitops-1/dex-rhel8
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex-rhel8
+      - registry.stage.redhat.io/openshift-gitops-1/dex-rhel8
   - source: registry.redhat.io/openshift-gitops-1/dex-rhel9
     mirrors:
       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex-rhel9
+      - registry.stage.redhat.io/openshift-gitops-1/dex-rhel9
+  - source: registry.redhat.io/openshift-gitops-1/must-gather-rhel8
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/must-gather-rhel8
+      - registry.stage.redhat.io/openshift-gitops-1/must-gather-rhel8
   - source: registry.redhat.io/openshift-gitops-1/must-gather-rhel9
     mirrors:
       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/must-gather-rhel9
+      - registry.stage.redhat.io/openshift-gitops-1/must-gather-rhel9
+  - source: registry.redhat.io/openshift-gitops-1/argocd-rhel8
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel8
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel8-tmp
+      - registry.stage.redhat.io/openshift-gitops-1/argocd-rhel8
   - source: registry.redhat.io/openshift-gitops-1/argocd-rhel9
     mirrors:
       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel9
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel9-tmp
+      - registry.stage.redhat.io/openshift-gitops-1/argocd-rhel9
+  - source: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel8
+      - registry.stage.redhat.io/openshift-gitops-1/argocd-agent-rhel8
   - source: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9
     mirrors:
       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel9
+      - registry.stage.redhat.io/openshift-gitops-1/argocd-agent-rhel9
+  - source: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts-rhel8
+      - registry.stage.redhat.io/openshift-gitops-1/argo-rollouts-rhel8
   - source: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel9
     mirrors:
       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts-rhel9
+      - registry.stage.redhat.io/openshift-gitops-1/argo-rollouts-rhel9
   - source: registry.redhat.io/openshift-gitops-1/gitops-operator-bundle
     mirrors:
       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle
+      - registry.stage.redhat.io/openshift-gitops-1/gitops-operator-bundle
+  - source: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel8-operator
+      - registry.stage.redhat.io/openshift-gitops-1/gitops-rhel8-operator
   - source: registry.redhat.io/openshift-gitops-1/gitops-rhel9-operator
     mirrors:
       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel9-operator
+      - registry.stage.redhat.io/openshift-gitops-1/gitops-rhel9-operator
+  - source: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel8
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extensions-rhel8
+      - registry.stage.redhat.io/openshift-gitops-1/argocd-extensions-rhel8
   - source: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel9
     mirrors:
       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extensions-rhel9
+      - registry.stage.redhat.io/openshift-gitops-1/argocd-extensions-rhel9
+  - source: registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel8
+    mirrors:
+      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-image-updater-rhel8
+      - registry.stage.redhat.io/openshift-gitops-1/argocd-image-updater-rhel8
   - source: registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel9
     mirrors:
       - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-image-updater-rhel9
+      - registry.stage.redhat.io/openshift-gitops-1/argocd-image-updater-rhel9
 ```
 
 Apply it using:
