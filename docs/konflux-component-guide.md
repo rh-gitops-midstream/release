@@ -8,8 +8,8 @@ This document outlines the steps to add a new component to the Konflux CI system
 
 The `<new-component>` name should align with the it's downstream image name.  
 Example:
-For downstream image `argocd-rhel8`, the component name is `argocd`.  
-For downstream image `gitops-rhel8-operator`, the component name is `gitops-operator`.  
+For downstream image `argocd-rhel9`, the component name is `argocd`.  
+For downstream image `gitops-rhel9-operator`, the component name is `gitops-operator`.  
 
 ### Step 1: Internal GitLab Configuration
 

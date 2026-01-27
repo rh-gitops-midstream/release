@@ -52,7 +52,7 @@ USER 1000
 ENTRYPOINT ["/manager"]
 
 LABEL \
-    name="openshift-gitops-1/argocd-image-updater-rhel8" \
+    name="openshift-gitops-1/argocd-image-updater-rhel9" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-argocd-image-updater-container" \
     com.redhat.delivery.appregistry="false" \

@@ -110,35 +110,35 @@ externalImages:
 # Konflux images are images that are built from the source in this repository
 konfluxImages:
   - name: argo-rollouts
-    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts-rhel8"
-    releaseRef: "registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8"
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel9"
   - name: argocd-extenstions
-    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extensions-rhel8"
-    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel8"
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extensions-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel9"
   - name: argocd
-    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel8"
-    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-rhel8"
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-rhel9"
   - name: argocd-agent
-    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel8"
-    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8"
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9"
   - name: argocd-image-updater
-    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-image-updater-rhel8"
-    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel8"
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-image-updater-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel9"
   - name: console-plugin
-    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-rhel8"
-    releaseRef: "registry.redhat.io/openshift-gitops-1/console-plugin-rhel8"
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/console-plugin-rhel9"
   - name: dex
-    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex-rhel8"
-    releaseRef: "registry.redhat.io/openshift-gitops-1/dex-rhel8"
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/dex-rhel9"
   - name: gitops
-    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel8"
-    releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-rhel8"
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-rhel9"
   - name: gitops-operator-bundle
     buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle"
     releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-operator-bundle"
   - name: gitops-operator
-    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel8-operator"
-    releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator"
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel9-operator"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-rhel9-operator"
   - name: must-gather
-    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/must-gather-rhel8"
-    releaseRef: "registry.redhat.io/openshift-gitops-1/must-gather-rhel8"
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/must-gather-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/must-gather-rhel9"

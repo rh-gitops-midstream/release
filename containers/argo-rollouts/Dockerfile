@@ -110,7 +110,7 @@ COPY --from=argo-rollouts-build /go/src/github.com/argoproj/argo-rollouts/dist/r
 COPY --from=argo-rollouts-build /go/src/github.com/argoproj/git-lfs/bin/git-lfs /usr/local/bin/
 
 LABEL \
-    name="openshift-gitops-1/argo-rollouts-rhel8" \
+    name="openshift-gitops-1/argo-rollouts-rhel9" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-argo-rollouts-container" \
     com.redhat.delivery.appregistry="false" \

@@ -55,7 +55,7 @@ ENV EXTENSION_VERSION="0.3.6"
 ENTRYPOINT ["./install.sh"]
 
 LABEL \
-    name="openshift-gitops-1/argocd-extensions-rhel8" \
+    name="openshift-gitops-1/argocd-extensions-rhel9" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-argocd-extensions-container" \
     com.redhat.delivery.appregistry="false" \

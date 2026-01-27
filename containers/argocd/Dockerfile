@@ -186,7 +186,7 @@ COPY --from=argocd-build  /go/src/github.com/argoproj/ssh-connect/connect-proxy 
 COPY --from=argocd-build  /go/src/github.com/argoproj/git-lfs/bin/git-lfs /usr/local/bin/
 
 LABEL \
-    name="openshift-gitops-1/argocd-rhel8" \
+    name="openshift-gitops-1/argocd-rhel9" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-argocd-container" \
     com.redhat.delivery.appregistry="false" \

@@ -51,7 +51,7 @@ COPY --from=builder /app/dex/web /srv/dex/web
 USER 1001:1001
 
 LABEL \
-    name="openshift-gitops-1/dex-rhel8" \
+    name="openshift-gitops-1/dex-rhel9" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-dex-container" \
     com.redhat.delivery.appregistry="false" \

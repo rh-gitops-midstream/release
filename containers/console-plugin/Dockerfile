@@ -33,7 +33,7 @@ RUN $YARN build
     
 ####################################################################################################
     
-FROM registry.redhat.io/rhel8/httpd-24
+FROM registry.redhat.io/rhel9/httpd-24
 USER root
 RUN chown -R 1001:0 /opt/app-root/src
 USER 1001
@@ -46,7 +46,7 @@ COPY --from=builder /workspace/gitops-console-plugin/dist /var/www/html/plugin
 CMD run-httpd
     
 LABEL \
-    name="openshift-gitops-1/gitops-console-plugin-rhel8" \
+    name="openshift-gitops-1/gitops-console-plugin-rhel9" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-console-plugin-container" \
     com.redhat.delivery.appregistry="false" \

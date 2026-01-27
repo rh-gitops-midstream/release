@@ -21,7 +21,7 @@ COPY containers/gitops-operator-bundle/bundle/metadata /metadata/
 COPY containers/gitops-operator-bundle/bundle/tests/scorecard /tests/scorecard/
 
 LABEL \
-    name="openshift-gitops-1/gitops-rhel8-operator" \
+    name="openshift-gitops-1/gitops-operator-bundle" \
     url="" \
     vendor="Red Hat, Inc." \
     com.redhat.component="openshift-gitops-operator-bundle-container" \

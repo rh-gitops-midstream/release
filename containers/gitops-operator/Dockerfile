@@ -44,7 +44,7 @@ USER 10001
 ENTRYPOINT [ "/usr/local/bin/manager" ]
     
 LABEL \
-    name="openshift-gitops-1/gitops-rhel8-operator" \
+    name="openshift-gitops-1/gitops-rhel9-operator" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-operator-container" \
     com.redhat.delivery.appregistry="false" \
