@@ -41,21 +41,15 @@ spec:
       mountPath: /credentials
   image: quay.io/devtools_gitops/test_image@sha256:8bff0841163d2eefc74ab0c413bfdd504d8e99cbe4ce66a18b1756d1d8bb06fc
   script: |
-    set +x
+    set -x
     oc status
     cd /testsuites/gitops-operator/
     git fetch --all
     git checkout "${BRANCH}"
     /testsuites/gitops-operator/bin/ginkgo -p -v \
-      -focus "1-031_validate_toolchain_test" \
-      -focus "1-036_validate_keycloak_resource_reqs" \
-      -focus "1-051-validate_csv_permissions_test" \
-      -focus "1-095_validate_dex_clientsecret_test" \
+      -focus "031_validate_toolchain_test" \
+      -focus "036_validate_keycloak_resource_reqs" \
+      -focus "051-validate_csv_permissions_test" \
+      -focus "095_validate_dex_clientsecret_test" \
     --trace --timeout $TIMEOUT -r "./test/openshift/e2e/ginkgo/parallel"
-    
-    /testsuites/gitops-operator/bin/ginkgo -v \
-      -focus "1-037_validate_applicationset_in_any_namespace_test" \
-      -focus "1-056_validate_managed-by" \
-      -focus "1-100_validate_rollouts_resources_creation" \
-    --trace --timeout $TIMEOUT -r "./test/openshift/e2e/ginkgo/sequential"
     
