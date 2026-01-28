@@ -175,12 +175,12 @@ spec:
                 - name: revision
                   value: konflux
                 - name: pathInRepo
-                  value: .tekton/steps/install-gitops-operator-subscription.yaml
+                  value: .tekton/steps/install-gitops-operator-bundle.yaml
             params:
               - name: installTimeout
-                value: "$(params.installTimeout)"
+                value: "$(params.INSTALL_TIMEOUT)"
               - name: bundleImage
-                value: "$(params.bundleImage)"
+                value: "$(tasks.parse-metadata.results.component-container-image)"
               - name: namespace
                 value: "openshift-gitops-operator"
               - name: credentials
@@ -232,15 +232,13 @@ spec:
                 - name: revision
                   value: konflux
                 - name: pathInRepo
-                  value: .tekton/steps/run-gitops-operator-e2e.yaml
+                  value: .tekton/steps/run-gitops-operator-e2e-minimal.yaml
             params:
               - name: credentials
                 value: credentials
-              - name: procs
-                value: 5
-              - name: branch
-                value: rm_env_across_containers
               - name: kubeconfig
                 value: "$(steps.get-kubeconfig.results.kubeconfig)"
+              - name: branch
+                value: master
               - name: test_dir
                 value: "./test/openshift/e2e/ginkgo/parallel"
