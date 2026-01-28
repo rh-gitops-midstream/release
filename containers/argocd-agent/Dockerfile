@@ -22,11 +22,11 @@ ENV GIT_COMMITTER_NAME devtools
 ENV GIT_COMMITTER_EMAIL devtools@redhat.com
 LABEL com.redhat.delivery.appregistry=true
 
-ARG VERSION=3.3.3
+
 COPY sources/argocd-agent /app/argocd-agent
 WORKDIR /app/argocd-agent
 RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime \
-    GO_TAGS=strictfipsruntime GO_MOD=mod VERSION=${VERSION} \
+    GO_TAGS=strictfipsruntime GO_MOD=mod \
     make argocd-agent BIN_NAME_AGENT=argocd-agent
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal
