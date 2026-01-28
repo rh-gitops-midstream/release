@@ -24,7 +24,9 @@ LABEL com.redhat.delivery.appregistry=true
 
 COPY sources/argocd-agent /app/argocd-agent
 WORKDIR /app/argocd-agent
-RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime go build -tags strictfipsruntime -mod=mod -o dist/argocd-agent ./cmd/argocd-agent
+RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime \
+    GO_TAGS=strictfipsruntime GO_MOD=mod \
+    make argocd-agent BIN_NAME_AGENT=argocd-agent
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 
