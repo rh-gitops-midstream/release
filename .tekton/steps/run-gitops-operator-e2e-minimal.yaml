@@ -44,8 +44,18 @@ spec:
     set +x
     oc status
     cd /testsuites/gitops-operator/
-    git remote add test https://github.com/AdamSaleh/gitops-operator.git
     git fetch --all
     git checkout "${BRANCH}"
-    git checkout rm_env_across_containers
-    /testsuites/gitops-operator/bin/ginkgo -p -v -focus "1-031_validate_toolchain_test" --trace --timeout $TIMEOUT -r "${TEST_DIR}"
+    /testsuites/gitops-operator/bin/ginkgo -p -v \
+      -focus "1-031_validate_toolchain_test" \
+      -focus "1-036_validate_keycloak_resource_reqs" \
+      -focus "1-051-validate_csv_permissions_test" \
+      -focus "1-095_validate_dex_clientsecret_test" \
+    --trace --timeout $TIMEOUT -r "./test/openshift/e2e/ginkgo/parallel"
+    
+    /testsuites/gitops-operator/bin/ginkgo -v \
+      -focus "1-037_validate_applicationset_in_any_namespace_test" \
+      -focus "1-056_validate_managed-by" \
+      -focus "1-100_validate_rollouts_resources_creation" \
+    --trace --timeout $TIMEOUT -r "./test/openshift/e2e/ginkgo/sequential"
+    
