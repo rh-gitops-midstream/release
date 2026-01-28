@@ -46,5 +46,5 @@ spec:
     cd /testsuites/gitops-operator/
     git fetch --all
     git checkout "${BRANCH}"
-    /testsuites/gitops-operator/bin/ginkgo -p -v -focus "validate_toolchain_test" -focus "validate_keycloak_resource_reqs" -focus "validate_csv_permissions_test" -focus "validate_dex_clientsecret_test" --trace --timeout $TIMEOUT -r "./test/openshift/e2e/ginkgo/parallel"
+    /testsuites/gitops-operator/bin/ginkgo -p -v -focus "validate_toolchain_test" -focus "validate_keycloak_resource_reqs" -focus "validate_csv_permissions_test" -focus "validate_dex_clientsecret_test" --trace --timeout $TIMEOUT -r "./test/openshift/e2e/ginkgo/parallel/."
     
