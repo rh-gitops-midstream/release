@@ -107,7 +107,7 @@ images:
   - name: quay.io/argoproj/argocd
     newName: REPLACE_ARGO_CD_IMAGE_URL
     digest: "REPLACE_ARGO_CD_CONTAINER_SHA_ARM"
-  - name: redis
+  - name: public.ecr.aws/docker/library/redis
     newName: REPLACE_REDIS_IMAGE_URL
     digest: "REPLACE_REDIS_CONTAINER_SHA_ARM"
 EOF
@@ -119,7 +119,7 @@ images:
   - name: quay.io/argoproj/argocd
     newName: REPLACE_ARGO_CD_IMAGE_URL
     digest: "REPLACE_ARGO_CD_CONTAINER_SHA_X86"
-  - name: redis
+  - name: public.ecr.aws/docker/library/redis
     newName: REPLACE_REDIS_IMAGE_URL
     digest: "REPLACE_REDIS_CONTAINER_SHA_X86"
 EOF
@@ -196,13 +196,12 @@ fi
 # Set the wait timeout for the current check based on the boot counter
 WAIT_TIMEOUT_SECS=$(get_wait_timeout)
 
-LOG_POD_EVENTS=true
-
-# Wait for the deployments to be ready
-echo "Waiting ${WAIT_TIMEOUT_SECS}s for '${CHECK_DEPLOY_NS}' deployments to be ready"
-if ! wait_for "${WAIT_TIMEOUT_SECS}" namespace_deployment_ready ; then
-    echo "Error: Timed out waiting for '${CHECK_DEPLOY_NS}' deployments to be ready"
-    exit 1
+if ! microshift healthcheck \
+        -v=2 --timeout="${WAIT_TIMEOUT_SECS}s" \
+        --namespace openshift-gitops \
+        --deployments argocd-redis,argocd-repo-server \
+        --statefulsets argocd-application-controller; then
+    create_fail_marker_and_exit
 fi
 EOF
 

@@ -106,10 +106,10 @@ cat <<EOF >>"manifests/microshift-gitops/kustomization.yaml"
 images:
   - name: quay.io/argoproj/argocd
     newName: registry.redhat.io/openshift-gitops-1/argocd-rhel9
-    digest: "sha256:8168018c4ffadcda01fea61ec2bf005b556a28966dfdf60cf922a37392bcc987"
-  - name: redis
+    digest: "sha256:7ce92cc4c69bd9cd64e5dfedad15388be5d9404ac916731b86f5cf490993756b"
+  - name: public.ecr.aws/docker/library/redis
     newName: registry.redhat.io/rhel9/redis-7
-    digest: "sha256:c796538bad7613deb1fba2bb76e736a6376b25ab97b2f944e67af00e01f5d965"
+    digest: "sha256:9a21acdd1cb1d3faf577c6d9d24045e5da86e2f6b1c1a4438dfcc80e21f112d6"
 EOF
 %endif
 
@@ -118,10 +118,10 @@ cat <<EOF >>"manifests/microshift-gitops/kustomization.yaml"
 images:
   - name: quay.io/argoproj/argocd
     newName: registry.redhat.io/openshift-gitops-1/argocd-rhel9
-    digest: "sha256:5f35a4ed723fa364bd58bc56a9491915ec8bed256a056b07429e1957580b1c4f"
-  - name: redis
+    digest: "sha256:6fb646fbd35b779be50ceca8d12a8736ed43ebe4f40204ca28851db2e2cfdf20"
+  - name: public.ecr.aws/docker/library/redis
     newName: registry.redhat.io/rhel9/redis-7
-    digest: "sha256:300c0fd54f8f49eba19e6a16745fa7e225f1f66b571c8e02cd098ef45e03d1c8"
+    digest: "sha256:1be9e6e067a7595a5a51da709d262c1f4a5eca2fe2033450a9737a5354170c00"
 EOF
 %endif
 
@@ -130,11 +130,11 @@ mkdir -p "microshift-assets"
 cat <<EOF >"microshift-assets/release-gitops-arm64.json"
 {
   "release": {
-    "base": "99.99.99"
+    "base": "v1.19.1-9"
   },
   "images": {
-    "openshift-gitops-argocd": "registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:8168018c4ffadcda01fea61ec2bf005b556a28966dfdf60cf922a37392bcc987",
-    "redis": "registry.redhat.io/rhel9/redis-7@sha256:c796538bad7613deb1fba2bb76e736a6376b25ab97b2f944e67af00e01f5d965"
+    "openshift-gitops-argocd": "registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:7ce92cc4c69bd9cd64e5dfedad15388be5d9404ac916731b86f5cf490993756b",
+    "redis": "registry.redhat.io/rhel9/redis-7@sha256:9a21acdd1cb1d3faf577c6d9d24045e5da86e2f6b1c1a4438dfcc80e21f112d6"
   }
 }
 EOF
@@ -142,11 +142,11 @@ EOF
 cat <<EOF >"microshift-assets/release-gitops-x86_64.json"
 {
   "release": {
-    "base": "99.99.99"
+    "base": "v1.19.1-9"
   },
   "images": {
-    "openshift-gitops-argocd": "registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:5f35a4ed723fa364bd58bc56a9491915ec8bed256a056b07429e1957580b1c4f",
-    "redis": "registry.redhat.io/rhel9/redis-7@sha256:300c0fd54f8f49eba19e6a16745fa7e225f1f66b571c8e02cd098ef45e03d1c8"
+    "openshift-gitops-argocd": "registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:6fb646fbd35b779be50ceca8d12a8736ed43ebe4f40204ca28851db2e2cfdf20",
+    "redis": "registry.redhat.io/rhel9/redis-7@sha256:1be9e6e067a7595a5a51da709d262c1f4a5eca2fe2033450a9737a5354170c00"
   }
 }
 EOF
@@ -196,13 +196,12 @@ fi
 # Set the wait timeout for the current check based on the boot counter
 WAIT_TIMEOUT_SECS=$(get_wait_timeout)
 
-LOG_POD_EVENTS=true
-
-# Wait for the deployments to be ready
-echo "Waiting ${WAIT_TIMEOUT_SECS}s for '${CHECK_DEPLOY_NS}' deployments to be ready"
-if ! wait_for "${WAIT_TIMEOUT_SECS}" namespace_deployment_ready ; then
-    echo "Error: Timed out waiting for '${CHECK_DEPLOY_NS}' deployments to be ready"
-    exit 1
+if ! microshift healthcheck \
+        -v=2 --timeout="${WAIT_TIMEOUT_SECS}s" \
+        --namespace openshift-gitops \
+        --deployments argocd-redis,argocd-repo-server \
+        --statefulsets argocd-application-controller; then
+    create_fail_marker_and_exit
 fi
 EOF
 
