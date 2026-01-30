@@ -45,7 +45,7 @@ spec:
       #!/usr/bin/env bash
       set -euxo pipefail
       
-      echo "--- Preparing sources for RPM build ---"
+      echo "--- Preparing sources for RPM build  ---"
       mv ./rpms/microshift-gitops/microshift-gitops.spec .
       
       echo "--- Creating argo-cd-sources.tar.gz with correct internal directory  ---"
@@ -59,7 +59,7 @@ spec:
     resolver: git
     params:
     - name: url
-      value: "https://github.com/nmirasch/rpmbuild-pipeline.git"
+      value: "https://github.com/konflux-ci/rpmbuild-pipeline.git"
     - name: revision
       value: main
     - name: pathInRepo
