@@ -147,6 +147,14 @@ spec:
       echo "No pre-build script provided. Skipping."
       # This script must output the artifact path to the result file.
       echo -n "$(params.source-artifact)" | tee $(results.OUTPUT_SOURCE_ARTIFACT.path)
+  - name: pre-build-task-url
+    description: Git URL for the pre-build-script task definition.
+    type: string
+    default: "https://github.com/nmirasch/rpmbuild-pipeline.git"
+  - name: pre-build-task-revision
+    description: Git revision for the pre-build-script task definition.
+    type: string
+    default: "main"
   - name: test-suffix
     description: |
       Testing-only.  In some places we don't want to mix-up "real" component builds
@@ -260,9 +268,9 @@ spec:
       resolver: git
       params:
       - name: url
-        value: $(params.self-ref-url)
+        value: $(params.pre-build-task-url)
       - name: revision
-        value: $(params.self-ref-revision)
+        value: $(params.pre-build-task-revision)
       - name: pathInRepo
         value: task/pre-build-script.yaml
     runAfter:

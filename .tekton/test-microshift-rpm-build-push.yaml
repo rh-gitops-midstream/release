@@ -44,7 +44,7 @@ spec:
       #!/usr/bin/env bash
       set -euxo pipefail
       
-      echo "--- Preparing sources for RPM build ---"
+      echo "--- Preparing sources for RPM build  ---"
       mv ./rpms/microshift-gitops/microshift-gitops.spec .
       
       echo "--- Creating argo-cd-sources.tar.gz with correct internal directory  ---"
