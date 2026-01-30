@@ -55,7 +55,14 @@ spec:
   - name: enableSymlinkCheck
     value: false
   pipelineRef:
-    name: build-rpm-package
+    resolver: git
+    params:
+    - name: url
+      value: '{{source_url}}'
+    - name: revision
+      value: '{{revision}}'
+    - name: pathInRepo
+      value: .tekton/build-rpm-package.yaml
   taskRunTemplate:
     serviceAccountName: build-pipeline-test-microshift-rpm-build
   workspaces:
