@@ -32,6 +32,10 @@ spec:
     value: microshift-gitops
   - name: target-branch
     value: "{{ target_branch }}"
+  - name: pre-build-task-url
+    value: '{{source_url}}'
+  - name: pre-build-task-revision
+    value: '{{target_branch}}'
   - name: hermetic
     value: "true"
   - name: build-architectures

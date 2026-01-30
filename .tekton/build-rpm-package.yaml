@@ -150,7 +150,7 @@ spec:
   - name: pre-build-task-url
     description: Git URL for the pre-build-script task definition.
     type: string
-    default: "https://github.com/nmirasch/rpmbuild-pipeline.git"
+    default: "https://github.com/rh-gitops-midstream/release"
   - name: pre-build-task-revision
     description: Git revision for the pre-build-script task definition.
     type: string
@@ -272,7 +272,7 @@ spec:
       - name: revision
         value: $(params.pre-build-task-revision)
       - name: pathInRepo
-        value: task/pre-build-script.yaml
+        value: .tekton/tasks/pre-build-script.yaml
     runAfter:
     - clone-repository
     params:
