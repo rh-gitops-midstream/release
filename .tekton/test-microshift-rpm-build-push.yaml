@@ -55,14 +55,7 @@ spec:
   - name: enableSymlinkCheck
     value: false
   pipelineRef:
-    resolver: git
-    params:
-    - name: url
-      value: "https://github.com/nmirasch/rpmbuild-pipeline.git"
-    - name: revision
-      value: main
-    - name: pathInRepo
-      value: pipeline/build-rpm-package.yaml
+    name: build-rpm-package
   taskRunTemplate:
     serviceAccountName: build-pipeline-test-microshift-rpm-build
   workspaces:
