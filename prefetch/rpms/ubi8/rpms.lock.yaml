@@ -312,13 +312,6 @@ arches:
     name: openssl
     evr: 1:1.1.1k-14.el8_10
     sourcerpm: openssl-1.1.1k-14.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/o/openssl-libs-1.1.1k-14.el8_10.aarch64.rpm
-    repoid: ubi-8-for-aarch64-baseos-rpms
-    size: 1413872
-    checksum: sha256:4e1ca86c5e80840de38684dabeffa73f2ed45eff748e09abfaaefa7ee4030f5e
-    name: openssl-libs
-    evr: 1:1.1.1k-14.el8_10
-    sourcerpm: openssl-1.1.1k-14.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/p/pam-1.3.1-39.el8_10.aarch64.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
     size: 760956
@@ -622,10 +615,10 @@ arches:
     sourcerpm: util-linux-2.32.1-47.el8_10.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/repodata/3a0ea3a750e7f431ba86ba049c22945f205ac745aeb35204f3d740795397199b-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/repodata/c4f7d2002a92bbc062c12430c7594e7efa7e5789e3002a882330573272433a7d-modules.yaml.gz
     repoid: ubi-8-for-aarch64-appstream-rpms
-    size: 55445
-    checksum: sha256:3a0ea3a750e7f431ba86ba049c22945f205ac745aeb35204f3d740795397199b
+    size: 56756
+    checksum: sha256:c4f7d2002a92bbc062c12430c7594e7efa7e5789e3002a882330573272433a7d
 - arch: ppc64le
   packages:
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/c/cmake-3.26.5-2.el8.ppc64le.rpm
@@ -943,13 +936,6 @@ arches:
     name: openssl
     evr: 1:1.1.1k-14.el8_10
     sourcerpm: openssl-1.1.1k-14.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/o/openssl-libs-1.1.1k-14.el8_10.ppc64le.rpm
-    repoid: ubi-8-for-ppc64le-baseos-rpms
-    size: 1579712
-    checksum: sha256:0883b5f4e8acf649cfb5491f7dde772e9329e6e1709e56c563bea833b3a192b0
-    name: openssl-libs
-    evr: 1:1.1.1k-14.el8_10
-    sourcerpm: openssl-1.1.1k-14.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/p/pam-1.3.1-39.el8_10.ppc64le.rpm
     repoid: ubi-8-for-ppc64le-baseos-rpms
     size: 814188
@@ -1253,10 +1239,10 @@ arches:
     sourcerpm: util-linux-2.32.1-47.el8_10.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/repodata/5547e2d3bf6ed439abf21a55d934af346c0983493888298e7a225c2147c994d5-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/repodata/435d31a51af01ac3f9f0399eb62498b3313954eccda4b4cf90b9f73c032104d1-modules.yaml.gz
     repoid: ubi-8-for-ppc64le-appstream-rpms
-    size: 58971
-    checksum: sha256:5547e2d3bf6ed439abf21a55d934af346c0983493888298e7a225c2147c994d5
+    size: 58981
+    checksum: sha256:435d31a51af01ac3f9f0399eb62498b3313954eccda4b4cf90b9f73c032104d1
 - arch: s390x
   packages:
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/c/cmake-3.26.5-2.el8.s390x.rpm
@@ -1567,13 +1553,6 @@ arches:
     name: openssl
     evr: 1:1.1.1k-14.el8_10
     sourcerpm: openssl-1.1.1k-14.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/o/openssl-libs-1.1.1k-14.el8_10.s390x.rpm
-    repoid: ubi-8-for-s390x-baseos-rpms
-    size: 1213744
-    checksum: sha256:5afefe16ce70e9284ed2dfca9829c1392875c721ce50bd354882d28f051048a5
-    name: openssl-libs
-    evr: 1:1.1.1k-14.el8_10
-    sourcerpm: openssl-1.1.1k-14.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/pam-1.3.1-39.el8_10.s390x.rpm
     repoid: ubi-8-for-s390x-baseos-rpms
     size: 745912
@@ -1812,13 +1791,13 @@ arches:
     name: perl-threads-shared
     evr: 1.58-2.el8
     sourcerpm: perl-threads-shared-1.58-2.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/platform-python-3.6.8-71.el8_10.s390x.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/platform-python-3.6.8-72.el8_10.s390x.rpm
     repoid: ubi-8-for-s390x-baseos-rpms
-    size: 89660
-    checksum: sha256:22867ac3e41db8b68fc13a3400e371c2e2702a76009a5c24c95c1325e5ec6138
+    size: 89760
+    checksum: sha256:06cc2319c125db7607df38573749679efd766c8fccda428222ce20239385269b
     name: platform-python
-    evr: 3.6.8-71.el8_10
-    sourcerpm: python3-3.6.8-71.el8_10.src.rpm
+    evr: 3.6.8-72.el8_10
+    sourcerpm: python3-3.6.8-72.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/platform-python-pip-9.0.3-24.el8.noarch.rpm
     repoid: ubi-8-for-s390x-baseos-rpms
     size: 1633024
@@ -1833,13 +1812,13 @@ arches:
     name: platform-python-setuptools
     evr: 39.2.0-9.el8_10
     sourcerpm: python-setuptools-39.2.0-9.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/python3-libs-3.6.8-71.el8_10.s390x.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/python3-libs-3.6.8-72.el8_10.s390x.rpm
     repoid: ubi-8-for-s390x-baseos-rpms
-    size: 8057676
-    checksum: sha256:eb9bf761561e1d4fe6350953c4a8d87ed1f56d97ac35343d525074d3d359083c
+    size: 8054388
+    checksum: sha256:19f923c0be7cef9341ccaa8b6f8a2b42cbddfc340ed6b02984dfe52d761ccb9f
     name: python3-libs
-    evr: 3.6.8-71.el8_10
-    sourcerpm: python3-3.6.8-71.el8_10.src.rpm
+    evr: 3.6.8-72.el8_10
+    sourcerpm: python3-3.6.8-72.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/p/python3-pip-wheel-9.0.3-24.el8.noarch.rpm
     repoid: ubi-8-for-s390x-baseos-rpms
     size: 886996
@@ -1877,10 +1856,10 @@ arches:
     sourcerpm: util-linux-2.32.1-47.el8_10.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/repodata/83430ce8744f499f6467fbdfc08031ca55683778ef5bd73ec160e6548b9a9f89-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/repodata/9286e905fa9258132919246b076bd9d702f11477488e21bc52f7c0c8e6a81f6e-modules.yaml.gz
     repoid: ubi-8-for-s390x-appstream-rpms
-    size: 56282
-    checksum: sha256:83430ce8744f499f6467fbdfc08031ca55683778ef5bd73ec160e6548b9a9f89
+    size: 56480
+    checksum: sha256:9286e905fa9258132919246b076bd9d702f11477488e21bc52f7c0c8e6a81f6e
 - arch: x86_64
   packages:
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/c/cmake-3.26.5-2.el8.x86_64.rpm
@@ -2191,13 +2170,6 @@ arches:
     name: openssl
     evr: 1:1.1.1k-14.el8_10
     sourcerpm: openssl-1.1.1k-14.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/o/openssl-libs-1.1.1k-14.el8_10.x86_64.rpm
-    repoid: ubi-8-for-x86_64-baseos-rpms
-    size: 1541912
-    checksum: sha256:0a28a74fb4b00d923b8d495c8875f6ffaeb7fee5b23388b42d2e3583c4b88be0
-    name: openssl-libs
-    evr: 1:1.1.1k-14.el8_10
-    sourcerpm: openssl-1.1.1k-14.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/pam-1.3.1-39.el8_10.x86_64.rpm
     repoid: ubi-8-for-x86_64-baseos-rpms
     size: 766824
@@ -2501,7 +2473,7 @@ arches:
     sourcerpm: util-linux-2.32.1-47.el8_10.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/repodata/4526bab5e1895d6fc2e69da79d5cee80e86d35509c97881da7e6b98ab8eb68ed-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/repodata/d32768f158577f99ab5f8b7aca32b0244d82e5598ce2936f74370a1c046a29ac-modules.yaml.gz
     repoid: ubi-8-for-x86_64-appstream-rpms
-    size: 59355
-    checksum: sha256:4526bab5e1895d6fc2e69da79d5cee80e86d35509c97881da7e6b98ab8eb68ed
+    size: 59425
+    checksum: sha256:d32768f158577f99ab5f8b7aca32b0244d82e5598ce2936f74370a1c046a29ac
