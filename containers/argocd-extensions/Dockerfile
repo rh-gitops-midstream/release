@@ -56,6 +56,7 @@ ENTRYPOINT ["./install.sh"]
 
 LABEL \
     name="openshift-gitops-1/argocd-extensions-rhel9" \
+    cpe="cpe:/a:redhat:openshift_gitops:99.99::el9" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-argocd-extensions-container" \
     com.redhat.delivery.appregistry="false" \

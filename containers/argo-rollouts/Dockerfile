@@ -111,6 +111,7 @@ COPY --from=argo-rollouts-build /go/src/github.com/argoproj/git-lfs/bin/git-lfs 
 
 LABEL \
     name="openshift-gitops-1/argo-rollouts-rhel9" \
+    cpe="cpe:/a:redhat:openshift_gitops:99.99::el9" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-argo-rollouts-container" \
     com.redhat.delivery.appregistry="false" \

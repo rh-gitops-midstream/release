@@ -18,6 +18,7 @@ ENTRYPOINT ["./backend-http"]
 
 LABEL \
     name="openshift-gitops-1/gitops-rhel9" \
+    cpe="cpe:/a:redhat:openshift_gitops:99.99::el9" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-container" \
     com.redhat.delivery.appregistry="false" \
