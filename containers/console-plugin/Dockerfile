@@ -47,6 +47,7 @@ CMD run-httpd
     
 LABEL \
     name="openshift-gitops-1/gitops-console-plugin-rhel8" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.19::el8" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-console-plugin-container" \
     com.redhat.delivery.appregistry="false" \

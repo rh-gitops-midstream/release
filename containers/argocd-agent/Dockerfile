@@ -35,6 +35,7 @@ USER 999
 
 LABEL \
     name="openshift-gitops-1/argocd-agent-rhel8" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.19::el8" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-argocd-agent-container" \
     com.redhat.delivery.appregistry="false" \
