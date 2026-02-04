@@ -22,6 +22,7 @@ COPY containers/gitops-operator-bundle/bundle/tests/scorecard /tests/scorecard/
 
 LABEL \
     name="openshift-gitops-1/gitops-rhel8-operator" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.18::el8" \
     url="" \
     vendor="Red Hat, Inc." \
     com.redhat.component="openshift-gitops-operator-bundle-container" \

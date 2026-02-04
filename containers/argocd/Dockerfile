@@ -203,6 +203,7 @@ COPY --from=argocd-build  /go/src/github.com/argoproj/git-lfs/bin/git-lfs /usr/l
 
 LABEL \
     name="openshift-gitops-1/argocd-rhel8" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.18::el8" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-argocd-container" \
     com.redhat.delivery.appregistry="false" \

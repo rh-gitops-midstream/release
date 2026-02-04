@@ -52,6 +52,7 @@ USER 1001:1001
 
 LABEL \
     name="openshift-gitops-1/dex-rhel8" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.18::el8" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-dex-container" \
     com.redhat.delivery.appregistry="false" \

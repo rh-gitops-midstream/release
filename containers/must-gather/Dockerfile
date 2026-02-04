@@ -17,6 +17,7 @@ FROM registry.redhat.io/openshift4/ose-must-gather:v4.15.0
 
 LABEL \
     name="openshift-gitops-1/must-gather-rhel8" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.18::el8" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-must-gather-container" \
     com.redhat.delivery.appregistry="false" \ 
