@@ -36,7 +36,7 @@ spec:
       - name: name
         value: show-sbom
       - name: bundle
-        value: quay.io/konflux-ci/tekton-catalog/task-show-sbom:0.1@sha256:beb0616db051952b4b861dd8c3e00fa1c0eccbd926feddf71194d3bb3ace9ce7
+        value: quay.io/konflux-ci/tekton-catalog/task-show-sbom:0.1@sha256:e2c1b4eac642f32e91f3bc5d3cb48c5c70888aaf45c3650d9ea34573de7a7fd5
       - name: kind
         value: task
       resolver: bundles
@@ -136,25 +136,6 @@ spec:
   # The calculate-deps timeouts are not parametrized at all here, we expect
   # that these steps finish quickly enough for all packages (within the
   # default Tekton Task timeout).
-  - name: pre-build-script-image
-    type: string
-  - name: pre-build-script-content
-    description: The shell script to execute before the RPM sources are processed.
-    type: string
-    default: |
-      #!/usr/bin/env bash
-      set -euxo pipefail
-      echo "No pre-build script provided. Skipping."
-      # This script must output the artifact path to the result file.
-      echo -n "$(params.source-artifact)" | tee $(results.OUTPUT_SOURCE_ARTIFACT.path)
-  - name: pre-build-task-url
-    description: Git URL for the pre-build-script task definition.
-    type: string
-    default: "https://github.com/rh-gitops-midstream/release"
-  - name: pre-build-task-revision
-    description: Git revision for the pre-build-script task definition.
-    type: string
-    default: "main"
   - name: test-suffix
     description: |
       Testing-only.  In some places we don't want to mix-up "real" component builds
@@ -230,7 +211,7 @@ spec:
       - name: name
         value: init
       - name: bundle
-        value: quay.io/konflux-ci/tekton-catalog/task-init:0.2@sha256:b349d24cb896573695802d6913d311640b44675ec082b3ad167721946a6a0a71
+        value: quay.io/konflux-ci/tekton-catalog/task-init:0.2@sha256:ebf06778aeacbbeb081f9231eafbdfdb8e380ad04e211d7ed80ae9101e37fd82
       - name: kind
         value: task
       resolver: bundles
@@ -256,36 +237,13 @@ spec:
       - name: name
         value: git-clone-oci-ta
       - name: bundle
-        value: quay.io/konflux-ci/tekton-catalog/task-git-clone-oci-ta:0.1@sha256:56f65a16d3d0485c64ad85af2c1f3e9b0bb4d02d63f2fd0ebb9498d219ca723d
+        value: quay.io/konflux-ci/tekton-catalog/task-git-clone-oci-ta:0.1@sha256:306b69e6db435ad4a7cf258b6219d9b998eb37da44f5e9ac882ac86a08109154
       - name: kind
         value: task
       resolver: bundles
     workspaces:
     - name: basic-auth
       workspace: git-auth
-  - name: pre-build-script
-    taskRef:
-      resolver: git
-      params:
-      - name: url
-        value: $(params.pre-build-task-url)
-      - name: revision
-        value: $(params.pre-build-task-revision)
-      - name: pathInRepo
-        value: .tekton/tasks/pre-build-script.yaml
-    runAfter:
-    - clone-repository
-    params:
-    - name: source-artifact
-      value: $(tasks.clone-repository.results.SOURCE_ARTIFACT)
-    - name: ociStorage
-      value: $(params.ociStorage)
-    - name: ociArtifactExpiresAfter
-      value: $(params.ociArtifactExpiresAfter)
-    - name: pre-build-script-image
-      value: $(params.pre-build-script-image)
-    - name: pre-build-script-content
-      value: $(params.pre-build-script-content)
   - name: process-sources
     retries: 3
     taskRef:
@@ -300,14 +258,14 @@ spec:
       - name: ociArtifactExpiresAfter
         value: $(params.ociArtifactExpiresAfter)
     runAfter:
-    - pre-build-script
+    - clone-repository
     params:
     - name: package-name
       value: $(params.package-name)
     - name: specfile
       value: $(params.specfile)
     - name: source-artifact
-      value: $(tasks.pre-build-script.results.OUTPUT_SOURCE_ARTIFACT)
+      value: $(tasks.clone-repository.results.SOURCE_ARTIFACT)
     - name: ociStorage
       value: $(params.ociStorage).rpm-sources
     - name: ociArtifactExpiresAfter
@@ -319,9 +277,9 @@ spec:
     - name: monorepo-subdir
       value: $(params.monorepo-subdir)
     - name: build-architectures
-      value: [ "$(params.build-architectures[*])" ]
+      value: ["$(params.build-architectures[*])"]
     - name: build-platforms
-      value: [ "$(params.build-platforms[*])" ]
+      value: ["$(params.build-platforms[*])"]
     - name: target-distribution
       value: $(params.target-distribution)
   - name: prepare-mock-config
@@ -625,7 +583,7 @@ spec:
   - name: upload-to-quay
     params:
     - name: ociStorage
-      value: $(params.ociStorage)
+      value: $(params.ociStorage).built-artifacts
     - name: git-url
       value: $(params.git-url)
     - name: revision

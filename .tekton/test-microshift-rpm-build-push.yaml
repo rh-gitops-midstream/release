@@ -33,18 +33,12 @@ spec:
     value: microshift-gitops
   - name: target-branch
     value: "{{ target_branch }}"
-  - name: pre-build-task-url
-    value: '{{source_url}}'
-  - name: pre-build-task-revision
-    value: '{{target_branch}}'
   - name: hermetic
     value: "true"
   - name: build-architectures
     value:
     - aarch64
     - x86_64
-  - name: pre-build-script-image
-    value: "registry.access.redhat.com/ubi9/ubi:latest"
   - name: enableSymlinkCheck
     value: false
   pipelineRef:
