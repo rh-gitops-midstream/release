@@ -14,7 +14,7 @@
 #
 # ------------------------------------------------------------------------
 
-FROM registry.access.redhat.com/ubi9/nodejs-22:9.7-1767745544 AS builder
+FROM registry.access.redhat.com/ubi9/nodejs-22:9.7-1770309564 AS builder
 
 USER root
 
