@@ -30,7 +30,7 @@ If not already present, create a new product version file for the version you ar
 
 - `data/external/developer-portal/product-versions/rh-openshift-gitops/1.19.0.yaml` (GitLab)
 - Internal Konflux documentation:
-https://konflux.pages.redhat.com/docs/users/releasing/releasing-to-developer-portal.html#dev-portal-content-gateway-setup
+https://konflux.pages.redhat.com/docs/users/releasing/releasing-artifacts-to-cdn.html#developer-portal-aka-content-gateway-wiki
 
 ### 0.2 Create or Update RPA
 
@@ -61,7 +61,7 @@ mapping:
 - Existing RPA:
 `config/stone-prd-rh01.pg1f.p1/product/ReleasePlanAdmission/rh-openshift-gitops/gitops-clis-1-19-prod.yaml`
 - Internal documentation:
-https://konflux.pages.redhat.com/docs/users/releasing/releasing-to-developer-portal.html#custom-resource-setup
+https://konflux.pages.redhat.com/docs/users/releasing/releasing-artifacts-to-cdn.html#custom-resource-setup
 
 ### 0.3 Submit Merge Request
 

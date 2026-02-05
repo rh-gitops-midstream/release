@@ -1,0 +1,64 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  annotations:
+    build.appstudio.openshift.io/repo: https://github.com/rh-gitops-midstream/release?rev={{revision}}
+    build.appstudio.redhat.com/commit_sha: '{{revision}}'
+    build.appstudio.redhat.com/target_branch: '{{target_branch}}'
+    pipelinesascode.tekton.dev/cancel-in-progress: "false"
+    pipelinesascode.tekton.dev/max-keep-runs: "3"
+    pipelinesascode.tekton.dev/on-cel-expression: >-
+      event == "push" &&
+      target_branch == "main" &&
+      (
+        "sources/argo-rollouts".pathChanged() ||
+        "clis/kubectl-argo-rollouts/***".pathChanged() ||
+        ".tekton/kubectl-argo-rollouts-cli-push.yaml".pathChanged() ||
+        "BUILD".pathChanged() ||
+        ".tekton/build-multi-platform-image.yaml".pathChanged() ||
+        ".tekton/tasks/***".pathChanged()
+      )
+  creationTimestamp: null
+  labels:
+    appstudio.openshift.io/application: gitops-main
+    appstudio.openshift.io/component: kubectl-argo-rollouts-cli-main
+    pipelines.appstudio.openshift.io/type: build
+  name: kubectl-argo-rollouts-cli-main-on-push
+  namespace: rh-openshift-gitops-tenant
+spec:
+  taskRunSpecs:
+    - pipelineTaskName: prefetch-dependencies
+      computeResources:
+        requests:
+          memory: 4Gi
+        limits:
+          memory: 8Gi
+  params:
+  - name: git-url
+    value: '{{source_url}}'
+  - name: revision
+    value: '{{revision}}'
+  - name: output-image
+    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/kubectl-argo-rollouts-cli:{{revision}}
+  - name: build-platforms
+    value:
+    - linux/x86_64
+  - name: additional-tags
+    value:
+    - '{{target_branch}}'
+  - name: dockerfile
+    value: clis/kubectl-argo-rollouts/Dockerfile
+  - name: prefetch-input
+    value: '[{"type":"gomod","path":"./sources/argo-rollouts"}, {"type":"yarn","path":"./sources/argo-rollouts/ui"}, {"type":"npm","path":"prefetch/yarn"}]'
+  - name: git-metadata-directories
+    value:
+    - sources/argo-rollouts
+  pipelineRef:
+    name: build-multi-platform-image
+  taskRunTemplate:
+    serviceAccountName: build-pipeline-kubectl-argo-rollouts-cli-main
+  workspaces:
+  - name: git-auth
+    secret:
+      secretName: '{{ git_auth_secret }}'
+status: {}
