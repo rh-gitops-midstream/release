@@ -3,9 +3,9 @@
 
 %global package_name microshift-gitops
 %global product_name OpenShift GitOps (ArgoCD) components for MicroShift
-%global microshift_gitops_version 99.99.99
-%global microshift_gitops_release 99.99.99
-%global commitid a1faf0265f5256f0b09e045f8486421359e3211f
+%global microshift_gitops_version 1.19.1
+%global microshift_gitops_release %(echo ${1.19.1.3} | sed -e s/rhel-9-//g)
+%global commitid cc053b2eebed744df8c33b33fbbadcd0adcd044d
 %global source_dir argo-cd
 %global source_tar argo-cd-sources.tar.gz
 
@@ -130,7 +130,7 @@ mkdir -p "microshift-assets"
 cat <<EOF >"microshift-assets/release-gitops-arm64.json"
 {
   "release": {
-    "base": "v1.19.1-9"
+    "base": "v1.19.1-3"
   },
   "images": {
     "openshift-gitops-argocd": "registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:7ce92cc4c69bd9cd64e5dfedad15388be5d9404ac916731b86f5cf490993756b",
@@ -142,7 +142,7 @@ EOF
 cat <<EOF >"microshift-assets/release-gitops-x86_64.json"
 {
   "release": {
-    "base": "v1.19.1-9"
+    "base": "v1.19.1-3"
   },
   "images": {
     "openshift-gitops-argocd": "registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:6fb646fbd35b779be50ceca8d12a8736ed43ebe4f40204ca28851db2e2cfdf20",

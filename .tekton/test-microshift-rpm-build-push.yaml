@@ -25,8 +25,10 @@ spec:
     value: '{{revision}}'
   - name: ociStorage
     value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/test-microshift-rpm-build:{{revision}}
-  - name: path-context
+  - name: monorepo-subdir
     value: rpms/microshift-gitops
+  - name: specfile
+    value: microshift-gitops.spec
   - name: package-name
     value: microshift-gitops
   - name: target-branch
@@ -43,19 +45,6 @@ spec:
     - x86_64
   - name: pre-build-script-image
     value: "registry.access.redhat.com/ubi9/ubi:latest"
-  - name: pre-build-script-content
-    value: |
-      #!/usr/bin/env bash
-      set -euxo pipefail
-      
-      echo "--- Preparing sources for RPM build  ---"
-      mv ./rpms/microshift-gitops/microshift-gitops.spec .
-      
-      echo "--- Creating argo-cd-sources.tar.gz with correct internal directory  ---"
-      tar -czvf argo-cd-sources.tar.gz --transform="s,^argo-cd,argo-cd," -C ./sources argo-cd
-      
-      echo "--- Cleaning up original source directory ---"
-      rm -rf ./sources
   - name: enableSymlinkCheck
     value: false
   pipelineRef:
