@@ -27,7 +27,7 @@ spec:
 
     - name: generate-labels
       # prefer Red Hat images for security
-      image: registry.access.redhat.com/ubi9/ubi-minimal:9.7-1762956380@sha256:53ea1f6d835898acda5becdb3f8b1292038a480384bbcf994fc0bcf1f7e8eaf7
+      image: registry.access.redhat.com/ubi9/ubi-minimal:9.7-1770267347@sha256:759f5f42d9d6ce2a705e290b7fc549e2d2cd39312c4fa345f93c02e4abb8da95
       workingDir: /tekton/home/source
       env:
         - name: LABELS_RESULT
@@ -84,7 +84,7 @@ spec:
 
     - name: generate-args
       # prefer Red Hat images for security
-      image: registry.access.redhat.com/ubi9/ubi-minimal:9.7-1762956380@sha256:53ea1f6d835898acda5becdb3f8b1292038a480384bbcf994fc0bcf1f7e8eaf7
+      image: registry.access.redhat.com/ubi9/ubi-minimal:9.7-1770267347@sha256:759f5f42d9d6ce2a705e290b7fc549e2d2cd39312c4fa345f93c02e4abb8da95
       workingDir: /tekton/home/source
       env:
         - name: BUILD_ARGS_RESULT
