@@ -75,7 +75,7 @@ RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 \
 FROM registry.access.redhat.com/ubi9/ubi-minimal AS argo-rollouts-base
 
 USER root
-RUN microdnf install shadow-utils  -y
+RUN microdnf install shadow-utils openssh-clients -y
 
 RUN groupadd -g 999 argo-rollouts && \
     useradd -l -r -u 999 -g argo-rollouts argo-rollouts && \
