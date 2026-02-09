@@ -26,6 +26,7 @@ contentOrigin:
 packages:
   - shadow-utils
   - git
+  - git-core
   - gpg
   - tar
   - tzdata

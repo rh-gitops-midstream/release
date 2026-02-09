@@ -75,15 +75,13 @@ RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 \
 FROM registry.access.redhat.com/ubi9/ubi-minimal AS argo-rollouts-base
 
 USER root
-RUN microdnf install shadow-utils  -y
+RUN microdnf install shadow-utils openssh-clients -y
 
 RUN groupadd -g 999 argo-rollouts && \
     useradd -l -r -u 999 -g argo-rollouts argo-rollouts && \
     mkdir -p /home/argo-rollouts && \
     chown argo-rollouts:0 /home/argo-rollouts && \
     chmod g=u /home/argo-rollouts && \
-    microdnf install -y git gpg tar tzdata && \
-    microdnf clean all && \
     rm -rf /tmp/* /var/tmp/*
 
 # support for mounting configuration from a configmap
