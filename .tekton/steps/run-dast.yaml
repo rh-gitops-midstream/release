@@ -1,0 +1,95 @@
+apiVersion: tekton.dev/v1alpha1
+kind: StepAction
+metadata:
+  name: run-dast
+spec:
+  params:
+    - name: kubeconfig
+      type: string
+    - name: pwdpath
+      type: string
+    - name: apiurl
+      type: string
+    - name: clusterurl
+      type: string
+    - name: credentials
+      type: string
+      description: A volume to which the remote cluster credentials will be written.
+    - name: gcpkey
+      type: string
+      description: A volume to find the gcp key for uploading the results.
+  volumeMounts:
+    - name: "$(params.credentials)"
+      mountPath: /credentials
+    - name: "$(params.gcpkey)"
+      mountPath: /gcp
+  image: quay.io/redhatproductsecurity/rapidast@sha256:b6eba7ca96e4c775f965e12eebd2853e8aa11d5894eb0867aba94d436789604d
+  env:
+    - name: KUBECONFIG
+      value: "/credentials/$(params.kubeconfig)"
+    - name: '_JAVA_OPTIONS'
+      value: '-DmaxYamlCodePoints=99999999'
+    - name: APIURL
+      value: "$(params.apiurl)"
+    - name: CLUSTERURL
+      value: "$(params.clusterurl)"
+    - name: PWD_PATH
+      value: "$(params.pwdpath)"
+  script: |
+    export KPWD=$(cat $PWD_PATH)
+    export APPSURL=${CLUSTERURL#*console-openshift-console.}
+    echo $APPSURL
+    export OC_TOKEN=$(curl -u kubeadmin:"$KPWD" -k -i "https://oauth-openshift.$APPSURL/oauth/authorize?client_id=openshift-challenging-client&response_type=token"  | grep -oP "access_token=\K[^&]*")
+    export ARGO_PWD=$(curl -k -H "Authorization: Bearer $OC_TOKEN" "$APIURL/api/v1/namespaces/openshift-gitops/secrets/openshift-gitops-cluster" | grep -oP "\"admin.password\": \"\K[^&\"]*" | base64 -d)
+    export URL="https://openshift-gitops-server-openshift-gitops.$APPSURL"
+    echo $URL
+    export ARGO_TOKEN=$(curl -k -H "Content-Type: application/json"  $URL/api/v1/session -d "{\"username\":\"admin\",\"password\":\"$ARGO_PWD\"}" | grep -oP ".*token\":\"\K[^\"]*")
+    sleep 30
+    cat <<EOF | tee /tmp/config.yaml
+    config:
+        configVersion: 6
+        googleCloudStorage:
+            keyFile: "/gcp/key.json"                           # optional: path to the GCS key file (alternatively: use GOOGLE_APPLICATION_CREDENTIALS)
+            bucketName: "gitops-results"
+    application:
+        shortName: "gitops"
+        url: $URL
+    general:
+        authentication:
+        type: http_header
+        parameters:
+            name: "Authorization"
+            value: $ARGO_TOKEN
+    scanners:
+        zap:
+          apiScan:
+            apis:
+              apiUrl: $URL/swagger.json
+          report:
+            format: ["json", "html", "xml"]
+          activeScan:
+            # The list of parameters: https://www.zaproxy.org/docs/desktop/addons/ajax-spider/automation/
+            #maxRuleDurationInMins: max scan time for each Rule (default: unlimited)
+            #maxScanDurationInMins: max scan time for the entire scan. Useful for debugging automation
+            #
+            # If no policy is chosen, a default ("API-scan-minimal") will be selected
+            # The list of policies can be found in scanners/zap/policies/
+            policy:  "API-scan-minimal"
+          passiveScan:
+            # optional list of passive rules to disable
+            disabledRules: "2,10015,10024,10027,10054,10096,10109,10112"
+
+          # Enable activeScan by uncommenting, once scans with the passiveScan only has run successfully
+          # If no policy is chosen, a default ("API-scan-minimal") will be selected
+          # The list of policies can be found in scanners/zap/policies/
+          activeScan:
+            policy: "API-scan-minimal"
+
+          miscOptions:
+            # List (comma-separated string or list) of additional addons to install
+            additionalAddons: "ascanrulesBeta"
+            zapPort: 8080  # Default ZAP port
+            memMaxHeap: "2048m"  # Reduced heap size for minimal application
+    EOF
+    rapidast.py --log-level debug --config /tmp/config.yaml
+
