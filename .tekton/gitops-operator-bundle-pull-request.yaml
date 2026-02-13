@@ -29,7 +29,7 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle:on-pr-{{revision}}
+    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle:on-pr-{{pull_request_number}}
   - name: image-expires-after
     value: 5d
   - name: dockerfile
@@ -37,6 +37,7 @@ spec:
   - name: build-platforms
     value:
       - linux/x86_64
+      - linux/arm64
   - name: build-image-index
     value: "false"
   - name: git-metadata-directories
@@ -51,3 +52,4 @@ spec:
     secret:
       secretName: '{{ git_auth_secret }}'
 status: {}
+
