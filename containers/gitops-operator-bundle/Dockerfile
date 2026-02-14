@@ -11,7 +11,7 @@ LABEL operators.operatorframework.io.metrics.builder=operator-sdk-v1.35.0
 LABEL operators.operatorframework.io.metrics.mediatype.v1=metrics+v1
 LABEL operators.operatorframework.io.metrics.project_layout=go.kubebuilder.io/v4
 
-# Labels for testing.
+# Labels for testing
 LABEL operators.operatorframework.io.test.mediatype.v1=scorecard+v1
 LABEL operators.operatorframework.io.test.config.v1=tests/scorecard/
 
@@ -23,7 +23,7 @@ COPY containers/gitops-operator-bundle/bundle/tests/scorecard /tests/scorecard/
 LABEL \
     name="openshift-gitops-1/gitops-operator-bundle" \
     cpe="cpe:/a:redhat:openshift_gitops:99.99::el9" \
-    url="" \
+    url=" " \
     vendor="Red Hat, Inc." \
     com.redhat.component="openshift-gitops-operator-bundle-container" \
     description="Red Hat OpenShift GitOps Operator Bundle" \
