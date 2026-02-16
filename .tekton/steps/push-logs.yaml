@@ -1,0 +1,58 @@
+apiVersion: tekton.dev/v1alpha1
+kind: StepAction
+metadata:
+  name: push-logs-to-oci
+spec:
+  params:
+    - name: quay-repo
+      type: string
+    - name: log-workspace
+      type: string
+    - name: credentials-volume
+      type: string
+      description: Base OCI repository path.
+    - name: log-artifact-tag
+      type: string
+      description: The tag for the log artifact to push.
+  image: quay.io/konflux-ci/tekton-integration-catalog/utils:latest
+  workingDir: /var/log-workspace
+  volumeMounts:
+    - name: "$(params.log-workspace)"
+      mountPath: /var/log-workspace
+    - name: "$(params.credentials-volume)"
+      mountPath: /tekton_volumes_credentials-volume
+      readOnly: true
+  env:
+    - name: OCI_REFERENCE_BASE
+      value: "$(params.quay-repo)"
+    - name: IMAGE_TAG
+      value: "$(params.log-artifact-tag)"
+  script: |
+    #!/bin/bash
+    set -euo pipefail
+
+    if [ -z "${IMAGE_TAG}" ]; then
+      echo "No log artifact tag provided, skipping push."
+      exit 0
+    fi
+
+    REPO_NAME_ONLY="${OCI_REFERENCE_BASE%:*}"
+    FULL_OCI_REF="${REPO_NAME_ONLY}:${IMAGE_TAG}"
+
+    # Setup authentication
+    AUTH_DIR="/tekton_volumes_credentials-volume"
+    AUTH_PATH="$AUTH_DIR/.dockerconfigjson"
+
+    if [ -f "$AUTH_PATH" ]; then
+      TEMP_DOCKER_CONFIG="$(mktemp -d)"
+      cp "$AUTH_PATH" "$TEMP_DOCKER_CONFIG/config.json"
+      export DOCKER_CONFIG="$TEMP_DOCKER_CONFIG"
+    fi
+
+    # Execute push
+    oras push --no-tty \
+      --artifact-type "application/vnd.logs.tar+gzip" \
+      "${FULL_OCI_REF}" \
+      "logs.tar.gz:application/vnd.logs.tar+gzip"
+
+    echo "Successfully pushed log artifact to ${FULL_OCI_REF}"
