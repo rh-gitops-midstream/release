@@ -1,0 +1,194 @@
+apiVersion: tekton.dev/v1alpha1
+kind: StepAction
+metadata:
+  name: send-slack-message
+spec:
+  params:
+    - name: SLACK_SUBJECT
+      type: string
+    - name: "SLACK_TEXT"
+      type: string
+    - name: "LOG_URL"
+      type: string
+    - name: ARTIFACTS_PATH
+      type: string
+  env:
+  - name: SLACK_WEBHOOK_URL
+    valueFrom:
+      secretKeyRef:
+        name: slack-webhook-secret
+        key: webhook-url
+  - name: SLACK_SUBJECT
+    value: $(params.SLACK_SUBJECT)
+  - name: SLACK_TEXT
+    value: $(params.SLACK_TEXT)
+  - name: LOG_URL
+    value: $(params.LOG_URL)
+  - name: ARTIFACTS_PATH
+    value: $(params.ARTIFACTS_PATH)
+  image: quay.io/devtools_gitops/test_image:integrated_ginkgo
+  script: |
+    #!/usr/bin/env python3
+    # -*- coding: utf-8 -*-
+    # Author: praveen thangadancha <pthangad>
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License"); you may
+    # not use this file except in compliance with the License. You may obtain
+    # a copy of the License at
+    #
+    #      http://www.apache.org/licenses/LICENSE-2.0
+    #
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+    # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+    # License for the specific language governing permissions and limitations
+    # under the License.
+    """Script to send a slack notification to be plugged in a finally task"""
+    import argparse
+    import json
+    import os
+    import subprocess
+    import sys
+    import typing
+    import urllib.request
+    import logging
+
+
+    class SlackNotificationError(Exception):
+        """Custom exception when we fail"""
+
+    def send_slack_message(webhook_url: str, subject: str, text: str,
+                            icon: str, log_url: str, artifacts_path: str) -> str:
+        """Send a slack message"""
+        if log_url:
+            msg = {
+                    "text":
+                    subject,
+                    "attachments": [{
+                        "blocks": [
+                            {
+                                "type": "section",
+                                "text": {
+                                    "type": "mrkdwn",
+                                    "text": text,
+                                },
+                                "accessory": {
+                                    "type": "image",
+                                    "image_url": "https://github.com/tektoncd.png",
+                                    "alt_text": "From tekton with love"
+                                },
+                                
+                            },
+                            {
+                                "type": "divider"
+                            },
+                            {   
+                                "type": "section",
+                                "text": {
+                                    "type": "mrkdwn",
+                                    "text": ":technologist: *Please do find CI logs here...*",
+                                },
+                                "accessory": {
+                                    "type": "button",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "here"
+                                    },
+                                    "value": "click_me_123",
+                                    "url": log_url,
+                                    "action_id": "button-action"
+                                }
+                            },
+                            {
+                                "type": "divider"
+                            },
+                            {   
+                                "type": "section",
+                                "text": {
+                                    "type": "mrkdwn",
+                                    "text": ":open_file_folder: *Artifacts url*",
+                                },
+                                "accessory": {
+                                    "type": "button",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "here"
+                                    },
+                                    "value": "click_me_123",
+                                    "url": artifacts_path+"/",
+                                    "action_id": "button-action"
+                                }
+                            }
+
+                        ]
+                    }]
+                }
+        else:
+            msg = {
+                "text":
+                subject,
+                "attachments": [{
+                    "blocks": [
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": text,
+                            },
+                            "accessory": {
+                                "type": "image",
+                                "image_url": icon,
+                                "alt_text": "From tekton with love"
+                            }
+                        },
+                    ]
+                }]
+            }
+        
+        req = urllib.request.Request(webhook_url,
+                                    data=json.dumps(msg).encode(),
+                                    headers={"Content-type": "application/json"},
+                                    method="POST")
+        
+        try: 
+            resp = urllib.request.urlopen(req,timeout=10)    
+        except Exception as e:
+            import traceback
+            logging.error('generic exception: ' + traceback.format_exc())
+            logging.error(e)
+
+        return resp.read().decode()
+
+
+    def main() -> int:
+        """Main"""
+        parser.add_argument("--slack-webhook-url",
+                            default=os.environ.get("SLACK_WEBHOOK_URL"),
+                            help="Slack webhook URL")
+        parser.add_argument("--slack-subject",
+                            default=os.environ.get("SLACK_SUBJECT"),
+                            help="Slack webhook URL")
+        parser.add_argument("--slack-text",
+                            default=os.environ.get("SLACK_TEXT"),
+                            help="Slack webhook URL")
+                            
+        parser.add_argument("--logs-url",
+                            default=os.environ.get("LOGS_URL"),
+                            help="Slack webhook URL")
+        parser.add_argument("--artifacts-path",
+                            default=os.environ.get("ARTIFACTS_PATH"),
+                            help="Slack webhook URL")
+
+
+        args = parser.parse_args()
+
+        ret = send_slack_message(args.slack_webhook_url, slack_subject, slack_text,
+                                slack_image, args.log_url, args.artifacts_path)
+        if ret:
+            print(ret)
+
+        return 0
+
+
+    if __name__ == '__main__':
+        sys.exit(main())
