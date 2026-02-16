@@ -1,0 +1,203 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: send-slack-notification
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.12.1"
+    tekton.dev/tags: notification, slack
+spec:
+  description: >-
+    Sends a Slack notification with pipeline status, log URL, and artifacts link.
+    Intended for use in a finally block.
+  params:
+    - name: slack-webhook-secret-name
+      type: string
+      description: The secret name where the Slack webhook URL is stored.
+    - name: slack-webhook-secret-key
+      type: string
+      description: The key inside the secret where the Slack webhook URL is stored.
+    - name: SLACK_SUBJECT
+      type: string
+      description: The subject/title of the Slack message.
+    - name: SLACK_TEXT
+      type: string
+      description: The body text of the Slack message (supports mrkdwn).
+    - name: LOG_URL
+      type: string
+      description: URL to the pipeline run logs.
+      default: ""
+    - name: ARTIFACTS_PATH
+      type: string
+      description: URL to the stored artifacts (e.g. quay.io OCI artifact).
+      default: ""
+  steps:
+    - name: send-slack-notification
+      image: public.ecr.aws/k7a1h8a0/aws-kubectl
+      env:
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: $(params.slack-webhook-secret-name)
+              key: $(params.slack-webhook-secret-key)
+        - name: SLACK_SUBJECT
+          value: $(params.SLACK_SUBJECT)
+        - name: SLACK_TEXT
+          value: $(params.SLACK_TEXT)
+        - name: LOG_URL
+          value: $(params.LOG_URL)
+        - name: ARTIFACTS_PATH
+          value: $(params.ARTIFACTS_PATH)
+      script: |
+        #!/usr/bin/env python3
+        # -*- coding: utf-8 -*-
+        # Author: praveen thangadancha <pthangad>
+        #
+        # Licensed under the Apache License, Version 2.0 (the "License"); you may
+        # not use this file except in compliance with the License. You may obtain
+        # a copy of the License at
+        #
+        #      http://www.apache.org/licenses/LICENSE-2.0
+        #
+        # Unless required by applicable law or agreed to in writing, software
+        # distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+        # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+        # License for the specific language governing permissions and limitations
+        # under the License.
+        """Script to send a slack notification to be plugged in a finally task"""
+        import json
+        import os
+        import sys
+        import urllib.request
+        import logging
+
+
+        class SlackNotificationError(Exception):
+            """Custom exception when we fail"""
+
+        def send_slack_message(webhook_url, subject, text,
+                                icon, log_url, artifacts_path):
+            """Send a slack message"""
+            if log_url:
+                msg = {
+                        "text":
+                        subject,
+                        "attachments": [{
+                            "blocks": [
+                                {
+                                    "type": "section",
+                                    "text": {
+                                        "type": "mrkdwn",
+                                        "text": text,
+                                    },
+                                    "accessory": {
+                                        "type": "image",
+                                        "image_url": "https://github.com/tektoncd.png",
+                                        "alt_text": "From tekton with love"
+                                    },
+                                },
+                                {
+                                    "type": "divider"
+                                },
+                                {
+                                    "type": "section",
+                                    "text": {
+                                        "type": "mrkdwn",
+                                        "text": ":technologist: *Please do find CI logs here...*",
+                                    },
+                                    "accessory": {
+                                        "type": "button",
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "here"
+                                        },
+                                        "value": "click_me_123",
+                                        "url": log_url,
+                                        "action_id": "button-action"
+                                    }
+                                },
+                                {
+                                    "type": "divider"
+                                },
+                                {
+                                    "type": "section",
+                                    "text": {
+                                        "type": "mrkdwn",
+                                        "text": ":open_file_folder: *Artifacts url*",
+                                    },
+                                    "accessory": {
+                                        "type": "button",
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "here"
+                                        },
+                                        "value": "click_me_123",
+                                        "url": artifacts_path + "/",
+                                        "action_id": "button-action-artifacts"
+                                    }
+                                }
+                            ]
+                        }]
+                    }
+            else:
+                msg = {
+                    "text":
+                    subject,
+                    "attachments": [{
+                        "blocks": [
+                            {
+                                "type": "section",
+                                "text": {
+                                    "type": "mrkdwn",
+                                    "text": text,
+                                },
+                                "accessory": {
+                                    "type": "image",
+                                    "image_url": icon,
+                                    "alt_text": "From tekton with love"
+                                }
+                            },
+                        ]
+                    }]
+                }
+
+            req = urllib.request.Request(webhook_url,
+                                        data=json.dumps(msg).encode(),
+                                        headers={"Content-type": "application/json"},
+                                        method="POST")
+
+            try:
+                resp = urllib.request.urlopen(req, timeout=10)
+            except Exception as e:
+                import traceback
+                logging.error('generic exception: ' + traceback.format_exc())
+                logging.error(e)
+                return ""
+
+            return resp.read().decode()
+
+
+        def main():
+            """Main"""
+            webhook_url = os.environ.get("SLACK_WEBHOOK_URL", "")
+            subject = os.environ.get("SLACK_SUBJECT", "")
+            text = os.environ.get("SLACK_TEXT", "")
+            log_url = os.environ.get("LOG_URL", "")
+            artifacts_path = os.environ.get("ARTIFACTS_PATH", "")
+            icon = "https://github.com/tektoncd.png"
+
+            if not webhook_url:
+                logging.error("SLACK_WEBHOOK_URL is not set")
+                return 1
+
+            ret = send_slack_message(webhook_url, subject, text,
+                                    icon, log_url, artifacts_path)
+            if ret:
+                print(ret)
+
+            return 0
+
+
+        if __name__ == '__main__':
+            sys.exit(main())

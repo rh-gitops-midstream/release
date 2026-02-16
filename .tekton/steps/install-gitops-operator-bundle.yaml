@@ -1,0 +1,352 @@
+apiVersion: tekton.dev/v1alpha1
+kind: StepAction
+metadata:
+  name: install-gitops-operator-bundle
+spec:
+  params:
+    - name: bundleImage
+      type: string
+    - name: namespace
+      type: string
+      default: "openshift-gitops-operator"
+    - name: installTimeout
+      type: string
+      default: "30m"
+    - name: credentials
+      type: string
+      description: A volume to which the remote cluster credentials will be written.
+    - name: kubeconfig
+      type: string
+      description: A path to the kubeconfig in the credentials volume
+  volumeMounts:
+    - name: "$(params.credentials)"
+      mountPath: /credentials
+  env:
+    - name: BUNDLE_IMAGE
+      value: $(params.bundleImage)
+    - name: KONFLUX_COMPONENT_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.labels['appstudio.openshift.io/component']
+    - name: NAMESPACE
+      value: $(params.namespace)
+    - name: INSTALL_TIMEOUT
+      value: $(params.installTimeout)
+    - name: KUBECONFIG
+      value: "/credentials/$(params.kubeconfig)"
+  image: registry.redhat.io/openshift4/ose-cli:latest
+  script: |
+    set -x
+    echo "---------------------------------------------"
+    cat  /credentials/*
+    echo "---------------------------------------------"
+    dnf -y install jq python3-pip
+    export OPERATOR_SDK_VERSION=1.36.1
+    export ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
+    export OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/download/v${OPERATOR_SDK_VERSION}
+    curl -Lo /usr/local/bin/operator-sdk ${OPERATOR_SDK_DL_URL}/operator-sdk_linux_${ARCH}
+    chmod +x /usr/local/bin/operator-sdk
+    operator-sdk version
+    echo "---------------------------------------------"
+    oc status
+    oc whoami
+    echo "---------------------------------------------"
+    env
+    echo "---------------------------------------------"    
+    oc create namespace ${NAMESPACE} || true
+    oc label namespaces ${NAMESPACE} openshift.io/cluster-monitoring=true --overwrite=true
+    # export IMAGE_DIGEST_MIRROR_SET=https://raw.githubusercontent.com/rh-gitops-midstream/catalog/refs/heads/main/.tekton/images-mirror-set.yaml
+    # curl -Lo /usr/tmp/imagedigestmirrorset "$IMAGE_DIGEST_MIRROR_SET"
+    # oc apply -f /usr/tmp/imagedigestmirrorset
+    echo "---------------------------------------------"
+    echo ${KONFLUX_COMPONENT_NAME}
+    # We get the bundle image as a param
+    # export BUNDLE_IMAGE="$(jq -r --arg component_name "$KONFLUX_COMPONENT_NAME" '.components[] | select(.name == $component_name) | .containerImage' <<< "$SNAPSHOT")"
+    echo "${BUNDLE_IMAGE}"
+    echo "---------------------------------------------"
+    if ! operator-sdk run bundle --timeout="$INSTALL_TIMEOUT" \
+    --namespace "${NAMESPACE}" \
+    "$BUNDLE_IMAGE" \
+    --verbose; then
+      
+      echo "❌ Operator bundle installation failed. Gathering diagnostics..."
+      echo "================================================"
+      
+      # Namespace events
+      echo "Namespace Events:"
+      oc get events -n "${NAMESPACE}" --sort-by='.lastTimestamp'
+      
+      # OLM-specific resources
+      echo -e "\nOperator Subscriptions:"
+      oc get subscriptions -n "${NAMESPACE}"
+      
+      echo -e "\nInstallPlans:"
+      oc get installplans -n "${NAMESPACE}"
+      
+      echo -e "\nClusterServiceVersions:"
+      oc get csv -n "${NAMESPACE}"
+      
+      echo -e "\nCatalogSources:"
+      oc get catalogsources -n "${NAMESPACE}"
+      
+      # Pods and logs
+      echo -e "\nPods:"
+      oc get pods -n "${NAMESPACE}" -o wide
+      
+      echo -e "\nRecent logs from all pods:"
+      oc logs -n "${NAMESPACE}" --all-containers=true --prefix=true --tail=50 -l 'app' --ignore-errors=true
+      
+      # Use oc adm inspect for comprehensive debugging info
+      echo -e "\nCollecting comprehensive namespace data with oc adm inspect..."
+      oc adm inspect ns/"${NAMESPACE}" --dest-dir=/tmp/must-gather-"${NAMESPACE}" || echo "oc adm inspect failed"
+      
+      echo "================================================"
+      exit 1
+    fi
+    echo "---------------------------------------------"
+    # Wait for the controller pod
+    for i in {0..30}; do
+      sleep 3
+      oc get pod -n  "${NAMESPACE}" | grep gitops > /dev/null 2>&1 && break
+    done
+    controller_pod=$(oc get pod -n "${NAMESPACE}" -l control-plane=gitops-operator -o 'jsonpath={.items[0].metadata.name}') || exit 1
+    echo $controller_pod
+    for i in {0..30}; do
+      sleep 3
+      oc get ns openshift-gitops > /dev/null 2>&1 && break
+    done
+    oc wait --for=jsonpath='{.status.phase}'=Active ns/openshift-gitops --timeout=120s
+    sleep 10
+    # Check for various resources
+    deployments=($(echo $(oc get deployments -n openshift-gitops --no-headers -o custom-columns=':metadata.name')))
+    # =============================================================================
+    # Debug/Diagnostics Function
+    # =============================================================================
+    gather_debug_info() {
+      local namespace="${1:-openshift-gitops}"
+      local operator_namespace="${2:-openshift-gitops-operator}"
+      local context="${3:-Unknown failure}"
+      
+      echo ""
+      echo "❌ ${context}"
+      echo "========================================================"
+      echo "🔍 Gathering diagnostics for namespace: ${namespace}"
+      echo "========================================================"
+      
+      # --- Operator-level resources (if operator namespace exists) ---
+      if oc get namespace "${operator_namespace}" &>/dev/null; then
+        echo -e "\n📦 OPERATOR NAMESPACE: ${operator_namespace}"
+        echo "--------------------------------------------------------"
+        
+        echo -e "\n[Subscriptions]"
+        oc get subscriptions -n "${operator_namespace}" -o wide 2>/dev/null || echo "No subscriptions found"
+        
+        echo -e "\n[InstallPlans]"
+        oc get installplans -n "${operator_namespace}" -o wide 2>/dev/null || echo "No installplans found"
+        
+        echo -e "\n[ClusterServiceVersions]"
+        oc get csv -n "${operator_namespace}" -o wide 2>/dev/null || echo "No CSVs found"
+        
+        echo -e "\n[CatalogSources]"
+        oc get catalogsources -n "${operator_namespace}" 2>/dev/null || echo "No catalogsources found"
+        
+        echo -e "\n[Operator Pods]"
+        oc get pods -n "${operator_namespace}" -o wide 2>/dev/null || echo "No pods found"
+        
+        # Describe any non-Running pods in operator namespace
+        echo -e "\n[Describing Non-Running Operator Pods]"
+        for pod in $(oc get pods -n "${operator_namespace}" --no-headers 2>/dev/null | grep -v "Running\|Completed" | awk '{print $1}'); do
+          echo -e "\n--- Pod: ${pod} ---"
+          oc describe pod "${pod}" -n "${operator_namespace}" 2>/dev/null | tail -50
+        done
+        
+        echo -e "\n[Operator Pod Logs (last 30 lines per container)]"
+        oc logs -n "${operator_namespace}" --all-containers=true --prefix=true --tail=30 --selector='control-plane=controller-manager' --ignore-errors=true 2>/dev/null || \
+        oc logs -n "${operator_namespace}" --all-containers=true --prefix=true --tail=30 -l 'app' --ignore-errors=true 2>/dev/null || \
+        echo "No logs available"
+      fi
+      
+      # --- Application namespace resources ---
+      echo -e "\n\n📦 APPLICATION NAMESPACE: ${namespace}"
+      echo "--------------------------------------------------------"
+      
+      echo -e "\n[Namespace Events (sorted by time)]"
+      oc get events -n "${namespace}" --sort-by='.lastTimestamp' 2>/dev/null | tail -50 || echo "No events found"
+      
+      echo -e "\n[Pods]"
+      oc get pods -n "${namespace}" -o wide 2>/dev/null || echo "No pods found"
+      
+      echo -e "\n[Deployments]"
+      oc get deployments -n "${namespace}" -o wide 2>/dev/null || echo "No deployments found"
+      
+      echo -e "\n[StatefulSets]"
+      oc get statefulsets -n "${namespace}" -o wide 2>/dev/null || echo "No statefulsets found"
+      
+      echo -e "\n[ReplicaSets]"
+      oc get replicasets -n "${namespace}" 2>/dev/null | head -20 || echo "No replicasets found"
+      
+      echo -e "\n[Services]"
+      oc get services -n "${namespace}" 2>/dev/null || echo "No services found"
+      
+      echo -e "\n[Endpoints]"
+      oc get endpoints -n "${namespace}" 2>/dev/null || echo "No endpoints found"
+      
+      echo -e "\n[PersistentVolumeClaims]"
+      oc get pvc -n "${namespace}" 2>/dev/null || echo "No PVCs found"
+      
+      echo -e "\n[ConfigMaps]"
+      oc get configmaps -n "${namespace}" 2>/dev/null || echo "No configmaps found"
+      
+      echo -e "\n[Secrets (names only)]"
+      oc get secrets -n "${namespace}" 2>/dev/null || echo "No secrets found"
+      
+      echo -e "\n[ServiceAccounts]"
+      oc get serviceaccounts -n "${namespace}" 2>/dev/null || echo "No service accounts found"
+      
+      echo -e "\n[NetworkPolicies]"
+      oc get networkpolicies -n "${namespace}" 2>/dev/null || echo "No network policies found"
+      
+      echo -e "\n[ResourceQuotas]"
+      oc get resourcequotas -n "${namespace}" 2>/dev/null || echo "No resource quotas found"
+      
+      echo -e "\n[LimitRanges]"
+      oc get limitranges -n "${namespace}" 2>/dev/null || echo "No limit ranges found"
+      
+      # --- ArgoCD specific ---
+      echo -e "\n[ArgoCD CR Status]"
+      oc get argocd -n "${namespace}" -o wide 2>/dev/null || echo "No ArgoCD CR found"
+      
+      echo -e "\n[ArgoCD CR YAML Status Section]"
+      oc get argocd -n "${namespace}" -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{.status}{"\n\n"}{end}' 2>/dev/null || echo "Could not retrieve ArgoCD status"
+      
+      # --- Describe non-running/problematic pods ---
+      echo -e "\n[Describing Non-Running/Problematic Pods]"
+      for pod in $(oc get pods -n "${namespace}" --no-headers 2>/dev/null | grep -v "Running\|Completed" | awk '{print $1}'); do
+        echo -e "\n--- Pod: ${pod} ---"
+        oc describe pod "${pod}" -n "${namespace}" 2>/dev/null | tail -60
+      done
+      
+      # Also describe pods with restarts or not fully ready
+      for pod in $(oc get pods -n "${namespace}" --no-headers 2>/dev/null | awk '$2 !~ /^[0-9]+\/[0-9]+$/ || $4 > 0 {print $1}' | head -5); do
+        if ! echo "${pod}" | grep -q "Completed"; then
+          echo -e "\n--- Pod with issues: ${pod} ---"
+          oc describe pod "${pod}" -n "${namespace}" 2>/dev/null | tail -60
+        fi
+      done
+      
+      # --- Pod logs ---
+      echo -e "\n[Recent Logs from All Pods (last 50 lines per container)]"
+      oc logs -n "${namespace}" --all-containers=true --prefix=true --tail=50 -l 'app.kubernetes.io/part-of=argocd' --ignore-errors=true 2>/dev/null || \
+      oc logs -n "${namespace}" --all-containers=true --prefix=true --tail=50 --ignore-errors=true 2>/dev/null || \
+      echo "No logs available"
+      
+      # --- Previous container logs (for crash loops) ---
+      echo -e "\n[Previous Container Logs (for crash-looping pods)]"
+      for pod in $(oc get pods -n "${namespace}" --no-headers 2>/dev/null | awk '$4 > 0 {print $1}'); do
+        echo -e "\n--- Previous logs for pod: ${pod} ---"
+        oc logs "${pod}" -n "${namespace}" --previous --all-containers=true --tail=30 2>/dev/null || echo "No previous logs"
+      done
+      
+      # --- Cluster-level checks ---
+      echo -e "\n\n📦 CLUSTER-LEVEL CHECKS"
+      echo "--------------------------------------------------------"
+      
+      echo -e "\n[Node Status]"
+      oc get nodes -o wide 2>/dev/null || echo "Could not get nodes"
+      
+      echo -e "\n[Node Conditions (warnings only)]"
+      oc get nodes -o json 2>/dev/null | jq -r '.items[] | select(.status.conditions[] | select(.status=="True" and .type!="Ready")) | .metadata.name + ": " + (.status.conditions[] | select(.status=="True" and .type!="Ready") | .type + "=" + .status)' 2>/dev/null || echo "Could not parse node conditions"
+      
+      echo -e "\n[Cluster Operators (degraded/unavailable)]"
+      oc get clusteroperators 2>/dev/null | grep -E "True.*False|False.*True|NAME" || echo "All operators healthy or could not retrieve"
+      
+      echo -e "\n[Image Pull Secrets in Namespace]"
+      oc get serviceaccount default -n "${namespace}" -o jsonpath='{.imagePullSecrets[*].name}' 2>/dev/null || echo "None configured"
+      echo ""
+      
+      # --- Comprehensive inspection ---
+      echo -e "\n[Running oc adm inspect for full data collection]"
+      local inspect_dir="/tmp/must-gather-${namespace}-$(date +%Y%m%d-%H%M%S)"
+      if oc adm inspect ns/"${namespace}" --dest-dir="${inspect_dir}" 2>/dev/null; then
+        echo "Full inspection data saved to: ${inspect_dir}"
+      else
+        echo "oc adm inspect completed with errors (partial data may be available at ${inspect_dir})"
+      fi
+      
+      # Also inspect operator namespace if different
+      if [[ "${namespace}" != "${operator_namespace}" ]] && oc get namespace "${operator_namespace}" &>/dev/null; then
+        local operator_inspect_dir="/tmp/must-gather-${operator_namespace}-$(date +%Y%m%d-%H%M%S)"
+        oc adm inspect ns/"${operator_namespace}" --dest-dir="${operator_inspect_dir}" 2>/dev/null || true
+        echo "Operator namespace inspection data saved to: ${operator_inspect_dir}"
+      fi
+      
+      echo ""
+      echo "========================================================"
+      echo "🔍 Diagnostics collection complete"
+      echo "========================================================"
+    }
+
+    # =============================================================================
+    # Helper function to check deployment rollout with debug on failure
+    # =============================================================================
+    check_rollout() {
+      local deployment="$1"
+      local namespace="$2"
+      local timeout="${3:-120s}"
+      
+      echo "Waiting for deployment/${deployment} in ${namespace}..."
+      if ! oc rollout status deployment/"${deployment}" -n "${namespace}" --timeout="${timeout}"; then
+        gather_debug_info "${namespace}" "openshift-gitops-operator" "Deployment rollout failed: ${deployment}"
+        return 1
+      fi
+      return 0
+    }
+
+    # =============================================================================
+    # Helper function to check statefulset rollout with debug on failure
+    # =============================================================================
+    check_statefulset_rollout() {
+      local statefulset="$1"
+      local namespace="$2"
+      local timeout="${3:-120s}"
+      
+      echo "Waiting for statefulset/${statefulset} in ${namespace}..."
+      if ! oc rollout status statefulset/"${statefulset}" -n "${namespace}" --timeout="${timeout}"; then
+        gather_debug_info "${namespace}" "openshift-gitops-operator" "StatefulSet rollout failed: ${statefulset}"
+        return 1
+      fi
+      return 0
+    }
+
+    # =============================================================================
+    # Main execution
+    # =============================================================================
+
+    NAMESPACE="openshift-gitops"
+    OPERATOR_NAMESPACE="openshift-gitops-operator"
+
+    # Track overall success
+    all_succeeded=true
+
+    # Check each deployment
+    for deployment in "${deployments[@]}"; do
+      if ! check_rollout "${deployment}" "${NAMESPACE}" "120s"; then
+        all_succeeded=false
+        exit 1
+      fi
+    done
+
+    sleep 5
+
+    # Check statefulset and ArgoCD CR status
+    echo "Waiting for statefulset and ArgoCD CR..."
+    if ! check_statefulset_rollout "openshift-gitops-application-controller" "${NAMESPACE}" "120s"; then
+      exit 1
+    fi
+
+    if ! oc wait argocd openshift-gitops -n "${NAMESPACE}" --for=jsonpath='{.status.phase}'="Available" --timeout=600s; then
+      gather_debug_info "${NAMESPACE}" "${OPERATOR_NAMESPACE}" "ArgoCD CR did not reach 'Available' phase"
+      exit 1
+    fi
+
+    echo "✅ All deployments and ArgoCD are ready!"
