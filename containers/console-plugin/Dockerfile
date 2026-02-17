@@ -39,9 +39,9 @@ RUN chown -R 1001:0 /opt/app-root/src
 USER 1001
 RUN chmod g+rwx /opt/app-root/src
     
-RUN mkdir -p /opt/app-root/src/plugin
 COPY --from=builder /workspace/gitops-console-plugin/dist /opt/app-root/src/plugin
     
+# Default nginx configuration is used to serve static plugin files
 CMD nginx -g 'daemon off;'
     
 LABEL \
