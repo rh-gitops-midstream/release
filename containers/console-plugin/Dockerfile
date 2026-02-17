@@ -39,6 +39,9 @@ RUN chown -R 1001:0 /opt/app-root/src
 USER 1001
 RUN chmod g+rwx /opt/app-root/src
     
+# Copy custom nginx configuration for HTTPS support
+COPY containers/console-plugin/nginx.conf /etc/nginx/conf.d/console-plugin.conf
+
 # Copy plugin files to maintain /plugin path structure  
 COPY --from=builder /workspace/gitops-console-plugin/dist /opt/app-root/src/plugin
     
