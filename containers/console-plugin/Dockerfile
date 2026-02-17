@@ -33,17 +33,16 @@ RUN $YARN build
     
 ####################################################################################################
     
-FROM registry.redhat.io/rhel9/httpd-24
+FROM registry.redhat.io/ubi9/nginx-120
 USER root
 RUN chown -R 1001:0 /opt/app-root/src
 USER 1001
 RUN chmod g+rwx /opt/app-root/src
     
-RUN mkdir -p /var/www/html
-COPY --from=builder /workspace/gitops-console-plugin/ssl.conf /etc/httpd/conf.d
-COPY --from=builder /workspace/gitops-console-plugin/dist /var/www/html/plugin
+RUN mkdir -p /opt/app-root/src/plugin
+COPY --from=builder /workspace/gitops-console-plugin/dist /opt/app-root/src/plugin
     
-CMD run-httpd
+CMD nginx -g 'daemon off;'
     
 LABEL \
     name="openshift-gitops-1/gitops-console-plugin-rhel9" \
