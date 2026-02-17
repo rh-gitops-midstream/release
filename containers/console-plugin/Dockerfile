@@ -40,6 +40,7 @@ USER 1001
 RUN chmod g+rwx /opt/app-root/src
     
 # Copy custom nginx configuration for HTTPS support
+# Note: Build context is repository root, so full path is required
 COPY containers/console-plugin/nginx.conf /etc/nginx/conf.d/console-plugin.conf
 
 # Copy plugin files to maintain /plugin path structure  
