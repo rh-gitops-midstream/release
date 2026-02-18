@@ -28,23 +28,23 @@ RUN $YARN --version
 # Build Console Plugin Dependencies
 COPY sources/gitops-console-plugin /workspace/gitops-console-plugin
 WORKDIR /workspace/gitops-console-plugin
-RUN $YARN install --no-progress --non-interactive --prefer-offline --network-timeout 600000 
+RUN $YARN install --no-progress --non-interactive --prefer-offline --network-timeout 600000
 RUN $YARN build
-    
+
 ####################################################################################################
-    
-FROM registry.redhat.io/rhel8/httpd-24
+
+FROM registry.access.redhat.com/ubi9/httpd-24
 USER root
 RUN chown -R 1001:0 /opt/app-root/src
 USER 1001
 RUN chmod g+rwx /opt/app-root/src
-    
+
 RUN mkdir -p /var/www/html
 COPY --from=builder /workspace/gitops-console-plugin/ssl.conf /etc/httpd/conf.d
 COPY --from=builder /workspace/gitops-console-plugin/dist /var/www/html/plugin
-    
+
 CMD run-httpd
-    
+
 LABEL \
     name="openshift-gitops-1/gitops-console-plugin-rhel8" \
     cpe="cpe:/a:redhat:openshift_gitops:1.19::el8" \
