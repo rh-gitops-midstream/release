@@ -104,7 +104,7 @@ spec:
         configuration, dist-git-client, koji-client, and other RPM-build related
         tooling.
       name: script-environment-image
-      default: quay.io/redhat-user-workloads/rpm-build-pipeline-tenant/environment:latest@sha256:6ecc3a36f6d6b3c9bc4153373da6ab3fb3e716eb0134480492c93bb92a31158d
+      default: quay.io/redhat-user-workloads/rpm-build-pipeline-tenant/environment:latest@sha256:ffe0421ef0e984b9d27fbcea5de8bcab0dae84a7fdab031daace3cd8f57a8ff8
       type: string
     - name: ociStorage
       description: |
@@ -176,6 +176,10 @@ spec:
         environments.
       type: string
       default: true
+    - name: prefetch-input
+      description: Build dependencies to be prefetched by Cachi2 (for required prefetch-dependencies task).
+      type: string
+      default: ""
   results:
     - description: ""
       name: CHAINS-GIT_URL
@@ -263,6 +267,34 @@ spec:
       workspaces:
         - name: basic-auth
           workspace: git-auth
+    - name: prefetch-dependencies
+      params:
+        - name: input
+          value: $(params.prefetch-input)
+        - name: SOURCE_ARTIFACT
+          value: $(tasks.clone-repository.results.SOURCE_ARTIFACT)
+        - name: ociStorage
+          value: $(params.ociStorage).prefetch
+        - name: ociArtifactExpiresAfter
+          value: $(params.ociArtifactExpiresAfter)
+        - name: dev-package-managers
+          value: "true"
+      runAfter:
+        - clone-repository
+      taskRef:
+        params:
+          - name: name
+            value: prefetch-dependencies-oci-ta
+          - name: bundle
+            value: quay.io/konflux-ci/tekton-catalog/task-prefetch-dependencies-oci-ta:0.2@sha256:c664a6df6514b59c3ce53570b0994b45af66ecc89ba2a8e41834eae0622addf6
+          - name: kind
+            value: task
+        resolver: bundles
+      workspaces:
+        - name: git-basic-auth
+          workspace: git-auth
+        - name: netrc
+          workspace: netrc
     - name: pre-build-script
       taskRef:
         resolver: git
@@ -660,6 +692,141 @@ spec:
             value: $(params.self-ref-revision)
           - name: pathInRepo
             value: task/import-to-quay.yaml
+    - name: clair-scan
+      params:
+        - name: image-digest
+          value: $(tasks.upload-to-quay.results.IMAGE_DIGEST)
+        - name: image-url
+          value: $(tasks.upload-to-quay.results.IMAGE_URL)
+      runAfter:
+        - upload-to-quay
+      taskRef:
+        params:
+          - name: name
+            value: clair-scan
+          - name: bundle
+            value: quay.io/konflux-ci/tekton-catalog/task-clair-scan:0.3@sha256:b01d8e2c58eb407ac23fa07b8e44c4631f0cf7257e87507c829fa2486aff9804
+          - name: kind
+            value: task
+        resolver: bundles
+    - name: clamav-scan
+      params:
+        - name: image-digest
+          value: $(tasks.upload-to-quay.results.IMAGE_DIGEST)
+        - name: image-url
+          value: $(tasks.upload-to-quay.results.IMAGE_URL)
+      runAfter:
+        - upload-to-quay
+      taskRef:
+        params:
+          - name: name
+            value: clamav-scan
+          - name: bundle
+            value: quay.io/konflux-ci/tekton-catalog/task-clamav-scan:0.3@sha256:5b5b31eae9063a00b91acc049b536e548d87c730068e439eefe33ab5238ee118
+          - name: kind
+            value: task
+        resolver: bundles
+    - name: sast-shell-check
+      params:
+        - name: image-digest
+          value: $(tasks.upload-to-quay.results.IMAGE_DIGEST)
+        - name: image-url
+          value: $(tasks.upload-to-quay.results.IMAGE_URL)
+        - name: SOURCE_ARTIFACT
+          value: $(tasks.prefetch-dependencies.results.SOURCE_ARTIFACT)
+        - name: CACHI2_ARTIFACT
+          value: $(tasks.prefetch-dependencies.results.CACHI2_ARTIFACT)
+      runAfter:
+        - upload-to-quay
+      taskRef:
+        params:
+          - name: name
+            value: sast-shell-check-oci-ta
+          - name: bundle
+            value: quay.io/konflux-ci/tekton-catalog/task-sast-shell-check-oci-ta:0.1@sha256:f475b4b6b0c1687fa1aafa5ba38813e04f080b185af2975e12b457742d9dd857
+          - name: kind
+            value: task
+        resolver: bundles
+    - name: sast-snyk-check
+      params:
+        - name: image-digest
+          value: $(tasks.upload-to-quay.results.IMAGE_DIGEST)
+        - name: image-url
+          value: $(tasks.upload-to-quay.results.IMAGE_URL)
+        - name: SOURCE_ARTIFACT
+          value: $(tasks.prefetch-dependencies.results.SOURCE_ARTIFACT)
+        - name: CACHI2_ARTIFACT
+          value: $(tasks.prefetch-dependencies.results.CACHI2_ARTIFACT)
+      runAfter:
+        - upload-to-quay
+      taskRef:
+        params:
+          - name: name
+            value: sast-snyk-check-oci-ta
+          - name: bundle
+            value: quay.io/konflux-ci/tekton-catalog/task-sast-snyk-check-oci-ta:0.4@sha256:0c2ab8ce6d419400b63dd67d061052ac51de7b1ebe93f8ae86ed07ac638d756d
+          - name: kind
+            value: task
+        resolver: bundles
+    - name: sast-unicode-check
+      params:
+        - name: image-digest
+          value: $(tasks.upload-to-quay.results.IMAGE_DIGEST)
+        - name: image-url
+          value: $(tasks.upload-to-quay.results.IMAGE_URL)
+        - name: SOURCE_ARTIFACT
+          value: $(tasks.prefetch-dependencies.results.SOURCE_ARTIFACT)
+        - name: CACHI2_ARTIFACT
+          value: $(tasks.prefetch-dependencies.results.CACHI2_ARTIFACT)
+      runAfter:
+        - upload-to-quay
+      taskRef:
+        params:
+          - name: name
+            value: sast-unicode-check-oci-ta
+          - name: bundle
+            value: quay.io/konflux-ci/tekton-catalog/task-sast-unicode-check-oci-ta:0.4@sha256:b38140b2f0b2163def80e28a792b2702245d38a5610a504f2e56c198f3b8f70b
+          - name: kind
+            value: task
+        resolver: bundles
+    - name: rpms-signature-scan
+      params:
+        - name: image-url
+          value: $(tasks.upload-to-quay.results.IMAGE_URL)
+        - name: image-digest
+          value: $(tasks.upload-to-quay.results.IMAGE_DIGEST)
+      runAfter:
+        - upload-to-quay
+      taskRef:
+        params:
+          - name: name
+            value: rpms-signature-scan
+          - name: bundle
+            value: quay.io/konflux-ci/tekton-catalog/task-rpms-signature-scan:0.2@sha256:47b81d6b3d752649eddfbb8b3fd8f6522c4bb07f6d1946f9bc45dae3f92e2c9a
+          - name: kind
+            value: task
+        resolver: bundles
+    - name: source-build
+      params:
+        - name: BINARY_IMAGE
+          value: $(tasks.upload-to-quay.results.IMAGE_URL)
+        - name: BINARY_IMAGE_DIGEST
+          value: $(tasks.upload-to-quay.results.IMAGE_DIGEST)
+        - name: SOURCE_ARTIFACT
+          value: $(tasks.prefetch-dependencies.results.SOURCE_ARTIFACT)
+        - name: CACHI2_ARTIFACT
+          value: $(tasks.prefetch-dependencies.results.CACHI2_ARTIFACT)
+      runAfter:
+        - upload-to-quay
+      taskRef:
+        params:
+          - name: name
+            value: source-build-oci-ta
+          - name: bundle
+            value: quay.io/konflux-ci/tekton-catalog/task-source-build-oci-ta:0.3@sha256:c35ba219390d77a48ee19347e5ee8d13e5c23e3984299e02291d6da1ed8a986c
+          - name: kind
+            value: task
+        resolver: bundles
     - name: check-noarch-rpms
       runAfter:
         - rpmbuild-s390x
@@ -688,4 +855,6 @@ spec:
             value: task/check-noarch.yaml
   workspaces:
     - name: git-auth
+      optional: true
+    - name: netrc
       optional: true
