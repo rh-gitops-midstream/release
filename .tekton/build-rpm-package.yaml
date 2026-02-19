@@ -180,6 +180,13 @@ spec:
       description: Build dependencies to be prefetched by Cachi2 (for required prefetch-dependencies task).
       type: string
       default: ""
+    - name: skip-image-scans
+      description: |
+        Set to "true" to skip clair-scan, clamav-scan, SAST and rpms-signature-scan tasks.
+        Use for RPM builds where the pushed artifact type is application/vnd.rpm.build.v0
+        and standard image scanners cannot inspect it.
+      type: string
+      default: "false"
   results:
     - description: ""
       name: CHAINS-GIT_URL
@@ -709,6 +716,11 @@ spec:
           - name: kind
             value: task
         resolver: bundles
+      when:
+        - input: $(params.skip-image-scans)
+          operator: in
+          values:
+            - "false"
     - name: clamav-scan
       params:
         - name: image-digest
@@ -726,6 +738,11 @@ spec:
           - name: kind
             value: task
         resolver: bundles
+      when:
+        - input: $(params.skip-image-scans)
+          operator: in
+          values:
+            - "false"
     - name: sast-shell-check
       params:
         - name: image-digest
@@ -747,6 +764,11 @@ spec:
           - name: kind
             value: task
         resolver: bundles
+      when:
+        - input: $(params.skip-image-scans)
+          operator: in
+          values:
+            - "false"
     - name: sast-snyk-check
       params:
         - name: image-digest
@@ -768,6 +790,11 @@ spec:
           - name: kind
             value: task
         resolver: bundles
+      when:
+        - input: $(params.skip-image-scans)
+          operator: in
+          values:
+            - "false"
     - name: sast-unicode-check
       params:
         - name: image-digest
@@ -789,6 +816,11 @@ spec:
           - name: kind
             value: task
         resolver: bundles
+      when:
+        - input: $(params.skip-image-scans)
+          operator: in
+          values:
+            - "false"
     - name: rpms-signature-scan
       params:
         - name: image-url
@@ -806,6 +838,11 @@ spec:
           - name: kind
             value: task
         resolver: bundles
+      when:
+        - input: $(params.skip-image-scans)
+          operator: in
+          values:
+            - "false"
     - name: source-build
       params:
         - name: BINARY_IMAGE

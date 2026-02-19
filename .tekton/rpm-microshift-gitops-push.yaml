@@ -60,6 +60,8 @@ spec:
       ./generate-microshift-gitops-spec.sh
   - name: enableSymlinkCheck
     value: false
+  - name: skip-image-scans
+    value: "true"
   pipelineRef:
     resolver: git
     params:
