@@ -157,7 +157,7 @@ RUN groupadd -g 999 argocd && \
     mkdir -p /home/argocd && \
     chown argocd:0 /home/argocd && \
     chmod g=u /home/argocd && \
-    microdnf install -y git gpg tar tzdata && \
+    microdnf install -y git gpg tar tzdata openssl && \
     microdnf clean all && \
     rm -rf /tmp/* /var/tmp/*
 
