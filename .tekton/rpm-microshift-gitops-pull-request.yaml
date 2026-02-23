@@ -1,0 +1,80 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  annotations:
+    build.appstudio.openshift.io/repo: https://github.com/rh-gitops-midstream/release?rev={{revision}}
+    build.appstudio.redhat.com/commit_sha: '{{revision}}'
+    build.appstudio.redhat.com/pull_request_number: '{{pull_request_number}}'
+    build.appstudio.redhat.com/target_branch: '{{target_branch}}'
+    pipelinesascode.tekton.dev/cancel-in-progress: "true"
+    pipelinesascode.tekton.dev/max-keep-runs: "3"
+    pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
+      == "main" && ( "rpms/microshift-gitops/***".pathChanged() || ".tekton/rpm-microshift-gitops-pull-request.yaml".pathChanged()
+      )
+  creationTimestamp: null
+  labels:
+    appstudio.openshift.io/application: gitops-main
+    appstudio.openshift.io/component: rpm-microshift-gitops-main
+    pipelines.appstudio.openshift.io/type: build
+  name: rpm-microshift-gitops-main-on-pull-request
+  namespace: rh-openshift-gitops-tenant
+spec:
+  params:
+  - name: git-url
+    value: '{{source_url}}'
+  - name: revision
+    value: '{{revision}}'
+  - name: ociStorage
+    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/rpm-microshift-gitops-main:{{revision}}
+  - name: monorepo-subdir
+    value: rpms/microshift-gitops
+  - name: specfile
+    value: microshift-gitops.spec
+  - name: package-name
+    value: microshift-gitops
+  - name: target-branch
+    value: "{{ target_branch }}"
+  - name: self-ref-url
+    value: "https://github.com/konflux-ci/rpmbuild-pipeline.git"
+  - name: self-ref-revision
+    value: "8153cd094db31d2397f04a312dfb71747e46e0aa"
+  - name: pre-build-task-url
+    value: '{{source_url}}'
+  - name: pre-build-task-revision
+    value: '{{revision}}'
+  - name: hermetic
+    value: "true"
+  - name: build-architectures
+    value:
+    - aarch64
+    - x86_64
+  - name: pre-build-script-image
+    value: "registry.access.redhat.com/ubi9/ubi:latest"
+  - name: pre-build-script-content
+    value: |
+      #!/usr/bin/env bash
+      set -euxo pipefail
+      
+      echo "--- Preparing sources for RPM build  ---"
+      echo "--- Creating argo-cd-sources.tar.gz from correct internal directory  ---"
+      cd rpms/microshift-gitops
+      ./generate-microshift-gitops-spec.sh
+  
+  - name: enableSymlinkCheck
+    value: false
+  pipelineRef:
+    resolver: git
+    params:
+    - name: url
+      value: '{{source_url}}'
+    - name: revision
+      value: '{{revision}}'
+    - name: pathInRepo
+      value: .tekton/build-rpm-package.yaml
+  taskRunTemplate:
+    serviceAccountName: build-pipeline-rpm-microshift-gitops-main
+  workspaces:
+  - name: git-auth
+    secret:
+      secretName: '{{ git_auth_secret }}'
+status: {}
