@@ -185,6 +185,7 @@ COPY --from=argocd-build  /go/src/github.com/argoproj/tini/tini /usr/local/bin/
 COPY --from=argocd-build  /go/src/github.com/argoproj/ssh-connect/connect-proxy /usr/local/bin/connect-proxy
 COPY --from=argocd-build  /go/src/github.com/argoproj/git-lfs/bin/git-lfs /usr/local/bin/
 
+
 LABEL \
     name="openshift-gitops-1/argocd-rhel9" \
     cpe="cpe:/a:redhat:openshift_gitops:99.99::el9" \
