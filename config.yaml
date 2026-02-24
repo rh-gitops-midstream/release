@@ -1,21 +1,21 @@
 # Release Metadata
 release:
   name: OpenShift GitOps Operator
-  version: "1.17.4"
+  version: "1.17.5"
   olm:
     # TODO: Compute olm data automatically
-    name: "openshift-gitops-operator.v1.17.4"
+    name: "openshift-gitops-operator.v1.17.5"
     channel: "gitops-1.17"
-    replaces: "openshift-gitops-operator.v1.17.3"
+    replaces: "openshift-gitops-operator.v1.17.4"
     skip-range: "" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
     branch: release-1.17
     application: gitops-1-17
   managers:
-    - name: "Neus Miras"
-      github: nmirasch
-      email: "nmirasch@redhat.com"
+    - name: "Rizwana Naaz"
+      github: Rizwana777
+      email: "rnaaz@redhat.com"
 
 # Source code repositories
 # This section defines the source repositories for GitOps Operator artifacts built from source.
@@ -26,7 +26,7 @@ sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.17
-    commit: 3d7ed4a761e571cabd8d67b0d9700071c4d6275f
+    commit: d0d5333aae378621e4b1adca58633905fb4374c7
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
     ref: v3.0.23
@@ -62,11 +62,11 @@ sources:
   - path: sources/argocd-extension-installer
     url: https://github.com/argoproj-labs/argocd-extension-installer.git
     ref: main
-    commit: 44a5ab8e6998df0beb6f293b3607262db53aa8c7
+    commit: 6e0961fc99b62de558f34808dba23b560ef50dcb
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: v1.17
-    commit: 95709bb392d1d0ced615661e410d8ce176373513
+    commit: 9687a72b7cf858319d5c27b1fcae7fc06187bf52
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master
@@ -78,11 +78,11 @@ sources:
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
-    commit: 1b0595fe1ce6dd70fe62bb810ce6eadaef7ac454
+    commit: cb9160c0d5d3ff42668999fc530ecacad9e69d08
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
     ref: master
-    commit: 460c5569230680bc6cad6b4b4d3a8968135433e1
+    commit: 09102635500867f4119ae63008bf1fe1ae7328b5
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: v0.5.4
