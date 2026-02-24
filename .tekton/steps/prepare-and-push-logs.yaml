@@ -19,7 +19,7 @@ spec:
   results:
     - name: LOG_ARTIFACT_TAG
       description: The tag generated for the log artifact.
-  image: quay.io/devtools_gitops/test_image:integrated_ginkgo
+  image: quay.io/devtools_gitops/test_image@sha256:0e4a5c23102132463127492d65150d35b041ab06009b7d82064237c261d41a6b
   workingDir: /var/log-workspace
   volumeMounts:
     - name: "$(params.credentials-volume)"

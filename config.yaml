@@ -37,8 +37,8 @@ sources:
     commit: 348260aa4219ed79497296b52be87be7f50a5cdd
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
-    ref: kustomize/v5.7.0
-    commit: 7f30f0e23a350bd4ad66bbe7bc38208f311d5461
+    ref: kustomize/v5.8.0
+    commit: 0054b5e2961dd51cbbec37aafe75d7ffe9148428
   - path: sources/helm
     url: https://github.com/helm/helm.git
     ref: v3.18.4
