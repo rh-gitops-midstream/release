@@ -264,6 +264,11 @@ spec:
                       print(f"  [skip] {name} (bundle component)")
                       continue
 
+                  # Skip dex — keep the released version from the bundle CSV
+                  if 'dex' in name.lower():
+                      print(f"  [skip] {name} (external image, keeping released version)")
+                      continue
+
                   # Derive the short image name, e.g. "argocd-rhel9"
                   image_ref  = image.split('@')[0] if '@' in image else image.split(':')[0]
                   short_name = image_ref.split('/')[-1]

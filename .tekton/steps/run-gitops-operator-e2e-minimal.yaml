@@ -23,7 +23,7 @@ spec:
       default: "1"
   env:
     - name: CI
-      value: "prow"
+      value: "konflux"
     - name: TIMEOUT
       value: "$(params.timeout)"
     - name: BRANCH
