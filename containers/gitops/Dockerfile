@@ -13,6 +13,8 @@ RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 GOOS=linux go build -a -mod=rea
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 WORKDIR /
 COPY --from=builder /workspace/backend-http .
+USER 10001
+
 EXPOSE 8080
 ENTRYPOINT ["./backend-http"]
 
