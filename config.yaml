@@ -54,11 +54,11 @@ sources:
   - path: sources/ssh-connect
     url: https://github.com/gotoh/ssh-connect.git
     ref: master
-    commit: b65b09a0ee06950972233e8ea86ef87c4e63b3c9
+    commit: a7443d32e6bf6f00698384b0519adc16fa7656fa
   - path: sources/tini
     url: https://github.com/krallin/tini.git
     ref: master
-    commit: 0b44d3665869e46ccbac7414241b8256d6234dc4
+    commit: 369448a167e8b3da4ca5bca0b3307500c3371828
   - path: sources/argocd-extension-installer
     url: https://github.com/argoproj-labs/argocd-extension-installer.git
     ref: main
@@ -74,7 +74,7 @@ sources:
   - path: sources/rollouts-plugin-trafficrouter-openshift
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
     ref: main
-    commit: 142230a39d74119ccfc7414f6812bdac2fc09449
+    commit: 1495bbad184a05cde955fb21dcf35d05c3e58d98
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
