@@ -38,7 +38,7 @@ metadata:
     pac.test.appstudio.openshift.io/url-org: rh-gitops-midstream
     pac.test.appstudio.openshift.io/url-repository: release
     test.appstudio.openshift.io/added-to-global-candidate-list: '{"result":true,"reason":"Success","lastupdatedtime":"2026-02-26T08:39:35Z"}'
-    test.appstudio.openshift.io/git-reporter-status: '{"scenarios":{"conforma-gitops-1-18-gitops-1-18-4-build-1":{"lastUpdateTime":"2026-02-26T08:40:08.335546629Z"},"enterprise-contract-gitops-1-18-gitops-1-18-4-build-1":{"lastUpdateTime":"2026-02-26T08:40:53.596820883Z"}}}'
+    test.appstudio.openshift.io/git-reporter-status: '{"scenarios":{"conforma-gitops-1-18-gitops-1-18-20260226-083555-000":{"lastUpdateTime":"2026-02-26T08:40:08.335546629Z"},"enterprise-contract-gitops-1-18-gitops-1-18-20260226-083555-000":{"lastUpdateTime":"2026-02-26T08:40:53.596820883Z"}}}'
     test.appstudio.openshift.io/integration-workflow: push
     test.appstudio.openshift.io/pipelinerunstarttime: "1772094955000"
     test.appstudio.openshift.io/pr-status: merged
