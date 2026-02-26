@@ -1,24 +1,21 @@
 # Release Metadata
 release:
   name: OpenShift GitOps Operator
-  version: "1.19.1"
+  version: "1.19.2"
   olm:
     # TODO: Compute olm data automatically
-    name: "openshift-gitops-operator.v1.19.1"
+    name: "openshift-gitops-operator.v1.19.2"
     channel: "latest,gitops-1.19"
-    replaces: "openshift-gitops-operator.v1.19.0"
+    replaces: "openshift-gitops-operator.v1.19.2"
     skip-range: ">=1.0.0 <1.19.0" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
     branch: release-1.19
     application: gitops-1-19
   managers:
-    - name: "Siddhesh Ghadi"
-      github: svghadi
-      email: "sghadi@redhat.com"
-    - name: "Neus Miras"
-      github: nmirasch
-      email: "nmirasch@redhat.com"
+    - name: "Rizwana Naaz"
+      github: Rizwana777
+      email: "rnaaz@redhat.com"
 
 # Source code repositories
 # This section defines the source repositories for GitOps Operator artifacts built from source.
@@ -29,23 +26,23 @@ sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.19
-    commit: 76fc425f57e7f4759bf31e63281c38dbfa7dbbbd
+    commit: 63aa7a94d2c3c1e72c6c2bb9359cfb4bffa52c10
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
     ref: v3.1.12
     commit: a46152e850cb0d711bce22f562e646f9df22af9b
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
-    ref: v1.8.3
-    commit: 49fa1516cf71672b69e265267da4e1d16e1fe114
+    ref: v1.8.4
+    commit: 55e89ddc5329db9ebd72edff5503f2822d2e80ff
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
-    ref: kustomize/v5.7.0
-    commit: 7f30f0e23a350bd4ad66bbe7bc38208f311d5461
+    ref: kustomize/v5.7.1
+    commit: 168971a50110fc90dfbd1327245e7aabe5c07e8f
   - path: sources/helm
     url: https://github.com/helm/helm.git
-    ref: v3.18.4
-    commit: d80839cf37d860c8aa9a0503fe463278f26cd5e2
+    ref: v3.18.6
+    commit: b76a950f6835474e0906b96c9ec68a2eff3a6430
   - path: sources/dex
     ref: v2.43.1
     url: https://github.com/dexidp/dex.git
@@ -57,15 +54,15 @@ sources:
   - path: sources/ssh-connect
     url: https://github.com/gotoh/ssh-connect.git
     ref: master
-    commit: b65b09a0ee06950972233e8ea86ef87c4e63b3c9
+    commit: a7443d32e6bf6f00698384b0519adc16fa7656fa
   - path: sources/tini
     url: https://github.com/krallin/tini.git
     ref: master
-    commit: 0b44d3665869e46ccbac7414241b8256d6234dc4
+    commit: 369448a167e8b3da4ca5bca0b3307500c3371828
   - path: sources/argocd-extension-installer
     url: https://github.com/argoproj-labs/argocd-extension-installer.git
     ref: main
-    commit: 44a5ab8e6998df0beb6f293b3607262db53aa8c7
+    commit: 6e0961fc99b62de558f34808dba23b560ef50dcb
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: v1.19
@@ -77,15 +74,15 @@ sources:
   - path: sources/rollouts-plugin-trafficrouter-openshift
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
     ref: main
-    commit: 142230a39d74119ccfc7414f6812bdac2fc09449
+    commit: 1495bbad184a05cde955fb21dcf35d05c3e58d98
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
-    commit: 1b0595fe1ce6dd70fe62bb810ce6eadaef7ac454
+    commit: cb9160c0d5d3ff42668999fc530ecacad9e69d08
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
     ref: master
-    commit: 460c5569230680bc6cad6b4b4d3a8968135433e1
+    commit: 09102635500867f4119ae63008bf1fe1ae7328b5
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: v0.5.4
