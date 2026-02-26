@@ -1,24 +1,21 @@
 # Release Metadata
 release:
   name: OpenShift GitOps Operator
-  version: "1.18.3"
+  version: "1.18.4"
   olm:
     # TODO: Compute olm data automatically
-    name: "openshift-gitops-operator.v1.18.3"
+    name: "openshift-gitops-operator.v1.18.4"
     channel: "gitops-1.18"
-    replaces: "openshift-gitops-operator.v1.18.2"
+    replaces: "openshift-gitops-operator.v1.18.3"
     skip-range: "" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
     branch: release-1.18
     application: gitops-1-18
   managers:
-    - name: "Siddhesh Ghadi"
-      github: svghadi
-      email: "sghadi@redhat.com"
-    - name: "Neus Miras"
-      github: nmirasch
-      email: "nmirasch@redhat.com"
+    - name: "Rizwana Naaz"
+      github: Rizwana777
+      email: "rnaaz@redhat.com"
 
 # Source code repositories
 # This section defines the source repositories for GitOps Operator artifacts built from source.
@@ -29,27 +26,27 @@ sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.18
-    commit: f19618c70a33d0e403cdd6cd229cfdd6e9f99d8c
+    commit: f248fee7a6e222e4c9215e6b0e6aae8ff92082de
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.1.11
-    commit: cc053b2eebed744df8c33b33fbbadcd0adcd044d
+    ref: v3.1.12
+    commit: a46152e850cb0d711bce22f562e646f9df22af9b
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
-    ref: v1.8.3
-    commit: 49fa1516cf71672b69e265267da4e1d16e1fe114
+    ref: v1.8.4
+    commit: 55e89ddc5329db9ebd72edff5503f2822d2e80ff
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
-    ref: kustomize/v5.7.0
-    commit: 7f30f0e23a350bd4ad66bbe7bc38208f311d5461
+    ref: kustomize/v5.7.1
+    commit: 168971a50110fc90dfbd1327245e7aabe5c07e8f
   - path: sources/helm
     url: https://github.com/helm/helm.git
-    ref: v3.18.4
-    commit: d80839cf37d860c8aa9a0503fe463278f26cd5e2
+    ref: v3.18.6
+    commit: b76a950f6835474e0906b96c9ec68a2eff3a6430
   - path: sources/dex
-    ref: v2.43.0
+    ref: v2.43.1
     url: https://github.com/dexidp/dex.git
-    commit: 8e96058e71257eb0a32e1b0a42303094dea9d8fb
+    commit: 6e602d3315ea09d0cdeef6b51e61f2fd4ae52502
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
     ref: v3.7.1
@@ -57,15 +54,15 @@ sources:
   - path: sources/ssh-connect
     url: https://github.com/gotoh/ssh-connect.git
     ref: master
-    commit: b65b09a0ee06950972233e8ea86ef87c4e63b3c9
+    commit: a7443d32e6bf6f00698384b0519adc16fa7656fa
   - path: sources/tini
     url: https://github.com/krallin/tini.git
     ref: master
-    commit: 0b44d3665869e46ccbac7414241b8256d6234dc4
+    commit: 369448a167e8b3da4ca5bca0b3307500c3371828
   - path: sources/argocd-extension-installer
     url: https://github.com/argoproj-labs/argocd-extension-installer.git
     ref: main
-    commit: 44a5ab8e6998df0beb6f293b3607262db53aa8c7
+    commit: 6e0961fc99b62de558f34808dba23b560ef50dcb
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: v1.18
@@ -81,11 +78,11 @@ sources:
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
-    commit: 1b0595fe1ce6dd70fe62bb810ce6eadaef7ac454
+    commit: cb9160c0d5d3ff42668999fc530ecacad9e69d08
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
     ref: master
-    commit: 460c5569230680bc6cad6b4b4d3a8968135433e1
+    commit: 09102635500867f4119ae63008bf1fe1ae7328b5
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: v0.5.4
