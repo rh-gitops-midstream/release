@@ -44,8 +44,9 @@ spec:
     set -x
     oc status
     cd /testsuites/gitops-operator/
+    git remote add downstream https://github.com/adamsaleh/gitops-operator/
     git fetch --all
-    git checkout "${BRANCH}"
+    git checkout -B "${BRANCH}" downstream/${BRANCH}
     git pull
     /testsuites/gitops-operator/bin/ginkgo -timeout "${TIMEOUT}" -p --no-color -v -focus ".*validate_toolchain.*" -focus ".*validate_keycloak_resource_reqs.*" -focus ".*validate_csv_permissions.*" -focus ".*validate_dex_clientsecret.*" --trace -r "./test/openshift/e2e/ginkgo/parallel/."    # /testsuites/gitops-operator/bin/ginkgo -p -v -focus "validate_toolchain_test" -focus "validate_keycloak_resource_reqs" -focus "validate_csv_permissions_test" -focus "validate_dex_clientsecret_test" --trace --timeout $TIMEOUT -r "./test/openshift/e2e/ginkgo/parallel/."
     

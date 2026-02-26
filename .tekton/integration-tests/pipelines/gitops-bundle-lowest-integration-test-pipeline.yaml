@@ -664,6 +664,6 @@ spec:
               - name: kubeconfig
                 value: "$(steps.get-kubeconfig.results.kubeconfig)"
               - name: branch
-                value: master
+                value: konflux_toolchain_test
               - name: test_dir
                 value: "./test/openshift/e2e/ginkgo/parallel"
