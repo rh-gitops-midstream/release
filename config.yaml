@@ -6,7 +6,7 @@ release:
     # TODO: Compute olm data automatically
     name: "openshift-gitops-operator.v1.19.2"
     channel: "latest,gitops-1.19"
-    replaces: "openshift-gitops-operator.v1.19.2"
+    replaces: "openshift-gitops-operator.v1.19.1"
     skip-range: ">=1.0.0 <1.19.0" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
