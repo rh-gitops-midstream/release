@@ -1,0 +1,51 @@
+apiVersion: tekton.dev/v1alpha1
+kind: StepAction
+metadata:
+  name: run-operator-e2e
+spec:
+  params:
+    - name: branch
+      type: string
+      default: "master"
+    - name: "test_dir"
+      type: string
+      default: "./test/openshift/e2e/ginkgo/parallel"
+    - name: "timeout"
+      type: string
+      default: "30m"
+    - name: kubeconfig
+      type: string
+    - name: credentials
+      type: string
+      description: A volume to which the remote cluster credentials will be written.
+    - name: procs
+      type: string
+      default: "1"
+  env:
+    - name: CI
+      value: "prow"
+    - name: TIMEOUT
+      value: "$(params.timeout)"
+    - name: BRANCH
+      value: "$(params.branch)"
+    - name: TEST_DIR
+      value: "$(params.test_dir)"
+    - name: PROCS
+      value: "$(params.procs)"
+    - name: KUBECONFIG
+      value: "/credentials/$(params.kubeconfig)"
+    - name: NON_OLM
+      value: "true"
+  volumeMounts:
+    - name: "$(params.credentials)"
+      mountPath: /credentials
+  image: quay.io/devtools_gitops/test_image@sha256:8bff0841163d2eefc74ab0c413bfdd504d8e99cbe4ce66a18b1756d1d8bb06fc
+  script: |
+    set +x
+    oc status
+    cd /testsuites/gitops-operator/
+    git remote add test https://github.com/AdamSaleh/gitops-operator.git
+    git fetch --all
+    git checkout "${BRANCH}"
+    git checkout rm_env_across_containers
+    /testsuites/gitops-operator/bin/ginkgo -p -v -procs=$PROCS --trace --timeout $TIMEOUT -r "${TEST_DIR}"

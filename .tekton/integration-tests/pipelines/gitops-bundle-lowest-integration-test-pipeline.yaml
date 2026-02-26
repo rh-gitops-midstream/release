@@ -1,0 +1,669 @@
+---
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: gitops-bundle-lowest-parallel-integration-test-pipeline
+spec:
+  description: |
+    An integration test which provisions an ephemeral Hypershift cluster and deploys an Operator
+    bundle from a Konflux snapshot.
+  params:
+    - description: Snapshot of the application
+      name: SNAPSHOT
+      default: '{"components": [{"name":"gitops-operator-bundle-main", "containerImage": "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle:latest"}]}'
+      type: string
+    - description: Namespace where the the Operator bundle will be deployed.
+      name: NAMESPACE
+      default: default
+      type: string
+    - description: Duration to wait for bundle installation to complete before failing.
+      name: INSTALL_TIMEOUT
+      default: 25m
+      type: string
+  finally:
+    - name: export-logs-and-notify
+      taskSpec:
+        volumes:
+          - name: credentials-volume
+            secret:
+              secretName: gitops-operator-bundle-quay-image-repository-image-push
+        steps:
+          - name: prepare-and-push-logs
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/AdamSaleh/release.git
+                - name: revision
+                  value: konflux
+                - name: pathInRepo
+                  value: .tekton/steps/prepare-and-push-logs.yaml
+            params:
+              - name: pipeline-run-name
+                value: "$(context.pipelineRun.name)"
+              - name: namespace
+                value: "$(context.pipelineRun.namespace)"
+              - name: quay-repo
+                value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle
+              - name: credentials-volume
+                value: credentials-volume
+  tasks:
+    - name: parse-metadata
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: https://github.com/konflux-ci/integration-examples
+          - name: revision
+            value: main
+          - name: pathInRepo
+            value: tasks/test_metadata.yaml
+      params:
+        - name: SNAPSHOT
+          value: $(params.SNAPSHOT)
+
+    # =========================================================================
+    # NEW: Patch bundle image with component digests from the SNAPSHOT.
+    #
+    # During a PR, all component builds run concurrently. The bundle is built
+    # with whatever digests were last committed (from the previous nudge), so
+    # its CSV references stale images. This task:
+    #   1. Finds the bundle component in the SNAPSHOT (by name containing "bundle")
+    #   2. Pulls that bundle image
+    #   3. Replaces all component image references in the CSV with fresh digests
+    #   4. Pushes the patched bundle to a temporary tag
+    #
+    # Runs in parallel with cluster provisioning to avoid adding wall-clock time.
+    # =========================================================================
+    - name: patch-bundle-images
+      runAfter:
+        - parse-metadata
+      params:
+        - name: SNAPSHOT
+          value: $(params.SNAPSHOT)
+        - name: pipelineRunName
+          value: "$(context.pipelineRun.name)"
+      taskSpec:
+        params:
+          - name: SNAPSHOT
+            type: string
+          - name: pipelineRunName
+            type: string
+        results:
+          - name: patchedBundleImage
+            description: >-
+              Fully qualified reference (by digest) to the patched bundle image
+              with all component images updated to the SNAPSHOT digests.
+        volumes:
+          - name: push-credentials
+            secret:
+              secretName: gitops-operator-bundle-quay-image-repository-image-push
+        steps:
+          - name: patch-and-push-bundle
+            image: registry.access.redhat.com/ubi9/buildah:latest
+            env:
+              - name: BUILDAH_FORMAT
+                value: oci
+              - name: STORAGE_DRIVER
+                value: vfs
+              - name: SNAPSHOT_JSON
+                value: "$(params.SNAPSHOT)"
+              - name: PIPELINE_RUN_NAME
+                value: "$(params.pipelineRunName)"
+            volumeMounts:
+              - name: push-credentials
+                mountPath: /push-credentials
+                readOnly: true
+            securityContext:
+              capabilities:
+                add:
+                  - SETFCAP
+            script: |
+              #!/usr/bin/env bash
+              set -euxo pipefail
+
+              echo "============================================"
+              echo "=== patch-and-push-bundle START ==="
+              echo "============================================"
+
+              # ------------------------------------------------------------------
+              # 0. Debug: show what we received
+              # ------------------------------------------------------------------
+              echo "=== SNAPSHOT_JSON ==="
+              echo "${SNAPSHOT_JSON}" | python3 -m json.tool 2>/dev/null || echo "${SNAPSHOT_JSON}"
+              echo "=== END SNAPSHOT_JSON ==="
+
+              echo "=== PIPELINE_RUN_NAME: ${PIPELINE_RUN_NAME} ==="
+
+              # ------------------------------------------------------------------
+              # 1. Extract bundle image from the SNAPSHOT
+              # ------------------------------------------------------------------
+              echo "=== Extracting bundle image from SNAPSHOT ==="
+              BUNDLE_IMAGE=$(echo "${SNAPSHOT_JSON}" | python3 -c "
+              import json, sys
+              snap = json.load(sys.stdin)
+              for c in snap.get('components', []):
+                  name = c.get('name', '')
+                  image = c.get('containerImage', '')
+                  print(f'  component: {name} -> {image}', file=sys.stderr)
+                  if 'bundle' in name.lower():
+                      print(image)
+                      sys.exit(0)
+              print('ERROR: No bundle component found in SNAPSHOT', file=sys.stderr)
+              sys.exit(1)
+              ")
+
+              echo "=== Bundle image from SNAPSHOT: ${BUNDLE_IMAGE} ==="
+
+              # ------------------------------------------------------------------
+              # 2. Configure registry authentication
+              # ------------------------------------------------------------------
+              echo "=== Configuring registry auth ==="
+              echo "  Contents of /push-credentials/:"
+              ls -la /push-credentials/ || echo "  (directory not found)"
+
+              AUTH_DIR="${HOME}/.docker"
+              mkdir -p "${AUTH_DIR}"
+
+              if [ -f /push-credentials/.dockerconfigjson ]; then
+                echo "  Using /push-credentials/.dockerconfigjson"
+                cp /push-credentials/.dockerconfigjson "${AUTH_DIR}/config.json"
+              elif [ -f /push-credentials/config.json ]; then
+                echo "  Using /push-credentials/config.json"
+                cp /push-credentials/config.json "${AUTH_DIR}/config.json"
+              elif [ -f /push-credentials/.dockercfg ]; then
+                echo "  Using /push-credentials/.dockercfg (legacy format)"
+                cp /push-credentials/.dockercfg "${AUTH_DIR}/config.json"
+              else
+                echo "  WARNING: No known credential file found, listing all files:"
+                find /push-credentials/ -type f 2>/dev/null || true
+                echo "  Push will likely fail"
+              fi
+
+              export REGISTRY_AUTH_FILE="${AUTH_DIR}/config.json"
+              echo "  Auth file size: $(wc -c < "${REGISTRY_AUTH_FILE}" 2>/dev/null || echo 'missing') bytes"
+              # Show which registries have auth (without leaking tokens)
+              python3 -c "
+              import json
+              try:
+                  with open('${REGISTRY_AUTH_FILE}') as f:
+                      cfg = json.load(f)
+                  auths = cfg.get('auths', {})
+                  print(f'  Registries with credentials: {list(auths.keys())}')
+              except Exception as e:
+                  print(f'  Could not parse auth file: {e}')
+              " || true
+
+              # ------------------------------------------------------------------
+              # 3. Pull bundle and mount its filesystem
+              # ------------------------------------------------------------------
+              echo "=== Pulling bundle image: ${BUNDLE_IMAGE} ==="
+              container=$(buildah from --pull=always --authfile "${REGISTRY_AUTH_FILE}" "${BUNDLE_IMAGE}")
+              echo "=== Container created: ${container} ==="
+
+              mountpoint=$(buildah mount "${container}")
+              echo "=== Mounted at: ${mountpoint} ==="
+
+              echo "=== Bundle image contents ==="
+              find "${mountpoint}" -maxdepth 3 -type f 2>/dev/null || true
+              echo "=== End bundle contents ==="
+
+              # ------------------------------------------------------------------
+              # 4. Locate the ClusterServiceVersion
+              # ------------------------------------------------------------------
+              echo "=== Searching for ClusterServiceVersion ==="
+              CSV_FILE=$(find "${mountpoint}" \
+                -name "*.clusterserviceversion.yaml" 2>/dev/null | head -1)
+
+              if [ -z "${CSV_FILE}" ]; then
+                echo "ERROR: No ClusterServiceVersion found in bundle"
+                echo "=== Full bundle tree ==="
+                find "${mountpoint}" -type f 2>/dev/null || true
+                exit 1
+              fi
+              echo "=== Found CSV: ${CSV_FILE} ==="
+
+              echo "--- Original image references in CSV ---"
+              grep -n 'image:\|RELATED_IMAGE' "${CSV_FILE}" || echo "(none found)"
+              echo "--- End original image references ---"
+
+              # ------------------------------------------------------------------
+              # 5. Patch image references using the SNAPSHOT
+              # ------------------------------------------------------------------
+              echo "=== Patching image references ==="
+              export CSV_PATH="${CSV_FILE}"
+              python3 << 'PYEOF'
+              import json, os, re, sys
+
+              snapshot = json.loads(os.environ['SNAPSHOT_JSON'])
+              csv_path = os.environ['CSV_PATH']
+
+              with open(csv_path, 'r') as f:
+                  content = f.read()
+
+              original_content = content
+              patched_count = 0
+
+              print("Components in SNAPSHOT:")
+              for comp in snapshot.get('components', []):
+                  name  = comp.get('name', '')
+                  image = comp.get('containerImage', '')
+                  print(f"  - {name}: {image}")
+
+              print("\nPatching CSV:")
+              for comp in snapshot.get('components', []):
+                  name  = comp.get('name', '')
+                  image = comp.get('containerImage', '')
+
+                  if not image:
+                      print(f"  [skip] {name} (no containerImage)")
+                      continue
+
+                  # Skip the bundle component itself — we are patching *it*
+                  if 'bundle' in name.lower():
+                      print(f"  [skip] {name} (bundle component)")
+                      continue
+
+                  # Skip dex — keep the released version from the bundle CSV
+                  if 'dex' in name.lower():
+                      print(f"  [skip] {name} (external image, keeping released version)")
+                      continue
+
+                  # Derive the short image name, e.g. "argocd-rhel9"
+                  image_ref  = image.split('@')[0] if '@' in image else image.split(':')[0]
+                  short_name = image_ref.split('/')[-1]
+
+                  # Match any fully-qualified image reference whose final path
+                  # segment equals short_name, followed by @sha256:… or :tag
+                  #   e.g.  registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:abc
+                  #   e.g.  quay.io/…/argocd-rhel9:on-pr-631
+                  pattern = (
+                      r'[a-zA-Z0-9._:/-]*/'
+                      + re.escape(short_name)
+                      + r'[@:][^\s"\',}\]]*'
+                  )
+
+                  # Show what we're trying to match
+                  matches = re.findall(pattern, content)
+                  print(f"  [{short_name}] pattern: {pattern}")
+                  print(f"  [{short_name}] matches found: {matches}")
+
+                  new_content, count = re.subn(pattern, image, content)
+                  if count > 0:
+                      print(f"  [patch] {short_name}: {count} ref(s) -> {image}")
+                      content = new_content
+                      patched_count += count
+                  else:
+                      print(f"  [miss]  {short_name}: no matching references in CSV")
+
+              if patched_count == 0:
+                  print("\nWARNING: No image references were patched. "
+                        "Check that component names match image paths in the CSV.",
+                        file=sys.stderr)
+                  # Still continue — the original bundle may work as-is
+              else:
+                  print(f"\nPatched {patched_count} total image reference(s).")
+
+              if content != original_content:
+                  with open(csv_path, 'w') as f:
+                      f.write(content)
+                  print("CSV file updated on disk.")
+              else:
+                  print("CSV file unchanged (no patches applied).")
+              PYEOF
+
+              echo ""
+              echo "--- Patched image references in CSV ---"
+              grep -n 'image:\|RELATED_IMAGE' "${CSV_FILE}" || echo "(none found)"
+              echo "--- End patched image references ---"
+
+              # ------------------------------------------------------------------
+              # 6. Commit the modified bundle and push
+              # ------------------------------------------------------------------
+              buildah unmount "${container}"
+
+              PUSH_REPO="quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle"
+              PUSH_TAG="patched-${PIPELINE_RUN_NAME}"
+              PUSH_TARGET="${PUSH_REPO}:${PUSH_TAG}"
+
+              echo "=== Committing patched bundle ==="
+              buildah commit "${container}" "${PUSH_TARGET}"
+
+              echo "=== Pushing to: ${PUSH_TARGET} ==="
+              DIGEST_FILE="/tmp/patched-bundle-digest"
+              buildah push --authfile "${REGISTRY_AUTH_FILE}" \
+                --digestfile "${DIGEST_FILE}" \
+                "${PUSH_TARGET}"
+
+              DIGEST=$(cat "${DIGEST_FILE}")
+              PATCHED_REF="${PUSH_REPO}@${DIGEST}"
+
+              echo "============================================"
+              echo "=== PATCHED BUNDLE: ${PATCHED_REF} ==="
+              echo "============================================"
+              printf '%s' "${PATCHED_REF}" > "$(results.patchedBundleImage.path)"
+
+    - name: provision-eaas-space
+      runAfter:
+        - parse-metadata
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: https://github.com/konflux-ci/build-definitions.git
+          - name: revision
+            value: main
+          - name: pathInRepo
+            value: task/eaas-provision-space/0.1/eaas-provision-space.yaml
+      params:
+        - name: ownerName
+          value: $(context.pipelineRun.name)
+        - name: ownerUid
+          value: $(context.pipelineRun.uid)
+    - name: provision-cluster
+      runAfter:
+        - provision-eaas-space
+      taskSpec:
+        results:
+          - name: clusterName
+            value: "$(steps.create-cluster.results.clusterName)"
+        volumes:
+          - name: sources-volume
+            emptyDir: {}
+        steps:
+          - name: get-supported-versions
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-get-supported-ephemeral-cluster-versions/0.1/eaas-get-supported-ephemeral-cluster-versions.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(tasks.provision-eaas-space.results.secretRef)
+          - name: create-cluster
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-create-ephemeral-cluster-hypershift-aws/0.1/eaas-create-ephemeral-cluster-hypershift-aws.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(tasks.provision-eaas-space.results.secretRef)
+              - name: imageContentSources
+                value: |
+                  # -------------------------
+                  # GitOps Backend
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/gitops-rhel8
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel8
+                      - registry.stage.redhat.io/openshift-gitops-1/gitops-rhel8
+
+                  - source: registry.redhat.io/openshift-gitops-1/gitops-rhel9
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel9
+                      - registry.stage.redhat.io/openshift-gitops-1/gitops-rhel9
+
+                  # -------------------------
+                  # Console Plugin
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/console-plugin-rhel8
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-rhel8
+                      - registry.stage.redhat.io/openshift-gitops-1/console-plugin-rhel8
+
+                  - source: registry.redhat.io/openshift-gitops-1/console-plugin-rhel9
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-rhel9
+                      - registry.stage.redhat.io/openshift-gitops-1/console-plugin-rhel9
+
+                  # -------------------------
+                  # Dex
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/dex-rhel8
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex-rhel8
+                      - registry.stage.redhat.io/openshift-gitops-1/dex-rhel8
+
+                  - source: registry.redhat.io/openshift-gitops-1/dex-rhel9
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex-rhel9
+                      - registry.stage.redhat.io/openshift-gitops-1/dex-rhel9
+
+                  # -------------------------
+                  # Must Gather
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/must-gather-rhel8
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/must-gather-rhel8
+                      - registry.stage.redhat.io/openshift-gitops-1/must-gather-rhel8
+
+                  - source: registry.redhat.io/openshift-gitops-1/must-gather-rhel9
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/must-gather-rhel9
+                      - registry.stage.redhat.io/openshift-gitops-1/must-gather-rhel9
+
+                  # -------------------------
+                  # Argo CD
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/argocd-rhel8
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel8
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel8-tmp
+                      - registry.stage.redhat.io/openshift-gitops-1/argocd-rhel8
+
+                  - source: registry.redhat.io/openshift-gitops-1/argocd-rhel9
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel9
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel9-tmp
+                      - registry.stage.redhat.io/openshift-gitops-1/argocd-rhel9
+
+                  # -------------------------
+                  # Argo CD Agent
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel8
+                      - registry.stage.redhat.io/openshift-gitops-1/argocd-agent-rhel8
+
+                  - source: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel9
+                      - registry.stage.redhat.io/openshift-gitops-1/argocd-agent-rhel9
+
+                  # -------------------------
+                  # Argo Rollouts
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts-rhel8
+                      - registry.stage.redhat.io/openshift-gitops-1/argo-rollouts-rhel8
+
+                  - source: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel9
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts-rhel9
+                      - registry.stage.redhat.io/openshift-gitops-1/argo-rollouts-rhel9
+
+                  # -------------------------
+                  # Operator Bundle
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/gitops-operator-bundle
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle
+                      - registry.stage.redhat.io/openshift-gitops-1/gitops-operator-bundle
+
+                  # -------------------------
+                  # GitOps Operator Controller
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel8-operator
+                      - registry.stage.redhat.io/openshift-gitops-1/gitops-rhel8-operator
+
+                  - source: registry.redhat.io/openshift-gitops-1/gitops-rhel9-operator
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel9-operator
+                      - registry.stage.redhat.io/openshift-gitops-1/gitops-rhel9-operator
+
+                  # -------------------------
+                  # Argo CD Extensions
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel8
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extensions-rhel8
+                      - registry.stage.redhat.io/openshift-gitops-1/argocd-extensions-rhel8
+
+                  - source: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel9
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extensions-rhel9
+                      - registry.stage.redhat.io/openshift-gitops-1/argocd-extensions-rhel9
+
+                  # -------------------------
+                  # Image Updater
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel8
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-image-updater-rhel8
+                      - registry.stage.redhat.io/openshift-gitops-1/argocd-image-updater-rhel8
+
+                  - source: registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel9
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-image-updater-rhel9
+                      - registry.stage.redhat.io/openshift-gitops-1/argocd-image-updater-rhel9
+              - name: timeout
+                value: "60m"
+              - name: version
+                value: "4.14.57"
+    - name: install-operator
+      runAfter:
+        - provision-cluster
+        - patch-bundle-images
+      params:
+        - name: bundleImage
+          value: "$(tasks.patch-bundle-images.results.patchedBundleImage)"
+        - name: namespace
+          value: "openshift-gitops-operator"
+        - name: installTimeout
+          value: "$(params.INSTALL_TIMEOUT)"
+        # New params for creds
+        - name: eaasSpaceSecretRef
+          value: $(tasks.provision-eaas-space.results.secretRef)
+        - name: clusterName
+          value: "$(tasks.provision-cluster.results.clusterName)"
+      taskSpec:
+        params:
+          - name: bundleImage
+            type: string
+          - name: namespace
+            type: string
+          - name: installTimeout
+            type: string
+          - name: eaasSpaceSecretRef
+            type: string
+          - name: clusterName
+            type: string
+        volumes:
+          - name: credentials
+            emptyDir: {}
+        steps:
+          - name: get-kubeconfig
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-get-ephemeral-cluster-credentials/0.1/eaas-get-ephemeral-cluster-credentials.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(params.eaasSpaceSecretRef)
+              - name: clusterName
+                value: $(params.clusterName)
+              - name: credentials
+                value: credentials
+          - name: install-operator
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/adamsaleh/release.git
+                - name: revision
+                  value: konflux
+                - name: pathInRepo
+                  value: .tekton/steps/install-gitops-operator-bundle.yaml
+            params:
+              - name: installTimeout
+                value: "$(params.INSTALL_TIMEOUT)"
+              - name: bundleImage
+                value: "$(params.bundleImage)"
+              - name: namespace
+                value: "openshift-gitops-operator"
+              - name: credentials
+                value: credentials
+              - name: kubeconfig
+                value: "$(steps.get-kubeconfig.results.kubeconfig)"
+    - name: test-operator
+      runAfter:
+        - install-operator
+      params:
+        # New params for creds
+        - name: eaasSpaceSecretRef
+          value: $(tasks.provision-eaas-space.results.secretRef)
+        - name: clusterName
+          value: "$(tasks.provision-cluster.results.clusterName)"
+      taskSpec:
+        params:
+          - name: eaasSpaceSecretRef
+            type: string
+          - name: clusterName
+            type: string
+        volumes:
+          - name: credentials
+            emptyDir: {}
+        steps:
+          - name: get-kubeconfig
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-get-ephemeral-cluster-credentials/0.1/eaas-get-ephemeral-cluster-credentials.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(params.eaasSpaceSecretRef)
+              - name: clusterName
+                value: $(params.clusterName)
+              - name: credentials
+                value: credentials
+          - name: test-operator
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/adamsaleh/release.git
+                - name: revision
+                  value: konflux
+                - name: pathInRepo
+                  value: .tekton/steps/run-gitops-operator-e2e-minimal.yaml
+            params:
+              - name: credentials
+                value: credentials
+              - name: kubeconfig
+                value: "$(steps.get-kubeconfig.results.kubeconfig)"
+              - name: branch
+                value: konflux_toolchain_test
+              - name: test_dir
+                value: "./test/openshift/e2e/ginkgo/parallel"
