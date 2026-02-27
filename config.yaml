@@ -33,16 +33,16 @@ sources:
     commit: 7cedae735ca5c68fc24520b42da339aa388b9d25
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
-    ref: v1.8.3
-    commit: 49fa1516cf71672b69e265267da4e1d16e1fe114
+    ref: v1.8.4
+    commit: 55e89ddc5329db9ebd72edff5503f2822d2e80ff
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
     ref: kustomize/v5.6.0
     commit: 95db4aa0edd1afb988cd10465ce15f7546ebbbdc
   - path: sources/helm
     url: https://github.com/helm/helm.git
-    ref: v3.17.1
-    commit: 980d8ac1939e39138101364400756af2bdee1da5
+    ref: v3.17.4
+    commit: 595a05da6166037d0abebaa27ac8a498fa4d7ed2
   - path: sources/dex
     ref: v2.43.1
     url: https://github.com/dexidp/dex.git
