@@ -61,6 +61,10 @@ update-build:
 	echo "Updating BUILD: $$BUILD_VAL → $$NEW_VAL"; \
 	echo "$$NEW_VAL" > BUILD
 
+.PHONY: setup-release
+setup-release:
+	python3 hack/setup-release.py
+
 .PHONY: update-tekton-task-bundles
 update-tekton-task-bundles: deps
 	@echo "Updating Tekton Task Bundles..."
