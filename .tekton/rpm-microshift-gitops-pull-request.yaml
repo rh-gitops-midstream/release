@@ -59,7 +59,7 @@ spec:
       echo "--- Creating argo-cd-sources.tar.gz from correct internal directory  ---"
       cd rpms/microshift-gitops
       ./generate-microshift-gitops-spec.sh
-  
+      echo "--- DONE PRE-script  ---"
   - name: enableSymlinkCheck
     value: false
   pipelineRef:
