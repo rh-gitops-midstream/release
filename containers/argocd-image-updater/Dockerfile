@@ -15,7 +15,7 @@
 # ------------------------------------------------------------------------
 
 # Build the manager binary
-FROM registry.redhat.io/rhel9/go-toolset:1.25 AS builder
+FROM registry.redhat.io/rhel9/go-toolset:9.7 AS builder
 USER root
 
 ARG CI_ARGOCD_IMAGE_UPDATER_VERSION
