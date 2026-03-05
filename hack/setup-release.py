@@ -11,6 +11,7 @@ BUILD_PATTERN = re.compile(r"^v(?P<version>\d+\.\d+\.\d+)-(?P<build_id>\d+)$")
 CONFIG_PATH = Path("config.yaml")
 BUILD_PATH = Path("BUILD")
 TEKTON_DIR = Path(".tekton")
+CONTAINERS_DIR = Path("containers")
 
 
 def read_release_version(config_path: Path) -> str:
@@ -86,6 +87,43 @@ def convert_version_to_xy_format(version: str) -> str:
     if len(parts) < 2:
         raise ValueError(f"Invalid version format: {version}")
     return f"{parts[0]}-{parts[1]}"
+
+
+def convert_version_to_xdoty_format(version: str) -> str:
+    """Convert version from X.Y.Z format to X.Y format."""
+    parts = version.split(".")
+    if len(parts) < 2:
+        raise ValueError(f"Invalid version format: {version}")
+    return f"{parts[0]}.{parts[1]}"
+
+
+def update_container_dockerfiles_cpe(config_path: Path, containers_dir: Path) -> None:
+    """Update cpe labels in containers Dockerfiles to use X.Y release version."""
+    config_version = read_release_version(config_path)
+    cpe_version = convert_version_to_xdoty_format(config_version)
+
+    dockerfiles = sorted(containers_dir.glob("*/Dockerfile"))
+    updated_files = []
+
+    for dockerfile in dockerfiles:
+        content = dockerfile.read_text(encoding="utf-8")
+        updated_content = re.sub(
+            r'(cpe="cpe:/a:redhat:openshift_gitops:)\d+\.\d+(::el\d+")',
+            rf'\g<1>{cpe_version}\g<2>',
+            content,
+        )
+
+        if updated_content != content:
+            dockerfile.write_text(updated_content, encoding="utf-8")
+            updated_files.append(str(dockerfile))
+
+    if updated_files:
+        print(
+            "Updated cpe labels in container Dockerfiles: "
+            + ", ".join(updated_files)
+        )
+    else:
+        print("No container Dockerfiles needed cpe label updates")
 
 
 def update_tekton_files(config_path: Path, tekton_dir: Path) -> None:
@@ -210,6 +248,7 @@ def main() -> int:
     print(f"BUILD updated to {new_build}")
     
     update_tekton_files(CONFIG_PATH, TEKTON_DIR)
+    update_container_dockerfiles_cpe(CONFIG_PATH, CONTAINERS_DIR)
     
     return 0
 
