@@ -12,27 +12,27 @@ spec:
       type: RHSA
       cves:
       - key: CVE-2026-21441
-        component: console-plugin-rhel8-1-19
+        component: console-plugin-1-19
       - key: CVE-2025-13465
-        component: console-plugin-rhel8-1-19
+        component: console-plugin-1-19
       - key: CVE-2025-61728
-        component: argocd-image-updater-rhel8-1-19
+        component: argocd-image-updater-1-19
       - key: CVE-2025-61726
-        component: argo-rollouts-rhel8-1-19
+        component: argo-rollouts-1-19
       - key: CVE-2025-61726 
-        component: argocd-agent-rhel8-1-19
+        component: argocd-agent-1-19
       - key: CVE-2025-61726 
-        component: argocd-image-updater-rhel8-1-19
+        component: argocd-image-updater-1-19
       - key: CVE-2025-61726
-        component: argocd-rhel8-1-19
+        component: argocd-1-19
       - key: CVE-2025-61726 
         component: argocd-rhel9-1-19
       - key: CVE-2025-61726
-        component: dex-rhel8-1-19-
+        component: dex-1-19
       - key: CVE-2025-61726
-        component: gitops-rhel8-1-19
+        component: gitops-1-19
       - key: CVE-2025-61729
-        component: dex-rhel8-1-19
+        component: dex-1-19
       - key: CVE-2025-68121
-        component: dex-rhel8-1-19
+        component: dex-1-19
        
