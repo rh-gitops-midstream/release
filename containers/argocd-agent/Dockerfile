@@ -20,13 +20,16 @@ USER root
 ENV LANG=en_US.utf8
 ENV GIT_COMMITTER_NAME devtools
 ENV GIT_COMMITTER_EMAIL devtools@redhat.com
+ENV VERSION_PACKAGE=github.com/argoproj-labs/argocd-agent/internal/version
+ARG CI_ARGOCD_AGENT_COMMIT
+ARG CI_ARGOCD_AGENT_VERSION
 LABEL com.redhat.delivery.appregistry=true
 
 COPY sources/argocd-agent /app/argocd-agent
 WORKDIR /app/argocd-agent
 RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime \
     GO_TAGS=strictfipsruntime GO_MOD=mod \
-    make argocd-agent BIN_NAME_AGENT=argocd-agent
+    make argocd-agent BIN_NAME_AGENT=argocd-agent override LDFLAGS='-X ${VERSION_PACKAGE}.version=${CI_ARGOCD_AGENT_VERSION} -X ${VERSION_PACKAGE}.gitRevision=${CI_ARGOCD_AGENT_COMMIT}'
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 
