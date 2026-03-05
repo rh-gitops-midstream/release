@@ -9,7 +9,7 @@ metadata:
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: >-
       event == "push" &&
-      target_branch == "main" &&
+      target_branch == "release-1-20" &&
       (
         "sources/argo-rollouts".pathChanged() ||
         "clis/kubectl-argo-rollouts/***".pathChanged() ||
@@ -20,10 +20,10 @@ metadata:
       )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: gitops-main
-    appstudio.openshift.io/component: kubectl-argo-rollouts-cli-main
+    appstudio.openshift.io/application: gitops-1-20
+    appstudio.openshift.io/component: kubectl-argo-rollouts-cli-1-20
     pipelines.appstudio.openshift.io/type: build
-  name: kubectl-argo-rollouts-cli-main-on-push
+  name: kubectl-argo-rollouts-cli-1-20-on-push
   namespace: rh-openshift-gitops-tenant
 spec:
   taskRunSpecs:
@@ -56,7 +56,7 @@ spec:
   pipelineRef:
     name: build-multi-platform-image
   taskRunTemplate:
-    serviceAccountName: build-pipeline-kubectl-argo-rollouts-cli-main
+    serviceAccountName: build-pipeline-kubectl-argo-rollouts-cli-1-20
   workspaces:
   - name: git-auth
     secret:
