@@ -29,20 +29,20 @@ sources:
     commit: 8bd51cfb797cd4cb16d9567e49395fda3f4455e6
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.1.9
-    commit: 8665140f96f6b238a20e578dba7f9aef91ddac51
+    ref: v3.3.2
+    commit: 8a3940d8db27928931f0a85ba7c636e54786bddc
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
     ref: v1.8.3
     commit: 348260aa4219ed79497296b52be87be7f50a5cdd
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
-    ref: kustomize/v5.7.0
-    commit: 7f30f0e23a350bd4ad66bbe7bc38208f311d5461
+    ref: kustomize/v5.8.1
+    commit: 9790a1c3efd2fd35f1b768d495112834176581c1
   - path: sources/helm
     url: https://github.com/helm/helm.git
-    ref: v3.18.4
-    commit: d80839cf37d860c8aa9a0503fe463278f26cd5e2
+    ref: v3.19.4
+    commit: 7cfb6e486dac026202556836bb910c37d847793e
   - path: sources/dex
     ref: v2.43.0
     url: https://github.com/dexidp/dex.git
@@ -70,19 +70,19 @@ sources:
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master
-    commit: 64f9e01d291357675141ffe298c369a521ff3d98
+    commit: 18ee1c620ddb72a282f64d682c3108f85aa82a85
   - path: sources/rollouts-plugin-trafficrouter-openshift
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
     ref: main
-    commit: 142230a39d74119ccfc7414f6812bdac2fc09449
+    commit: 1495bbad184a05cde955fb21dcf35d05c3e58d98
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
-    commit: 1b0595fe1ce6dd70fe62bb810ce6eadaef7ac454
+    commit: cb9160c0d5d3ff42668999fc530ecacad9e69d08
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
     ref: master
-    commit: 460c5569230680bc6cad6b4b4d3a8968135433e1
+    commit: 09102635500867f4119ae63008bf1fe1ae7328b5
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: main
