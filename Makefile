@@ -34,7 +34,7 @@ container:
 		ls containers/; \
 		exit 1; \
 	fi
-	$(CONTAINER_RUNTIME) build -t $(name):$(TAG) --build-arg CI_ARGOCD_AGENT_COMMIT="ads342ad" --build-arg CI_ARGOCD_AGENT_VERSION="v0.7.0" -f containers/$(name)/Dockerfile .
+	$(CONTAINER_RUNTIME) build -t $(name):$(TAG) -f containers/$(name)/Dockerfile .
 
 # Build container images locally
 .PHONY: cli
