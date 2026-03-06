@@ -10,8 +10,8 @@ release:
     skip-range: ">=1.0.0 <1.20.0" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
-    branch: main
-    application: gitops-main
+    branch: release-1.20
+    application: gitops-1-20
   managers:
     - name: "Siddhesh Ghadi"
       github: svghadi
