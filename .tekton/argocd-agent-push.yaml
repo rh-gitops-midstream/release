@@ -9,7 +9,7 @@ metadata:
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: >-
       event == "push" &&
-      target_branch == "release-1-20" &&
+      target_branch == "release-1.20" &&
       (
         "sources/argocd-agent".pathChanged() ||
         "containers/argocd-agent/***".pathChanged() ||
