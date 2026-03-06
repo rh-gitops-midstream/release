@@ -136,6 +136,7 @@ def update_tekton_files(config_path: Path, tekton_dir: Path) -> None:
         return
     
     version_suffix = convert_version_to_xy_format(config_version)
+    release_branch_suffix = convert_version_to_xdoty_format(config_version)
     
     # Get all YAML files in .tekton directory, excluding tasks folder
     yaml_files = [
@@ -191,11 +192,11 @@ def update_tekton_files(config_path: Path, tekton_dir: Path) -> None:
                         data["spec"]["taskRunTemplate"]["serviceAccountName"] = new_account
                         modified = True
             
+            # Write back the YAML with preserved formatting as much as possible
+            # Use a simple string replacement approach to preserve formatting
+            updated_content = content
+
             if modified:
-                # Write back the YAML with preserved formatting as much as possible
-                # Use a simple string replacement approach to preserve formatting
-                updated_content = content
-                
                 # Replace in labels
                 updated_content = re.sub(
                     r'(appstudio\.openshift\.io/application:\s+\S+)-main\b',
@@ -222,16 +223,16 @@ def update_tekton_files(config_path: Path, tekton_dir: Path) -> None:
                     updated_content
                 )
                 
-                # Replace target_branch == "main" with target_branch == "release-X.Y"
-                updated_content = re.sub(
-                    r'target_branch\s+==\s+"main"',
-                    f'target_branch == "release-{version_suffix}"',
-                    updated_content
-                )
-                
-                if updated_content != original_content:
-                    yaml_file.write_text(updated_content, encoding="utf-8")
-                    updated_files.append(yaml_file.name)
+            # Replace target_branch == "main" with target_branch == "release-X.Y"
+            updated_content = re.sub(
+                r'target_branch\s+==\s+"main"',
+                f'target_branch == "release-{release_branch_suffix}"',
+                updated_content
+            )
+
+            if updated_content != original_content:
+                yaml_file.write_text(updated_content, encoding="utf-8")
+                updated_files.append(yaml_file.name)
         
         except yaml.YAMLError as e:
             print(f"Warning: Could not parse {yaml_file.name}: {e}")
