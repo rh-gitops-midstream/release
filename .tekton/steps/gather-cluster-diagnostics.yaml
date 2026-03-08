@@ -63,10 +63,10 @@ spec:
         oc describe pod "${pod}" -n "${OPERATOR_NAMESPACE}" 2>/dev/null | tail -50
       done
 
-      echo -e "\n[Operator Pod Logs (last 30 lines)]"
-      oc logs -n "${OPERATOR_NAMESPACE}" --all-containers=true --prefix=true --tail=30 \
+      echo -e "\n[Operator Pod Logs (last 100 lines)]"
+      oc logs -n "${OPERATOR_NAMESPACE}" --all-containers=true --prefix=true --tail=100 \
         --selector='control-plane=controller-manager' --ignore-errors=true 2>/dev/null || \
-      oc logs -n "${OPERATOR_NAMESPACE}" --all-containers=true --prefix=true --tail=30 \
+      oc logs -n "${OPERATOR_NAMESPACE}" --all-containers=true --prefix=true --tail=100 \
         -l 'app' --ignore-errors=true 2>/dev/null || \
       echo "No logs available"
 
@@ -130,6 +130,22 @@ spec:
       echo -e "\n--- Previous logs for pod: ${pod} ---"
       oc logs "${pod}" -n "${NAMESPACE}" --previous --all-containers=true --tail=30 2>/dev/null || echo "No previous logs"
     done
+
+    # --- GitOps operator CRDs and cluster-scoped resources ---
+    echo -e "\n\n[GITOPS OPERATOR CRDS]"
+    echo "--------------------------------------------------------"
+
+    echo -e "\n[ArgoCD CRD]"
+    oc get crd argocds.argoproj.io 2>/dev/null || echo "ArgoCD CRD not found"
+
+    echo -e "\n[GitOpsService CRD]"
+    oc get crd gitopsservices.pipelines.openshift.io 2>/dev/null || echo "GitOpsService CRD not found"
+
+    echo -e "\n[GitOpsService CR (cluster-scoped, controls default instance creation)]"
+    oc get gitopsservice cluster -o yaml 2>/dev/null || echo "GitOpsService 'cluster' not found"
+
+    echo -e "\n[All ArgoCD CRs (all namespaces)]"
+    oc get argocd --all-namespaces 2>/dev/null || echo "No ArgoCD CRs found"
 
     # --- Cluster level ---
     echo -e "\n\n[CLUSTER-LEVEL CHECKS]"
