@@ -31,6 +31,8 @@ spec:
           value: $(tasks.provision-eaas-space.results.secretRef)
         - name: CLUSTER_NAME
           value: $(tasks.provision-cluster.results.clusterName)
+        - name: aggregateTasksStatus
+          value: "$(tasks.status)"
       taskSpec:
         params:
           - name: STEP_ACTIONS_URL
@@ -112,9 +114,9 @@ spec:
                   value: .tekton/steps/send-slack-message.yaml
             params:
               - name: SLACK_SUBJECT
-                value: "GitOps Bundle Integration Test $(context.pipelineRun.name): $(tasks.aggregate-status)"
+                value: "GitOps Bundle Integration Test $(context.pipelineRun.name): $(params.aggregateTasksStatus)"
               - name: SLACK_TEXT
-                value: "Lowest integration test pipeline *$(context.pipelineRun.name)* finished with status *$(tasks.aggregate-status)*. Logs and artifacts are stored in the quay image tagged $(steps.prepare-and-push-logs.results.LOG_ARTIFACT_TAG)."
+                value: "Lowest integration test pipeline *$(context.pipelineRun.name)* finished with status *$(params.aggregateTasksStatus)*. Logs and artifacts are stored in the quay image tagged $(steps.prepare-and-push-logs.results.LOG_ARTIFACT_TAG)."
               - name: LOG_URL
                 value: "https://konflux-ui.apps.stone-prd-rh01.pg1f.p1.openshiftapps.com/ns/rh-openshift-gitops-tenant/applications/gitops-main/pipelineruns/$(context.pipelineRun.name)"
               - name: ARTIFACTS_PATH

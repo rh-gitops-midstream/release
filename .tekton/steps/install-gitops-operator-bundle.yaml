@@ -68,7 +68,10 @@ spec:
     fi
     echo "---------------------------------------------"
     # Wait for the controller pod
-    oc wait --for=create pod -l control-plane=gitops-operator -n "${NAMESPACE}" --timeout=90s || exit 1
+    for i in {0..30}; do                                                                     
+      sleep 3                                                                                
+      oc get pod -n  "${NAMESPACE}" | grep gitops > /dev/null 2>&1 && break                  
+    done
     controller_pod=$(oc get pod -n "${NAMESPACE}" -l control-plane=gitops-operator -o 'jsonpath={.items[0].metadata.name}') || exit 1
     echo $controller_pod
     oc wait --for=jsonpath='{.status.phase}'=Active ns/openshift-gitops --timeout=120s
