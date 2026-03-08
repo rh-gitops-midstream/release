@@ -87,7 +87,12 @@ spec:
 
     # Wait for the operator to create the application-controller StatefulSet before checking rollout
     echo "Waiting for openshift-gitops-application-controller StatefulSet to be created..."
-    oc wait --for=create statefulset/openshift-gitops-application-controller -n "${NAMESPACE}" --timeout=300s || exit 1
+    #oc wait --for=create statefulset/openshift-gitops-application-controller -n "${NAMESPACE}" --timeout=300s || exit 1
+    # Wait for the controller pod
+    for i in {0..30}; do                                                                     
+      sleep 3                                                                                
+      oc get statefulset -n  "${NAMESPACE}" | grep gitops > /dev/null 2>&1 && break                  
+    done
 
     echo "Waiting for statefulset rollout..."
     oc rollout status statefulset/openshift-gitops-application-controller -n "${NAMESPACE}" --timeout=120s || exit 1
