@@ -1,0 +1,103 @@
+apiVersion: tekton.dev/v1alpha1
+kind: StepAction
+metadata:
+  name: install-gitops-operator-bundle
+spec:
+  params:
+    - name: bundleImage
+      type: string
+    - name: namespace
+      type: string
+      default: "openshift-gitops-operator"
+    - name: installTimeout
+      type: string
+      default: "30m"
+    - name: credentials
+      type: string
+      description: A volume to which the remote cluster credentials will be written.
+    - name: kubeconfig
+      type: string
+      description: A path to the kubeconfig in the credentials volume
+  volumeMounts:
+    - name: "$(params.credentials)"
+      mountPath: /credentials
+  env:
+    - name: BUNDLE_IMAGE
+      value: $(params.bundleImage)
+    - name: KONFLUX_COMPONENT_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.labels['appstudio.openshift.io/component']
+    - name: NAMESPACE
+      value: $(params.namespace)
+    - name: INSTALL_TIMEOUT
+      value: $(params.installTimeout)
+    - name: KUBECONFIG
+      value: "/credentials/$(params.kubeconfig)"
+  image: registry.redhat.io/openshift4/ose-cli:latest
+  script: |
+    set -x
+    echo "---------------------------------------------"
+    cat  /credentials/*
+    echo "---------------------------------------------"
+    dnf -y install jq python3-pip
+    export OPERATOR_SDK_VERSION=1.36.1
+    export ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
+    export OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/download/v${OPERATOR_SDK_VERSION}
+    curl -Lo /usr/local/bin/operator-sdk ${OPERATOR_SDK_DL_URL}/operator-sdk_linux_${ARCH}
+    chmod +x /usr/local/bin/operator-sdk
+    operator-sdk version
+    echo "---------------------------------------------"
+    oc status
+    oc whoami
+    echo "---------------------------------------------"
+    env
+    echo "---------------------------------------------"    
+    oc create namespace ${NAMESPACE} || true
+    oc label namespaces ${NAMESPACE} openshift.io/cluster-monitoring=true --overwrite=true
+    echo "---------------------------------------------"
+    echo ${KONFLUX_COMPONENT_NAME}
+    # We get the bundle image as a param
+    echo "${BUNDLE_IMAGE}"
+    echo "---------------------------------------------"
+    if ! operator-sdk run bundle --timeout="$INSTALL_TIMEOUT" \
+    --namespace "${NAMESPACE}" \
+    "$BUNDLE_IMAGE" \
+    --verbose; then
+      exit 1
+    fi
+    echo "---------------------------------------------"
+    # Wait for the controller pod
+    for i in {0..30}; do                                                                     
+      sleep 3                                                                                
+      oc get pod -n  "${NAMESPACE}" | grep gitops > /dev/null 2>&1 && break                  
+    done
+    controller_pod=$(oc get pod -n "${NAMESPACE}" -l control-plane=gitops-operator -o 'jsonpath={.items[0].metadata.name}') || exit 1
+    echo $controller_pod
+    oc wait --for=jsonpath='{.status.phase}'=Active ns/openshift-gitops --timeout=120s
+
+    NAMESPACE="openshift-gitops"
+
+    # Check each deployment rollout
+    deployments=($(oc get deployments -n "${NAMESPACE}" --no-headers -o custom-columns=':metadata.name' 2>/dev/null))
+    for deployment in "${deployments[@]}"; do
+      echo "Waiting for deployment/${deployment} in ${NAMESPACE}..."
+      oc rollout status deployment/"${deployment}" -n "${NAMESPACE}" --timeout=120s || exit 1
+    done
+
+    # Wait for the operator to create the application-controller StatefulSet before checking rollout
+    echo "Waiting for openshift-gitops-application-controller StatefulSet to be created..."
+    #oc wait --for=create statefulset/openshift-gitops-application-controller -n "${NAMESPACE}" --timeout=300s || exit 1
+    # Wait for the controller pod
+    for i in {0..30}; do                                                                     
+      sleep 3                                                                                
+      oc get statefulset -n  "${NAMESPACE}" | grep gitops > /dev/null 2>&1 && break                  
+    done
+
+    echo "Waiting for statefulset rollout..."
+    oc rollout status statefulset/openshift-gitops-application-controller -n "${NAMESPACE}" --timeout=120s || exit 1
+
+    echo "Waiting for ArgoCD CR to reach Available..."
+    oc wait argocd openshift-gitops -n "${NAMESPACE}" --for=jsonpath='{.status.phase}'="Available" --timeout=600s || exit 1
+
+    echo "✅ All deployments and ArgoCD are ready!"
