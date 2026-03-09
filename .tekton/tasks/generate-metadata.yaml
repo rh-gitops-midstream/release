@@ -10,6 +10,9 @@ spec:
     - name: GIT_METADATA_DIRECTORIES
       type: array
       description: List of directories to run Git commands and extract metadata.
+    - name: OUTPUT_IMAGE
+      type: string
+      description: Fully qualified output image reference used to detect PR builds.
   results:
     - name: labels
       type: array
@@ -17,6 +20,9 @@ spec:
     - name: build-args
       type: array
       description: BUILD_ARG values for the container build
+    - name: additional-image-tags
+      type: array
+      description: Image tags to apply to the built image, based on version metadata
   steps:
     - name: use-trusted-artifact
       # pin the image to a digest, Konflux will automatically send you updates
@@ -147,3 +153,35 @@ spec:
         echo "$args_str" > "$BUILD_ARGS_RESULT"
 
         cat $BUILD_ARGS_RESULT
+
+    - name: generate-additional-image-tags
+      image: registry.access.redhat.com/ubi9/ubi-minimal
+      workingDir: /tekton/home/source
+      env:
+        - name: ADDITIONAL_IMAGE_TAGS_RESULT
+          value: $(results.addition-image-tags.path)
+        - name: OUTPUT_IMAGE
+          value: $(params.OUTPUT_IMAGE)
+      args:
+        - "--git-metadata-directories"
+        - "$(params.GIT_METADATA_DIRECTORIES[*])"
+      script: |
+        #!/bin/bash
+        set -exuo pipefail
+
+        if [[ "$OUTPUT_IMAGE" == *":on-pr-"* ]]; then
+          echo "[]" > "$ADDITIONAL_IMAGE_TAGS_RESULT"
+          cat "$ADDITIONAL_IMAGE_TAGS_RESULT"
+          exit 0
+        fi
+
+        # tags format: ["v1.19.0", "v1.19.0-4"]
+        tags=()
+        tags+=( "$(cut -d'-' -f1 < BUILD)" )
+        tags+=( "$(cat BUILD)" )
+
+        tags_str=$(printf '"%s",' "${tags[@]}")
+        tags_str="[${tags_str%,}]"
+        echo "$tags_str" > "$ADDITIONAL_IMAGE_TAGS_RESULT"
+
+        cat $ADDITIONAL_IMAGE_TAGS_RESULT

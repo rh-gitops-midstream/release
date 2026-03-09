@@ -168,6 +168,8 @@ spec:
     - name: GIT_METADATA_DIRECTORIES
       value:
       - $(params.git-metadata-directories[*])
+    - name: OUTPUT_IMAGE
+      value: $(params.output-image)
   - name: prefetch-dependencies
     params:
     - name: input
@@ -551,6 +553,7 @@ spec:
     params:
     - name: ADDITIONAL_TAGS
       value:
+      - $(tasks.generate-metadata.results.additional-image-tags[*])
       - $(params.additional-tags)
     - name: IMAGE_URL
       value: $(tasks.build-image-index.results.IMAGE_URL)
