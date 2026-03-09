@@ -1,0 +1,53 @@
+name: Publish Agent Helm Chart to GHCR
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - helm-charts/redhat-argocd-agent/**
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish-chart:
+    name: Build and Publish Agent Chart
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@8410ad0602e1e429cee44a835ae9f77f654a6694 # v4.0.0
+        with:
+          fetch-depth: 1
+          submodules: true
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+
+      - name: Build chart package
+        run: make agent-helm-chart-package
+
+      - name: Login to GHCR
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Push chart to GHCR
+        shell: bash
+        run: |
+          set -euo pipefail
+          OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          make agent-helm-chart-push CHART_REGISTRY="oci://ghcr.io/${OWNER_LOWER}/charts"
+
+      - name: Output test command
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHART_ARCHIVE=$(ls -1 dist/*.tgz | head -n1)
+          CHART_FILE=$(basename "${CHART_ARCHIVE}")
+          CHART_VERSION=$(echo "${CHART_FILE}" | sed -E 's/^.*-([0-9][0-9A-Za-z\.-]*)\.tgz$/\1/')
+          OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          echo "Run this to test:"
+          echo "helm install agent-test oci://ghcr.io/${OWNER_LOWER}/charts/redhat-argocd-agent --version ${CHART_VERSION}"

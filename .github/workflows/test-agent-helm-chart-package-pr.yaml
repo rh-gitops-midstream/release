@@ -1,0 +1,28 @@
+name: Test Agent Helm Chart Package (PR)
+
+on:
+  pull_request:
+    paths:
+      - hack/generate-agent-helm-chart.py
+      - helm-charts/redhat-argocd-agent/**
+
+permissions:
+  contents: read
+
+jobs:
+  test-agent-helm-chart-package:
+    name: Test make agent-helm-chart-package
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@8410ad0602e1e429cee44a835ae9f77f654a6694 # v4.0.0
+        with:
+          fetch-depth: 1
+          submodules: true
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+
+      - name: Run package target
+        run: make agent-helm-chart-package
