@@ -14,7 +14,7 @@
 #
 # ------------------------------------------------------------------------
 
-FROM registry.redhat.io/rhel9/go-toolset:1.25  AS builder
+FROM registry.redhat.io/rhel9/go-toolset:1.25.7-1773318690  AS builder
 USER root
 
 ENV LANG=en_US.utf8
