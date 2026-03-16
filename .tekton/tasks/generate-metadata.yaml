@@ -159,7 +159,7 @@ spec:
       workingDir: /tekton/home/source
       env:
         - name: ADDITIONAL_IMAGE_TAGS_RESULT
-          value: $(results.addition-image-tags.path)
+          value: $(results.additional-image-tags.path)
         - name: OUTPUT_IMAGE
           value: $(params.OUTPUT_IMAGE)
       args:
