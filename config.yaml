@@ -29,8 +29,8 @@ sources:
     commit: bfb60dd1d86771f486242a760d1026b0a800d42a
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.3.2
-    commit: 8a3940d8db27928931f0a85ba7c636e54786bddc
+    ref: v3.3.4
+    commit: 34ccdfc3d5235b0184eb910b8ba4edcd81ef8f03
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
     ref: v1.8.3
@@ -44,9 +44,9 @@ sources:
     ref: v3.19.4
     commit: 7cfb6e486dac026202556836bb910c37d847793e
   - path: sources/dex
-    ref: v2.43.0
+    ref: v2.43.1
     url: https://github.com/dexidp/dex.git
-    commit: 8e96058e71257eb0a32e1b0a42303094dea9d8fb
+    commit: 6e602d3315ea09d0cdeef6b51e61f2fd4ae52502
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
     ref: v3.7.1
