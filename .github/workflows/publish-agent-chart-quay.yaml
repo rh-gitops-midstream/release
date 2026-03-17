@@ -1,4 +1,4 @@
-name: Publish Agent Helm Chart to GHCR
+name: Publish Agent Helm Chart to Quay
 
 on:
   workflow_dispatch:
@@ -37,18 +37,17 @@ jobs:
       - name: Build chart package
         run: make agent-helm-chart-package
 
-      - name: Login to GHCR
+      - name: Login to Quay
         shell: bash
         run: |
           set -euo pipefail
-          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u "${{ github.actor }}" --password-stdin
+          echo "${{ secrets.QUAY_TOKEN }}" | helm registry login quay.io -u "${{ secrets.QUAY_USERNAME }}" --password-stdin
 
-      - name: Push chart to GHCR
+      - name: Push chart to Quay
         shell: bash
         run: |
           set -euo pipefail
-          OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          make agent-helm-chart-push CHART_REGISTRY="oci://ghcr.io/${OWNER_LOWER}/charts"
+          make agent-helm-chart-push CHART_REGISTRY="oci://quay.io/svghadi"
 
       - name: Output test command
         shell: bash
@@ -57,6 +56,5 @@ jobs:
           CHART_ARCHIVE=$(ls -1 dist/*.tgz | head -n1)
           CHART_FILE=$(basename "${CHART_ARCHIVE}")
           CHART_VERSION=$(echo "${CHART_FILE}" | sed -E 's/^.*-([0-9][0-9A-Za-z\.-]*)\.tgz$/\1/')
-          OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           echo "Run this to test:"
-          echo "helm install agent-test oci://ghcr.io/${OWNER_LOWER}/charts/redhat-argocd-agent --version ${CHART_VERSION}"
+          echo "helm install agent-test oci://quay.io/svghadi/redhat-argocd-agent --version ${CHART_VERSION}"
