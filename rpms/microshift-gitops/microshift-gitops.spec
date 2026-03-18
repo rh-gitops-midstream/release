@@ -98,6 +98,13 @@ patches:
       kind: Deployment
       name: argocd-redis
       labelSelector: app.kubernetes.io/part-of=argocd
+generatorOptions:
+  disableNameSuffixHash: true
+secretGenerator:
+- name: argocd-secret
+  behavior: merge
+  envs:
+  - config/server-key.txt
 EOF
 
 #TODO: Find a better way to do away with the hardcoded image URLs
@@ -106,10 +113,10 @@ cat <<EOF >>"manifests/microshift-gitops/kustomization.yaml"
 images:
   - name: quay.io/argoproj/argocd
     newName: registry.redhat.io/openshift-gitops-1/argocd-rhel9
-    digest: "sha256:7ce92cc4c69bd9cd64e5dfedad15388be5d9404ac916731b86f5cf490993756b"
+    digest: "sha256:aeccbbcdb0f4311c3c2f1408f6e72fbfb73273138f3fddd7f3b678e71ee7f3e7"
   - name: public.ecr.aws/docker/library/redis
     newName: registry.redhat.io/rhel9/redis-7
-    digest: "sha256:9a21acdd1cb1d3faf577c6d9d24045e5da86e2f6b1c1a4438dfcc80e21f112d6"
+    digest: "sha256:f068347b33ed0c005dbd33759765e79f22d0d33f04fb3e14504fd2dfb22dd14a"
 EOF
 %endif
 
@@ -118,10 +125,10 @@ cat <<EOF >>"manifests/microshift-gitops/kustomization.yaml"
 images:
   - name: quay.io/argoproj/argocd
     newName: registry.redhat.io/openshift-gitops-1/argocd-rhel9
-    digest: "sha256:6fb646fbd35b779be50ceca8d12a8736ed43ebe4f40204ca28851db2e2cfdf20"
+    digest: "sha256:ea4f3f8e721945a2ca03156e50b1b76aabf2ebef72fb9db57eebf526b730f5a4"
   - name: public.ecr.aws/docker/library/redis
     newName: registry.redhat.io/rhel9/redis-7
-    digest: "sha256:1be9e6e067a7595a5a51da709d262c1f4a5eca2fe2033450a9737a5354170c00"
+    digest: "sha256:ad8e2ce8ead4bc11e8697b0d60ed6db83c6d60e93e087072716ff15ba70508aa"
 EOF
 %endif
 
@@ -133,8 +140,8 @@ cat <<EOF >"microshift-assets/release-gitops-arm64.json"
     "base": "v99.99.99-9"
   },
   "images": {
-    "openshift-gitops-argocd": "registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:7ce92cc4c69bd9cd64e5dfedad15388be5d9404ac916731b86f5cf490993756b",
-    "redis": "registry.redhat.io/rhel9/redis-7@sha256:9a21acdd1cb1d3faf577c6d9d24045e5da86e2f6b1c1a4438dfcc80e21f112d6"
+    "openshift-gitops-argocd": "registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:aeccbbcdb0f4311c3c2f1408f6e72fbfb73273138f3fddd7f3b678e71ee7f3e7",
+    "redis": "registry.redhat.io/rhel9/redis-7@sha256:f068347b33ed0c005dbd33759765e79f22d0d33f04fb3e14504fd2dfb22dd14a"
   }
 }
 EOF
@@ -145,8 +152,8 @@ cat <<EOF >"microshift-assets/release-gitops-x86_64.json"
     "base": "v99.99.99-9"
   },
   "images": {
-    "openshift-gitops-argocd": "registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:6fb646fbd35b779be50ceca8d12a8736ed43ebe4f40204ca28851db2e2cfdf20",
-    "redis": "registry.redhat.io/rhel9/redis-7@sha256:1be9e6e067a7595a5a51da709d262c1f4a5eca2fe2033450a9737a5354170c00"
+    "openshift-gitops-argocd": "registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:ea4f3f8e721945a2ca03156e50b1b76aabf2ebef72fb9db57eebf526b730f5a4",
+    "redis": "registry.redhat.io/rhel9/redis-7@sha256:ad8e2ce8ead4bc11e8697b0d60ed6db83c6d60e93e087072716ff15ba70508aa"
   }
 }
 EOF
@@ -237,6 +244,9 @@ install -p -m644 microshift-assets/release-gitops* %{buildroot}%{_datadir}/micro
 # TODO: Test to see if the kustomize directories are set correctly.
 # kustomize build %{buildroot}/%{_prefix}/lib/microshift/manifests.d/020-microshift-gitops
 # oc create -k %{buildroot}/%{_prefix}/lib/microshift/manifests.d/020-microshift-gitops --dry-run=client --validate=false
+
+%post
+echo "server.secretkey=$(openssl rand 32 | base64 | base64 -w 0)" > %{_prefix}/lib/microshift/manifests.d/020-microshift-gitops/config/server-key.txt
 
 %files
 %license LICENSE
