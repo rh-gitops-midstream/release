@@ -46,7 +46,7 @@ RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' $YARN build
 # Builder stage which performs the build of argo-rollouts-cli binaries
 ####################################################################################################
 
-FROM registry.redhat.io/rhel9/go-toolset:1.25 AS builder
+FROM registry.redhat.io/rhel9/go-toolset:1.25.7-1773851748 AS builder
 
 # Switch to root user
 USER root
