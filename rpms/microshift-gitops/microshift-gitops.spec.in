@@ -98,6 +98,13 @@ patches:
       kind: Deployment
       name: argocd-redis
       labelSelector: app.kubernetes.io/part-of=argocd
+generatorOptions:
+  disableNameSuffixHash: true
+secretGenerator:
+- name: argocd-secret
+  behavior: merge
+  envs:
+  - config/server-key.txt
 EOF
 
 #TODO: Find a better way to do away with the hardcoded image URLs
@@ -237,6 +244,9 @@ install -p -m644 microshift-assets/release-gitops* %{buildroot}%{_datadir}/micro
 # TODO: Test to see if the kustomize directories are set correctly.
 # kustomize build %{buildroot}/%{_prefix}/lib/microshift/manifests.d/020-microshift-gitops
 # oc create -k %{buildroot}/%{_prefix}/lib/microshift/manifests.d/020-microshift-gitops --dry-run=client --validate=false
+
+%post
+echo "server.secretkey=$(openssl rand 32 | base64 | base64 -w 0)" > %{_prefix}/lib/microshift/manifests.d/020-microshift-gitops/config/server-key.txt
 
 %files
 %license LICENSE
