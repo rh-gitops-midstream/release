@@ -1,12 +1,12 @@
 apiVersion: appstudio.redhat.com/v1alpha1
 kind: Release
 metadata:
-  generateName: gitops-clis-1.20.0-1-
+  generateName: gitops-clis-1.20.0-
   namespace: rh-openshift-gitops-tenant
 spec:
   gracePeriodDays: 7
   releasePlan: gitops-clis-1-20-prod
-  snapshot: gitops-1-20-0-1
+  snapshot: gitops-1-20-20260323-105402-000
   data:
     releaseNotes:
       type: RHEA
