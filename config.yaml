@@ -1,13 +1,13 @@
 # Release Metadata
 release:
   name: OpenShift GitOps Operator
-  version: "1.20.0"
+  version: "1.20.1"
   olm:
     # TODO: Compute olm data automatically
-    name: "openshift-gitops-operator.v1.20.0"
+    name: "openshift-gitops-operator.v1.20.1"
     channel: "latest,gitops-1.20"
-    replaces: "openshift-gitops-operator.v1.19.2"
-    skip-range: ">=1.0.0 <1.20.0" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
+    replaces: "openshift-gitops-operator.v1.20.0"
+    skip-range: "" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
     branch: release-1.20
@@ -85,8 +85,8 @@ sources:
     commit: 09102635500867f4119ae63008bf1fe1ae7328b5
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
-    ref: v0.7.0
-    commit: 99066e4b1f16be65c5ee280fa47b19ea030cc751
+    ref: v0.7.3
+    commit: 454fa5be50a7415d90521af85f0c84117403b7ff
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
     ref: v1.1.1
