@@ -1,0 +1,262 @@
+apiVersion: tekton.dev/v1alpha1
+kind: StepAction
+metadata:
+  name: patch-and-push-bundle
+spec:
+  params:
+    - name: SNAPSHOT
+      type: string
+      description: Snapshot JSON containing component image references.
+    - name: pipelineRunName
+      type: string
+      description: Name of the pipeline run, used to tag the patched bundle image.
+    - name: credentials
+      type: string
+      description: Name of the volume containing registry push credentials.
+  results:
+    - name: patchedBundleImage
+      description: >-
+        Fully qualified reference (by digest) to the patched bundle image
+        with all component images updated to the SNAPSHOT digests.
+  image: registry.access.redhat.com/ubi9/buildah:latest
+  env:
+    - name: BUILDAH_FORMAT
+      value: oci
+    - name: STORAGE_DRIVER
+      value: vfs
+    - name: SNAPSHOT_JSON
+      value: "$(params.SNAPSHOT)"
+    - name: PIPELINE_RUN_NAME
+      value: "$(params.pipelineRunName)"
+  volumeMounts:
+    - name: "$(params.credentials)"
+      mountPath: /push-credentials
+      readOnly: true
+  securityContext:
+    capabilities:
+      add:
+        - SETFCAP
+  script: |
+    #!/usr/bin/env bash
+    set -euxo pipefail
+
+    echo "============================================"
+    echo "=== patch-and-push-bundle START ==="
+    echo "============================================"
+
+    # ------------------------------------------------------------------
+    # 0. Debug: show what we received
+    # ------------------------------------------------------------------
+    echo "=== SNAPSHOT_JSON ==="
+    echo "${SNAPSHOT_JSON}" | python3 -m json.tool 2>/dev/null || echo "${SNAPSHOT_JSON}"
+    echo "=== END SNAPSHOT_JSON ==="
+
+    echo "=== PIPELINE_RUN_NAME: ${PIPELINE_RUN_NAME} ==="
+
+    # ------------------------------------------------------------------
+    # 1. Extract bundle image from the SNAPSHOT
+    # ------------------------------------------------------------------
+    echo "=== Extracting bundle image from SNAPSHOT ==="
+    BUNDLE_IMAGE=$(echo "${SNAPSHOT_JSON}" | python3 -c "
+    import json, sys
+    snap = json.load(sys.stdin)
+    for c in snap.get('components', []):
+        name = c.get('name', '')
+        image = c.get('containerImage', '')
+        print(f'  component: {name} -> {image}', file=sys.stderr)
+        if 'bundle' in name.lower():
+            print(image)
+            sys.exit(0)
+    print('ERROR: No bundle component found in SNAPSHOT', file=sys.stderr)
+    sys.exit(1)
+    ")
+
+    echo "=== Bundle image from SNAPSHOT: ${BUNDLE_IMAGE} ==="
+
+    # ------------------------------------------------------------------
+    # 2. Configure registry authentication
+    # ------------------------------------------------------------------
+    echo "=== Configuring registry auth ==="
+    echo "  Contents of /push-credentials/:"
+    ls -la /push-credentials/ || echo "  (directory not found)"
+
+    AUTH_DIR="${HOME}/.docker"
+    mkdir -p "${AUTH_DIR}"
+
+    if [ -f /push-credentials/.dockerconfigjson ]; then
+      echo "  Using /push-credentials/.dockerconfigjson"
+      cp /push-credentials/.dockerconfigjson "${AUTH_DIR}/config.json"
+    elif [ -f /push-credentials/config.json ]; then
+      echo "  Using /push-credentials/config.json"
+      cp /push-credentials/config.json "${AUTH_DIR}/config.json"
+    elif [ -f /push-credentials/.dockercfg ]; then
+      echo "  Using /push-credentials/.dockercfg (legacy format)"
+      cp /push-credentials/.dockercfg "${AUTH_DIR}/config.json"
+    else
+      echo "  WARNING: No known credential file found, listing all files:"
+      find /push-credentials/ -type f 2>/dev/null || true
+      echo "  Push will likely fail"
+    fi
+
+    export REGISTRY_AUTH_FILE="${AUTH_DIR}/config.json"
+    echo "  Auth file size: $(wc -c < "${REGISTRY_AUTH_FILE}" 2>/dev/null || echo 'missing') bytes"
+    # Show which registries have auth (without leaking tokens)
+    python3 -c "
+    import json
+    try:
+        with open('${REGISTRY_AUTH_FILE}') as f:
+            cfg = json.load(f)
+        auths = cfg.get('auths', {})
+        print(f'  Registries with credentials: {list(auths.keys())}')
+    except Exception as e:
+        print(f'  Could not parse auth file: {e}')
+    " || true
+
+    # ------------------------------------------------------------------
+    # 3. Pull bundle and mount its filesystem
+    # ------------------------------------------------------------------
+    echo "=== Pulling bundle image: ${BUNDLE_IMAGE} ==="
+    container=$(buildah from --pull=always --authfile "${REGISTRY_AUTH_FILE}" "${BUNDLE_IMAGE}")
+    echo "=== Container created: ${container} ==="
+
+    mountpoint=$(buildah mount "${container}")
+    echo "=== Mounted at: ${mountpoint} ==="
+
+    echo "=== Bundle image contents ==="
+    find "${mountpoint}" -maxdepth 3 -type f 2>/dev/null || true
+    echo "=== End bundle contents ==="
+
+    # ------------------------------------------------------------------
+    # 4. Locate the ClusterServiceVersion
+    # ------------------------------------------------------------------
+    echo "=== Searching for ClusterServiceVersion ==="
+    CSV_FILE=$(find "${mountpoint}" \
+      -name "*.clusterserviceversion.yaml" 2>/dev/null | head -1)
+
+    if [ -z "${CSV_FILE}" ]; then
+      echo "ERROR: No ClusterServiceVersion found in bundle"
+      echo "=== Full bundle tree ==="
+      find "${mountpoint}" -type f 2>/dev/null || true
+      exit 1
+    fi
+    echo "=== Found CSV: ${CSV_FILE} ==="
+
+    echo "--- Original image references in CSV ---"
+    grep -n 'image:\|RELATED_IMAGE' "${CSV_FILE}" || echo "(none found)"
+    echo "--- End original image references ---"
+
+    # ------------------------------------------------------------------
+    # 5. Patch image references using the SNAPSHOT
+    # ------------------------------------------------------------------
+    echo "=== Patching image references ==="
+    export CSV_PATH="${CSV_FILE}"
+    python3 << 'PYEOF'
+    import json, os, re, sys
+
+    snapshot = json.loads(os.environ['SNAPSHOT_JSON'])
+    csv_path = os.environ['CSV_PATH']
+
+    with open(csv_path, 'r') as f:
+        content = f.read()
+
+    original_content = content
+    patched_count = 0
+
+    print("Components in SNAPSHOT:")
+    for comp in snapshot.get('components', []):
+        name  = comp.get('name', '')
+        image = comp.get('containerImage', '')
+        print(f"  - {name}: {image}")
+
+    print("\nPatching CSV:")
+    for comp in snapshot.get('components', []):
+        name  = comp.get('name', '')
+        image = comp.get('containerImage', '')
+
+        if not image:
+            print(f"  [skip] {name} (no containerImage)")
+            continue
+
+        # Skip the bundle component itself — we are patching *it*
+        if 'bundle' in name.lower():
+            print(f"  [skip] {name} (bundle component)")
+            continue
+
+        # Skip dex — keep the released version from the bundle CSV
+        if 'dex' in name.lower():
+            print(f"  [skip] {name} (external image, keeping released version)")
+            continue
+
+        # Derive the short image name, e.g. "argocd-rhel9"
+        image_ref  = image.split('@')[0] if '@' in image else image.split(':')[0]
+        short_name = image_ref.split('/')[-1]
+
+        # Match any fully-qualified image reference whose final path
+        # segment equals short_name, followed by @sha256:… or :tag
+        #   e.g.  registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:abc
+        #   e.g.  quay.io/…/argocd-rhel9:on-pr-631
+        pattern = (
+            r'[a-zA-Z0-9._:/-]*/'
+            + re.escape(short_name)
+            + r'[@:][^\s"\',}\]]*'
+        )
+
+        # Show what we're trying to match
+        matches = re.findall(pattern, content)
+        print(f"  [{short_name}] pattern: {pattern}")
+        print(f"  [{short_name}] matches found: {matches}")
+
+        new_content, count = re.subn(pattern, image, content)
+        if count > 0:
+            print(f"  [patch] {short_name}: {count} ref(s) -> {image}")
+            content = new_content
+            patched_count += count
+        else:
+            print(f"  [miss]  {short_name}: no matching references in CSV")
+
+    if patched_count == 0:
+        print("\nWARNING: No image references were patched. "
+              "Check that component names match image paths in the CSV.",
+              file=sys.stderr)
+        # Still continue — the original bundle may work as-is
+    else:
+        print(f"\nPatched {patched_count} total image reference(s).")
+
+    if content != original_content:
+        with open(csv_path, 'w') as f:
+            f.write(content)
+        print("CSV file updated on disk.")
+    else:
+        print("CSV file unchanged (no patches applied).")
+    PYEOF
+
+    echo ""
+    echo "--- Patched image references in CSV ---"
+    grep -n 'image:\|RELATED_IMAGE' "${CSV_FILE}" || echo "(none found)"
+    echo "--- End patched image references ---"
+
+    # ------------------------------------------------------------------
+    # 6. Commit the modified bundle and push
+    # ------------------------------------------------------------------
+    buildah unmount "${container}"
+
+    PUSH_REPO="quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle"
+    PUSH_TAG="patched-${PIPELINE_RUN_NAME}"
+    PUSH_TARGET="${PUSH_REPO}:${PUSH_TAG}"
+
+    echo "=== Committing patched bundle ==="
+    buildah commit "${container}" "${PUSH_TARGET}"
+
+    echo "=== Pushing to: ${PUSH_TARGET} ==="
+    DIGEST_FILE="/tmp/patched-bundle-digest"
+    buildah push --authfile "${REGISTRY_AUTH_FILE}" \
+      --digestfile "${DIGEST_FILE}" \
+      "${PUSH_TARGET}"
+
+    DIGEST=$(cat "${DIGEST_FILE}")
+    PATCHED_REF="${PUSH_REPO}@${DIGEST}"
+
+    echo "============================================"
+    echo "=== PATCHED BUNDLE: ${PATCHED_REF} ==="
+    echo "============================================"
+    printf '%s' "${PATCHED_REF}" > "$(results.patchedBundleImage.path)"
