@@ -1,5 +1,5 @@
 # Build Stage
-FROM  registry.redhat.io/rhel9/go-toolset:1.25 AS builder
+FROM  registry.redhat.io/rhel9/go-toolset:1.25.8-1775491036 AS builder
 USER root
 
 COPY sources/gitops-backend /workspace
