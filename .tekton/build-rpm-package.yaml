@@ -347,7 +347,7 @@ spec:
         - name: mock-config-template-filename-in-sources
           value: $(params.mock-config-template-filename-in-sources)
         - name: chroot
-          value: fedora-rawhide-@ARCH@
+          value: rhel-9-@ARCH@
         - name: ociArtifactExpiresAfter
           value: $(params.ociArtifactExpiresAfter)
     - name: calculate-deps-x86-64
