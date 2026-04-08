@@ -4,7 +4,7 @@ set -euxo pipefail
 CONFIG=../../config.yaml
 
 GITOPS_VERSION='1.20.0'
-GITOPS_BUILD_SPEC_RELEASE='1' # %(echo ${CI_SPEC_RELEASE} | sed -e s/rhel-9-//g) in CPaaS
+GITOPS_BUILD_SPEC_RELEASE='4' # %(echo ${CI_SPEC_RELEASE} | sed -e s/rhel-9-//g) in CPaaS
 
 ARGO_CD_IMAGE_URL='registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:ddf6e5c439c6bfca31a7f25c22cffc5102092184a33b9754c97697f81c78e97a'
 ARGO_CD_IMAGE_TAG='v1.20.0-4'
