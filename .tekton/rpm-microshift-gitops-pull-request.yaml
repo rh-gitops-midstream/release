@@ -37,7 +37,7 @@ spec:
   - name: self-ref-url
     value: "https://github.com/konflux-ci/rpmbuild-pipeline.git"
   - name: self-ref-revision
-    value: "8153cd094db31d2397f04a312dfb71747e46e0aa"
+    value: "1eb8d257a641b144883d7843efd6b9f2d2b2774c"
   - name: pre-build-task-url
     value: '{{source_url}}'
   - name: pre-build-task-revision
@@ -59,7 +59,7 @@ spec:
       echo "--- Creating argo-cd-sources.tar.gz from correct internal directory  ---"
       cd rpms/microshift-gitops
       ./generate-microshift-gitops-spec.sh
-      echo "--- DONE PRE-script  ---"
+      echo "--- DONE pre-build-script  ---"
   - name: enableSymlinkCheck
     value: false
   pipelineRef:
