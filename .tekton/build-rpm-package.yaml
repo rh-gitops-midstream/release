@@ -166,7 +166,7 @@ spec:
       description: Enable cache proxy configuration
       type: string
     - name: target-distribution
-      default: 'fedora-rawhide'
+      default: 'rhel-9'
       description: Target distribution. The pipeline expands spec file using macros from the target distribution. Typically specified as ID-VERSION_ID (see /etc/os-release), e.g., rhel-11
       type: string
     - name: enableSymlinkCheck
