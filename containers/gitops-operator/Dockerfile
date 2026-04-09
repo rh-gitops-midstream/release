@@ -15,7 +15,7 @@
 # --
 
 # TODO: switch to registry.redhat.io once the image is available
-FROM registry.redhat.io/rhel9/go-toolset:1.25  AS builder
+FROM registry.redhat.io/rhel9/go-toolset:1.25.8-1775724628  AS builder
 USER root
 
 # Copy source code
