@@ -13,6 +13,10 @@ sources:
 	@./hack/sync-sources.sh
 	@./hack/verify-sources.sh
 
+.PHONY: update-sources
+update-sources: deps
+	@bash ./hack/update-sources.sh
+
 # Update bundle manifests with latest images
 .PHONY: bundle
 bundle: deps
