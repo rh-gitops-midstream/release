@@ -35,6 +35,22 @@ sources:
 make sources
 ```
 
+## Refreshing Sources Automatically
+
+Use the updater script when you want to refresh the `sources` section directly from GitHub:
+
+```bash
+make update-sources
+```
+
+The script applies these rules:
+
+- The current `ref` value is classified using the exact upstream ref name.
+- If that exact ref is a branch, it updates `commit` to the current branch tip.
+- It skips the mainline branches `main` and `master`.
+- If that exact ref is a tag and it looks like a release version, it searches for the latest available z-stream tag in the same major/minor stream and updates both `ref` and `commit`.
+- If a tag is not semver-like or there is no newer z-stream tag, it keeps the current `ref` and only ensures the tag commit is correct.
+
 ## Adding a New Source
 
 1. Add a new entry to `config.yaml`:
