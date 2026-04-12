@@ -16,22 +16,21 @@ release:
     - name: "Siddhesh Ghadi"
       github: svghadi
       email: "sghadi@redhat.com"
-
 # Source code repositories
 # This section defines the source repositories for GitOps Operator artifacts built from source.
 # See docs/sources.md for details on each field and usage instructions.
 # On update, run `make sources` to update & validate the submodules.
 # Note: `commit` is always used to perform the actual checkout. `ref` is purely metadata for CI which can be a tag or branch.
 sources:
-  - path: sources/gitops-operator 
+  - path: sources/gitops-operator
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.20
-    commit: c46cd6651b9c92e7deb2dbcd4e6bdc9543a3a0fc
-  - path: sources/argo-cd 
+    commit: 1b83966157ba5c12ca8a48a33ded0cfbaf557af7
+  - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
     ref: v3.3.6
     commit: 998fb59dc355653c0657908a6ea2f87136e022d1
-  - path: sources/argo-rollouts 
+  - path: sources/argo-rollouts
     url: https://github.com/argoproj/argo-rollouts.git
     ref: release-1.8
     commit: f49f57137258cbe049d7db052c41a7ee362a6002
@@ -91,7 +90,6 @@ sources:
     url: https://github.com/argoproj-labs/argocd-image-updater.git
     ref: v1.1.1
     commit: 781d9f375560b2be7205c1dcf24307b758d66955
-
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
 # Bundle generation script will automatically fetch latest sha for each image 
@@ -106,7 +104,6 @@ externalImages:
   - name: "kube-rbac-proxy"
     image: registry.redhat.io/openshift4/ose-kube-rbac-proxy
     version: v4.15
-
 # Konflux images are images that are built from the source in this repository
 konfluxImages:
   - name: argo-rollouts
