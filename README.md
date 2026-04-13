@@ -4,6 +4,9 @@ This repository contains the configurations used to release the RedHat OpenShift
 
 ## Documentation
 
+- [Project Structure](docs/project-structure.md)  
+  Overview of the repository layout and the purpose of each directory and key file.
+
 - [Konflux Component Guide](docs/konflux-component-guide.md)  
   Step-by-step instructions to add and configure new components in Konflux.
 
