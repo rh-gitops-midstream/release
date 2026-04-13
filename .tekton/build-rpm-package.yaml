@@ -104,7 +104,7 @@ spec:
         configuration, dist-git-client, koji-client, and other RPM-build related
         tooling.
       name: script-environment-image
-      default: quay.io/redhat-user-workloads/rpm-build-pipeline-tenant/environment:latest@sha256:ffe0421ef0e984b9d27fbcea5de8bcab0dae84a7fdab031daace3cd8f57a8ff8
+      default: quay.io/redhat-user-workloads/rpm-build-pipeline-tenant/environment:latest@sha256:219bba71b1d346ffeb4fc77c1ba7f9f3029aa2bde5270367437be4cab677669b
       type: string
     - name: ociStorage
       description: |
@@ -166,7 +166,7 @@ spec:
       description: Enable cache proxy configuration
       type: string
     - name: target-distribution
-      default: 'fedora-rawhide'
+      default: 'rhel-9'
       description: Target distribution. The pipeline expands spec file using macros from the target distribution. Typically specified as ID-VERSION_ID (see /etc/os-release), e.g., rhel-11
       type: string
     - name: enableSymlinkCheck
@@ -363,6 +363,8 @@ spec:
           value: $(tasks.prepare-mock-config.results.mock-config-template-file)
         - name: PLATFORM
           value: $(tasks.process-sources.results.skip-mpc-tasks.deps-x86_64)
+        - name: arch
+          value: x86_64
         - name: script-environment-image
           value: $(params.script-environment-image)
         - name: dependencies-artifact
@@ -395,6 +397,8 @@ spec:
           value: $(tasks.prepare-mock-config.results.mock-config-template-file)
         - name: PLATFORM
           value: $(tasks.process-sources.results.skip-mpc-tasks.build-x86_64)
+        - name: arch
+          value: x86_64
         - name: script-environment-image
           value: $(params.script-environment-image)
         - name: hermetic
@@ -405,6 +409,78 @@ spec:
           value: $(tasks.calculate-deps-x86-64.results.calculation-artifact)
         - name: ociStorage
           value: $(params.ociStorage).rpmbuild-x86_64
+        - name: ociArtifactExpiresAfter
+          value: $(params.ociArtifactExpiresAfter)
+        - name: specfile
+          value: $(params.specfile)
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: $(params.self-ref-url)
+          - name: revision
+            value: $(params.self-ref-revision)
+          - name: pathInRepo
+            value: task/rpmbuild.yaml
+    - name: calculate-deps-i686
+      runAfter:
+        - process-sources
+        - prepare-mock-config
+      params:
+        - name: package-name
+          value: $(params.package-name)
+        - name: target-branch
+          value: $(params.target-branch)
+        - name: mock-config-template-file
+          value: $(tasks.prepare-mock-config.results.mock-config-template-file)
+        - name: PLATFORM
+          value: $(tasks.process-sources.results.skip-mpc-tasks.deps-i686)
+        - name: arch
+          value: i686
+        - name: script-environment-image
+          value: $(params.script-environment-image)
+        - name: dependencies-artifact
+          value: $(tasks.process-sources.results.dependencies-artifact)
+        - name: ociStorage
+          value: $(params.ociStorage).calculation-i686
+        - name: ociArtifactExpiresAfter
+          value: $(params.ociArtifactExpiresAfter)
+        - name: specfile
+          value: $(params.specfile)
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: $(params.self-ref-url)
+          - name: revision
+            value: $(params.self-ref-revision)
+          - name: pathInRepo
+            value: task/calculate-deps.yaml
+    - name: rpmbuild-i686
+      runAfter:
+        - calculate-deps-i686
+      timeout: "72h"
+      params:
+        - name: package-name
+          value: $(params.package-name)
+        - name: target-branch
+          value: $(params.target-branch)
+        - name: mock-config-template-file
+          value: $(tasks.prepare-mock-config.results.mock-config-template-file)
+        - name: PLATFORM
+          value: $(tasks.process-sources.results.skip-mpc-tasks.build-i686)
+        - name: arch
+          value: i686
+        - name: script-environment-image
+          value: $(params.script-environment-image)
+        - name: hermetic
+          value: $(params.hermetic)
+        - name: dependencies-artifact
+          value: $(tasks.process-sources.results.dependencies-artifact)
+        - name: calculation-artifact
+          value: $(tasks.calculate-deps-i686.results.calculation-artifact)
+        - name: ociStorage
+          value: $(params.ociStorage).rpmbuild-i686
         - name: ociArtifactExpiresAfter
           value: $(params.ociArtifactExpiresAfter)
         - name: specfile
@@ -431,6 +507,8 @@ spec:
           value: $(tasks.prepare-mock-config.results.mock-config-template-file)
         - name: PLATFORM
           value: $(tasks.process-sources.results.skip-mpc-tasks.deps-aarch64)
+        - name: arch
+          value: aarch64
         - name: script-environment-image
           value: $(params.script-environment-image)
         - name: dependencies-artifact
@@ -463,6 +541,8 @@ spec:
           value: $(tasks.prepare-mock-config.results.mock-config-template-file)
         - name: PLATFORM
           value: $(tasks.process-sources.results.skip-mpc-tasks.build-aarch64)
+        - name: arch
+          value: aarch64
         - name: script-environment-image
           value: $(params.script-environment-image)
         - name: hermetic
@@ -499,6 +579,8 @@ spec:
           value: $(tasks.prepare-mock-config.results.mock-config-template-file)
         - name: PLATFORM
           value: $(tasks.process-sources.results.skip-mpc-tasks.deps-s390x)
+        - name: arch
+          value: s390x
         - name: script-environment-image
           value: $(params.script-environment-image)
         - name: dependencies-artifact
@@ -531,6 +613,8 @@ spec:
           value: $(tasks.prepare-mock-config.results.mock-config-template-file)
         - name: PLATFORM
           value: $(tasks.process-sources.results.skip-mpc-tasks.build-s390x)
+        - name: arch
+          value: s390x
         - name: script-environment-image
           value: $(params.script-environment-image)
         - name: hermetic
@@ -567,6 +651,8 @@ spec:
           value: $(tasks.prepare-mock-config.results.mock-config-template-file)
         - name: PLATFORM
           value: $(tasks.process-sources.results.skip-mpc-tasks.deps-ppc64le)
+        - name: arch
+          value: ppc64le
         - name: script-environment-image
           value: $(params.script-environment-image)
         - name: dependencies-artifact
@@ -599,6 +685,8 @@ spec:
           value: $(tasks.prepare-mock-config.results.mock-config-template-file)
         - name: PLATFORM
           value: $(tasks.process-sources.results.skip-mpc-tasks.build-ppc64le)
+        - name: arch
+          value: ppc64le
         - name: script-environment-image
           value: $(params.script-environment-image)
         - name: hermetic
@@ -638,6 +726,8 @@ spec:
           value: $(context.pipelineRun.namespace)/$(context.pipelineRun.name)
         - name: x86_64-artifact
           value: $(tasks.rpmbuild-x86-64.results.rpmbuild-artifact)
+        - name: i686-artifact
+          value: $(tasks.rpmbuild-i686.results.rpmbuild-artifact)
         - name: aarch64-artifact
           value: $(tasks.rpmbuild-aarch64.results.rpmbuild-artifact)
         - name: s390x-artifact
@@ -649,6 +739,7 @@ spec:
       runAfter:
         - rpmbuild-s390x
         - rpmbuild-x86-64
+        - rpmbuild-i686
         - rpmbuild-aarch64
         - rpmbuild-ppc64le
       taskRef:
@@ -664,9 +755,12 @@ spec:
       runAfter:
         - rpmbuild-s390x
         - rpmbuild-x86-64
+        - rpmbuild-i686
         - rpmbuild-aarch64
         - rpmbuild-ppc64le
       params:
+        - name: i686-artifact
+          value: $(tasks.rpmbuild-i686.results.rpmbuild-artifact)
         - name: x86_64-artifact
           value: $(tasks.rpmbuild-x86-64.results.rpmbuild-artifact)
         - name: aarch64-artifact
