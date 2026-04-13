@@ -51,6 +51,12 @@ USER root
 COPY sources/argo-cd /go/src/github.com/argoproj/argo-cd
 WORKDIR /go/src/github.com/argoproj/argo-cd
 
+ARG COVERAGE_ENABLED=false
+COPY tooling/coverage/coverage_server.go /tmp/coverage_server.go
+RUN if [ "$COVERAGE_ENABLED" = "true" ]; then \
+      cp /tmp/coverage_server.go ./cmd/coverage_server.go; \
+    fi
+
 ENV GOFLAGS="-mod=mod"
 
 # build with strictfips
@@ -78,7 +84,9 @@ export LDFLAGS="-X ${PACKAGE}.version=${VERSION} \
   -X ${PACKAGE}.gitTreeState=clean \
   -X ${PACKAGE}.kubectlVersion=${KUBECTL_VER}\
   -X \"${PACKAGE}.extraBuildInfo=${EXTRA_BUILD_INFO}\"" &&\
-go build -gcflags="all=-N -l" -v -ldflags "${LDFLAGS}" -tags strictfipsruntime -o ./dist/argocd ./cmd
+COVER_FLAG="" &&\
+if [ "$COVERAGE_ENABLED" = "true" ]; then COVER_FLAG="-cover"; fi &&\
+go build -gcflags="all=-N -l" -v -ldflags "${LDFLAGS}" $COVER_FLAG -tags strictfipsruntime -o ./dist/argocd ./cmd
 
 ARG BUILD_ALL_CLIS=false
 RUN if [ "$BUILD_ALL_CLIS" = "true" ] ; then \
@@ -177,6 +185,10 @@ RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-dex
 RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-notifications
 RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-applicationset-controller
 RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-k8s-auth
+
+ARG COVERAGE_ENABLED=false
+RUN if [ "$COVERAGE_ENABLED" = "true" ]; then mkdir -p /tmp/gocoverage; fi
+ENV GOCOVERDIR=/tmp/gocoverage
 
 USER 999
 COPY --from=argocd-build  /go/src/github.com/argoproj/kustomize/kustomize/kustomize /usr/local/bin/

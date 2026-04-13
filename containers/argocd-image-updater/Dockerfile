@@ -24,8 +24,16 @@ ARG CI_ARGOCD_IMAGE_UPDATER_COMMIT
 COPY sources/argocd-image-updater /src/argocd-image-updater
 WORKDIR /src/argocd-image-updater
 
-RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime \
-    go build -tags strictfipsruntime \
+ARG COVERAGE_ENABLED=false
+COPY tooling/coverage/coverage_server.go /tmp/coverage_server.go
+RUN if [ "$COVERAGE_ENABLED" = "true" ]; then \
+      cp /tmp/coverage_server.go /src/argocd-image-updater/cmd/coverage_server.go; \
+    fi
+
+RUN COVER_FLAG="" && \
+    if [ "$COVERAGE_ENABLED" = "true" ]; then COVER_FLAG="-cover"; fi && \
+    CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime \
+    go build -tags strictfipsruntime $COVER_FLAG \
     -ldflags "-X github.com/argoproj-labs/argocd-image-updater/pkg/version.version=${CI_ARGOCD_IMAGE_UPDATER_VERSION} \
               -X github.com/argoproj-labs/argocd-image-updater/pkg/version.gitCommit=${CI_ARGOCD_IMAGE_UPDATER_COMMIT} \
               -X github.com/argoproj-labs/argocd-image-updater/pkg/version.buildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
@@ -46,6 +54,10 @@ RUN useradd -l -r -u 1000 -d /app argocd && \
 
 COPY --from=builder /src/argocd-image-updater/dist/argocd-image-updater /manager
 COPY sources/argocd-image-updater/hack/git-ask-pass.sh /usr/local/bin/git-ask-pass.sh
+
+ARG COVERAGE_ENABLED=false
+RUN if [ "$COVERAGE_ENABLED" = "true" ]; then mkdir -p /tmp/gocoverage; fi
+ENV GOCOVERDIR=/tmp/gocoverage
 
 WORKDIR /app
 USER 1000

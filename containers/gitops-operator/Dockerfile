@@ -27,8 +27,17 @@ ENV GOFLAGS="-mod=mod"
 ENV CGO_ENABLED=1
 ENV GOEXPERIMENT=strictfipsruntime
 ENV GOOS=linux
+
+ARG COVERAGE_ENABLED=false
+COPY tooling/coverage/coverage_server.go /tmp/coverage_server.go
+RUN if [ "$COVERAGE_ENABLED" = "true" ]; then \
+      cp /tmp/coverage_server.go /workspace/cmd/coverage_server.go; \
+    fi
+
 RUN go mod download
-RUN go build -tags strictfipsruntime -o bin/manager ./cmd/main.go
+RUN COVER_FLAG="" && BUILD_TARGET="./cmd/main.go" && \
+    if [ "$COVERAGE_ENABLED" = "true" ]; then COVER_FLAG="-cover"; BUILD_TARGET="./cmd/"; fi && \
+    go build -tags strictfipsruntime $COVER_FLAG -o bin/manager $BUILD_TARGET
     
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 
@@ -39,6 +48,10 @@ COPY --from=builder /workspace/bin/manager /usr/local/bin/manager
 
 # Redis HA script templates
 COPY --from=builder /workspace/build/redis /var/lib/redis
+ARG COVERAGE_ENABLED=false
+RUN if [ "$COVERAGE_ENABLED" = "true" ]; then mkdir -p /tmp/gocoverage; fi
+ENV GOCOVERDIR=/tmp/gocoverage
+
 USER 10001
 
 ENTRYPOINT [ "/usr/local/bin/manager" ]

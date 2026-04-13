@@ -581,3 +581,63 @@ spec:
                 value: master
               - name: test_dir
                 value: "./test/openshift/e2e/ginkgo/parallel"
+    - name: collect-coverage
+      runAfter:
+        - test-operator
+      params:
+        - name: eaasSpaceSecretRef
+          value: $(tasks.provision-eaas-space.results.secretRef)
+        - name: clusterName
+          value: "$(tasks.provision-cluster.results.clusterName)"
+        - name: STEP_ACTIONS_URL
+          value: $(tasks.extract-step-actions-ref.results.STEP_ACTIONS_URL)
+        - name: STEP_ACTIONS_REVISION
+          value: $(tasks.extract-step-actions-ref.results.STEP_ACTIONS_REVISION)
+      taskSpec:
+        params:
+          - name: eaasSpaceSecretRef
+            type: string
+          - name: clusterName
+            type: string
+          - name: STEP_ACTIONS_URL
+            type: string
+          - name: STEP_ACTIONS_REVISION
+            type: string
+        volumes:
+          - name: credentials
+            emptyDir: {}
+        steps:
+          - name: get-kubeconfig
+            onError: continue
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-get-ephemeral-cluster-credentials/0.1/eaas-get-ephemeral-cluster-credentials.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(params.eaasSpaceSecretRef)
+              - name: clusterName
+                value: $(params.clusterName)
+              - name: credentials
+                value: credentials
+          - name: collect-coverage
+            onError: continue
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: $(params.STEP_ACTIONS_URL)
+                - name: revision
+                  value: $(params.STEP_ACTIONS_REVISION)
+                - name: pathInRepo
+                  value: .tekton/steps/collect-coverage.yaml
+            params:
+              - name: credentials
+                value: credentials
+              - name: kubeconfig
+                value: "$(steps.get-kubeconfig.results.kubeconfig)"

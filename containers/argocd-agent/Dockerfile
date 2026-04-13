@@ -27,15 +27,28 @@ LABEL com.redhat.delivery.appregistry=true
 
 COPY sources/argocd-agent /app/argocd-agent
 WORKDIR /app/argocd-agent
+
+ARG COVERAGE_ENABLED=false
+COPY tooling/coverage/coverage_server.go /tmp/coverage_server.go
+RUN if [ "$COVERAGE_ENABLED" = "true" ]; then \
+      cp /tmp/coverage_server.go /app/argocd-agent/cmd/argocd-agent/coverage_server.go; \
+    fi
+
 RUN export LDFLAGS="-X ${VERSION_PACKAGE}.version=${CI_ARGOCD_AGENT_VERSION} -X ${VERSION_PACKAGE}.gitRevision=${CI_ARGOCD_AGENT_COMMIT}" && \
-    CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime \ 
+    COVER_FLAG="" && \
+    if [ "$COVERAGE_ENABLED" = "true" ]; then COVER_FLAG="-cover"; fi && \
+    CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime \
     GO_TAGS=strictfipsruntime GO_MOD=mod \
-    go build -ldflags "${LDFLAGS}" -o dist/argocd-agent ./cmd/argocd-agent
+    go build -ldflags "${LDFLAGS}" $COVER_FLAG -o dist/argocd-agent ./cmd/argocd-agent
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 
 COPY --from=builder /app/argocd-agent/dist/argocd-agent /bin/argocd-agent
 ENTRYPOINT ["./bin/argocd-agent"]
+
+ARG COVERAGE_ENABLED=false
+RUN if [ "$COVERAGE_ENABLED" = "true" ]; then mkdir -p /tmp/gocoverage; fi
+ENV GOCOVERDIR=/tmp/gocoverage
 
 USER 999
 
