@@ -84,8 +84,8 @@ sources:
     commit: 09102635500867f4119ae63008bf1fe1ae7328b5
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
-    ref: v0.5.4
-    commit: 1414e5e4dbc99a45ff73d99a76d4e04bda732226
+    ref: v0.5.5
+    commit: d8c7f9287090d963ba8b1ca5678079c7dc77a342
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
 # Bundle generation script will automatically fetch latest sha for each image 
