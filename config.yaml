@@ -84,8 +84,8 @@ sources:
     commit: 09102635500867f4119ae63008bf1fe1ae7328b5
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
-    ref: release-0.5
-    commit: 65bdacbc827ef162938ea4a40f578905cd7d6893
+    ref: v0.5.5
+    commit: d8c7f9287090d963ba8b1ca5678079c7dc77a342
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
     ref: v1.0.3
