@@ -2,6 +2,7 @@ SHELL := /bin/bash
 .SHELLFLAGS := -eu -o pipefail -c
 OS := $(shell uname | tr '[:upper:]' '[:lower:]')
 ARCH := $(shell uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+CHART_REGISTRY ?=
 
 # Default to podman if available, fallback to docker
 CONTAINER_RUNTIME := $(shell command -v podman 2>/dev/null || command -v docker)
@@ -77,3 +78,37 @@ catalog: deps
 	git clone --branch main --depth 1 https://github.com/rh-gitops-midstream/catalog.git catalog
 	python3 hack/generate-catalog.py
 	cd catalog && make catalog-template && git status --short
+
+.PHONY: agent-helm-chart
+agent-helm-chart: deps
+	@echo "Generating Agent Helm Chart..."
+	python3 hack/generate-agent-helm-chart.py
+
+.PHONY: agent-helm-chart-package
+agent-helm-chart-package: agent-helm-chart
+	@echo "Packaging Agent Helm Chart..."
+	@CHART_DIR=$$(find helm-charts/redhat-argocd-agent -mindepth 2 -maxdepth 2 -type d -name src | head -n1); \
+	if [ -z "$$CHART_DIR" ]; then \
+		echo "Could not find generated chart src directory"; \
+		exit 1; \
+	fi; \
+	rm -rf dist; \
+	mkdir -p dist; \
+	helm package "$$CHART_DIR" --destination dist; \
+	echo "Packaged chart archive:"; \
+	ls -1 dist/*.tgz
+
+.PHONY: agent-helm-chart-push
+agent-helm-chart-push: agent-helm-chart-package
+	@if [ -z "$(CHART_REGISTRY)" ]; then \
+		echo "Error: CHART_REGISTRY not set"; \
+		echo "Usage: make agent-helm-chart-push CHART_REGISTRY=oci://ghcr.io/<owner>/charts"; \
+		exit 1; \
+	fi
+	@echo "Pushing Agent Helm Chart to $(CHART_REGISTRY)..."
+	@CHART_ARCHIVE=$$(ls -1 dist/*.tgz | head -n1); \
+	if [ -z "$$CHART_ARCHIVE" ]; then \
+		echo "Could not find packaged chart archive in dist/"; \
+		exit 1; \
+	fi; \
+	helm push "$$CHART_ARCHIVE" "$(CHART_REGISTRY)"
