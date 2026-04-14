@@ -98,8 +98,8 @@ sources:
 # based on the version specified.
 externalImages:
   - name: "haproxy"
-    image: registry.redhat.io/openshift4/ose-haproxy-router
-    version: v4.14
+    image: registry.redhat.io/openshift4/ose-haproxy-router-rhel9
+    version: v4.21
   - name: "redis"
     image: registry.redhat.io/rhel9/redis-7
     version: 9.6
