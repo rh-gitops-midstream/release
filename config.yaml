@@ -93,7 +93,7 @@ sources:
 externalImages:
   - name: "haproxy"
     image: registry.redhat.io/openshift4/ose-haproxy-router-rhel9
-    version: v4.21
+    version: v4.19
   - name: "keycloak"
     image: registry.redhat.io/rh-sso-7/sso76-openshift-rhel8
     version: 7.6
@@ -101,8 +101,8 @@ externalImages:
     image: registry.redhat.io/rhel9/redis-7
     version: 9.6
   - name: "kube-rbac-proxy"
-    image: registry.redhat.io/openshift4/ose-kube-rbac-proxy
-    version: v4.15
+    image: registry.redhat.io/openshift4/ose-kube-rbac-proxy-rhel9
+    version: v4.19
 # Konflux images are images that are built from the source in this repository
 konfluxImages:
   - name: argo-rollouts
