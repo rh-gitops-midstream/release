@@ -6,11 +6,11 @@ metadata:
 spec:
   gracePeriodDays: 7
   releasePlan: gitops-1-20-prod
-  snapshot: gitops-1-20-20260327-034223-000
+  snapshot: gitops-1-20-20260421-124353-000
   data:
     releaseNotes:
       type: RHSA
       cves: 
       - key: CVE-2026-27137
-        component: dex-1-19
+        component: dex-1-20
       
