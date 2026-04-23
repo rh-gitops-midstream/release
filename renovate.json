@@ -6,6 +6,9 @@
     "release-1.19",
     "release-1.18"
   ],
+  "ignoreDeps": [
+    "registry.redhat.io/rhel9/go-toolset"
+  ],
   "packageRules": [
     {
       "matchManagers": [
