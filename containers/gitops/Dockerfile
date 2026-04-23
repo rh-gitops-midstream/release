@@ -5,14 +5,27 @@ USER root
 COPY sources/gitops-backend /workspace
 WORKDIR /workspace
 
+ARG COVERAGE_ENABLED=false
+COPY tooling/coverage/coverage_server.go /tmp/coverage_server.go
+RUN if [ "$COVERAGE_ENABLED" = "true" ]; then \
+      cp /tmp/coverage_server.go /workspace/cmd/backend-http/coverage_server.go; \
+    fi
+
 ARG CI_GITOPS_BACKEND_COMMIT
-RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 GOOS=linux go build -a -mod=readonly \
-  -ldflags "-X github.com/redhat-developer/gitops-backend/pkg/health.GitRevision=$CI_GITOPS_BACKEND_COMMIT" -tags strictfipsruntime ./cmd/backend-http
+RUN COVER_FLAG="" && \
+    if [ "$COVERAGE_ENABLED" = "true" ]; then COVER_FLAG="-cover"; fi && \
+    GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 GOOS=linux go build -a -mod=readonly $COVER_FLAG \
+    -ldflags "-X github.com/redhat-developer/gitops-backend/pkg/health.GitRevision=$CI_GITOPS_BACKEND_COMMIT" -tags strictfipsruntime ./cmd/backend-http
 
 # Final Stage
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 WORKDIR /
 COPY --from=builder /workspace/backend-http .
+
+ARG COVERAGE_ENABLED=false
+RUN if [ "$COVERAGE_ENABLED" = "true" ]; then mkdir -p /tmp/gocoverage; fi
+ENV GOCOVERDIR=/tmp/gocoverage
+
 USER 10001
 
 EXPOSE 8080

@@ -47,14 +47,22 @@ ENV GOFLAGS="-mod=mod"
 ENV CGO_ENABLED=1
 ENV GOEXPERIMENT=strictfipsruntime
 
+ARG COVERAGE_ENABLED=false
+COPY tooling/coverage/coverage_server.go /tmp/coverage_server.go
+RUN if [ "$COVERAGE_ENABLED" = "true" ]; then \
+      cp /tmp/coverage_server.go ./cmd/rollouts-controller/coverage_server.go; \
+    fi
+
 # Perform the build
-RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime \
-go build -v -ldflags "-X github.com/argoproj/argo-rollouts/utils/version.version=${CI_ARGO_ROLLOUTS_VERSION} \
-  -X github.com/argoproj/argo-rollouts/utils/version.buildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
-  -X github.com/argoproj/argo-rollouts/utils/version.gitCommit=${CI_ARGO_ROLLOUTS_COMMIT} \
-  -X github.com/argoproj/argo-rollouts/utils/version.gitTreeState=clean \
-  -X github.com/argoproj/argo-rollouts.gitTag=${CI_ARGO_ROLLOUTS_VERSION}" \
-  -tags strictfipsruntime -o ./dist/rollouts-controller ./cmd/rollouts-controller
+RUN COVER_FLAG="" && \
+    if [ "$COVERAGE_ENABLED" = "true" ]; then COVER_FLAG="-cover"; fi && \
+    CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime \
+    go build -v -ldflags "-X github.com/argoproj/argo-rollouts/utils/version.version=${CI_ARGO_ROLLOUTS_VERSION} \
+      -X github.com/argoproj/argo-rollouts/utils/version.buildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+      -X github.com/argoproj/argo-rollouts/utils/version.gitCommit=${CI_ARGO_ROLLOUTS_COMMIT} \
+      -X github.com/argoproj/argo-rollouts/utils/version.gitTreeState=clean \
+      -X github.com/argoproj/argo-rollouts.gitTag=${CI_ARGO_ROLLOUTS_VERSION}" \
+      $COVER_FLAG -tags strictfipsruntime -o ./dist/rollouts-controller ./cmd/rollouts-controller
 
 # build git-lfs
 COPY sources/git-lfs/ /go/src/github.com/argoproj/git-lfs
@@ -96,6 +104,10 @@ RUN mkdir -p /app/config/gpg/source && \
     chmod 0700 /app/config/gpg/keys
 # Create directory for storing the binary for the default route plugin
 RUN mkdir -p /plugins/rollouts-trafficrouter-openshift/
+
+ARG COVERAGE_ENABLED=false
+RUN if [ "$COVERAGE_ENABLED" = "true" ]; then mkdir -p /tmp/gocoverage; fi
+ENV GOCOVERDIR=/tmp/gocoverage
 
 USER 999
 
