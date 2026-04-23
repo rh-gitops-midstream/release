@@ -49,6 +49,11 @@ jobs:
           mkdir -p ~/.config/containers
           podman login registry.redhat.io -u ${{ secrets.RH_USERNAME }} -p ${{ secrets.RH_PASSWORD }}
 
+      - name: Log in to quay.io
+        run: |
+          mkdir -p ~/.config/containers
+          podman login quay.io -u ${{ secrets.KONFLUX_QUAY_USERNAME }} -p ${{ secrets.KONFLUX_QUAY_TOKEN }}
+
 
       - name: Update bundle with latest image SHAs
         shell: bash
