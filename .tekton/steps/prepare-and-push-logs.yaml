@@ -1,0 +1,83 @@
+apiVersion: tekton.dev/v1alpha1
+kind: StepAction
+metadata:
+  name: prepare-and-push-logs
+spec:
+  params:
+    - name: pipeline-run-name
+      type: string
+      description: Name of the PipelineRun whose logs should be collected.
+    - name: namespace
+      type: string
+      description: Namespace where the PipelineRun was executed.
+    - name: quay-repo
+      type: string
+      description: Base OCI repository path.
+    - name: credentials-volume
+      type: string
+      description: Name of the volume containing registry credentials.
+  results:
+    - name: LOG_ARTIFACT_TAG
+      description: The tag generated for the log artifact.
+  image: quay.io/devtools_gitops/test_image:integrated_ginkgo_oras
+  workingDir: /var/log-workspace
+  volumeMounts:
+    - name: "$(params.credentials-volume)"
+      mountPath: /tekton_volumes_credentials-volume
+      readOnly: true
+  env:
+    - name: PR_NAME
+      value: "$(params.pipeline-run-name)"
+    - name: PR_NAMESPACE
+      value: "$(params.namespace)"
+    - name: OCI_REFERENCE_BASE
+      value: "$(params.quay-repo)"
+  script: |
+    #!/bin/bash
+    set -euo pipefail
+    set -x
+
+    LOG_FILENAME="all-logs.txt"
+    ARCHIVE_FILENAME="logs.tar.gz"
+    IMAGE_TAG="${PR_NAME}-logs"
+
+    # --- Collect logs ---
+    CMD="kubectl"
+
+    ${CMD} get pr "${PR_NAME}" -o json -n "${PR_NAMESPACE}" | jq -r '.status.childReferences[].name' | while read -r taskrun; do
+        POD_NAME=$(${CMD} get tr "${taskrun}" -o json -n "${PR_NAMESPACE}" | jq -r '.status.podName // empty')
+
+        if [ -n "$POD_NAME" ]; then
+            echo "--- LOGS FOR ${taskrun} (Pod: ${POD_NAME}) ---" >> "${LOG_FILENAME}" 2>&1
+            ${CMD} logs --namespace "${PR_NAMESPACE}" pod/"${POD_NAME}" >> "${LOG_FILENAME}" 2>&1 || true
+        fi
+    done
+
+    if [ ! -s "${LOG_FILENAME}" ]; then
+        echo "No logs found, skipping archive and push."
+        echo -n "" > "$(step.results.LOG_ARTIFACT_TAG.path)"
+        exit 0
+    fi
+
+    tar -czf "${ARCHIVE_FILENAME}" "${LOG_FILENAME}"
+    echo -n "${IMAGE_TAG}" > "$(step.results.LOG_ARTIFACT_TAG.path)"
+
+    # --- Push to OCI ---
+    REPO_NAME_ONLY="${OCI_REFERENCE_BASE%:*}"
+    FULL_OCI_REF="${REPO_NAME_ONLY}:${IMAGE_TAG}"
+
+    AUTH_DIR="/tekton_volumes_credentials-volume"
+    AUTH_PATH="$AUTH_DIR/.dockerconfigjson"
+
+    if [ -f "$AUTH_PATH" ]; then
+      TEMP_DOCKER_CONFIG="$(mktemp -d)"
+      cp "$AUTH_PATH" "$TEMP_DOCKER_CONFIG/config.json"
+      export DOCKER_CONFIG="$TEMP_DOCKER_CONFIG"
+    fi
+
+    oras push --no-tty \
+      --artifact-type "application/vnd.logs.tar+gzip" \
+      "${FULL_OCI_REF}" \
+      "logs.tar.gz:application/vnd.logs.tar+gzip"
+
+    echo "Successfully pushed log artifact to ${FULL_OCI_REF}"

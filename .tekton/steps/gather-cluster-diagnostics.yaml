@@ -1,0 +1,169 @@
+apiVersion: tekton.dev/v1alpha1
+kind: StepAction
+metadata:
+  name: gather-cluster-diagnostics
+spec:
+  params:
+    - name: kubeconfig
+      type: string
+    - name: credentials
+      type: string
+      description: A volume containing the remote cluster credentials.
+  env:
+    - name: KUBECONFIG
+      value: "/credentials/$(params.kubeconfig)"
+  volumeMounts:
+    - name: "$(params.credentials)"
+      mountPath: /credentials
+  image: registry.redhat.io/openshift4/ose-cli:latest
+  script: |
+    #!/usr/bin/env bash
+    set -o pipefail
+
+    OPERATOR_NAMESPACE="openshift-gitops-operator"
+    NAMESPACE="openshift-gitops"
+
+    if [ ! -f "${KUBECONFIG}" ]; then
+      echo "No kubeconfig found at ${KUBECONFIG} — cluster was not provisioned, skipping diagnostics."
+      exit 0
+    fi
+
+    if ! oc status &>/dev/null; then
+      echo "Cluster is not reachable — skipping diagnostics."
+      exit 0
+    fi
+
+    echo "========================================================"
+    echo "Gathering cluster diagnostics"
+    echo "========================================================"
+
+    # --- Operator namespace ---
+    if oc get namespace "${OPERATOR_NAMESPACE}" &>/dev/null; then
+      echo -e "\n[OPERATOR NAMESPACE: ${OPERATOR_NAMESPACE}]"
+      echo "--------------------------------------------------------"
+
+      echo -e "\n[Subscriptions]"
+      oc get subscriptions -n "${OPERATOR_NAMESPACE}" -o wide 2>/dev/null || echo "No subscriptions found"
+
+      echo -e "\n[InstallPlans]"
+      oc get installplans -n "${OPERATOR_NAMESPACE}" -o wide 2>/dev/null || echo "No installplans found"
+
+      echo -e "\n[ClusterServiceVersions]"
+      oc get csv -n "${OPERATOR_NAMESPACE}" -o wide 2>/dev/null || echo "No CSVs found"
+
+      echo -e "\n[CatalogSources]"
+      oc get catalogsources -n "${OPERATOR_NAMESPACE}" 2>/dev/null || echo "No catalogsources found"
+
+      echo -e "\n[Operator Pods]"
+      oc get pods -n "${OPERATOR_NAMESPACE}" -o wide 2>/dev/null || echo "No pods found"
+
+      echo -e "\n[Describing Non-Running Operator Pods]"
+      for pod in $(oc get pods -n "${OPERATOR_NAMESPACE}" --no-headers 2>/dev/null | grep -v "Running\|Completed" | awk '{print $1}'); do
+        echo -e "\n--- Pod: ${pod} ---"
+        oc describe pod "${pod}" -n "${OPERATOR_NAMESPACE}" 2>/dev/null | tail -50
+      done
+
+      echo -e "\n[Operator Pod Logs (last 100 lines)]"
+      oc logs -n "${OPERATOR_NAMESPACE}" --all-containers=true --prefix=true --tail=100 \
+        --selector='control-plane=controller-manager' --ignore-errors=true 2>/dev/null || \
+      oc logs -n "${OPERATOR_NAMESPACE}" --all-containers=true --prefix=true --tail=100 \
+        -l 'app' --ignore-errors=true 2>/dev/null || \
+      echo "No logs available"
+
+      echo -e "\n[Operator Namespace Events (sorted by time)]"
+      oc get events -n "${OPERATOR_NAMESPACE}" --sort-by='.lastTimestamp' 2>/dev/null | tail -50 || echo "No events found"
+
+      echo -e "\n[oc adm inspect: ${OPERATOR_NAMESPACE}]"
+      oc adm inspect ns/"${OPERATOR_NAMESPACE}" --dest-dir="/tmp/must-gather-${OPERATOR_NAMESPACE}" 2>/dev/null || \
+        echo "oc adm inspect failed or partial"
+    fi
+
+    # --- Application namespace ---
+    echo -e "\n\n[APPLICATION NAMESPACE: ${NAMESPACE}]"
+    echo "--------------------------------------------------------"
+
+    echo -e "\n[Namespace Events (sorted by time)]"
+    oc get events -n "${NAMESPACE}" --sort-by='.lastTimestamp' 2>/dev/null | tail -50 || echo "No events found"
+
+    echo -e "\n[Pods]"
+    oc get pods -n "${NAMESPACE}" -o wide 2>/dev/null || echo "No pods found"
+
+    echo -e "\n[Deployments]"
+    oc get deployments -n "${NAMESPACE}" -o wide 2>/dev/null || echo "No deployments found"
+
+    echo -e "\n[StatefulSets]"
+    oc get statefulsets -n "${NAMESPACE}" -o wide 2>/dev/null || echo "No statefulsets found"
+
+    echo -e "\n[Services]"
+    oc get services -n "${NAMESPACE}" 2>/dev/null || echo "No services found"
+
+    echo -e "\n[ArgoCD CR Status]"
+    oc get argocd -n "${NAMESPACE}" -o wide 2>/dev/null || echo "No ArgoCD CR found"
+
+    echo -e "\n[ArgoCD CR Status Detail]"
+    oc get argocd -n "${NAMESPACE}" \
+      -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{.status}{"\n\n"}{end}' 2>/dev/null || \
+      echo "Could not retrieve ArgoCD status"
+
+    echo -e "\n[Describing Non-Running/Problematic Pods]"
+    for pod in $(oc get pods -n "${NAMESPACE}" --no-headers 2>/dev/null | grep -v "Running\|Completed" | awk '{print $1}'); do
+      echo -e "\n--- Pod: ${pod} ---"
+      oc describe pod "${pod}" -n "${NAMESPACE}" 2>/dev/null | tail -60
+    done
+
+    for pod in $(oc get pods -n "${NAMESPACE}" --no-headers 2>/dev/null | awk '$2 !~ /^[0-9]+\/[0-9]+$/ || $4 > 0 {print $1}' | head -5); do
+      if ! echo "${pod}" | grep -q "Completed"; then
+        echo -e "\n--- Pod with issues: ${pod} ---"
+        oc describe pod "${pod}" -n "${NAMESPACE}" 2>/dev/null | tail -60
+      fi
+    done
+
+    echo -e "\n[Recent Pod Logs (last 50 lines)]"
+    oc logs -n "${NAMESPACE}" --all-containers=true --prefix=true --tail=50 \
+      -l 'app.kubernetes.io/part-of=argocd' --ignore-errors=true 2>/dev/null || \
+    oc logs -n "${NAMESPACE}" --all-containers=true --prefix=true --tail=50 \
+      --ignore-errors=true 2>/dev/null || \
+    echo "No logs available"
+
+    echo -e "\n[Previous Container Logs (crash-looping pods)]"
+    for pod in $(oc get pods -n "${NAMESPACE}" --no-headers 2>/dev/null | awk '$4 > 0 {print $1}'); do
+      echo -e "\n--- Previous logs for pod: ${pod} ---"
+      oc logs "${pod}" -n "${NAMESPACE}" --previous --all-containers=true --tail=30 2>/dev/null || echo "No previous logs"
+    done
+
+    # --- GitOps operator CRDs and cluster-scoped resources ---
+    echo -e "\n\n[GITOPS OPERATOR CRDS]"
+    echo "--------------------------------------------------------"
+
+    echo -e "\n[ArgoCD CRD]"
+    oc get crd argocds.argoproj.io 2>/dev/null || echo "ArgoCD CRD not found"
+
+    echo -e "\n[GitOpsService CRD]"
+    oc get crd gitopsservices.pipelines.openshift.io 2>/dev/null || echo "GitOpsService CRD not found"
+
+    echo -e "\n[GitOpsService CR (cluster-scoped, controls default instance creation)]"
+    oc get gitopsservice cluster -o yaml 2>/dev/null || echo "GitOpsService 'cluster' not found"
+
+    echo -e "\n[All ArgoCD CRs (all namespaces)]"
+    oc get argocd --all-namespaces 2>/dev/null || echo "No ArgoCD CRs found"
+
+    # --- Cluster level ---
+    echo -e "\n\n[CLUSTER-LEVEL CHECKS]"
+    echo "--------------------------------------------------------"
+
+    echo -e "\n[Node Status]"
+    oc get nodes -o wide 2>/dev/null || echo "Could not get nodes"
+
+    echo -e "\n[Node Conditions (warnings only)]"
+    oc get nodes -o json 2>/dev/null | \
+      jq -r '.items[] | select(.status.conditions[] | select(.status=="True" and .type!="Ready")) |
+              .metadata.name + ": " + (.status.conditions[] | select(.status=="True" and .type!="Ready") | .type + "=" + .status)' \
+      2>/dev/null || echo "Could not parse node conditions"
+
+    echo -e "\n[Cluster Operators (degraded/unavailable)]"
+    oc get clusteroperators 2>/dev/null | grep -E "True.*False|False.*True|NAME" || echo "All operators healthy or could not retrieve"
+
+    echo ""
+    echo "========================================================"
+    echo "Diagnostics collection complete"
+    echo "========================================================"

@@ -1,0 +1,583 @@
+---
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: gitops-bundle-lowest-parallel-integration-test-pipeline
+spec:
+  description: |
+    An integration test which provisions an ephemeral Hypershift cluster and deploys an Operator
+    bundle from a Konflux snapshot.
+  params:
+    - description: Snapshot of the application
+      name: SNAPSHOT
+      default: '{"components": [{"name":"gitops-operator-bundle-main", "containerImage": "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle:latest"}]}'
+      type: string
+    - description: Namespace where the the Operator bundle will be deployed.
+      name: NAMESPACE
+      default: default
+      type: string
+    - description: Duration to wait for bundle installation to complete before failing.
+      name: INSTALL_TIMEOUT
+      default: 25m
+      type: string
+  finally:
+    - name: export-logs-and-notify
+      params:
+        - name: STEP_ACTIONS_URL
+          value: $(tasks.extract-step-actions-ref.results.STEP_ACTIONS_URL)
+        - name: STEP_ACTIONS_REVISION
+          value: $(tasks.extract-step-actions-ref.results.STEP_ACTIONS_REVISION)
+        - name: EAAS_SPACE_SECRET_REF
+          value: $(tasks.provision-eaas-space.results.secretRef)
+        - name: CLUSTER_NAME
+          value: $(tasks.provision-cluster.results.clusterName)
+        - name: aggregateTasksStatus
+          value: "$(tasks.status)"
+      taskSpec:
+        params:
+          - name: STEP_ACTIONS_URL
+            type: string
+          - name: STEP_ACTIONS_REVISION
+            type: string
+          - name: EAAS_SPACE_SECRET_REF
+            type: string
+          - name: CLUSTER_NAME
+            type: string
+        volumes:
+          - name: credentials-volume
+            secret:
+              secretName: gitops-operator-bundle-quay-image-repository-image-push
+          - name: eaas-credentials
+            emptyDir: {}
+        steps:
+          - name: get-kubeconfig
+            onError: continue
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-get-ephemeral-cluster-credentials/0.1/eaas-get-ephemeral-cluster-credentials.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(params.EAAS_SPACE_SECRET_REF)
+              - name: clusterName
+                value: $(params.CLUSTER_NAME)
+              - name: credentials
+                value: eaas-credentials
+          - name: gather-cluster-diagnostics
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: $(params.STEP_ACTIONS_URL)
+                - name: revision
+                  value: $(params.STEP_ACTIONS_REVISION)
+                - name: pathInRepo
+                  value: .tekton/steps/gather-cluster-diagnostics.yaml
+            params:
+              - name: credentials
+                value: eaas-credentials
+              - name: kubeconfig
+                value: "$(steps.get-kubeconfig.results.kubeconfig)"
+          - name: prepare-and-push-logs
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: $(params.STEP_ACTIONS_URL)
+                - name: revision
+                  value: $(params.STEP_ACTIONS_REVISION)
+                - name: pathInRepo
+                  value: .tekton/steps/prepare-and-push-logs.yaml
+            params:
+              - name: pipeline-run-name
+                value: "$(context.pipelineRun.name)"
+              - name: namespace
+                value: "$(context.pipelineRun.namespace)"
+              - name: quay-repo
+                value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle
+              - name: credentials-volume
+                value: credentials-volume
+          - name: send-slack-message
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: $(params.STEP_ACTIONS_URL)
+                - name: revision
+                  value: $(params.STEP_ACTIONS_REVISION)
+                - name: pathInRepo
+                  value: .tekton/steps/send-slack-message.yaml
+            params:
+              - name: SLACK_SUBJECT
+                value: "GitOps Bundle Integration Test $(context.pipelineRun.name): $(params.aggregateTasksStatus)"
+              - name: SLACK_TEXT
+                value: "Lowest integration test pipeline *$(context.pipelineRun.name)* finished with status *$(params.aggregateTasksStatus)*. Logs and artifacts are stored in the quay image tagged $(steps.prepare-and-push-logs.results.LOG_ARTIFACT_TAG)."
+              - name: LOG_URL
+                value: "https://konflux-ui.apps.stone-prd-rh01.pg1f.p1.openshiftapps.com/ns/rh-openshift-gitops-tenant/applications/gitops-main/pipelineruns/$(context.pipelineRun.name)"
+              - name: ARTIFACTS_PATH
+                value: "https://quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle:$(steps.prepare-and-push-logs.results.LOG_ARTIFACT_TAG)"
+  tasks:
+    - name: extract-step-actions-ref
+      params:
+        - name: SNAPSHOT
+          value: $(params.SNAPSHOT)
+      taskSpec:
+        params:
+          - name: SNAPSHOT
+            type: string
+        results:
+          - name: STEP_ACTIONS_URL
+            description: Git URL of the release repo from the bundle component in the snapshot.
+          - name: STEP_ACTIONS_REVISION
+            description: Git revision (commit SHA) of the release repo from the bundle component in the snapshot.
+        steps:
+          - name: extract
+            image: quay.io/devtools_gitops/test_image:integrated_ginkgo
+            env:
+              - name: SNAPSHOT
+                value: $(params.SNAPSHOT)
+            script: |
+              #!/usr/bin/env python3
+              import json, os
+
+              FALLBACK_URL = "https://github.com/rh-gitops-midstream/release.git"
+              FALLBACK_REV = "main"
+
+              try:
+                  snapshot = json.loads(os.environ["SNAPSHOT"])
+                  bundle = next(
+                      (c for c in snapshot.get("components", []) if "bundle" in c.get("name", "")),
+                      None,
+                  )
+                  git = (bundle or {}).get("source", {}).get("git", {})
+                  url = git.get("url") or FALLBACK_URL
+                  rev = git.get("revision") or FALLBACK_REV
+              except Exception:
+                  url, rev = FALLBACK_URL, FALLBACK_REV
+
+              with open("$(results.STEP_ACTIONS_URL.path)", "w") as f:
+                  f.write(url)
+              with open("$(results.STEP_ACTIONS_REVISION.path)", "w") as f:
+                  f.write(rev)
+
+    - name: parse-metadata
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: https://github.com/konflux-ci/integration-examples
+          - name: revision
+            value: main
+          - name: pathInRepo
+            value: tasks/test_metadata.yaml
+      params:
+        - name: SNAPSHOT
+          value: $(params.SNAPSHOT)
+
+    # =========================================================================
+    # NEW: Patch bundle image with component digests from the SNAPSHOT.
+    #
+    # During a PR, all component builds run concurrently. The bundle is built
+    # with whatever digests were last committed (from the previous nudge), so
+    # its CSV references stale images. This task:
+    #   1. Finds the bundle component in the SNAPSHOT (by name containing "bundle")
+    #   2. Pulls that bundle image
+    #   3. Replaces all component image references in the CSV with fresh digests
+    #   4. Pushes the patched bundle to a temporary tag
+    #
+    # Runs in parallel with cluster provisioning to avoid adding wall-clock time.
+    # =========================================================================
+    - name: patch-bundle-images
+      runAfter:
+        - parse-metadata
+        - extract-step-actions-ref
+      params:
+        - name: SNAPSHOT
+          value: $(params.SNAPSHOT)
+        - name: pipelineRunName
+          value: "$(context.pipelineRun.name)"
+        - name: STEP_ACTIONS_URL
+          value: $(tasks.extract-step-actions-ref.results.STEP_ACTIONS_URL)
+        - name: STEP_ACTIONS_REVISION
+          value: $(tasks.extract-step-actions-ref.results.STEP_ACTIONS_REVISION)
+      taskSpec:
+        params:
+          - name: SNAPSHOT
+            type: string
+          - name: pipelineRunName
+            type: string
+          - name: STEP_ACTIONS_URL
+            type: string
+          - name: STEP_ACTIONS_REVISION
+            type: string
+        results:
+          - name: patchedBundleImage
+            description: >-
+              Fully qualified reference (by digest) to the patched bundle image
+              with all component images updated to the SNAPSHOT digests.
+        volumes:
+          - name: push-credentials
+            secret:
+              secretName: gitops-operator-bundle-quay-image-repository-image-push
+        steps:
+          - name: patch-and-push-bundle
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: $(params.STEP_ACTIONS_URL)
+                - name: revision
+                  value: $(params.STEP_ACTIONS_REVISION)
+                - name: pathInRepo
+                  value: .tekton/steps/patch-and-push-bundle.yaml
+            params:
+              - name: SNAPSHOT
+                value: "$(params.SNAPSHOT)"
+              - name: pipelineRunName
+                value: "$(params.pipelineRunName)"
+              - name: credentials
+                value: push-credentials
+
+    - name: provision-eaas-space
+      runAfter:
+        - parse-metadata
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: https://github.com/konflux-ci/build-definitions.git
+          - name: revision
+            value: main
+          - name: pathInRepo
+            value: task/eaas-provision-space/0.1/eaas-provision-space.yaml
+      params:
+        - name: ownerName
+          value: $(context.pipelineRun.name)
+        - name: ownerUid
+          value: $(context.pipelineRun.uid)
+    - name: provision-cluster
+      runAfter:
+        - provision-eaas-space
+      taskSpec:
+        results:
+          - name: clusterName
+            value: "$(steps.create-cluster.results.clusterName)"
+        volumes:
+          - name: sources-volume
+            emptyDir: {}
+        steps:
+          - name: get-supported-versions
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-get-supported-ephemeral-cluster-versions/0.1/eaas-get-supported-ephemeral-cluster-versions.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(tasks.provision-eaas-space.results.secretRef)
+          - name: create-cluster
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-create-ephemeral-cluster-hypershift-aws/0.1/eaas-create-ephemeral-cluster-hypershift-aws.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(tasks.provision-eaas-space.results.secretRef)
+              - name: imageContentSources
+                value: |
+                  # -------------------------
+                  # GitOps Backend
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/gitops-rhel8
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel8
+                      - registry.stage.redhat.io/openshift-gitops-1/gitops-rhel8
+
+                  - source: registry.redhat.io/openshift-gitops-1/gitops-rhel9
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel9
+                      - registry.stage.redhat.io/openshift-gitops-1/gitops-rhel9
+
+                  # -------------------------
+                  # Console Plugin
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/console-plugin-rhel8
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-rhel8
+                      - registry.stage.redhat.io/openshift-gitops-1/console-plugin-rhel8
+
+                  - source: registry.redhat.io/openshift-gitops-1/console-plugin-rhel9
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-rhel9
+                      - registry.stage.redhat.io/openshift-gitops-1/console-plugin-rhel9
+
+                  # -------------------------
+                  # Dex
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/dex-rhel8
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex-rhel8
+                      - registry.stage.redhat.io/openshift-gitops-1/dex-rhel8
+
+                  - source: registry.redhat.io/openshift-gitops-1/dex-rhel9
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex-rhel9
+                      - registry.stage.redhat.io/openshift-gitops-1/dex-rhel9
+
+                  # -------------------------
+                  # Must Gather
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/must-gather-rhel8
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/must-gather-rhel8
+                      - registry.stage.redhat.io/openshift-gitops-1/must-gather-rhel8
+
+                  - source: registry.redhat.io/openshift-gitops-1/must-gather-rhel9
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/must-gather-rhel9
+                      - registry.stage.redhat.io/openshift-gitops-1/must-gather-rhel9
+
+                  # -------------------------
+                  # Argo CD
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/argocd-rhel8
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel8
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel8-tmp
+                      - registry.stage.redhat.io/openshift-gitops-1/argocd-rhel8
+
+                  - source: registry.redhat.io/openshift-gitops-1/argocd-rhel9
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel9
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel9-tmp
+                      - registry.stage.redhat.io/openshift-gitops-1/argocd-rhel9
+
+                  # -------------------------
+                  # Argo CD Agent
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel8
+                      - registry.stage.redhat.io/openshift-gitops-1/argocd-agent-rhel8
+
+                  - source: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel9
+                      - registry.stage.redhat.io/openshift-gitops-1/argocd-agent-rhel9
+
+                  # -------------------------
+                  # Argo Rollouts
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel8
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts-rhel8
+                      - registry.stage.redhat.io/openshift-gitops-1/argo-rollouts-rhel8
+
+                  - source: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel9
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts-rhel9
+                      - registry.stage.redhat.io/openshift-gitops-1/argo-rollouts-rhel9
+
+                  # -------------------------
+                  # Operator Bundle
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/gitops-operator-bundle
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle
+                      - registry.stage.redhat.io/openshift-gitops-1/gitops-operator-bundle
+
+                  # -------------------------
+                  # GitOps Operator Controller
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/gitops-rhel8-operator
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel8-operator
+                      - registry.stage.redhat.io/openshift-gitops-1/gitops-rhel8-operator
+
+                  - source: registry.redhat.io/openshift-gitops-1/gitops-rhel9-operator
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel9-operator
+                      - registry.stage.redhat.io/openshift-gitops-1/gitops-rhel9-operator
+
+                  # -------------------------
+                  # Argo CD Extensions
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel8
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extensions-rhel8
+                      - registry.stage.redhat.io/openshift-gitops-1/argocd-extensions-rhel8
+
+                  - source: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel9
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extensions-rhel9
+                      - registry.stage.redhat.io/openshift-gitops-1/argocd-extensions-rhel9
+
+                  # -------------------------
+                  # Image Updater
+                  # -------------------------
+                  - source: registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel8
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-image-updater-rhel8
+                      - registry.stage.redhat.io/openshift-gitops-1/argocd-image-updater-rhel8
+
+                  - source: registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel9
+                    mirrors:
+                      - quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-image-updater-rhel9
+                      - registry.stage.redhat.io/openshift-gitops-1/argocd-image-updater-rhel9
+              - name: timeout
+                value: "60m"
+              - name: version
+                value: "4.14.57"
+    - name: install-operator
+      runAfter:
+        - provision-cluster
+        - patch-bundle-images
+      params:
+        - name: bundleImage
+          value: "$(tasks.patch-bundle-images.results.patchedBundleImage)"
+        - name: namespace
+          value: "openshift-gitops-operator"
+        - name: installTimeout
+          value: "$(params.INSTALL_TIMEOUT)"
+        - name: eaasSpaceSecretRef
+          value: $(tasks.provision-eaas-space.results.secretRef)
+        - name: clusterName
+          value: "$(tasks.provision-cluster.results.clusterName)"
+        - name: STEP_ACTIONS_URL
+          value: $(tasks.extract-step-actions-ref.results.STEP_ACTIONS_URL)
+        - name: STEP_ACTIONS_REVISION
+          value: $(tasks.extract-step-actions-ref.results.STEP_ACTIONS_REVISION)
+      taskSpec:
+        params:
+          - name: bundleImage
+            type: string
+          - name: namespace
+            type: string
+          - name: installTimeout
+            type: string
+          - name: eaasSpaceSecretRef
+            type: string
+          - name: clusterName
+            type: string
+          - name: STEP_ACTIONS_URL
+            type: string
+          - name: STEP_ACTIONS_REVISION
+            type: string
+        volumes:
+          - name: credentials
+            emptyDir: {}
+        steps:
+          - name: get-kubeconfig
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-get-ephemeral-cluster-credentials/0.1/eaas-get-ephemeral-cluster-credentials.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(params.eaasSpaceSecretRef)
+              - name: clusterName
+                value: $(params.clusterName)
+              - name: credentials
+                value: credentials
+          - name: install-operator
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: $(params.STEP_ACTIONS_URL)
+                - name: revision
+                  value: $(params.STEP_ACTIONS_REVISION)
+                - name: pathInRepo
+                  value: .tekton/steps/install-gitops-operator-bundle.yaml
+            params:
+              - name: installTimeout
+                value: "$(params.INSTALL_TIMEOUT)"
+              - name: bundleImage
+                value: "$(params.bundleImage)"
+              - name: namespace
+                value: "openshift-gitops-operator"
+              - name: credentials
+                value: credentials
+              - name: kubeconfig
+                value: "$(steps.get-kubeconfig.results.kubeconfig)"
+    - name: test-operator
+      runAfter:
+        - install-operator
+      params:
+        - name: eaasSpaceSecretRef
+          value: $(tasks.provision-eaas-space.results.secretRef)
+        - name: clusterName
+          value: "$(tasks.provision-cluster.results.clusterName)"
+        - name: STEP_ACTIONS_URL
+          value: $(tasks.extract-step-actions-ref.results.STEP_ACTIONS_URL)
+        - name: STEP_ACTIONS_REVISION
+          value: $(tasks.extract-step-actions-ref.results.STEP_ACTIONS_REVISION)
+      taskSpec:
+        params:
+          - name: eaasSpaceSecretRef
+            type: string
+          - name: clusterName
+            type: string
+          - name: STEP_ACTIONS_URL
+            type: string
+          - name: STEP_ACTIONS_REVISION
+            type: string
+        volumes:
+          - name: credentials
+            emptyDir: {}
+        steps:
+          - name: get-kubeconfig
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-get-ephemeral-cluster-credentials/0.1/eaas-get-ephemeral-cluster-credentials.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(params.eaasSpaceSecretRef)
+              - name: clusterName
+                value: $(params.clusterName)
+              - name: credentials
+                value: credentials
+          - name: test-operator
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: $(params.STEP_ACTIONS_URL)
+                - name: revision
+                  value: $(params.STEP_ACTIONS_REVISION)
+                - name: pathInRepo
+                  value: .tekton/steps/run-gitops-operator-e2e-minimal.yaml
+            params:
+              - name: credentials
+                value: credentials
+              - name: kubeconfig
+                value: "$(steps.get-kubeconfig.results.kubeconfig)"
+              - name: branch
+                value: master
+              - name: test_dir
+                value: "./test/openshift/e2e/ginkgo/parallel"
