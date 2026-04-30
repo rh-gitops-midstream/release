@@ -17,7 +17,7 @@
 ####################################################################################################
 # Argo CD Agentctl Build stage which performs the actual build of Argocd-agentctl binaries
 ####################################################################################################
-FROM registry.redhat.io/rhel8/go-toolset:1.25 AS builder
+FROM registry.redhat.io/rhel8/go-toolset:1.25.9-1777568311 AS builder
 
 USER root
 
