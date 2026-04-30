@@ -1,0 +1,14 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.20.3-prod-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-20-prod
+  snapshot: gitops-1-20-20260423-123725-000
+  data:
+    releaseNotes:
+      type: RHBA
+      cves: []
+      
