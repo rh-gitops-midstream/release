@@ -151,13 +151,13 @@ arches:
     name: perl-libnet
     evr: 3.11-3.el8
     sourcerpm: perl-libnet-3.11-3.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/Packages/v/vim-filesystem-8.0.1763-22.el8_10.1.noarch.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/Packages/v/vim-filesystem-8.0.1763-22.el8_10.3.noarch.rpm
     repoid: ubi-8-for-aarch64-appstream-rpms
-    size: 51220
-    checksum: sha256:8143a19a54650762b986fb310aeb2d9ed4f0e11eab9b55e96f536a42bae3d0fb
+    size: 51504
+    checksum: sha256:d44f7379893f3d2cd425af0b6efdf47ce8d560b921a1315437c0134ecefebe95
     name: vim-filesystem
-    evr: 2:8.0.1763-22.el8_10.1
-    sourcerpm: vim-8.0.1763-22.el8_10.1.src.rpm
+    evr: 2:8.0.1763-22.el8_10.3
+    sourcerpm: vim-8.0.1763-22.el8_10.3.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/baseos/os/Packages/c/cracklib-2.9.6-15.el8.aarch64.rpm
     repoid: ubi-8-for-aarch64-baseos-rpms
     size: 95220
@@ -615,10 +615,10 @@ arches:
     sourcerpm: util-linux-2.32.1-48.el8_10.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/repodata/0c0ee8b33f85545c4aa5c1532208bb669c10fcdf95da4d6192e4beb47c8632b4-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/repodata/5826b7742d068de2ecf881b4bf34d33cb9b95e35a22ede7aee8cb09d77f651b2-modules.yaml.gz
     repoid: ubi-8-for-aarch64-appstream-rpms
     size: 56702
-    checksum: sha256:0c0ee8b33f85545c4aa5c1532208bb669c10fcdf95da4d6192e4beb47c8632b4
+    checksum: sha256:5826b7742d068de2ecf881b4bf34d33cb9b95e35a22ede7aee8cb09d77f651b2
 - arch: ppc64le
   packages:
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/c/cmake-3.26.5-2.el8.ppc64le.rpm
@@ -768,13 +768,13 @@ arches:
     name: perl-libnet
     evr: 3.11-3.el8
     sourcerpm: perl-libnet-3.11-3.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/v/vim-filesystem-8.0.1763-22.el8_10.1.noarch.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/v/vim-filesystem-8.0.1763-22.el8_10.3.noarch.rpm
     repoid: ubi-8-for-ppc64le-appstream-rpms
-    size: 51220
-    checksum: sha256:8143a19a54650762b986fb310aeb2d9ed4f0e11eab9b55e96f536a42bae3d0fb
+    size: 51504
+    checksum: sha256:d44f7379893f3d2cd425af0b6efdf47ce8d560b921a1315437c0134ecefebe95
     name: vim-filesystem
-    evr: 2:8.0.1763-22.el8_10.1
-    sourcerpm: vim-8.0.1763-22.el8_10.1.src.rpm
+    evr: 2:8.0.1763-22.el8_10.3
+    sourcerpm: vim-8.0.1763-22.el8_10.3.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/baseos/os/Packages/c/cracklib-2.9.6-15.el8.ppc64le.rpm
     repoid: ubi-8-for-ppc64le-baseos-rpms
     size: 96900
@@ -1239,10 +1239,10 @@ arches:
     sourcerpm: util-linux-2.32.1-48.el8_10.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/repodata/4a92daaa352c731f9b1cb6418e1ed3fcf8bb258026e026b12b08eb86fed7aa80-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/repodata/158f79499e710c1963eb468e158dc83574e4d37d5bd21169abfb653dc461cc27-modules.yaml.gz
     repoid: ubi-8-for-ppc64le-appstream-rpms
     size: 58577
-    checksum: sha256:4a92daaa352c731f9b1cb6418e1ed3fcf8bb258026e026b12b08eb86fed7aa80
+    checksum: sha256:158f79499e710c1963eb468e158dc83574e4d37d5bd21169abfb653dc461cc27
 - arch: s390x
   packages:
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/c/cmake-3.26.5-2.el8.s390x.rpm
@@ -1392,13 +1392,13 @@ arches:
     name: perl-libnet
     evr: 3.11-3.el8
     sourcerpm: perl-libnet-3.11-3.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/v/vim-filesystem-8.0.1763-22.el8_10.1.noarch.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/v/vim-filesystem-8.0.1763-22.el8_10.3.noarch.rpm
     repoid: ubi-8-for-s390x-appstream-rpms
-    size: 51220
-    checksum: sha256:8143a19a54650762b986fb310aeb2d9ed4f0e11eab9b55e96f536a42bae3d0fb
+    size: 51504
+    checksum: sha256:d44f7379893f3d2cd425af0b6efdf47ce8d560b921a1315437c0134ecefebe95
     name: vim-filesystem
-    evr: 2:8.0.1763-22.el8_10.1
-    sourcerpm: vim-8.0.1763-22.el8_10.1.src.rpm
+    evr: 2:8.0.1763-22.el8_10.3
+    sourcerpm: vim-8.0.1763-22.el8_10.3.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/baseos/os/Packages/c/cracklib-2.9.6-15.el8.s390x.rpm
     repoid: ubi-8-for-s390x-baseos-rpms
     size: 95348
@@ -1856,10 +1856,10 @@ arches:
     sourcerpm: util-linux-2.32.1-48.el8_10.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/repodata/c6828c39d4689e99a7f960cd45b8daf0acfca83c13ee96a1676de36189a0a024-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/repodata/6e61944ff7a333908d322c33b33f49a6a37220c18aafb5fcd0b3b8b1b068fa54-modules.yaml.gz
     repoid: ubi-8-for-s390x-appstream-rpms
     size: 58350
-    checksum: sha256:c6828c39d4689e99a7f960cd45b8daf0acfca83c13ee96a1676de36189a0a024
+    checksum: sha256:6e61944ff7a333908d322c33b33f49a6a37220c18aafb5fcd0b3b8b1b068fa54
 - arch: x86_64
   packages:
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/c/cmake-3.26.5-2.el8.x86_64.rpm
@@ -2009,13 +2009,13 @@ arches:
     name: perl-libnet
     evr: 3.11-3.el8
     sourcerpm: perl-libnet-3.11-3.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/v/vim-filesystem-8.0.1763-22.el8_10.1.noarch.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/v/vim-filesystem-8.0.1763-22.el8_10.3.noarch.rpm
     repoid: ubi-8-for-x86_64-appstream-rpms
-    size: 51220
-    checksum: sha256:8143a19a54650762b986fb310aeb2d9ed4f0e11eab9b55e96f536a42bae3d0fb
+    size: 51504
+    checksum: sha256:d44f7379893f3d2cd425af0b6efdf47ce8d560b921a1315437c0134ecefebe95
     name: vim-filesystem
-    evr: 2:8.0.1763-22.el8_10.1
-    sourcerpm: vim-8.0.1763-22.el8_10.1.src.rpm
+    evr: 2:8.0.1763-22.el8_10.3
+    sourcerpm: vim-8.0.1763-22.el8_10.3.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/c/cracklib-2.9.6-15.el8.x86_64.rpm
     repoid: ubi-8-for-x86_64-baseos-rpms
     size: 95532
@@ -2408,13 +2408,13 @@ arches:
     name: perl-threads-shared
     evr: 1.58-2.el8
     sourcerpm: perl-threads-shared-1.58-2.el8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/platform-python-3.6.8-75.el8_10.x86_64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/platform-python-3.6.8-76.el8_10.x86_64.rpm
     repoid: ubi-8-for-x86_64-baseos-rpms
-    size: 90288
-    checksum: sha256:4a224dab24a5097761df8a8e74fb7d2e1dfa50cf1ca7d338f32e4a0859973339
+    size: 90432
+    checksum: sha256:2e0de0c42b540f9df3bc9602db9b0519ee2522a34522c67aff29ff47a906cc23
     name: platform-python
-    evr: 3.6.8-75.el8_10
-    sourcerpm: python3-3.6.8-75.el8_10.src.rpm
+    evr: 3.6.8-76.el8_10
+    sourcerpm: python3-3.6.8-76.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/platform-python-pip-9.0.3-24.el8.noarch.rpm
     repoid: ubi-8-for-x86_64-baseos-rpms
     size: 1633024
@@ -2429,13 +2429,13 @@ arches:
     name: platform-python-setuptools
     evr: 39.2.0-9.el8_10
     sourcerpm: python-setuptools-39.2.0-9.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/python3-libs-3.6.8-75.el8_10.x86_64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/python3-libs-3.6.8-76.el8_10.x86_64.rpm
     repoid: ubi-8-for-x86_64-baseos-rpms
-    size: 8251828
-    checksum: sha256:4d848b0e6a6b9ae286f21507d590433355a83d16b8b580d2ec923fc4b267111d
+    size: 8251740
+    checksum: sha256:e50230219917e30476e0c7edefdabc84744455662af1d86e217dcd4927a37b94
     name: python3-libs
-    evr: 3.6.8-75.el8_10
-    sourcerpm: python3-3.6.8-75.el8_10.src.rpm
+    evr: 3.6.8-76.el8_10
+    sourcerpm: python3-3.6.8-76.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/baseos/os/Packages/p/python3-pip-wheel-9.0.3-24.el8.noarch.rpm
     repoid: ubi-8-for-x86_64-baseos-rpms
     size: 886996
@@ -2473,7 +2473,7 @@ arches:
     sourcerpm: util-linux-2.32.1-48.el8_10.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/repodata/bfc5ad7dfb19eb77822a042da44bfdc7e2c5cd78f60473605ec666462991e57f-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/repodata/a87c72f06d15a6cfa14593a3f790f546537198b2c0773a809b65f564fe886abd-modules.yaml.gz
     repoid: ubi-8-for-x86_64-appstream-rpms
     size: 59079
-    checksum: sha256:bfc5ad7dfb19eb77822a042da44bfdc7e2c5cd78f60473605ec666462991e57f
+    checksum: sha256:a87c72f06d15a6cfa14593a3f790f546537198b2c0773a809b65f564fe886abd
