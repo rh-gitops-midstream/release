@@ -1,0 +1,183 @@
+# Tests to skip when running upstream ArgoCD E2E tests on EaaS HyperShift clusters.
+# One test function name per line. Blank lines and lines starting with # are ignored.
+# These are combined into a Go -test.skip regex via '|'.
+#
+# Source: release pipeline run argocd-e2e-tests-120-414 (v1.20 / OCP 4.14)
+# Tests are grouped by failure category.
+
+# ============================================================================
+# Account tests — configmap propagation race
+# The server restarts when argocd-cm is patched to add accounts, and tests call
+# update-password before the restart finishes. TestCreateAndUseAccount also
+# panics with a nil pointer dereference, killing the entire test binary.
+# ============================================================================
+TestCreateAndUseAccount
+TestCanIGetLogs
+TestAccountSessionToken
+
+# ============================================================================
+# Tests that fail in the release pipeline (65 failures)
+# Skipping these to match the release pipeline's baseline.
+# ============================================================================
+
+# --- CMP (Config Management Plugin) — requires sidecar containers ---
+TestCMPDiscoverWithFileName
+TestCMPDiscoverWithFindCommandWithEnv
+TestCMPDiscoverWithFindGlob
+TestCMPDiscoverWithPluginName
+TestCMPWithSymlinkFiles
+TestCMPWithSymlinkFolder
+TestCMPWithSymlinkPartialFiles
+TestPreserveFileModeForCMP
+TestPruneResourceFromCMP
+
+# --- Helm repo / OCI — require authenticated registry or TLS ---
+TestAddHelmRepoInsecureSkipVerify
+TestAddRemoveHelmRepo
+TestHelmRepo
+TestHelmRepoDiffLocal
+TestHelmWithDependencies
+TestHelmWithMultipleDependencies
+TestOCIImage
+TestOCIImageWithOutOfBoundsSymlink
+TestOCIWithAuthedOCIHelmRegistryDeps
+TestOCIWithOCIHelmRegistryDependencies
+
+# --- Hydrator — requires authenticated HTTPS git ---
+TestHydrateTo
+TestHydratorNoOp
+TestHydratorWithAuthenticatedRepo
+TestHydratorWithDirectory
+TestHydratorWithHelm
+TestHydratorWithKustomize
+TestHydratorWithPlugin
+TestSimpleHydrator
+
+# --- SSH / private repos ---
+TestCanAddAppFromPrivateRepoWithCredCfg
+TestCustomToolWithSSHGitCreds
+TestCustomToolWithSSHGitCredsDisabled
+TestGetRepoWithInheritedCreds
+TestGitGeneratorPrivateRepoWithTemplatedProjectAndProjectScopedRepo
+
+# --- Server-side diff — known failures ---
+TestServerSideDiffCommand
+TestServerSideDiffErrorHandling
+TestServerSideDiffWithLocal
+TestServerSideDiffWithRevision
+TestServerSideDiffWithSyncedApp
+TestResourceDiffing
+TestHookDiff
+
+# --- ApplicationSet generators — require external API access ---
+TestClusterMatrixGenerator
+TestClusterMergeGenerator
+TestListMatrixGenerator
+TestListMergeGenerator
+TestMatrixTerminalMatrixGeneratorSelector
+TestMatrixTerminalMergeGeneratorSelector
+TestMergeTerminalMergeGeneratorSelector
+TestSimplePullRequestGenerator
+TestSimplePullRequestGeneratorGoTemplate
+TestSimpleSCMProviderGenerator
+TestSimpleSCMProviderGeneratorGoTemplate
+TestSimpleSCMProviderGeneratorTokenRefStrictKo
+TestSimpleSCMProviderGeneratorTokenRefStrictOk
+TestSimpleListGeneratorExternalNamespaceNoConflict
+
+# --- Misc failures ---
+TestAddingApp
+TestClusterDelete
+TestConfigMap
+TestDuplicatedClusterResourcesAnnotationTracking
+TestDuplicatedResources
+TestKubectlMetrics
+TestManagedByURLFallbackToCurrentInstance
+TestManagedByURLWithAnnotation
+TestMaskSecretValues
+TestMaskValuesInInvalidSecret
+TestNamespacedAppWithSecrets
+TestNotificationsHealthcheck
+
+# --- Disabled in release pipeline via source rename ---
+TestSimpleGitFilesPreserveResourcesOnDeletion
+
+# ============================================================================
+# Tests already skipped in the release pipeline via SkipOnEnv (57 skipped)
+# Adding here for completeness — prevents wasted time if env-based skip fails.
+# ============================================================================
+
+# --- GPG signing ---
+TestSyncToSignedBranchWithKnownKey
+TestSyncToSignedBranchWithUnknownKey
+TestSyncToSignedCommitWithKnownKey
+TestSyncToSignedCommitWithoutKnownKey
+TestSyncToSignedTagWithKnownKey
+TestSyncToSignedTagWithUnknownKey
+TestSyncToUnsignedBranch
+TestSyncToUnsignedCommit
+TestSyncToUnsignedTag
+TestSimpleGitDirectoryGeneratorGPGEnabledUnsignedCommits
+TestSimpleGitDirectoryGeneratorGPGEnabledWithoutKnownKeys
+TestSimpleGitFilesGeneratorGPGEnabledUnsignedCommits
+TestSimpleGitFilesGeneratorGPGEnabledWithoutKnownKeys
+TestNamespacedSyncToSignedCommitKWKK
+TestNamespacedSyncToSignedCommitWKK
+TestNamespacedSyncToUnsignedCommit
+
+# --- Helm OCI (patched with SkipOnEnv in release pipeline) ---
+TestHelmOCIRegistry
+TestHelmOCIRegistryWithDependencies
+TestGitWithHelmOCIRegistryDependencies
+TestTemplatesGitWithHelmOCIDependencies
+TestTemplatesHelmOCIWithDependencies
+
+# --- Custom tools (patched with SkipOnEnv in release pipeline) ---
+TestCustomToolSyncAndDiffLocal
+TestCustomToolWithEnv
+TestCustomToolWithGitCreds
+TestCustomToolWithGitCredsTemplate
+TestKustomizeVersionOverride
+
+# --- App management ---
+TestAppWithSecrets
+TestAutomaticallyNamingUnnamedHook
+TestSyncWithSkipHook
+TestSyncOptionsValidateTrue
+TestImmutableChange
+TestNamespacedImmutableChange
+
+# --- Namespace management ---
+TestNamespaceAutoCreation
+TestNamespaceCreationWithSSA
+TestNamespacedNamespaceAutoCreation
+TestNamespacedNamespaceAutoCreationWithMetadata
+TestNamespacedNamespaceAutoCreationWithMetadataAndNsManifest
+TestNamespacedNamespaceAutoCreationWithPreexistingNs
+
+# --- Logs ---
+TestAppLogs
+TestGetLogsAllow
+TestGetLogsDeny
+TestNamespacedAppLogs
+TestNamespacedGetLogsAllowNS
+TestNamespacedGetLogsDeny
+
+# --- Resource listing / orphaned ---
+TestListResource
+TestNamespacedListResource
+TestOrphanedResource
+TestNamespacedOrphanedResource
+TestCRDs
+
+# --- ApplicationSet progressive sync ---
+TestApplicationSetProgressiveSyncStep
+TestNoApplicationStatusWhenNoApplications
+TestNoApplicationStatusWhenNoSteps
+TestProgressiveSyncHealthGating
+TestProgressiveSyncMultipleAppsPerStep
+
+# --- Git submodules ---
+TestGitSubmoduleHTTPSSupport
+TestGitSubmoduleRemovalSupport
+TestGitSubmoduleSSHSupport
