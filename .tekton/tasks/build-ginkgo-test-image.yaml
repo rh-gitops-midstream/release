@@ -1,0 +1,242 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: build-ginkgo-test-image
+spec:
+  description: |
+    Builds the gitops-ginkgo-test-runner image in three layers:
+      1. Base image (Dockerfile.base) - CLI tools and Go toolchain
+      2. Testsuites image (Dockerfile.testsuites) - pre-compiled Ginkgo tests
+      3. Final image (Dockerfile) - helper scripts, rebuilt per commit
+
+    Each layer is tagged by a content hash and skipped if already present.
+  params:
+    - name: SOURCE_URL
+      type: string
+      description: Git URL of the catalog repo (from pipeline context)
+    - name: SOURCE_REVISION
+      type: string
+      description: Git commit SHA - used for tagging
+    - name: IMAGE_DESTINATION
+      type: string
+      default: "quay.io/devtools_gitops/test_image"
+      description: Base image repository (without tag)
+    - name: DOCKERFILE_PATH
+      type: string
+      default: ".tekton/test-image/Dockerfile"
+    - name: CONTEXT_DIR
+      type: string
+      default: ".tekton/test-image"
+    - name: IMAGE_EXPIRES_AFTER
+      type: string
+      default: "7d"
+      description: "Quay expiration label (e.g., 1h, 7d, never)"
+  results:
+    - name: IMAGE_DIGEST
+      description: Digest of the built image
+    - name: IMAGE_URL
+      description: Full image reference with tag (repo:tag)
+    - name: IMAGE_TAG
+      description: Just the tag portion (short SHA)
+  volumes:
+    - name: source
+      emptyDir: {}
+    - name: docker-credentials
+      secret:
+        secretName: gitops-test-runner-image-push
+    - name: cache-state
+      emptyDir: {}
+  steps:
+    - name: clone-source
+      image: docker.io/alpine/git:latest
+      volumeMounts:
+        - name: source
+          mountPath: /workspace/source
+      script: |
+        #!/bin/sh
+        set -e
+        echo "Cloning $(params.SOURCE_URL) @ $(params.SOURCE_REVISION)"
+        git clone "$(params.SOURCE_URL)" /workspace/source
+        cd /workspace/source
+        git checkout "$(params.SOURCE_REVISION)"
+
+        COMMIT_SHA=$(git rev-parse HEAD)
+        echo "Commit SHA: ${COMMIT_SHA}"
+        git log -1 --oneline
+        echo -n "${COMMIT_SHA}" > /workspace/source/COMMIT_SHA
+
+    - name: check-cache
+      image: quay.io/skopeo/stable:latest
+      volumeMounts:
+        - name: source
+          mountPath: /workspace/source
+        - name: docker-credentials
+          mountPath: /credentials
+        - name: cache-state
+          mountPath: /cache-state
+      script: |
+        #!/bin/bash
+        set -euo pipefail
+
+        COMMIT_SHA=$(cat /workspace/source/COMMIT_SHA)
+        SHORT_SHA=$(echo "${COMMIT_SHA}" | cut -c1-8)
+        CONTEXT="/workspace/source/$(params.CONTEXT_DIR)"
+        AUTH="--authfile=/credentials/.dockerconfigjson"
+        BUILD_ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+
+        DESTINATION="$(params.IMAGE_DESTINATION):${SHORT_SHA}"
+        BASE_HASH=$(sha256sum "${CONTEXT}/Dockerfile.base" | cut -c1-12)
+        BASE_IMAGE="$(params.IMAGE_DESTINATION):base-${BUILD_ARCH}-${BASE_HASH}"
+        TESTSUITES_HASH=$(cat "${CONTEXT}/Dockerfile.base" "${CONTEXT}/Dockerfile.testsuites" | sha256sum | cut -c1-12)
+        TESTSUITES_IMAGE="$(params.IMAGE_DESTINATION):testsuites-${BUILD_ARCH}-${TESTSUITES_HASH}"
+
+        echo "Cache check — final: ${DESTINATION}"
+        echo "Cache check — base: ${BASE_IMAGE}"
+        echo "Cache check — testsuites: ${TESTSUITES_IMAGE}"
+
+        # Check final image
+        if skopeo inspect ${AUTH} "docker://${DESTINATION}" > /cache-state/final-inspect.json 2>&1; then
+            echo "FINAL IMAGE EXISTS — skipping entire build"
+            DIGEST=$(sed -n 's/.*"Digest": "\([^"]*\)".*/\1/p' /cache-state/final-inspect.json | head -1)
+            echo -n "${DIGEST}" > /cache-state/final-digest
+            echo "hit" > /cache-state/final
+        else
+            echo "Final image not found, will build"
+            cat /cache-state/final-inspect.json 2>/dev/null || true
+            echo "miss" > /cache-state/final
+        fi
+
+        # Check base image
+        if skopeo inspect ${AUTH} "docker://${BASE_IMAGE}" >/dev/null 2>&1; then
+            echo "Base image exists — will skip base build"
+            echo "hit" > /cache-state/base
+        else
+            echo "Base image not found — will rebuild"
+            echo "miss" > /cache-state/base
+        fi
+
+        # Check testsuites image
+        if skopeo inspect ${AUTH} "docker://${TESTSUITES_IMAGE}" >/dev/null 2>&1; then
+            echo "Testsuites image exists — will skip testsuites build"
+            echo "hit" > /cache-state/testsuites
+        else
+            echo "Testsuites image not found — will rebuild"
+            echo "miss" > /cache-state/testsuites
+        fi
+
+    - name: build-and-push
+      image: quay.io/buildah/stable:latest
+      workingDir: /workspace/source
+      volumeMounts:
+        - name: source
+          mountPath: /workspace/source
+        - name: docker-credentials
+          mountPath: /credentials
+        - name: cache-state
+          mountPath: /cache-state
+      securityContext:
+        capabilities:
+          add:
+            - SETFCAP
+      computeResources:
+        requests:
+          memory: "4Gi"
+          cpu: "1000m"
+        limits:
+          memory: "8Gi"
+          cpu: "2000m"
+      script: |
+        #!/bin/bash
+        set -euo pipefail
+
+        COMMIT_SHA=$(cat /workspace/source/COMMIT_SHA)
+        SHORT_SHA=$(echo "${COMMIT_SHA}" | cut -c1-8)
+        DESTINATION="$(params.IMAGE_DESTINATION):${SHORT_SHA}"
+        CONTEXT="/workspace/source/$(params.CONTEXT_DIR)"
+
+        export REGISTRY_AUTH_FILE=/credentials/.dockerconfigjson
+        BUILD_ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+
+        # Check if final image already exists (from check-cache step)
+        if [ "$(cat /cache-state/final)" = "hit" ]; then
+            echo "Image ${DESTINATION} already exists, skipping build."
+            cp /cache-state/final-digest /tekton/results/IMAGE_DIGEST
+            echo -n "${DESTINATION}" > /tekton/results/IMAGE_URL
+            echo -n "${SHORT_SHA}" > /tekton/results/IMAGE_TAG
+            exit 0
+        fi
+
+        # --- Layer 1: Base image (tools + Go) ---
+        BASE_DOCKERFILE="${CONTEXT}/Dockerfile.base"
+        BASE_HASH=$(sha256sum "${BASE_DOCKERFILE}" | cut -c1-12)
+        BASE_IMAGE="$(params.IMAGE_DESTINATION):base-${BUILD_ARCH}-${BASE_HASH}"
+
+        if [ "$(cat /cache-state/base)" = "hit" ]; then
+            echo "Base image up to date, skipping base build."
+        else
+            echo "Building base image (tag: base-${BUILD_ARCH}-${BASE_HASH})"
+            buildah bud \
+              --storage-driver=vfs \
+              --format=oci \
+              --file="${BASE_DOCKERFILE}" \
+              --tag="${BASE_IMAGE}" \
+              "${CONTEXT}"
+
+            buildah push \
+              --storage-driver=vfs \
+              --authfile="${REGISTRY_AUTH_FILE}" \
+              "${BASE_IMAGE}"
+
+            echo "Base image pushed: ${BASE_IMAGE}"
+        fi
+
+        # --- Layer 2: Testsuites image (pre-compiled tests) ---
+        TESTSUITES_DOCKERFILE="${CONTEXT}/Dockerfile.testsuites"
+        TESTSUITES_HASH=$(cat "${BASE_DOCKERFILE}" "${TESTSUITES_DOCKERFILE}" | sha256sum | cut -c1-12)
+        TESTSUITES_IMAGE="$(params.IMAGE_DESTINATION):testsuites-${BUILD_ARCH}-${TESTSUITES_HASH}"
+
+        if [ "$(cat /cache-state/testsuites)" = "hit" ]; then
+            echo "Testsuites image up to date, skipping testsuites build."
+        else
+            echo "Building testsuites image (tag: testsuites-${BUILD_ARCH}-${TESTSUITES_HASH})"
+            buildah bud \
+              --storage-driver=vfs \
+              --format=oci \
+              --build-arg="BASE_IMAGE=${BASE_IMAGE}" \
+              --file="${TESTSUITES_DOCKERFILE}" \
+              --tag="${TESTSUITES_IMAGE}" \
+              "${CONTEXT}"
+
+            buildah push \
+              --storage-driver=vfs \
+              --authfile="${REGISTRY_AUTH_FILE}" \
+              "${TESTSUITES_IMAGE}"
+
+            echo "Testsuites image pushed: ${TESTSUITES_IMAGE}"
+        fi
+
+        # --- Layer 3: Final image (scripts overlay) ---
+        echo "Building final image: ${DESTINATION}"
+        buildah bud \
+          --storage-driver=vfs \
+          --format=oci \
+          --build-arg="BASE_IMAGE=${TESTSUITES_IMAGE}" \
+          --file="/workspace/source/$(params.DOCKERFILE_PATH)" \
+          --tag="${DESTINATION}" \
+          --label="quay.expires-after=$(params.IMAGE_EXPIRES_AFTER)" \
+          --label="git.commit=${COMMIT_SHA}" \
+          --label="base.image=${BASE_IMAGE}" \
+          --label="testsuites.image=${TESTSUITES_IMAGE}" \
+          "${CONTEXT}"
+
+        buildah push \
+          --storage-driver=vfs \
+          --authfile="${REGISTRY_AUTH_FILE}" \
+          --digestfile=/tekton/results/IMAGE_DIGEST \
+          "${DESTINATION}"
+
+        echo -n "${DESTINATION}" > /tekton/results/IMAGE_URL
+        echo -n "${SHORT_SHA}" > /tekton/results/IMAGE_TAG
+
+        echo "Done: ${DESTINATION}"
+        echo "Digest: $(cat /tekton/results/IMAGE_DIGEST)"

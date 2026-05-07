@@ -1,0 +1,669 @@
+---
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: gitops-bundle-integration-test-pipeline
+spec:
+  description: |
+    An integration test which provisions an ephemeral Hypershift cluster, deploys GitOps Operator from a bundle, and runs parallel e2e tests.
+  params:
+    - description: Snapshot of the application
+      name: SNAPSHOT
+      default: '{"components": [{"name":"gitops-operator-bundle-main", "containerImage": "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle:latest"}]}'
+      type: string
+    - description: Duration to wait for bundle installation to complete before failing.
+      name: INSTALL_TIMEOUT
+      default: 25m
+      type: string
+    - description: Git URL of release repository (used to resolve task definitions only; source URL for builds is auto-derived from SNAPSHOT)
+      name: BUNDLE_TASK_URL
+      default: "https://github.com/rh-gitops-midstream/release.git"
+      type: string
+    - description: Git revision for task definitions (used to resolve task definitions only; source revision for builds is auto-derived from SNAPSHOT)
+      name: BUNDLE_TASK_REVISION
+      default: "main"
+      type: string
+    - description: OpenShift version to provision (minor version e.g. "4.14", or full patch version e.g. "4.14.57")
+      name: OPENSHIFT_VERSION
+      default: "4.14"
+      type: string
+    - description: Enable FIPS mode for the ephemeral cluster
+      name: FIPS_ENABLED
+      default: "false"
+      type: string
+    - description: Git URL of the test repository
+      name: TEST_REPO_URL
+      default: "https://github.com/rh-gitops-release-qa/gitops-operator.git"
+      type: string
+    - description: Git branch or revision of the test repository
+      name: TEST_REPO_BRANCH
+      default: "master"
+      type: string
+    - description: Test runner script name (e.g., run-parallel-tests.sh, run-sequential-tests.sh, run-rollouts-tests.sh)
+      name: TEST_SCRIPT
+      default: "run-parallel-tests.sh"
+      type: string
+    - description: AWS instance type for the ephemeral cluster (e.g., m6g.large, m6g.xlarge, m6g.2xlarge)
+      name: CLUSTER_INSTANCE_TYPE
+      default: "m6g.large"
+      type: string
+  finally:
+    - name: upload-logs
+      params:
+        - name: eaasSpaceSecretRef
+          value: $(tasks.provision-eaas-space.results.secretRef)
+        - name: clusterName
+          value: "$(tasks.provision-cluster.results.clusterName)"
+        - name: pipelineRunName
+          value: "$(context.pipelineRun.name)"
+        - name: testImageUrl
+          value: "$(tasks.build-ginkgo-test-image.results.IMAGE_URL)"
+      taskSpec:
+        params:
+          - name: eaasSpaceSecretRef
+            type: string
+          - name: clusterName
+            type: string
+          - name: pipelineRunName
+            type: string
+          - name: testImageUrl
+            type: string
+        volumes:
+          - name: credentials
+            emptyDir: {}
+          - name: quay-credentials
+            secret:
+              secretName: gitops-test-runner-image-push
+        steps:
+          - name: get-kubeconfig
+            onError: continue
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-get-ephemeral-cluster-credentials/0.1/eaas-get-ephemeral-cluster-credentials.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(params.eaasSpaceSecretRef)
+              - name: clusterName
+                value: $(params.clusterName)
+              - name: credentials
+                value: credentials
+          - name: collect-and-upload-logs
+            image: $(params.testImageUrl)
+            volumeMounts:
+              - name: credentials
+                mountPath: /credentials
+              - name: quay-credentials
+                mountPath: /quay-credentials
+                readOnly: true
+            env:
+              - name: PIPELINE_RUN_NAME
+                value: "$(params.pipelineRunName)"
+              - name: NAMESPACE
+                value: "openshift-gitops-operator"
+              - name: QUAY_REPO
+                value: "quay.io/devtools_gitops/test_image"
+              - name: QUAY_CREDENTIALS_PATH
+                value: "/quay-credentials/.dockerconfigjson"
+              - name: TASK_NAMES
+                value: "install-operator test-operator logs"
+            script: |
+              #!/bin/bash
+              # Find kubeconfig — get-kubeconfig step may have failed (cluster deprovisioned)
+              KUBECONFIG=$(find /credentials -name "*kubeconfig" -type f 2>/dev/null | head -1)
+              export KUBECONFIG="${KUBECONFIG:-}"
+              /usr/local/bin/collect-and-upload-logs.sh
+
+    - name: send-slack-notification
+      params:
+        - name: aggregateTasksStatus
+          value: "$(tasks.status)"
+        - name: testImageUrl
+          value: "$(tasks.build-ginkgo-test-image.results.IMAGE_URL)"
+        - name: pipelineRunName
+          value: "$(context.pipelineRun.name)"
+        - name: testScript
+          value: "$(params.TEST_SCRIPT)"
+        - name: testRepoUrl
+          value: "$(params.TEST_REPO_URL)"
+        - name: testRepoBranch
+          value: "$(params.TEST_REPO_BRANCH)"
+        - name: openshiftVersion
+          value: "$(params.OPENSHIFT_VERSION)"
+        - name: fipsEnabled
+          value: "$(params.FIPS_ENABLED)"
+      taskSpec:
+        params:
+          - name: aggregateTasksStatus
+            type: string
+          - name: testImageUrl
+            type: string
+          - name: pipelineRunName
+            type: string
+          - name: testScript
+            type: string
+          - name: testRepoUrl
+            type: string
+          - name: testRepoBranch
+            type: string
+          - name: openshiftVersion
+            type: string
+          - name: fipsEnabled
+            type: string
+        volumes:
+          - name: quay-credentials
+            secret:
+              secretName: gitops-test-runner-image-push
+        steps:
+          - name: send-slack-message
+            image: $(params.testImageUrl)
+            volumeMounts:
+              - name: quay-credentials
+                mountPath: /quay-credentials
+                readOnly: true
+            env:
+              - name: SLACK_WEBHOOK_URL
+                valueFrom:
+                  secretKeyRef:
+                    name: slack-gitops-test-notification-url
+                    key: hook-url
+              - name: PIPELINE_RUN_NAME
+                value: "$(params.pipelineRunName)"
+              - name: AGGREGATE_STATUS
+                value: "$(params.aggregateTasksStatus)"
+              - name: LOG_URL
+                value: "https://konflux-ui.apps.stone-prd-rh01.pg1f.p1.openshiftapps.com/ns/rh-openshift-gitops-tenant/applications/gitops-main/pipelineruns/$(params.pipelineRunName)"
+              - name: QUAY_REPO
+                value: "quay.io/devtools_gitops/test_image"
+              - name: QUAY_CREDENTIALS_PATH
+                value: "/quay-credentials/.dockerconfigjson"
+              - name: TASK_NAMES
+                value: "install-operator test-operator"
+              - name: TEST_SCRIPT
+                value: "$(params.testScript)"
+              - name: TEST_REPO_URL
+                value: "$(params.testRepoUrl)"
+              - name: TEST_REPO_BRANCH
+                value: "$(params.testRepoBranch)"
+              - name: OPENSHIFT_VERSION
+                value: "$(params.openshiftVersion)"
+              - name: FIPS_ENABLED
+                value: "$(params.fipsEnabled)"
+            script: |
+              #!/bin/bash
+              /usr/local/bin/send-slack-message.py
+  tasks:
+    - name: parse-metadata
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: https://github.com/konflux-ci/integration-examples
+          - name: revision
+            value: main
+          - name: pathInRepo
+            value: tasks/test_metadata.yaml
+      params:
+        - name: SNAPSHOT
+          value: $(params.SNAPSHOT)
+
+    - name: extract-bundle-image
+      runAfter:
+        - parse-metadata
+      params:
+        - name: SNAPSHOT
+          value: $(params.SNAPSHOT)
+      taskSpec:
+        params:
+          - name: SNAPSHOT
+            type: string
+        results:
+          - name: bundleImage
+            description: Bundle image reference from SNAPSHOT
+        steps:
+          - name: parse
+            image: quay.io/devtools_gitops/test_image:integrated_ginkgo
+            env:
+              - name: SNAPSHOT
+                value: $(params.SNAPSHOT)
+            script: |
+              #!/usr/bin/env python3
+              import json, os, sys
+
+              snapshot = json.loads(os.environ["SNAPSHOT"])
+              bundle = next(
+                  (c for c in snapshot.get("components", []) if "bundle" in c.get("name", "")),
+                  None,
+              )
+              if not bundle:
+                  print("ERROR: No bundle component found in SNAPSHOT")
+                  sys.exit(1)
+
+              image = bundle.get("containerImage")
+              if not image:
+                  print("ERROR: Bundle component has no containerImage")
+                  sys.exit(1)
+
+              with open("$(results.bundleImage.path)", "w") as f:
+                  f.write(image)
+              print(f"Bundle image: {image}")
+
+    - name: build-ginkgo-test-image
+      runAfter:
+        - parse-metadata
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: $(params.BUNDLE_TASK_URL)
+          - name: revision
+            value: $(params.BUNDLE_TASK_REVISION)
+          - name: pathInRepo
+            value: .tekton/tasks/build-ginkgo-test-image.yaml
+      params:
+        - name: SOURCE_URL
+          value: $(tasks.parse-metadata.results.source-git-url)
+        - name: SOURCE_REVISION
+          value: $(tasks.parse-metadata.results.source-git-revision)
+        - name: IMAGE_EXPIRES_AFTER
+          value: "7d"
+
+    - name: provision-eaas-space
+      runAfter:
+        - parse-metadata
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: https://github.com/konflux-ci/build-definitions.git
+          - name: revision
+            value: main
+          - name: pathInRepo
+            value: task/eaas-provision-space/0.1/eaas-provision-space.yaml
+      params:
+        - name: ownerName
+          value: $(context.pipelineRun.name)
+        - name: ownerUid
+          value: $(context.pipelineRun.uid)
+
+    - name: provision-cluster
+      runAfter:
+        - provision-eaas-space
+      params:
+        - name: bundleSourceUrl
+          value: $(tasks.parse-metadata.results.source-git-url)
+        - name: bundleSourceRevision
+          value: $(tasks.parse-metadata.results.source-git-revision)
+        - name: openshiftVersion
+          value: $(params.OPENSHIFT_VERSION)
+        - name: fipsEnabled
+          value: $(params.FIPS_ENABLED)
+      taskSpec:
+        params:
+          - name: bundleSourceUrl
+            type: string
+          - name: bundleSourceRevision
+            type: string
+          - name: openshiftVersion
+            type: string
+          - name: fipsEnabled
+            type: string
+        results:
+          - name: clusterName
+            value: "$(steps.create-cluster.results.clusterName)"
+          - name: resolvedVersion
+            value: "$(steps.resolve-openshift-version.results.resolvedVersion)"
+        steps:
+          - name: get-supported-versions
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-get-supported-ephemeral-cluster-versions/0.1/eaas-get-supported-ephemeral-cluster-versions.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(tasks.provision-eaas-space.results.secretRef)
+          - name: extract-image-content-sources
+            image: docker.io/python:3-alpine
+            script: |
+              #!/bin/sh
+              set -e
+              apk add --no-cache git >/dev/null 2>&1
+              pip install pyyaml --quiet >/dev/null 2>&1
+
+              WORK=$(mktemp -d)
+              git clone $(params.bundleSourceUrl) "$WORK/release"
+              cd "$WORK/release"
+              git checkout $(params.bundleSourceRevision)
+
+              python3 -c "
+              import yaml, json, sys
+              with open('.tekton/images-mirror-set.yaml') as f:
+                  data = yaml.safe_load(f)
+              json.dump(data['spec']['imageDigestMirrors'], sys.stdout)
+              " > /workspace/imageContentSources.json
+
+              echo "Successfully extracted imageContentSources from release repository"
+          - name: resolve-openshift-version
+            image: docker.io/python:3-alpine
+            results:
+              - name: resolvedVersion
+            script: |
+              #!/usr/bin/env python3
+              import urllib.request, json, re, os
+
+              version = "$(params.openshiftVersion)"
+
+              if re.match(r'^\d+\.\d+\.\d+$', version):
+                  with open("$(step.results.resolvedVersion.path)", "w") as f:
+                      f.write(version)
+                  print(f"Using exact version: {version}")
+                  raise SystemExit(0)
+
+              url = f"https://quay.io/api/v1/repository/openshift-release-dev/ocp-release/tag/?filter_tag_name=like:{version}.&limit=100&onlyActiveTags=true"
+              data = json.loads(urllib.request.urlopen(url).read())
+
+              candidates = []
+              for tag in data.get("tags", []):
+                  name = tag["name"]
+                  if name.endswith("-multi"):
+                      bare = name.removesuffix("-multi")
+                      if re.match(rf'^{re.escape(version)}\.\d+$', bare):
+                          candidates.append(bare)
+
+              if not candidates:
+                  print(f"ERROR: Could not resolve minor version {version} to a patch release")
+                  raise SystemExit(1)
+
+              candidates.sort(key=lambda v: list(map(int, v.split("."))))
+              latest = candidates[-1]
+
+              with open("$(step.results.resolvedVersion.path)", "w") as f:
+                  f.write(latest)
+              print(f"Resolved {version} -> {latest}")
+          - name: create-cluster
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-create-ephemeral-cluster-hypershift-aws/0.1/eaas-create-ephemeral-cluster-hypershift-aws.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(tasks.provision-eaas-space.results.secretRef)
+              - name: imageContentSourcesFile
+                value: "/workspace/imageContentSources.json"
+
+              - name: timeout
+                value: "60m"
+              - name: version
+                value: "$(steps.resolve-openshift-version.results.resolvedVersion)"
+              - name: fips
+                value: "$(params.fipsEnabled)"
+              - name: instanceType
+                value: "$(params.CLUSTER_INSTANCE_TYPE)"
+
+    - name: install-operator
+      runAfter:
+        - provision-cluster
+        - extract-bundle-image
+      params:
+        - name: openshiftVersion
+          value: "$(params.OPENSHIFT_VERSION)"
+        - name: namespace
+          value: "openshift-gitops-operator"
+        - name: installTimeout
+          value: "$(params.INSTALL_TIMEOUT)"
+        - name: bundleImage
+          value: "$(tasks.extract-bundle-image.results.bundleImage)"
+        - name: eaasSpaceSecretRef
+          value: $(tasks.provision-eaas-space.results.secretRef)
+        - name: clusterName
+          value: "$(tasks.provision-cluster.results.clusterName)"
+        - name: pipelineRunName
+          value: "$(context.pipelineRun.name)"
+      taskSpec:
+        params:
+          - name: openshiftVersion
+            type: string
+          - name: namespace
+            type: string
+          - name: installTimeout
+            type: string
+          - name: bundleImage
+            type: string
+          - name: eaasSpaceSecretRef
+            type: string
+          - name: clusterName
+            type: string
+          - name: pipelineRunName
+            type: string
+        results:
+          - name: installedCSV
+            value: "$(steps.get-installed-version.results.installedCSV)"
+        volumes:
+          - name: credentials
+            emptyDir: {}
+          - name: quay-credentials
+            secret:
+              secretName: gitops-test-runner-image-push
+        steps:
+          - name: get-kubeconfig
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-get-ephemeral-cluster-credentials/0.1/eaas-get-ephemeral-cluster-credentials.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(params.eaasSpaceSecretRef)
+              - name: clusterName
+                value: $(params.clusterName)
+              - name: credentials
+                value: credentials
+          - name: install-bundle
+            image: $(tasks.build-ginkgo-test-image.results.IMAGE_URL)
+            volumeMounts:
+              - name: credentials
+                mountPath: /credentials
+              - name: quay-credentials
+                mountPath: /quay-credentials
+                readOnly: true
+            env:
+              - name: BUNDLE_IMAGE
+                value: "$(params.bundleImage)"
+              - name: NAMESPACE
+                value: "$(params.namespace)"
+              - name: INSTALL_TIMEOUT
+                value: "$(params.installTimeout)"
+              - name: KUBECONFIG
+                value: "/credentials/$(steps.get-kubeconfig.results.kubeconfig)"
+              - name: TASK_LOG_NAME
+                value: "install-operator"
+              - name: PIPELINE_RUN_NAME
+                value: "$(params.pipelineRunName)"
+              - name: QUAY_REPO
+                value: "quay.io/devtools_gitops/test_image"
+            script: |
+              #!/bin/bash
+              # Print login command for debugging the EaaS test cluster
+              API_SERVER=$(oc whoami --show-server 2>/dev/null || true)
+              PASS_FILE=$(find /credentials -name "*password" -type f 2>/dev/null | head -1)
+              if [[ -n "$API_SERVER" && -n "$PASS_FILE" ]]; then
+                echo "========================================"
+                echo "DEBUG: To log in to the test cluster:"
+                echo "  oc login $API_SERVER -u kubeadmin -p $(cat "$PASS_FILE") --insecure-skip-tls-verify"
+                echo "========================================"
+              fi
+              /usr/local/bin/run-and-save-logs.sh /usr/local/bin/install-bundle.sh
+          - name: get-installed-version
+            image: $(tasks.build-ginkgo-test-image.results.IMAGE_URL)
+            results:
+              - name: installedCSV
+            volumeMounts:
+              - name: credentials
+                mountPath: /credentials
+            env:
+              - name: KUBECONFIG
+                value: "/credentials/$(steps.get-kubeconfig.results.kubeconfig)"
+              - name: NAMESPACE
+                value: "$(params.namespace)"
+            script: |
+              #!/bin/bash
+              CSV=$(oc get csv -n "$NAMESPACE" -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || echo "unknown")
+              printf "%s" "$CSV" > "$(step.results.installedCSV.path)"
+              echo "Installed CSV: $CSV"
+
+    - name: test-operator
+      runAfter:
+        - install-operator
+      params:
+        - name: eaasSpaceSecretRef
+          value: $(tasks.provision-eaas-space.results.secretRef)
+        - name: clusterName
+          value: "$(tasks.provision-cluster.results.clusterName)"
+        - name: pipelineRunName
+          value: "$(context.pipelineRun.name)"
+        - name: testRepoUrl
+          value: "$(params.TEST_REPO_URL)"
+        - name: testRepoBranch
+          value: "$(params.TEST_REPO_BRANCH)"
+        - name: testScript
+          value: "$(params.TEST_SCRIPT)"
+        - name: openshiftVersion
+          value: "$(params.OPENSHIFT_VERSION)"
+      taskSpec:
+        params:
+          - name: eaasSpaceSecretRef
+            type: string
+          - name: clusterName
+            type: string
+          - name: pipelineRunName
+            type: string
+          - name: testRepoUrl
+            type: string
+          - name: testRepoBranch
+            type: string
+          - name: testScript
+            type: string
+          - name: openshiftVersion
+            type: string
+        results:
+          - name: LOG_ARTIFACT_TAG
+            description: Tag of uploaded log artifact from sidecar
+        volumes:
+          - name: credentials
+            emptyDir: {}
+          - name: quay-credentials
+            secret:
+              secretName: gitops-test-runner-image-push
+        steps:
+          - name: get-kubeconfig
+            onError: continue
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-get-ephemeral-cluster-credentials/0.1/eaas-get-ephemeral-cluster-credentials.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(params.eaasSpaceSecretRef)
+              - name: clusterName
+                value: $(params.clusterName)
+              - name: credentials
+                value: credentials
+          - name: run-tests
+            image: $(tasks.build-ginkgo-test-image.results.IMAGE_URL)
+            volumeMounts:
+              - name: credentials
+                mountPath: /credentials
+              - name: quay-credentials
+                mountPath: /quay-credentials
+                readOnly: true
+            env:
+              - name: CI
+                value: "konflux"
+              - name: TEST_REPO_URL
+                value: "$(params.testRepoUrl)"
+              - name: BRANCH
+                value: "$(params.testRepoBranch)"
+              - name: TASK_LOG_NAME
+                value: "test-operator"
+              - name: PIPELINE_RUN_NAME
+                value: "$(params.pipelineRunName)"
+              - name: QUAY_REPO
+                value: "quay.io/devtools_gitops/test_image"
+              - name: OPENSHIFT_VERSION
+                value: "$(params.openshiftVersion)"
+            computeResources:
+              requests:
+                memory: "4Gi"
+                cpu: "1000m"
+              limits:
+                memory: "8Gi"
+                cpu: "2000m"
+            script: |
+              #!/bin/bash
+              # Find kubeconfig — get-kubeconfig step may have failed
+              KUBECONFIG=$(find /credentials -name "*kubeconfig" -type f 2>/dev/null | head -1)
+              if [[ -z "$KUBECONFIG" ]]; then
+                echo "ERROR: No kubeconfig found in /credentials — get-kubeconfig step may have failed"
+                ls -la /credentials/ 2>/dev/null || true
+                echo "Tests cannot run without cluster access."
+                exit 1
+              fi
+              export KUBECONFIG
+
+              # Print login command for debugging the EaaS test cluster
+              API_SERVER=$(oc whoami --show-server 2>/dev/null || true)
+              PASS_FILE=$(find /credentials -name "*password" -type f 2>/dev/null | head -1)
+              if [[ -n "$API_SERVER" && -n "$PASS_FILE" ]]; then
+                echo "========================================"
+                echo "DEBUG: To log in to the test cluster:"
+                echo "  oc login $API_SERVER -u kubeadmin -p $(cat "$PASS_FILE") --insecure-skip-tls-verify"
+                echo "========================================"
+              fi
+
+              /usr/local/bin/run-and-save-logs.sh /usr/local/bin/$(params.testScript)
+        sidecars:
+          - name: log-collector
+            image: $(tasks.build-ginkgo-test-image.results.IMAGE_URL)
+            workingDir: /var/log-workspace
+            env:
+              - name: KUBECONFIG_NAME
+                value: "auto"
+              - name: PIPELINE_RUN_NAME
+                value: "$(params.pipelineRunName)"
+              - name: BRANCH_NAME
+                value: "logs"
+              - name: NAMESPACE
+                value: "openshift-gitops-operator"
+              - name: QUAY_REPO
+                value: "quay.io/devtools_gitops/test_image"
+            volumeMounts:
+              - name: credentials
+                mountPath: /credentials
+              - name: quay-credentials
+                mountPath: /quay-credentials
+                readOnly: true
+            command: ["/bin/bash", "-c", "/usr/local/bin/collect-logs-sidecar.sh"]
