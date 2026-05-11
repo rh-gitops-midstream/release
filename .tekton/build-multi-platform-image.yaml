@@ -143,6 +143,8 @@ spec:
       value: $(params.image-expires-after)
     - name: enableSymlinkCheck
       value: $(params.enable-symlink-check)
+    - name: depth
+      value: '0'
     runAfter:
     - init
     taskRef:
