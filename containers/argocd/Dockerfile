@@ -17,7 +17,7 @@
 ####################################################################################################
 # Argo CD UI stage
 ####################################################################################################
-FROM registry.access.redhat.com/ubi8/nodejs-20 AS argocd-ui
+FROM registry.access.redhat.com/ubi8/nodejs-22 AS argocd-ui
 
 USER root
 
