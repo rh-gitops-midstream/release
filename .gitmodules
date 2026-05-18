@@ -12,7 +12,7 @@
 	url = https://github.com/redhat-developer/gitops-backend.git
 [submodule "sources/dex"]
 	path = sources/dex
-	url = https://github.com/dexidp/dex.git
+	url = https://github.com/rh-gitops-midstream/dex.git
 [submodule "sources/argocd-extension-installer"]
 	path = sources/argocd-extension-installer
 	url = https://github.com/argoproj-labs/argocd-extension-installer.git
