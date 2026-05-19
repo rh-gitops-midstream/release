@@ -53,13 +53,13 @@ arches:
     name: git-core-doc
     evr: 2.43.7-1.el8_10
     sourcerpm: git-2.43.7-1.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/Packages/j/jq-1.6-11.el8_10.aarch64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/Packages/j/jq-1.6-12.el8_10.aarch64.rpm
     repoid: ubi-8-for-aarch64-appstream-rpms
-    size: 194428
-    checksum: sha256:18872c00a1f4d6661bd4eec1240e21ae85b1bfa81fc12a3da3c0d4f663344648
+    size: 193928
+    checksum: sha256:6957f091cae9c0a9e946e43954dab041e595843c2b0e38838a8dc3bc34f6b1bf
     name: jq
-    evr: 1.6-11.el8_10
-    sourcerpm: jq-1.6-11.el8_10.src.rpm
+    evr: 1.6-12.el8_10
+    sourcerpm: jq-1.6-12.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/Packages/l/libuv-1.41.1-2.el8_10.aarch64.rpm
     repoid: ubi-8-for-aarch64-appstream-rpms
     size: 153692
@@ -615,10 +615,10 @@ arches:
     sourcerpm: util-linux-2.32.1-48.el8_10.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/repodata/5826b7742d068de2ecf881b4bf34d33cb9b95e35a22ede7aee8cb09d77f651b2-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/aarch64/appstream/os/repodata/8446a07550fbe13b9aa38292f4b7cf9950890934fa3914f7cd24a94065402d0f-modules.yaml.gz
     repoid: ubi-8-for-aarch64-appstream-rpms
-    size: 56702
-    checksum: sha256:5826b7742d068de2ecf881b4bf34d33cb9b95e35a22ede7aee8cb09d77f651b2
+    size: 56965
+    checksum: sha256:8446a07550fbe13b9aa38292f4b7cf9950890934fa3914f7cd24a94065402d0f
 - arch: ppc64le
   packages:
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/c/cmake-3.26.5-2.el8.ppc64le.rpm
@@ -670,13 +670,13 @@ arches:
     name: git-core-doc
     evr: 2.43.7-1.el8_10
     sourcerpm: git-2.43.7-1.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/j/jq-1.6-11.el8_10.ppc64le.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/j/jq-1.6-12.el8_10.ppc64le.rpm
     repoid: ubi-8-for-ppc64le-appstream-rpms
-    size: 222152
-    checksum: sha256:a025d78c664d12fc1aa0618a5f96d0ec2426876490cce200766d027614df78ff
+    size: 221444
+    checksum: sha256:db546534302de8085b16ce0cb01e15218dc188d9855f75f9e49b4cb752e09cf1
     name: jq
-    evr: 1.6-11.el8_10
-    sourcerpm: jq-1.6-11.el8_10.src.rpm
+    evr: 1.6-12.el8_10
+    sourcerpm: jq-1.6-12.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/Packages/l/libuv-1.41.1-2.el8_10.ppc64le.rpm
     repoid: ubi-8-for-ppc64le-appstream-rpms
     size: 166704
@@ -1239,10 +1239,10 @@ arches:
     sourcerpm: util-linux-2.32.1-48.el8_10.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/repodata/158f79499e710c1963eb468e158dc83574e4d37d5bd21169abfb653dc461cc27-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/ppc64le/appstream/os/repodata/64cc9fabc9512651d5c26a68a5a217c9923a323b0a75bb580bd35ff127110c35-modules.yaml.gz
     repoid: ubi-8-for-ppc64le-appstream-rpms
-    size: 58577
-    checksum: sha256:158f79499e710c1963eb468e158dc83574e4d37d5bd21169abfb653dc461cc27
+    size: 58677
+    checksum: sha256:64cc9fabc9512651d5c26a68a5a217c9923a323b0a75bb580bd35ff127110c35
 - arch: s390x
   packages:
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/c/cmake-3.26.5-2.el8.s390x.rpm
@@ -1294,13 +1294,13 @@ arches:
     name: git-core-doc
     evr: 2.43.7-1.el8_10
     sourcerpm: git-2.43.7-1.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/j/jq-1.6-11.el8_10.s390x.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/j/jq-1.6-12.el8_10.s390x.rpm
     repoid: ubi-8-for-s390x-appstream-rpms
-    size: 213148
-    checksum: sha256:975481360f19614d4d7d0eb843aa030f11ca47d4858c2d744ffb3a6c0cf718b0
+    size: 212324
+    checksum: sha256:1d9d77c7c0f65e9893efc07efee09a9c0ff10a7e770d60409f9b7f278d19a0b0
     name: jq
-    evr: 1.6-11.el8_10
-    sourcerpm: jq-1.6-11.el8_10.src.rpm
+    evr: 1.6-12.el8_10
+    sourcerpm: jq-1.6-12.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/Packages/l/libuv-1.41.1-2.el8_10.s390x.rpm
     repoid: ubi-8-for-s390x-appstream-rpms
     size: 154160
@@ -1856,10 +1856,10 @@ arches:
     sourcerpm: util-linux-2.32.1-48.el8_10.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/repodata/6e61944ff7a333908d322c33b33f49a6a37220c18aafb5fcd0b3b8b1b068fa54-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/s390x/appstream/os/repodata/a7a7c53b430fc62e3198eb4eda7d5310b1adeea83985a51b8d72d7fc6f19e67f-modules.yaml.gz
     repoid: ubi-8-for-s390x-appstream-rpms
-    size: 58350
-    checksum: sha256:6e61944ff7a333908d322c33b33f49a6a37220c18aafb5fcd0b3b8b1b068fa54
+    size: 58391
+    checksum: sha256:a7a7c53b430fc62e3198eb4eda7d5310b1adeea83985a51b8d72d7fc6f19e67f
 - arch: x86_64
   packages:
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/c/cmake-3.26.5-2.el8.x86_64.rpm
@@ -1911,13 +1911,13 @@ arches:
     name: git-core-doc
     evr: 2.43.7-1.el8_10
     sourcerpm: git-2.43.7-1.el8_10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/j/jq-1.6-11.el8_10.x86_64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/j/jq-1.6-12.el8_10.x86_64.rpm
     repoid: ubi-8-for-x86_64-appstream-rpms
-    size: 208552
-    checksum: sha256:fe609ca5ea627f11fc4cd55cca0279f220f82e49045bfd59c38b560c82167662
+    size: 207836
+    checksum: sha256:88e62c63c8b6be1edadc0fcdf68b60367dbb662dd84916e162e469792d105f46
     name: jq
-    evr: 1.6-11.el8_10
-    sourcerpm: jq-1.6-11.el8_10.src.rpm
+    evr: 1.6-12.el8_10
+    sourcerpm: jq-1.6-12.el8_10.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/l/libuv-1.41.1-2.el8_10.x86_64.rpm
     repoid: ubi-8-for-x86_64-appstream-rpms
     size: 160112
@@ -2473,7 +2473,7 @@ arches:
     sourcerpm: util-linux-2.32.1-48.el8_10.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/repodata/a87c72f06d15a6cfa14593a3f790f546537198b2c0773a809b65f564fe886abd-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/repodata/d6765d1eb14e239d0a7793324ee81dcc801f27b69c937e6373b6a6b68930f76f-modules.yaml.gz
     repoid: ubi-8-for-x86_64-appstream-rpms
-    size: 59079
-    checksum: sha256:a87c72f06d15a6cfa14593a3f790f546537198b2c0773a809b65f564fe886abd
+    size: 59074
+    checksum: sha256:d6765d1eb14e239d0a7793324ee81dcc801f27b69c937e6373b6a6b68930f76f
