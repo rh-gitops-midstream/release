@@ -33,8 +33,8 @@ sources:
     commit: 0dc6b1b57dd5bb925d5b03c3d09419ab9fb4225e
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
-    ref: v1.9.0
-    commit: 838d4e792be666ec11bd0c80331e0c5511b5010e
+    ref: v1.8.3
+    commit: 348260aa4219ed79497296b52be87be7f50a5cdd
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
     ref: kustomize/v5.8.1
