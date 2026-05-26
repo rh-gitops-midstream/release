@@ -17,7 +17,7 @@
 ####################################################################################################
 # Argo Rollouts UI stage
 ####################################################################################################
-FROM registry.access.redhat.com/ubi9/nodejs-20 AS argo-rollouts-ui
+FROM registry.access.redhat.com/ubi9/nodejs-22 AS argo-rollouts-ui
 
 USER root
 
