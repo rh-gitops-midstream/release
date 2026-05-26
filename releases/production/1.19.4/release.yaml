@@ -1,0 +1,28 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.19.4-prod-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-19-prod
+  snapshot: gitops-1-19-20260519-175844-000
+  data:
+    releaseNotes:
+      type: RHSA
+      cves: 
+      - key: CVE-2026-33186
+        component: argocd-image-updater-1-19
+      - key: CVE-2026-33186
+        component: dex-1-19
+      - key: CVE-2026-33186
+        component: gitops-1-19
+      - key: CVE-2026-33487
+        component: dex-1-19
+      - key: CVE-2026-4800
+        component: console-plugin-1-19
+      - key: CVE-2026-42880
+        component: argocd-image-updater-1-19
+      - key: CVE-2026-32281
+        component: dex-1-19
+       
