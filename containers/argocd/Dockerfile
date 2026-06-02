@@ -17,7 +17,7 @@
 ####################################################################################################
 # Argo CD UI stage
 ####################################################################################################
-FROM registry.access.redhat.com/ubi8/nodejs-20 AS argocd-ui
+FROM registry.access.redhat.com/ubi9/nodejs-22 AS argocd-ui
 
 USER root
 
@@ -45,7 +45,7 @@ RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' $YARN build
 # Argo CD Build stage which performs the actual build of Argo CD binaries
 ####################################################################################################
 # TODO: switch to registry.redhat.io once the image is available
-FROM registry.redhat.io/rhel9/go-toolset:1.25 as argocd-build
+FROM registry.redhat.io/rhel9/go-toolset:1.26 as argocd-build
 USER root
 
 COPY sources/argo-cd /go/src/github.com/argoproj/argo-cd

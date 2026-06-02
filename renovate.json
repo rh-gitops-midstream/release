@@ -7,7 +7,10 @@
     "release-1.18"
   ],
   "ignoreDeps": [
-    "registry.redhat.io/rhel9/go-toolset"
+    "registry.redhat.io/rhel9/go-toolset",
+    "registry.redhat.io/rhel8/go-toolset",
+    "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8",
+    "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9"
   ],
   "packageRules": [
     {

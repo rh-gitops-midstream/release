@@ -17,7 +17,7 @@
 ####################################################################################################
 # Argo Rollouts UI stage
 ####################################################################################################
-FROM registry.access.redhat.com/ubi9/nodejs-20 AS argo-rollouts-ui
+FROM registry.access.redhat.com/ubi9/nodejs-22 AS argo-rollouts-ui
 
 USER root
 
@@ -46,7 +46,7 @@ RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' $YARN build
 # Builder stage which performs the build of argo-rollouts-cli binaries
 ####################################################################################################
 
-FROM registry.redhat.io/rhel9/go-toolset:1.25 AS builder
+FROM registry.redhat.io/rhel9/go-toolset:1.26 AS builder
 
 # Switch to root user
 USER root
