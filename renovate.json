@@ -2,9 +2,9 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "baseBranchPatterns": [
     "main",
+    "release-1.21",
     "release-1.20",
     "release-1.19",
-    "release-1.18"
   ],
   "ignoreDeps": [
     "registry.redhat.io/rhel9/go-toolset",
