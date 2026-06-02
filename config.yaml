@@ -26,15 +26,15 @@ sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: master
-    commit: fee011bc839911e119c8d774e97308222b4dfa8f
+    commit: d4b8418cfd78a0d67b69bd3db9c6b6edf88d36ab
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.4.2
-    commit: 0dc6b1b57dd5bb925d5b03c3d09419ab9fb4225e
+    ref: v3.4.3
+    commit: 1801122b4391cad4961301f787006dc9a88c2dd3
   - path: sources/argo-rollouts 
     url: https://github.com/argoproj/argo-rollouts.git
-    ref: v1.8.3
-    commit: 348260aa4219ed79497296b52be87be7f50a5cdd
+    ref: v1.9.0
+    commit: 838d4e792be666ec11bd0c80331e0c5511b5010e
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
     ref: kustomize/v5.8.1
@@ -44,9 +44,9 @@ sources:
     ref: v3.19.4
     commit: 7cfb6e486dac026202556836bb910c37d847793e
   - path: sources/dex
-    ref: v2.43.1
-    url: https://github.com/dexidp/dex.git
-    commit: 6e602d3315ea09d0cdeef6b51e61f2fd4ae52502
+    ref: v2.45.0
+    url: https://github.com/rh-gitops-midstream/dex.git
+    commit: bcc2283694018a59e9b84c43c6c50ce996e9409b
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
     ref: v3.7.1
