@@ -10,9 +10,6 @@
 [submodule "sources/gitops-backend"]
 	path = sources/gitops-backend
 	url = https://github.com/redhat-developer/gitops-backend.git
-[submodule "sources/dex"]
-	path = sources/dex
-	url = https://github.com/dexidp/dex.git
 [submodule "sources/argocd-extension-installer"]
 	path = sources/argocd-extension-installer
 	url = https://github.com/argoproj-labs/argocd-extension-installer.git
@@ -49,3 +46,6 @@
 [submodule "sources/argocd-image-updater"]
 	path = sources/argocd-image-updater
 	url = https://github.com/argoproj-labs/argocd-image-updater.git
+[submodule "sources/dex"]
+	path = sources/dex
+	url = https://github.com/rh-gitops-midstream/dex.git
