@@ -76,8 +76,6 @@ for id, img in list(images.items()):
 
 relatedImages = [
     {'name': 'manager', 'image': images['gitops-operator']},
-    {'name': 'kube-rbac-proxy', 'image': images['kube-rbac-proxy']},
-    {'name': 'kube_rbac_proxy_image', 'image': images['kube-rbac-proxy']},
     {'name': 'argocd_dex_image', 'image': images['dex']},
     {'name': 'backend_image', 'image': images['gitops']},
     {'name': 'argocd_image', 'image': images['argocd']},
@@ -115,7 +113,6 @@ new_env = [
     {'name': 'RELATED_IMAGE_ARGO_ROLLOUTS_IMAGE', 'value': images['argo-rollouts']},
     {'name': 'ARGO_ROLLOUTS_IMAGE', 'value': images['argo-rollouts']},
     {'name': 'RELATED_IMAGE_MUST_GATHER_IMAGE', 'value': images['must-gather']},
-    {'name': 'RELATED_IMAGE_KUBE_RBAC_PROXY_IMAGE', 'value': images['kube-rbac-proxy']},
     {'name': 'ARGOCD_PRINCIPAL_IMAGE', 'value': images['argocd-agent']},
     {'name': 'RELATED_IMAGE_ARGOCD_PRINCIPAL_IMAGE', 'value': images['argocd-agent']},
     {'name': 'ARGOCD_AGENT_IMAGE', 'value': images['argocd-agent']},
@@ -215,7 +212,6 @@ csv['spec']['description'] = (
 
 csv['metadata']['annotations']['containerImage'] = images['gitops-operator']
 csv['spec']['install']['spec']['deployments'][0]['spec']['template']['spec']['containers'][0]['image'] = images['gitops-operator']
-csv['spec']['install']['spec']['deployments'][0]['spec']['template']['spec']['containers'][1]['image'] = images['kube-rbac-proxy']
 csv['spec']['relatedImages'] = relatedImages
 
 # Merge env with deduplication
