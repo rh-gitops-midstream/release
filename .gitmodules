@@ -22,9 +22,6 @@
 [submodule "sources/rollouts-plugin-trafficrouter-openshift"]
 	path = sources/rollouts-plugin-trafficrouter-openshift
 	url = https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
-[submodule "sources/argo-rollouts"]
-	path = sources/argo-rollouts
-	url = https://github.com/argoproj/argo-rollouts.git
 [submodule "sources/git-lfs"]
 	path = sources/git-lfs
 	url = https://github.com/git-lfs/git-lfs
@@ -49,3 +46,6 @@
 [submodule "sources/argocd-image-updater"]
 	path = sources/argocd-image-updater
 	url = https://github.com/argoproj-labs/argocd-image-updater.git
+[submodule "sources/argo-rollouts"]
+	path = sources/argo-rollouts
+	url = https://github.com/rh-gitops-midstream/argo-rollouts.git

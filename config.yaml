@@ -25,16 +25,16 @@ release:
 sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
-    ref: master
-    commit: d4b8418cfd78a0d67b69bd3db9c6b6edf88d36ab
+    ref: v1.21
+    commit: be6b4840c8d53fd9bc0bdb75b6904d098734e5d5
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
     ref: v3.4.3
     commit: 1801122b4391cad4961301f787006dc9a88c2dd3
   - path: sources/argo-rollouts 
-    url: https://github.com/argoproj/argo-rollouts.git
-    ref: v1.8.3
-    commit: 348260aa4219ed79497296b52be87be7f50a5cdd
+    url: https://github.com/rh-gitops-midstream/argo-rollouts.git
+    ref: v1.9.0
+    commit: 53052f202eba02d651190fad7cc4b3e06b875af9
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
     ref: kustomize/v5.8.1
@@ -86,7 +86,7 @@ sources:
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: main
-    commit: aedf08426747e55e0d88d9dcc1fa16d7bcbb2b15
+    commit: 5fd1a4879009e80edf0776f4dfdd1bca035d69cf
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
     ref: v1.2.1
