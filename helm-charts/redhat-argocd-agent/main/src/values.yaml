@@ -1,9 +1,19 @@
 namespaceOverride: ''
+nameOverride: ''
+fullnameOverride: ''
 image:
   repository: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9
-  tag: v99.99.99
-  pullPolicy: Always
+  tag: v1.21.0
+  pullPolicy: IfNotPresent
 replicaCount: 1
+imagePullSecrets: []
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 25%
+    maxUnavailable: 25%
+revisionHistoryLimit: 10
+progressDeadlineSeconds: 600
 tlsSecretName: argocd-agent-client-tls
 tlsRootCASecretName: argocd-agent-ca
 userPasswordSecretName: argocd-agent-agent-userpass
@@ -18,12 +28,41 @@ serviceAccount:
   create: true
   name: ''
   annotations: {}
+  automountServiceAccountToken: true
+podSecurityContext:
+  fsGroup: 999
+  fsGroupChangePolicy: OnRootMismatch
+  runAsGroup: 999
+  runAsNonRoot: true
+  runAsUser: 999
+  seccompProfile:
+    type: RuntimeDefault
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+  privileged: false
+  readOnlyRootFilesystem: true
+  runAsGroup: 999
+  runAsNonRoot: true
+  runAsUser: 999
+  seccompProfile:
+    type: RuntimeDefault
+rbac:
+  create: true
+  createClusterRole: true
 nodeSelector: {}
 affinity: {}
 tolerations: []
+topologySpreadConstraints: []
 podAnnotations: {}
 podLabels: {}
 priorityClassName: ''
+terminationGracePeriodSeconds: 30
+hostAliases: []
+dnsPolicy: ''
+dnsConfig: {}
 probes:
   liveness:
     enabled: true
@@ -61,6 +100,7 @@ enableCompression: false
 pprofPort: '0'
 enableResourceProxy: true
 cacheRefreshInterval: 10s
+informerSyncTimeout: 10s
 keepAliveInterval: 50s
 tlsClientKeyPath: ''
 tlsClientCertPath: ''
@@ -69,8 +109,15 @@ tlsMinVersion: ''
 tlsMaxVersion: ''
 tlsCipherSuites: ''
 allowedNamespaces: ''
+tlsInsecurePlaintext: 'false'
 destinationBasedMapping: false
 createNamespace: false
+labelSelector: ''
+redisTLS:
+  enabled: false
+  caPath: /app/config/redis-tls/ca.crt
+  secretName: argocd-redis-tls
+  insecure: false
 service:
   metrics:
     port: 8181
@@ -80,6 +127,18 @@ service:
     port: 8002
     targetPort: 8002
     annotations: {}
+serviceMonitor:
+  enabled: false
+  additionalLabels: {}
+  annotations: {}
+  namespace: ''
+  interval: 30s
+  scrapeTimeout: 10s
+  relabelings: []
+  metricRelabelings: []
+  honorLabels: false
+  scheme: ''
+  tlsConfig: {}
 tests:
   enabled: false
   image: bitnamilegacy/kubectl
