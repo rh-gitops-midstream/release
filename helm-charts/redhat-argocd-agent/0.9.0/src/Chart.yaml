@@ -2,8 +2,8 @@ apiVersion: v2
 name: redhat-argocd-agent
 description: RedHat Argo CD Agent for connecting managed clusters to a Principal
 type: application
-version: main
-appVersion: main
+version: 0.9.0
+appVersion: 0.9.0
 home: https://github.com/argoproj-labs/argocd-agent
 sources:
 - https://github.com/argoproj-labs/argocd-agent
