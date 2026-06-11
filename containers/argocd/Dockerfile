@@ -21,25 +21,20 @@ FROM registry.access.redhat.com/ubi9/nodejs-22 AS argocd-ui
 
 USER root
 
-# Install Yarn
-WORKDIR /usr/src/app
-COPY ["prefetch/yarn/package.json", "prefetch/yarn/package-lock.json", "./"]
-RUN npm install --prefer-offline --no-progress --non-interactive
-ENV YARN="/usr/src/app/node_modules/.bin/yarn"
-RUN $YARN --version
-
 WORKDIR /usr/src/app/argo-cd/ui
 
-COPY ["sources/argo-cd/ui/package.json", "sources/argo-cd/ui/yarn.lock", "./"]
+COPY ["sources/argo-cd/ui/package.json", "sources/argo-cd/ui/pnpm-lock.yaml", "./"]
 
-RUN $YARN  install --no-progress --non-interactive --prefer-offline --network-timeout 200000 && \
-    $YARN cache clean
+RUN npm install -g corepack@0.34.6 && \
+    corepack enable && \
+    pnpm install --frozen-lockfile
 
 COPY ["sources/argo-cd/ui/", "."]
 
 ARG ARGO_VERSION=latest
 ENV ARGO_VERSION=$ARGO_VERSION
-RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' $YARN build
+ARG TARGETARCH
+RUN HOST_ARCH=${TARGETARCH:-amd64} NODE_ENV='production' NODE_ONLINE_ENV='offline' NODE_OPTIONS=--max_old_space_size=8192 pnpm build
 
 ####################################################################################################
 # Argo CD Build stage which performs the actual build of Argo CD binaries

@@ -57,8 +57,11 @@ spec:
       - '{{target_branch}}'
   - name: dockerfile
     value: containers/argocd/Dockerfile
+  # Hermeto does not support pnpm prefetch yet; UI deps are installed during the image build.
+  - name: hermetic
+    value: "false"
   - name: prefetch-input
-    value: '[{"type":"gomod","path":"./sources/argo-cd"}, {"type":"yarn","path":"./sources/argo-cd/ui"}, {"type":"gomod","path":"./sources/kustomize/kustomize"}, {"type":"gomod","path":"./sources/helm"}, {"type":"gomod","path":"./sources/git-lfs"}, {"type":"rpm","path":"prefetch/rpms/ubi9"}, {"type":"npm","path":"prefetch/yarn"}]'
+    value: '[{"type":"gomod","path":"./sources/argo-cd"}, {"type":"gomod","path":"./sources/kustomize/kustomize"}, {"type":"gomod","path":"./sources/helm"}, {"type":"gomod","path":"./sources/git-lfs"}, {"type":"rpm","path":"prefetch/rpms/ubi9"}]'
   - name: git-metadata-directories
     value:
       - sources/argo-cd
