@@ -91,6 +91,19 @@ def update_copied_chart_files(version: str, image_repository: str, image_tag: st
 	image["tag"] = image_tag
 	values["image"] = image
 
+	values["podSecurityContext"] = {
+		"runAsNonRoot": True,
+		"seccompProfile": {"type": "RuntimeDefault"},
+	}
+	values["securityContext"] = {
+		"allowPrivilegeEscalation": False,
+		"capabilities": {"drop": ["ALL"]},
+		"privileged": False,
+		"readOnlyRootFilesystem": True,
+		"runAsNonRoot": True,
+		"seccompProfile": {"type": "RuntimeDefault"},
+	}
+
 	with values_path.open("w", encoding="utf-8") as file:
 		yaml.safe_dump(values, file, sort_keys=False)
 
