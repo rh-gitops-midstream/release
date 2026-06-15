@@ -1,9 +1,19 @@
 namespaceOverride: ''
+nameOverride: ''
+fullnameOverride: ''
 image:
   repository: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9
   tag: v1.21.0
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 replicaCount: 1
+imagePullSecrets: []
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 25%
+    maxUnavailable: 25%
+revisionHistoryLimit: 10
+progressDeadlineSeconds: 600
 tlsSecretName: argocd-agent-client-tls
 tlsRootCASecretName: argocd-agent-ca
 userPasswordSecretName: argocd-agent-agent-userpass
@@ -19,12 +29,34 @@ serviceAccount:
   name: ''
   annotations: {}
   automountServiceAccountToken: true
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+  privileged: false
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+rbac:
+  create: true
+  createClusterRole: true
 nodeSelector: {}
 affinity: {}
 tolerations: []
+topologySpreadConstraints: []
 podAnnotations: {}
 podLabels: {}
 priorityClassName: ''
+terminationGracePeriodSeconds: 30
+hostAliases: []
+dnsPolicy: ''
+dnsConfig: {}
 probes:
   liveness:
     enabled: true
@@ -62,6 +94,7 @@ enableCompression: false
 pprofPort: '0'
 enableResourceProxy: true
 cacheRefreshInterval: 10s
+informerSyncTimeout: 10s
 keepAliveInterval: 50s
 tlsClientKeyPath: ''
 tlsClientCertPath: ''
@@ -70,6 +103,7 @@ tlsMinVersion: ''
 tlsMaxVersion: ''
 tlsCipherSuites: ''
 allowedNamespaces: ''
+tlsInsecurePlaintext: 'false'
 destinationBasedMapping: false
 createNamespace: false
 labelSelector: ''
@@ -103,17 +137,3 @@ tests:
   enabled: false
   image: bitnamilegacy/kubectl
   tag: 1.33.4
-podSecurityContext:
-  runAsNonRoot: true
-  seccompProfile:
-    type: RuntimeDefault
-securityContext:
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop:
-    - ALL
-  privileged: false
-  readOnlyRootFilesystem: true
-  runAsNonRoot: true
-  seccompProfile:
-    type: RuntimeDefault
