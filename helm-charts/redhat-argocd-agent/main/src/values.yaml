@@ -18,6 +18,7 @@ serviceAccount:
   create: true
   name: ''
   annotations: {}
+  automountServiceAccountToken: true
 nodeSelector: {}
 affinity: {}
 tolerations: []
@@ -71,6 +72,12 @@ tlsCipherSuites: ''
 allowedNamespaces: ''
 destinationBasedMapping: false
 createNamespace: false
+labelSelector: ''
+redisTLS:
+  enabled: false
+  caPath: /app/config/redis-tls/ca.crt
+  secretName: argocd-redis-tls
+  insecure: false
 service:
   metrics:
     port: 8181
@@ -80,7 +87,33 @@ service:
     port: 8002
     targetPort: 8002
     annotations: {}
+serviceMonitor:
+  enabled: false
+  additionalLabels: {}
+  annotations: {}
+  namespace: ''
+  interval: 30s
+  scrapeTimeout: 10s
+  relabelings: []
+  metricRelabelings: []
+  honorLabels: false
+  scheme: ''
+  tlsConfig: {}
 tests:
   enabled: false
   image: bitnamilegacy/kubectl
   tag: 1.33.4
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+  privileged: false
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
