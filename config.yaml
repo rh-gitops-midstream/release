@@ -29,7 +29,7 @@ sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.21
-    commit: 48c3ba48b0c4d89088a7fff5b27582c67ae694de
+    commit: 19b0af3eb40b977f1552cc8a25426df0bcb811ec
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
     ref: v3.4.3
