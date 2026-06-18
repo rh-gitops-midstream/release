@@ -6,7 +6,7 @@ metadata:
 spec:
   gracePeriodDays: 7
   releasePlan: gitops-clis-1-21-prod
-  snapshot: gitops-1-21-0-build-4
+  snapshot: gitops-1-21-0-build-7
   data:
     releaseNotes:
       type: RHEA
