@@ -65,7 +65,7 @@ sources:
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: v1.20
-    commit: 342be0786fa6f86c02b000fcb04ebee2105d483d
+    commit: 03905cf12ee7050e53086e6c0855dd2d30179f86
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master
