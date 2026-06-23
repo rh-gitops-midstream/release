@@ -1,0 +1,30 @@
+ARG BASE_IMAGE=quay.io/devtools_gitops/test_image:base
+FROM ${BASE_IMAGE}
+
+LABEL name="gitops-ginkgo-test-runner-testsuites" \
+      description="Base image with pre-compiled Ginkgo test suites" \
+      maintainer="GitOps Team"
+
+ARG TEST_REPO_URL=https://github.com/rh-gitops-release-qa/gitops-operator.git
+ARG TEST_REPO_BRANCH=master
+
+WORKDIR /testsuites
+
+RUN git clone --depth 1 --branch ${TEST_REPO_BRANCH} ${TEST_REPO_URL} gitops-operator
+
+WORKDIR /testsuites/gitops-operator
+
+RUN make ginkgo && go mod download
+
+RUN ./bin/ginkgo build -r ./test/openshift/e2e/ginkgo/parallel/
+
+RUN ./bin/ginkgo build -r ./test/openshift/e2e/ginkgo/sequential/
+
+RUN go clean -cache \
+    && rm -rf /root/go/pkg/mod/cache/download \
+    && rm -rf /tmp/* \
+    && rm -rf .git \
+    && git init && git remote add origin ${TEST_REPO_URL}
+
+WORKDIR /workspace
+ENTRYPOINT ["/bin/bash"]

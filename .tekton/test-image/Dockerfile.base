@@ -1,0 +1,38 @@
+FROM registry.access.redhat.com/ubi9/ubi:latest
+
+LABEL name="gitops-ginkgo-test-runner-base" \
+      description="Base image with CLI tools and Go toolchain" \
+      maintainer="GitOps Team"
+
+ARG OC_VERSION=4.14
+ARG ORAS_VERSION=1.2.0
+
+RUN dnf -y install \
+    jq \
+    git \
+    golang \
+    python3-pyyaml \
+    skopeo \
+    make \
+    tar \
+    gzip \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf
+
+# Install OpenShift CLI (oc)
+RUN curl -Lo /tmp/openshift-client.tar.gz \
+    https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-${OC_VERSION}/openshift-client-linux.tar.gz \
+    && tar -xzf /tmp/openshift-client.tar.gz -C /usr/local/bin/ oc kubectl \
+    && rm /tmp/openshift-client.tar.gz \
+    && oc version --client
+
+# Install ORAS for log artifact upload
+RUN ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac) \
+    && curl -Lo /tmp/oras.tar.gz \
+    https://github.com/oras-project/oras/releases/download/v${ORAS_VERSION}/oras_${ORAS_VERSION}_linux_${ARCH}.tar.gz \
+    && tar -xzf /tmp/oras.tar.gz -C /usr/local/bin/ oras \
+    && rm /tmp/oras.tar.gz \
+    && oras version
+
+WORKDIR /workspace
+ENTRYPOINT ["/bin/bash"]

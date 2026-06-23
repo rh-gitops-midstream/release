@@ -1,0 +1,407 @@
+---
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: argocd-image-e2e
+spec:
+  description: |
+    Integration test for the argocd-rhel9 image. Provisions an ephemeral
+    HyperShift cluster, deploys ArgoCD directly from upstream manifests
+    (no operator), and runs the upstream ArgoCD E2E test suite against the
+    freshly built image.
+
+    Intended to be attached as an IntegrationTestScenario to the argocd-rhel9
+    component in the release repository, catching image-level regressions
+    (missing binaries, wrong paths, arch issues) at image build time.
+  params:
+    - description: Snapshot of the application
+      name: SNAPSHOT
+      default: '{"components": [{"name":"argocd-rhel9", "containerImage": "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel9:latest"}]}'
+      type: string
+    - description: OpenShift version to provision
+      name: OPENSHIFT_VERSION
+      default: "4.14"
+      type: string
+    - description: Enable FIPS mode for the ephemeral cluster
+      name: FIPS_ENABLED
+      default: "false"
+      type: string
+    - description: EaaS cluster instance type
+      name: CLUSTER_INSTANCE_TYPE
+      default: "m6g.2xlarge"
+      type: string
+    - description: Git URL of the release repository (for task definitions)
+      name: RELEASE_REPO_URL
+      default: "https://github.com/rh-gitops-midstream/release.git"
+      type: string
+    - description: Git revision of the release repository
+      name: RELEASE_REPO_REVISION
+      default: "main"
+      type: string
+    - description: Upstream argo-cd repo URL (for test source and install manifests)
+      name: ARGOCD_REPO_URL
+      default: "https://github.com/argoproj/argo-cd.git"
+      type: string
+    - description: Upstream argo-cd branch/tag to test against
+      name: ARGOCD_REPO_BRANCH
+      default: "master"
+      type: string
+
+  tasks:
+    - name: parse-metadata
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: https://github.com/konflux-ci/integration-examples
+          - name: revision
+            value: main
+          - name: pathInRepo
+            value: tasks/test_metadata.yaml
+      params:
+        - name: SNAPSHOT
+          value: $(params.SNAPSHOT)
+
+    - name: build-test-image
+      runAfter:
+        - parse-metadata
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: $(params.RELEASE_REPO_URL)
+          - name: revision
+            value: $(params.RELEASE_REPO_REVISION)
+          - name: pathInRepo
+            value: .tekton/tasks/build-ginkgo-test-image.yaml
+      params:
+        - name: SOURCE_URL
+          value: $(tasks.parse-metadata.results.source-git-url)
+        - name: SOURCE_REVISION
+          value: $(tasks.parse-metadata.results.source-git-revision)
+        - name: IMAGE_EXPIRES_AFTER
+          value: "7d"
+
+    - name: provision-eaas-space
+      runAfter:
+        - parse-metadata
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: https://github.com/konflux-ci/build-definitions.git
+          - name: revision
+            value: main
+          - name: pathInRepo
+            value: task/eaas-provision-space/0.1/eaas-provision-space.yaml
+      params:
+        - name: ownerName
+          value: $(context.pipelineRun.name)
+        - name: ownerUid
+          value: $(context.pipelineRun.uid)
+
+    - name: provision-cluster
+      runAfter:
+        - provision-eaas-space
+      params:
+        - name: openshiftVersion
+          value: $(params.OPENSHIFT_VERSION)
+        - name: fipsEnabled
+          value: $(params.FIPS_ENABLED)
+        - name: clusterInstanceType
+          value: $(params.CLUSTER_INSTANCE_TYPE)
+      taskSpec:
+        params:
+          - name: openshiftVersion
+            type: string
+          - name: fipsEnabled
+            type: string
+          - name: clusterInstanceType
+            type: string
+        results:
+          - name: clusterName
+            value: "$(steps.create-cluster.results.clusterName)"
+          - name: resolvedVersion
+            value: "$(steps.resolve-openshift-version.results.resolvedVersion)"
+        steps:
+          - name: get-supported-versions
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-get-supported-ephemeral-cluster-versions/0.1/eaas-get-supported-ephemeral-cluster-versions.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(tasks.provision-eaas-space.results.secretRef)
+          - name: resolve-openshift-version
+            image: docker.io/python:3-alpine
+            results:
+              - name: resolvedVersion
+            script: |
+              #!/usr/bin/env python3
+              import urllib.request, json, re
+
+              version = "$(params.openshiftVersion)"
+
+              if re.match(r'^\d+\.\d+\.\d+$', version):
+                  with open("$(step.results.resolvedVersion.path)", "w") as f:
+                      f.write(version)
+                  print(f"Using exact version: {version}")
+                  raise SystemExit(0)
+
+              url = f"https://quay.io/api/v1/repository/openshift-release-dev/ocp-release/tag/?filter_tag_name=like:{version}.&limit=100&onlyActiveTags=true"
+              data = json.loads(urllib.request.urlopen(url).read())
+
+              candidates = []
+              for tag in data.get("tags", []):
+                  name = tag["name"]
+                  if name.endswith("-multi"):
+                      bare = name.removesuffix("-multi")
+                      if re.match(rf'^{re.escape(version)}\.\d+$', bare):
+                          candidates.append(bare)
+
+              if not candidates:
+                  print(f"ERROR: Could not resolve minor version {version}")
+                  raise SystemExit(1)
+
+              candidates.sort(key=lambda v: list(map(int, v.split("."))))
+              latest = candidates[-1]
+
+              with open("$(step.results.resolvedVersion.path)", "w") as f:
+                  f.write(latest)
+              print(f"Resolved {version} -> {latest}")
+          - name: create-cluster
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-create-ephemeral-cluster-hypershift-aws/0.1/eaas-create-ephemeral-cluster-hypershift-aws.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(tasks.provision-eaas-space.results.secretRef)
+              - name: timeout
+                value: "60m"
+              - name: version
+                value: "$(steps.resolve-openshift-version.results.resolvedVersion)"
+              - name: fips
+                value: "$(params.fipsEnabled)"
+              - name: instanceType
+                value: "$(params.clusterInstanceType)"
+
+    - name: run-argocd-e2e
+      runAfter:
+        - provision-cluster
+        - build-test-image
+      params:
+        - name: eaasSpaceSecretRef
+          value: $(tasks.provision-eaas-space.results.secretRef)
+        - name: clusterName
+          value: "$(tasks.provision-cluster.results.clusterName)"
+        - name: pipelineRunName
+          value: "$(context.pipelineRun.name)"
+        - name: argocdImage
+          value: "$(tasks.parse-metadata.results.component-container-image)"
+        - name: argocdRepoUrl
+          value: "$(params.ARGOCD_REPO_URL)"
+        - name: argocdRepoBranch
+          value: "$(params.ARGOCD_REPO_BRANCH)"
+        - name: openshiftVersion
+          value: "$(params.OPENSHIFT_VERSION)"
+        - name: testImageUrl
+          value: "$(tasks.build-test-image.results.IMAGE_URL)"
+      taskSpec:
+        params:
+          - name: eaasSpaceSecretRef
+            type: string
+          - name: clusterName
+            type: string
+          - name: pipelineRunName
+            type: string
+          - name: argocdImage
+            type: string
+          - name: argocdRepoUrl
+            type: string
+          - name: argocdRepoBranch
+            type: string
+          - name: openshiftVersion
+            type: string
+          - name: testImageUrl
+            type: string
+        volumes:
+          - name: credentials
+            emptyDir: {}
+          - name: quay-credentials
+            secret:
+              secretName: gitops-test-runner-image-push
+        steps:
+          - name: get-kubeconfig
+            onError: continue
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-get-ephemeral-cluster-credentials/0.1/eaas-get-ephemeral-cluster-credentials.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(params.eaasSpaceSecretRef)
+              - name: clusterName
+                value: $(params.clusterName)
+              - name: credentials
+                value: credentials
+          - name: run-tests
+            image: $(params.testImageUrl)
+            volumeMounts:
+              - name: credentials
+                mountPath: /credentials
+              - name: quay-credentials
+                mountPath: /quay-credentials
+                readOnly: true
+            env:
+              - name: CI
+                value: "konflux"
+              - name: ARGOCD_IMAGE
+                value: "$(params.argocdImage)"
+              - name: TEST_REPO_URL
+                value: "$(params.argocdRepoUrl)"
+              - name: BRANCH
+                value: "$(params.argocdRepoBranch)"
+              - name: TASK_LOG_NAME
+                value: "argocd-e2e"
+              - name: PIPELINE_RUN_NAME
+                value: "$(params.pipelineRunName)"
+              - name: QUAY_REPO
+                value: "quay.io/devtools_gitops/test_image"
+              - name: OPENSHIFT_VERSION
+                value: "$(params.openshiftVersion)"
+              - name: DEPLOY_MODE
+                value: "standalone"
+            computeResources:
+              requests:
+                memory: "4Gi"
+                cpu: "1000m"
+              limits:
+                memory: "8Gi"
+                cpu: "2000m"
+            script: |
+              #!/bin/bash
+              KUBECONFIG=$(find /credentials -name "*kubeconfig" -type f 2>/dev/null | head -1)
+              if [[ -z "$KUBECONFIG" ]]; then
+                echo "ERROR: No kubeconfig found"
+                exit 1
+              fi
+              export KUBECONFIG
+
+              API_SERVER=$(oc whoami --show-server 2>/dev/null || true)
+              PASS_FILE=$(find /credentials -name "*password" -type f 2>/dev/null | head -1)
+              if [[ -n "$API_SERVER" && -n "$PASS_FILE" ]]; then
+                echo "========================================"
+                echo "DEBUG: oc login $API_SERVER -u kubeadmin -p $(cat "$PASS_FILE") --insecure-skip-tls-verify"
+                echo "========================================"
+              fi
+
+              /usr/local/bin/run-and-save-logs.sh /usr/local/bin/run-argocd-e2e-tests.sh
+        sidecars:
+          - name: log-collector
+            image: $(params.testImageUrl)
+            workingDir: /var/log-workspace
+            env:
+              - name: KUBECONFIG_NAME
+                value: "auto"
+              - name: PIPELINE_RUN_NAME
+                value: "$(params.pipelineRunName)"
+              - name: BRANCH_NAME
+                value: "logs"
+              - name: NAMESPACE
+                value: "argocd-e2e"
+              - name: QUAY_REPO
+                value: "quay.io/devtools_gitops/test_image"
+            volumeMounts:
+              - name: credentials
+                mountPath: /credentials
+              - name: quay-credentials
+                mountPath: /quay-credentials
+                readOnly: true
+            command: ["/bin/bash", "-c", "/usr/local/bin/collect-logs-sidecar.sh"]
+
+  finally:
+    - name: upload-logs
+      params:
+        - name: eaasSpaceSecretRef
+          value: $(tasks.provision-eaas-space.results.secretRef)
+        - name: clusterName
+          value: "$(tasks.provision-cluster.results.clusterName)"
+        - name: pipelineRunName
+          value: "$(context.pipelineRun.name)"
+        - name: testImageUrl
+          value: "$(tasks.build-test-image.results.IMAGE_URL)"
+      taskSpec:
+        params:
+          - name: eaasSpaceSecretRef
+            type: string
+          - name: clusterName
+            type: string
+          - name: pipelineRunName
+            type: string
+          - name: testImageUrl
+            type: string
+        volumes:
+          - name: credentials
+            emptyDir: {}
+          - name: quay-credentials
+            secret:
+              secretName: gitops-test-runner-image-push
+        steps:
+          - name: get-kubeconfig
+            onError: continue
+            ref:
+              resolver: git
+              params:
+                - name: url
+                  value: https://github.com/konflux-ci/build-definitions.git
+                - name: revision
+                  value: main
+                - name: pathInRepo
+                  value: stepactions/eaas-get-ephemeral-cluster-credentials/0.1/eaas-get-ephemeral-cluster-credentials.yaml
+            params:
+              - name: eaasSpaceSecretRef
+                value: $(params.eaasSpaceSecretRef)
+              - name: clusterName
+                value: $(params.clusterName)
+              - name: credentials
+                value: credentials
+          - name: collect-and-upload-logs
+            image: $(params.testImageUrl)
+            volumeMounts:
+              - name: credentials
+                mountPath: /credentials
+              - name: quay-credentials
+                mountPath: /quay-credentials
+                readOnly: true
+            env:
+              - name: PIPELINE_RUN_NAME
+                value: "$(params.pipelineRunName)"
+              - name: NAMESPACE
+                value: "argocd-e2e"
+              - name: QUAY_REPO
+                value: "quay.io/devtools_gitops/test_image"
+              - name: QUAY_CREDENTIALS_PATH
+                value: "/quay-credentials/.dockerconfigjson"
+              - name: TASK_NAMES
+                value: "argocd-e2e logs"
+            script: |
+              #!/bin/bash
+              KUBECONFIG=$(find /credentials -name "*kubeconfig" -type f 2>/dev/null | head -1)
+              export KUBECONFIG="${KUBECONFIG:-}"
+              /usr/local/bin/collect-and-upload-logs.sh

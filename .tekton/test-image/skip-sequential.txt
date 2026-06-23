@@ -1,0 +1,37 @@
+# Tests to skip when running sequential e2e tests on EaaS HyperShift clusters.
+# One regex pattern per line. Blank lines and lines starting with # are ignored.
+# These are passed to ginkgo --skip via a combined '|' regex.
+
+# MachineConfig tests require MCO which is not available on HyperShift.
+# Application stuck OutOfSync because MachineConfig resources cannot be applied.
+1-006_validate_machine_config
+
+# ArgoCD CLI login fails on ephemeral HyperShift clusters due to route/TLS issues.
+1-064_validate_tcp_reset_error
+
+# Route TLS passthrough verification fails — route does not converge to expected
+# state after updating ArgoCD CR on HyperShift.
+1-111_validate_default_argocd_route
+
+# NodeSelector test sets key1:value1 but EaaS HyperShift nodes have no custom labels,
+# causing all pods to get stuck in FailedScheduling.
+1-071_validate_node_selectors
+
+# Agent/principal test requires LoadBalancer ingress which is not available on EaaS
+# clusters. The argocd-hub-agent-principal deployment is never created.
+1-053_validate_argocd_agent_principal_connected
+
+# Pod-security labels (pod-security.kubernetes.io/enforce: restricted) are not
+# applied to the openshift-gitops namespace on HyperShift clusters.
+1-110_validate_podsecurity_alerts
+
+# AllowManagedBy=false is not enforced on HyperShift — the app stays Synced
+# instead of going OutOfSync. The AfterEach cleanup then hangs forever waiting
+# for the ALLOW_NAMESPACE_MANAGEMENT_IN_NAMESPACE_SCOPED_INSTANCES env var to
+# be removed from the operator deployment, consuming all remaining pipeline time.
+1-113_validate_namespacemanagement
+
+# The operator bundles the openshift route plugin as a sidecar (file:/plugins/...),
+# but the test expects a GitHub release download URL. This is a packaging difference,
+# not a bug.
+1-112_validate_rollout_plugin_support

@@ -1,4 +1,4 @@
-# Copyright 2021 Red Hat
+#release-1.20 Copyright 2021 Red Hat
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

@@ -1,0 +1,12 @@
+# Tests to skip when running parallel e2e tests.
+# One regex pattern per line. Blank lines and lines starting with # are ignored.
+# These are passed to ginkgo --skip via a combined '|' regex.
+
+# SSO test expects status "Failed" on OIDC clusters but operator auto-configures Dex successfully (status "Running").
+# Fails intermittently depending on whether the provisioned cluster has OIDC external auth.
+# Needs upstream fix in rh-gitops-release-qa/gitops-operator 1-050_validate_sso_test.go
+ensures the conditions in status when external Authentication is enabled on clusters
+
+# Toolchain version snapshot is hardcoded in the test and won't match Konflux-built
+# operator images which may carry a newer argocd version than the upstream snapshot.
+1-031_validate_toolchain
