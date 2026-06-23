@@ -1,12 +1,12 @@
 # Release Metadata
 release:
   name: OpenShift GitOps Operator
-  version: "1.19.4"
+  version: "1.19.5"
   olm:
     # TODO: Compute olm data automatically
-    name: "openshift-gitops-operator.v1.19.4"
+    name: "openshift-gitops-operator.v1.19.5"
     channel: "gitops-1.19"
-    replaces: "openshift-gitops-operator.v1.19.3"
+    replaces: "openshift-gitops-operator.v1.19.4"
     skip-range: "" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
@@ -45,7 +45,7 @@ sources:
   - path: sources/dex
     ref: v2.43.1
     url: https://github.com/rh-gitops-midstream/dex.git
-    commit: b69bcaa4c23ca01b17b3ffdda3960da4515810de
+    commit: 8cdbc0f679d033d7cbda5a753af92b9cfdcdae60
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
     ref: v3.7.1
