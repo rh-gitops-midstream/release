@@ -1,13 +1,13 @@
 # Release Metadata
 release:
   name: OpenShift GitOps Operator
-  version: "1.21.0"
+  version: "1.21.1"
   olm:
     # TODO: Compute olm data automatically
-    name: "openshift-gitops-operator.v1.21.0"
+    name: "openshift-gitops-operator.v1.21.1"
     channel: "latest,gitops-1.21"
-    replaces: "openshift-gitops-operator.v1.20.4"
-    skip-range: ">=1.0.0 <1.21.0" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
+    replaces: "openshift-gitops-operator.v1.21.0"
+    skip-range: ">=1.21.0 <1.21.1" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
     branch: release-1.21
@@ -29,11 +29,11 @@ sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.21
-    commit: 19b0af3eb40b977f1552cc8a25426df0bcb811ec
+    commit: dae5e3de9f9e0b47a159ea13f821656e17eef2cf
   - path: sources/argo-cd 
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.4.3
-    commit: 1801122b4391cad4961301f787006dc9a88c2dd3
+    ref: v3.4.4
+    commit: 443415b5527ac55366e0760c93ef0e1abd0cf273
   - path: sources/argo-rollouts 
     url: https://github.com/rh-gitops-midstream/argo-rollouts.git
     ref: v1.9.0
@@ -49,7 +49,7 @@ sources:
   - path: sources/dex
     ref: v2.45.0
     url: https://github.com/rh-gitops-midstream/dex.git
-    commit: bcc2283694018a59e9b84c43c6c50ce996e9409b
+    commit: d4bba0dd3cac3faa8d7645f085069eed58cdca2e
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
     ref: v3.7.1
