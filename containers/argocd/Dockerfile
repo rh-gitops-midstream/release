@@ -21,13 +21,18 @@ FROM registry.access.redhat.com/ubi9/nodejs-22 AS argocd-ui
 
 USER root
 
+# Install pnpm via npm prefetch bootstrap (same pattern as prefetch/yarn)
+WORKDIR /usr/src/app
+COPY ["prefetch/pnpm/package.json", "prefetch/pnpm/package-lock.json", "./"]
+RUN npm install --prefer-offline --no-progress --non-interactive
+ENV PATH="/usr/src/app/node_modules/.bin:${PATH}"
+RUN pnpm --version
+
 WORKDIR /usr/src/app/argo-cd/ui
 
 COPY ["sources/argo-cd/ui/package.json", "sources/argo-cd/ui/pnpm-lock.yaml", "./"]
 
-RUN npm install -g corepack@0.34.6 && \
-    corepack enable && \
-    pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 COPY ["sources/argo-cd/ui/", "."]
 
