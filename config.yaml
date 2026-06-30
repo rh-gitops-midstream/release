@@ -49,7 +49,7 @@ sources:
   - path: sources/dex
     ref: v2.45.0
     url: https://github.com/rh-gitops-midstream/dex.git
-    commit: d4bba0dd3cac3faa8d7645f085069eed58cdca2e
+    commit: af68bd66272a6505de507fe52d441de7e5e881e4
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
     ref: v3.7.1
