@@ -63,7 +63,7 @@ spec:
   - name: hermetic
     value: "true"
   - name: prefetch-input
-    value: '[{"type":"gomod","path":"./sources/argo-cd"}, {"type":"gomod","path":"./sources/kustomize/kustomize"}, {"type":"gomod","path":"./sources/helm"}, {"type":"gomod","path":"./sources/git-lfs"}, {"type":"rpm","path":"prefetch/rpms/ubi9"}, {"type":"npm","path":"prefetch/pnpm"}, {"type":"pnpm","path":"./sources/argo-cd/ui"}]'
+    value: '[{"type":"gomod","path":"./sources/argo-cd"}, {"type":"gomod","path":"./sources/kustomize/kustomize"}, {"type":"gomod","path":"./sources/helm"}, {"type":"gomod","path":"./sources/git-lfs"}, {"type":"rpm","path":"prefetch/rpms/ubi9"}, {"type":"npm","path":"prefetch/pnpm"}, {"type":"x-pnpm","path":"./sources/argo-cd/ui"}]'
   - name: git-metadata-directories
     value:
       - sources/argo-cd
