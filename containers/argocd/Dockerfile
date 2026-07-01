@@ -30,9 +30,10 @@ RUN pnpm --version
 
 WORKDIR /usr/src/app/argo-cd/ui
 
-COPY ["sources/argo-cd/ui/package.json", "sources/argo-cd/ui/pnpm-lock.yaml", "./"]
+# .npmrc is created by Hermeto inject-files during prefetch (not in git)
+COPY ["sources/argo-cd/ui/package.json", "sources/argo-cd/ui/pnpm-lock.yaml", "sources/argo-cd/ui/.npmrc", "./"]
 
-RUN pnpm install --frozen-lockfile --prefer-offline
+RUN pnpm install --frozen-lockfile --offline
 
 COPY ["sources/argo-cd/ui/", "."]
 
