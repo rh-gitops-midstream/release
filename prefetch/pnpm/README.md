@@ -9,6 +9,8 @@ Since hermetic builds cannot install tools from the network in the Dockerfile, p
 - Prefetch with Hermeto `npm` during `prefetch-dependencies`
 - Install offline in the Dockerfile via `npm install --prefer-offline`
 
+UI dependencies are prefetched separately with Hermeto `pnpm` from `pnpm-lock.yaml`. Konflux routes prefetch through the built-in package registry proxy (`enable-package-registry-proxy: 'true'`)
+
 Long term, pnpm should be bundled in `registry.access.redhat.com/ubi9/nodejs-22`.
 
 ## Regenerate lockfile
@@ -20,10 +22,14 @@ npm --prefix prefetch/pnpm install --package-lock-only
 ## Tekton prefetch-input
 
 ```json
-{"type": "npm", "path": "prefetch/pnpm"}
+[
+  {"type": "npm", "path": "prefetch/pnpm"},
+  {"type": "pnpm", "path": "./sources/argo-cd/ui"}
+]
 ```
 
 ## References
 
 - Yarn bootstrap: `prefetch/yarn/README.md`
 - Example Dockerfile: `containers/argocd/Dockerfile`
+- Hermeto pnpm docs: https://github.com/hermetoproject/hermeto/blob/main/docs/pnpm.md

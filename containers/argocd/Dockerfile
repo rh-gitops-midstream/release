@@ -32,7 +32,7 @@ WORKDIR /usr/src/app/argo-cd/ui
 
 COPY ["sources/argo-cd/ui/package.json", "sources/argo-cd/ui/pnpm-lock.yaml", "./"]
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --prefer-offline
 
 COPY ["sources/argo-cd/ui/", "."]
 
