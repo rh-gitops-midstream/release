@@ -21,6 +21,7 @@ metadata:
         "containers/argocd/***".pathChanged() ||
         ".tekton/argocd-pull-request.yaml".pathChanged() ||
         "prefetch/rpms/ubi9/***".pathChanged() ||
+        "prefetch/pnpm/***".pathChanged() ||
         ".tekton/build-multi-platform-image.yaml".pathChanged() ||
         ".tekton/tasks/***".pathChanged()
       )
@@ -59,8 +60,11 @@ spec:
     - linux/x86_64
   - name: dockerfile
     value: containers/argocd/Dockerfile
+  # Hermeto 0.52.x x-pnpm does not download tarballs; re-enable hermetic + pnpm prefetch at 0.57.0.
+  - name: hermetic
+    value: "false"
   - name: prefetch-input
-    value: '[{"type":"gomod","path":"./sources/argo-cd"}, {"type":"yarn","path":"./sources/argo-cd/ui"}, {"type":"gomod","path":"./sources/kustomize/kustomize"}, {"type":"gomod","path":"./sources/helm"}, {"type":"gomod","path":"./sources/git-lfs"}, {"type":"rpm","path":"prefetch/rpms/ubi9"}, {"type":"npm","path":"prefetch/yarn"}]'
+    value: '[{"type":"gomod","path":"./sources/argo-cd"}, {"type":"gomod","path":"./sources/kustomize/kustomize"}, {"type":"gomod","path":"./sources/helm"}, {"type":"gomod","path":"./sources/git-lfs"}, {"type":"rpm","path":"prefetch/rpms/ubi9"}, {"type":"npm","path":"prefetch/pnpm"}]'
   - name: git-metadata-directories
     value:
       - sources/argo-cd
