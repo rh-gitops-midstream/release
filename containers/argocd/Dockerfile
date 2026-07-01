@@ -30,10 +30,13 @@ RUN pnpm --version
 
 WORKDIR /usr/src/app/argo-cd/ui
 
-# .npmrc is created by Hermeto inject-files during prefetch (not in git)
-COPY ["sources/argo-cd/ui/package.json", "sources/argo-cd/ui/pnpm-lock.yaml", "sources/argo-cd/ui/.npmrc", "./"]
+COPY ["sources/argo-cd/ui/package.json", "sources/argo-cd/ui/pnpm-lock.yaml", "./"]
 
-RUN pnpm install --frozen-lockfile --offline
+# Hermeto inject-files patches pnpm-lock.yaml during prefetch; .npmrc is not always
+# present in the source artifact, so point pnpm at the prefetched store explicitly.
+RUN . /cachi2/cachi2.env && \
+    printf 'registry=file:///cachi2/output/deps/pnpm/npm/\n@jsr:registry=file:///cachi2/output/deps/pnpm/jsr/\n' > .npmrc && \
+    pnpm install --frozen-lockfile --offline
 
 COPY ["sources/argo-cd/ui/", "."]
 
