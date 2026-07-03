@@ -11,13 +11,25 @@ Since hermetic builds cannot install tools from the network in the Dockerfile, p
 
 Long term, pnpm should be bundled in `registry.access.redhat.com/ubi9/nodejs-22`.
 
+## Hermetic UI dependency prefetch (future)
+
+UI dependencies can be prefetched with Hermeto `pnpm` from `pnpm-lock.yaml` once Konflux ships **Hermeto 0.57.0** .
+
+When 0.57.0 is available, set `hermetic: true` and add to `prefetch-input`:
+
+```json
+[
+  {"type": "npm", "path": "prefetch/pnpm"},
+  {"type": "pnpm", "path": "./sources/argo-cd/ui"}
+]
+```
 ## Regenerate lockfile
 
 ```bash
 npm --prefix prefetch/pnpm install --package-lock-only
 ```
 
-## Tekton prefetch-input
+## Tekton prefetch-input (current)
 
 ```json
 {"type": "npm", "path": "prefetch/pnpm"}
@@ -27,3 +39,4 @@ npm --prefix prefetch/pnpm install --package-lock-only
 
 - Yarn bootstrap: `prefetch/yarn/README.md`
 - Example Dockerfile: `containers/argocd/Dockerfile`
+- Hermeto pnpm docs: https://github.com/hermetoproject/hermeto/blob/main/docs/pnpm.md

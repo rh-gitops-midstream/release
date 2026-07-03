@@ -60,7 +60,7 @@ spec:
     - linux/x86_64
   - name: dockerfile
     value: containers/argocd/Dockerfile
-  # Hermeto does not support pnpm-lock.yaml prefetch yet; UI deps are installed during the image build.
+  # Hermeto 0.52.x x-pnpm does not download tarballs; re-enable hermetic + pnpm prefetch at 0.57.0.
   - name: hermetic
     value: "false"
   - name: prefetch-input
