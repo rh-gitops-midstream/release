@@ -11,5 +11,5 @@ spec:
     releaseNotes:
       type: RHSA
       cves: 
-        - key: CVE-2026-39821
-          component: dex
+        - key: CVE-2026-33811
+          component: dex-1-21
