@@ -6,6 +6,7 @@ source ./hack/deps.sh
 CONFIG=config.yaml
 
 echo ">>> Initializing submodules..."
+git submodule sync
 git submodule update --init --recursive
 
 echo ">>> Syncing sources from $CONFIG..."
