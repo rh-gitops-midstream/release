@@ -1,13 +1,13 @@
 # Release Metadata
 release:
   name: OpenShift GitOps Operator
-  version: "1.19.5"
+  version: "1.19.6"
   olm:
     # TODO: Compute olm data automatically
-    name: "openshift-gitops-operator.v1.19.5"
+    name: "openshift-gitops-operator.v1.19.6"
     channel: "gitops-1.19"
-    replaces: "openshift-gitops-operator.v1.19.4"
-    skip-range: "" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
+    replaces: "openshift-gitops-operator.v1.19.5"
+    skip-range: ">=1.19.0 <1.19.6" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
     branch: release-1.19
