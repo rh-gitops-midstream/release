@@ -45,9 +45,10 @@ index 1f6d7e9..8d125ca 100644
      branch: release-1.19
 ```
 
-3. Update the `BUILD` file with the new version.
-- The suffix (e.g. `-8`) represents the build number.
-- Reset it to `0` for every new Z-stream release.
+3. Run the `make setup-release` target.  
+  This updates the `BUILD` file with the new version.
+    - The suffix (e.g. `-8`) represents the build number.
+    - Reset it to `0` for every new Z-stream release.
 
 ```diff
 diff --git a/BUILD b/BUILD

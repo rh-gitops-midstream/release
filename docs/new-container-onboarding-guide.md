@@ -1,6 +1,6 @@
-# Konflux Component Guide
+# New Container Onboarding Guide
 
-This document outlines the steps to add a new component to the Konflux CI system. It covers both the internal GitLab configuration and GitHub repository updates required for building the new components.
+This document outlines the steps to add a new container to the Konflux CI system. It covers both the internal GitLab configuration and GitHub repository updates required for building the new components.
 
 ### TODO: Improve doc and automate the new component setup
 
