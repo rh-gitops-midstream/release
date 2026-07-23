@@ -1,0 +1,98 @@
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: provision-cluster
+spec:
+  description: |
+    Provisions an ephemeral HyperShift cluster on AWS via EaaS.
+    Resolves the OpenShift version, extracts image content sources from the catalog,
+    and creates the cluster with optional FIPS mode.
+  params:
+    - name: eaasSpaceSecretRef
+      type: string
+    - name: catalogSourceUrl
+      type: string
+    - name: catalogSourceRevision
+      type: string
+    - name: catalogTaskUrl
+      type: string
+    - name: catalogTaskRevision
+      type: string
+    - name: openshiftVersion
+      type: string
+    - name: fipsEnabled
+      type: string
+    - name: clusterInstanceType
+      type: string
+      default: "m6g.xlarge"
+  results:
+    - name: clusterName
+      value: "$(steps.create-cluster.results.clusterName)"
+    - name: resolvedVersion
+      value: "$(steps.resolve-openshift-version.results.resolvedVersion)"
+  steps:
+    - name: get-supported-versions
+      ref:
+        resolver: git
+        params:
+          - name: url
+            value: https://github.com/konflux-ci/build-definitions.git
+          - name: revision
+            value: main
+          - name: pathInRepo
+            value: stepactions/eaas-get-supported-ephemeral-cluster-versions/0.1/eaas-get-supported-ephemeral-cluster-versions.yaml
+      params:
+        - name: eaasSpaceSecretRef
+          value: $(params.eaasSpaceSecretRef)
+    - name: extract-image-content-sources
+      ref:
+        resolver: git
+        params:
+          - name: url
+            value: $(params.catalogTaskUrl)
+          - name: revision
+            value: $(params.catalogTaskRevision)
+          - name: pathInRepo
+            value: .tekton/stepactions/extract-image-content-sources.yaml
+      params:
+        - name: gitUrl
+          value: $(params.catalogSourceUrl)
+        - name: gitRevision
+          value: $(params.catalogSourceRevision)
+    - name: resolve-openshift-version
+      ref:
+        resolver: git
+        params:
+          - name: url
+            value: $(params.catalogTaskUrl)
+          - name: revision
+            value: $(params.catalogTaskRevision)
+          - name: pathInRepo
+            value: .tekton/stepactions/resolve-openshift-version.yaml
+      params:
+        - name: version
+          value: $(params.openshiftVersion)
+    - name: create-cluster
+      ref:
+        resolver: git
+        params:
+          - name: url
+            value: https://github.com/konflux-ci/build-definitions.git
+          - name: revision
+            value: main
+          - name: pathInRepo
+            value: stepactions/eaas-create-ephemeral-cluster-hypershift-aws/0.1/eaas-create-ephemeral-cluster-hypershift-aws.yaml
+      params:
+        - name: eaasSpaceSecretRef
+          value: $(params.eaasSpaceSecretRef)
+        - name: imageContentSourcesFile
+          value: "/workspace/imageContentSources.json"
+        - name: timeout
+          value: "60m"
+        - name: version
+          value: "$(steps.resolve-openshift-version.results.resolvedVersion)"
+        - name: fips
+          value: "$(params.fipsEnabled)"
+        - name: instanceType
+          value: "$(params.clusterInstanceType)"

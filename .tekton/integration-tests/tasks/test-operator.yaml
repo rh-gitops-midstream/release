@@ -1,0 +1,146 @@
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: test-operator
+spec:
+  description: |
+    Runs GitOps operator E2E tests (Ginkgo) on an ephemeral cluster.
+    Includes a log-collector sidecar that uploads logs to Quay.
+  params:
+    - name: testImageUrl
+      type: string
+    - name: eaasSpaceSecretRef
+      type: string
+    - name: clusterName
+      type: string
+    - name: pipelineRunName
+      type: string
+    - name: testRepoUrl
+      type: string
+    - name: testRepoBranch
+      type: string
+    - name: testScript
+      type: string
+    - name: openshiftVersion
+      type: string
+    - name: quayRepo
+      type: string
+      default: "quay.io/devtools_gitops/test_image"
+    - name: namespace
+      type: string
+      default: "openshift-gitops-operator"
+    - name: catalogUrl
+      type: string
+      default: ""
+      description: "Catalog repo URL (for smoke test app source)"
+    - name: catalogRevision
+      type: string
+      default: ""
+      description: "Catalog repo revision (for smoke test app source)"
+  results:
+    - name: LOG_ARTIFACT_TAG
+      description: Tag of uploaded log artifact from sidecar
+  volumes:
+    - name: credentials
+      emptyDir: {}
+    - name: quay-credentials
+      secret:
+        secretName: gitops-test-runner-image-push
+    - name: confluence-credentials
+      secret:
+        secretName: confluence-api-credentials
+        optional: true
+  steps:
+    - name: get-kubeconfig
+      onError: continue
+      ref:
+        resolver: git
+        params:
+          - name: url
+            value: https://github.com/konflux-ci/build-definitions.git
+          - name: revision
+            value: main
+          - name: pathInRepo
+            value: stepactions/eaas-get-ephemeral-cluster-credentials/0.1/eaas-get-ephemeral-cluster-credentials.yaml
+      params:
+        - name: eaasSpaceSecretRef
+          value: $(params.eaasSpaceSecretRef)
+        - name: clusterName
+          value: $(params.clusterName)
+        - name: credentials
+          value: credentials
+    - name: run-tests
+      image: $(params.testImageUrl)
+      volumeMounts:
+        - name: credentials
+          mountPath: /credentials
+        - name: quay-credentials
+          mountPath: /quay-credentials
+          readOnly: true
+        - name: confluence-credentials
+          mountPath: /confluence-credentials
+          readOnly: true
+      env:
+        - name: CI
+          value: "konflux"
+        - name: TEST_REPO_URL
+          value: $(params.testRepoUrl)
+        - name: BRANCH
+          value: $(params.testRepoBranch)
+        - name: TASK_LOG_NAME
+          value: "test-operator"
+        - name: PIPELINE_RUN_NAME
+          value: $(params.pipelineRunName)
+        - name: QUAY_REPO
+          value: $(params.quayRepo)
+        - name: OPENSHIFT_VERSION
+          value: $(params.openshiftVersion)
+        - name: TEST_SCRIPT
+          value: $(params.testScript)
+        - name: CATALOG_URL
+          value: $(params.catalogUrl)
+        - name: CATALOG_REVISION
+          value: $(params.catalogRevision)
+      computeResources:
+        requests:
+          memory: "4Gi"
+          cpu: "1000m"
+        limits:
+          memory: "8Gi"
+          cpu: "2000m"
+      command:
+        - /bin/bash
+        - -c
+        - |
+          KUBECONFIG=$(find /credentials -name "*kubeconfig" -type f 2>/dev/null | head -1)
+          if [[ -z "$KUBECONFIG" ]]; then
+            echo "ERROR: No kubeconfig found in /credentials"
+            ls -la /credentials/ 2>/dev/null || true
+            exit 1
+          fi
+          export KUBECONFIG
+          /usr/local/bin/print-cluster-login-info.sh
+          /usr/local/bin/run-and-save-logs.sh /usr/local/bin/"$TEST_SCRIPT"
+  sidecars:
+    - name: log-collector
+      image: $(params.testImageUrl)
+      workingDir: /var/log-workspace
+      env:
+        - name: KUBECONFIG_NAME
+          value: "auto"
+        - name: PIPELINE_RUN_NAME
+          value: $(params.pipelineRunName)
+        - name: BRANCH_NAME
+          value: "logs"
+        - name: NAMESPACE
+          value: $(params.namespace)
+        - name: QUAY_REPO
+          value: $(params.quayRepo)
+      volumeMounts:
+        - name: credentials
+          mountPath: /credentials
+        - name: quay-credentials
+          mountPath: /quay-credentials
+          readOnly: true
+      command: ["/bin/bash", "-c", "/usr/local/bin/collect-logs-sidecar.sh"]

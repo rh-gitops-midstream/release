@@ -1,0 +1,151 @@
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: overlay-test-scripts
+spec:
+  description: |
+    Builds a thin scripts-overlay image on top of a pre-built test runner
+    base image.  Clones the catalog repo, hashes the scripts/ and config/
+    directories, and skips the build when an image with that hash already
+    exists in the registry.
+  params:
+    - name: BASE_IMAGE_URL
+      type: string
+      description: Pre-built test runner image to overlay scripts onto
+    - name: SOURCE_URL
+      type: string
+      description: Git URL of the catalog repo
+    - name: SOURCE_REVISION
+      type: string
+      description: Git branch or SHA to clone
+    - name: IMAGE_DESTINATION
+      type: string
+      default: "quay.io/devtools_gitops/test_image"
+      description: Registry repo for overlay images (without tag)
+    - name: IMAGE_EXPIRES_AFTER
+      type: string
+      default: "7d"
+      description: "Quay expiration label (e.g., 7d, 30d, never)"
+  results:
+    - name: image-url
+      description: Full overlay image reference (repo:tag)
+  volumes:
+    - name: source
+      emptyDir: {}
+    - name: docker-credentials
+      secret:
+        secretName: gitops-test-runner-image-push
+    - name: cache-state
+      emptyDir: {}
+  steps:
+    - name: clone-source
+      image: docker.io/alpine/git:latest
+      volumeMounts:
+        - name: source
+          mountPath: /workspace/source
+      script: |
+        #!/bin/sh
+        set -e
+        echo "Cloning $(params.SOURCE_URL) @ $(params.SOURCE_REVISION)"
+        git clone --depth 1 --branch "$(params.SOURCE_REVISION)" \
+          "$(params.SOURCE_URL)" /workspace/source
+        cd /workspace/source
+        COMMIT_SHA=$(git rev-parse HEAD)
+        echo "Commit: ${COMMIT_SHA}"
+        echo -n "${COMMIT_SHA}" > /workspace/source/COMMIT_SHA
+
+    - name: check-cache
+      image: quay.io/skopeo/stable:latest
+      volumeMounts:
+        - name: source
+          mountPath: /workspace/source
+        - name: docker-credentials
+          mountPath: /credentials
+        - name: cache-state
+          mountPath: /cache-state
+      script: |
+        #!/bin/bash
+        set -euo pipefail
+
+        CONTEXT="/workspace/source/.tekton/test-image"
+        AUTH="--authfile=/credentials/.dockerconfigjson"
+        BUILD_ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+
+        SCRIPTS_HASH=$(find "${CONTEXT}/scripts" "${CONTEXT}/config" \
+          -type f -exec sha256sum {} \; | sort | sha256sum | cut -c1-12)
+        BASE_IMAGE_URL="$(params.BASE_IMAGE_URL)"
+        BASE_TAG="${BASE_IMAGE_URL##*:}"
+        COMBINED_HASH=$(echo "${SCRIPTS_HASH}${BASE_TAG}" | sha256sum | cut -c1-12)
+        DESTINATION="$(params.IMAGE_DESTINATION):scripts-${BUILD_ARCH}-${COMBINED_HASH}"
+
+        echo "Scripts hash: ${SCRIPTS_HASH}"
+        echo "Base image tag: ${BASE_TAG}"
+        echo "Overlay image: ${DESTINATION}"
+        echo -n "${DESTINATION}" > /cache-state/destination
+
+        if skopeo inspect ${AUTH} "docker://${DESTINATION}" >/dev/null 2>&1; then
+          echo "Overlay image exists — cache hit"
+          echo "hit" > /cache-state/result
+        else
+          echo "Overlay image not found — will build"
+          echo "miss" > /cache-state/result
+        fi
+
+    - name: build-overlay
+      image: quay.io/buildah/stable:latest
+      volumeMounts:
+        - name: source
+          mountPath: /workspace/source
+        - name: docker-credentials
+          mountPath: /credentials
+        - name: cache-state
+          mountPath: /cache-state
+      securityContext:
+        capabilities:
+          add:
+            - SETFCAP
+      script: |
+        #!/bin/bash
+        set -euo pipefail
+
+        DESTINATION=$(cat /cache-state/destination)
+
+        if [ "$(cat /cache-state/result)" = "hit" ]; then
+          echo "Cache hit — using existing image: ${DESTINATION}"
+          echo -n "${DESTINATION}" > $(results.image-url.path)
+          exit 0
+        fi
+
+        COMMIT_SHA=$(cat /workspace/source/COMMIT_SHA)
+        CONTEXT="/workspace/source/.tekton/test-image"
+        export REGISTRY_AUTH_FILE=/credentials/.dockerconfigjson
+
+        cat > /tmp/Containerfile <<'CEOF'
+        ARG BASE_IMAGE
+        FROM ${BASE_IMAGE}
+        COPY scripts/ /usr/local/bin/
+        COPY config/ /usr/local/config/
+        RUN chmod +x /usr/local/bin/*.sh /usr/local/bin/*.py /usr/local/bin/lib/*.sh
+        CEOF
+
+        echo "Building overlay on top of $(params.BASE_IMAGE_URL)..."
+        buildah bud \
+          --storage-driver=vfs \
+          --format=oci \
+          --build-arg="BASE_IMAGE=$(params.BASE_IMAGE_URL)" \
+          --file=/tmp/Containerfile \
+          --tag="${DESTINATION}" \
+          --label="quay.expires-after=$(params.IMAGE_EXPIRES_AFTER)" \
+          --label="git.commit=${COMMIT_SHA}" \
+          --label="base.image=$(params.BASE_IMAGE_URL)" \
+          "${CONTEXT}"
+
+        echo "Pushing ${DESTINATION}..."
+        buildah push \
+          --storage-driver=vfs \
+          --authfile="${REGISTRY_AUTH_FILE}" \
+          "${DESTINATION}"
+
+        echo -n "${DESTINATION}" > $(results.image-url.path)
+        echo "Done: ${DESTINATION}"

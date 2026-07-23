@@ -1,0 +1,70 @@
+---
+apiVersion: appstudio.redhat.com/v1beta2
+kind: IntegrationTestScenario
+metadata:
+  name: gitops-release-bundle-sanity
+  namespace: rh-openshift-gitops-tenant
+  labels:
+    test.appstudio.openshift.io/optional: "true"
+spec:
+  application: gitops-main
+  contexts:
+    - description: execute on component build
+      name: component_gitops-operator-bundle-main
+  params:
+    - name: TEST_SCRIPT
+      value: run-sanity-tests.sh
+    - name: OPENSHIFT_VERSION
+      value: "4.20"
+    - name: TEST_REPO_URL
+      value: https://github.com/rh-gitops-release-qa/gitops-operator
+    - name: TEST_REPO_BRANCH
+      value: konflux-integration-latest
+    - name: GATE_LABEL
+      value: rc-sanity-check
+  resolverRef:
+    resolver: git
+    resourceKind: pipeline
+    params:
+      - name: url
+        value: https://github.com/rh-gitops-midstream/release
+      - name: revision
+        value: konflux-integration
+      - name: pathInRepo
+        value: .tekton/integration-tests/pipelines/gitops-operator-bundle-sanity.yaml
+---
+apiVersion: appstudio.redhat.com/v1beta2
+kind: IntegrationTestScenario
+metadata:
+  name: gitops-release-bundle-sanity-fips
+  namespace: rh-openshift-gitops-tenant
+  labels:
+    test.appstudio.openshift.io/optional: "true"
+spec:
+  application: gitops-main
+  contexts:
+    - description: execute on component build
+      name: component_gitops-operator-bundle-main
+  params:
+    - name: TEST_SCRIPT
+      value: run-sanity-tests.sh
+    - name: OPENSHIFT_VERSION
+      value: "4.20"
+    - name: FIPS_ENABLED
+      value: "true"
+    - name: TEST_REPO_URL
+      value: https://github.com/rh-gitops-release-qa/gitops-operator
+    - name: TEST_REPO_BRANCH
+      value: konflux-integration-latest
+    - name: GATE_LABEL
+      value: rc-sanity-check
+  resolverRef:
+    resolver: git
+    resourceKind: pipeline
+    params:
+      - name: url
+        value: https://github.com/rh-gitops-midstream/release
+      - name: revision
+        value: konflux-integration
+      - name: pathInRepo
+        value: .tekton/integration-tests/pipelines/gitops-operator-bundle-sanity.yaml
