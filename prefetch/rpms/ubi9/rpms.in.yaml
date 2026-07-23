@@ -37,6 +37,11 @@ packages:
   - openssh-clients
   - file
   - jq
+# openssl-libs is already in ubi-minimal, so the lock generator would omit it.
+# Hermetic installs of openssl need the matching openssl-libs NEVRA in the
+# prefetched repo (see microdnf: nothing provides openssl-libs = 1:...).
+upgradePackages:
+  - openssl-libs
 arches:
   - x86_64
   - aarch64
