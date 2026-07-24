@@ -1,0 +1,204 @@
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: pipeline-wrapup
+spec:
+  description: |
+    Collects logs, publishes results, and sends Slack notification.
+    Consolidates upload-logs, publish-results, and send-slack-notification
+    into a single task with shared volumes between steps.
+  params:
+    - name: eaasSpaceSecretRef
+      type: string
+    - name: clusterName
+      type: string
+    - name: pipelineRunName
+      type: string
+    - name: testImageUrl
+      type: string
+    - name: aggregateStatus
+      type: string
+    - name: logUrl
+      type: string
+    - name: pipelineName
+      type: string
+    - name: namespace
+      type: string
+    - name: taskNames
+      type: string
+    - name: openshiftVersion
+      type: string
+    - name: resolvedOpenshiftVersion
+      type: string
+    - name: operatorChannel
+      type: string
+    - name: fipsEnabled
+      type: string
+    - name: argocdVersion
+      type: string
+      default: ""
+    - name: installedCSV
+      type: string
+      default: ""
+    - name: testScript
+      type: string
+      default: ""
+    - name: testRepoUrl
+      type: string
+      default: ""
+    - name: testRepoBranch
+      type: string
+      default: ""
+    - name: upgrade
+      type: string
+      default: ""
+    - name: quayRepo
+      type: string
+      default: "quay.io/devtools_gitops/test_image"
+    - name: quayCredentialsPath
+      type: string
+      default: "/quay-credentials/.dockerconfigjson"
+  volumes:
+    - name: credentials
+      emptyDir: {}
+    - name: shared
+      emptyDir: {}
+    - name: quay-credentials
+      secret:
+        secretName: gitops-test-runner-image-push
+    - name: deploy-key
+      secret:
+        secretName: catalog-results-deploy-key
+        defaultMode: 0400
+  steps:
+    - name: get-kubeconfig
+      onError: continue
+      ref:
+        resolver: git
+        params:
+          - name: url
+            value: https://github.com/konflux-ci/build-definitions.git
+          - name: revision
+            value: main
+          - name: pathInRepo
+            value: stepactions/eaas-get-ephemeral-cluster-credentials/0.1/eaas-get-ephemeral-cluster-credentials.yaml
+      params:
+        - name: eaasSpaceSecretRef
+          value: $(params.eaasSpaceSecretRef)
+        - name: clusterName
+          value: $(params.clusterName)
+        - name: credentials
+          value: credentials
+
+    - name: collect-and-upload-logs
+      onError: continue
+      image: $(params.testImageUrl)
+      env:
+        - name: PIPELINE_RUN_NAME
+          value: $(params.pipelineRunName)
+        - name: NAMESPACE
+          value: $(params.namespace)
+        - name: QUAY_REPO
+          value: $(params.quayRepo)
+        - name: QUAY_CREDENTIALS_PATH
+          value: $(params.quayCredentialsPath)
+        - name: TASK_NAMES
+          value: $(params.taskNames)
+        - name: SHARED_DIR
+          value: /shared
+      command:
+        - /usr/local/bin/collect-and-upload-logs.sh
+      volumeMounts:
+        - name: credentials
+          mountPath: /credentials
+        - name: quay-credentials
+          mountPath: /quay-credentials
+        - name: shared
+          mountPath: /shared
+
+    - name: publish-results
+      onError: continue
+      image: $(params.testImageUrl)
+      env:
+        - name: PIPELINE_NAME
+          value: $(params.pipelineName)
+        - name: PIPELINE_RUN_NAME
+          value: $(params.pipelineRunName)
+        - name: AGGREGATE_STATUS
+          value: $(params.aggregateStatus)
+        - name: OPENSHIFT_VERSION
+          value: $(params.openshiftVersion)
+        - name: RESOLVED_OPENSHIFT_VERSION
+          value: $(params.resolvedOpenshiftVersion)
+        - name: ARGOCD_VERSION
+          value: $(params.argocdVersion)
+        - name: OPERATOR_CHANNEL
+          value: $(params.operatorChannel)
+        - name: INSTALLED_CSV
+          value: $(params.installedCSV)
+        - name: TEST_SCRIPT
+          value: $(params.testScript)
+        - name: FIPS_ENABLED
+          value: $(params.fipsEnabled)
+        - name: UPGRADE
+          value: $(params.upgrade)
+        - name: LOG_URL
+          value: $(params.logUrl)
+        - name: LOGS_ARTIFACT
+          value: "$(params.quayRepo):$(params.pipelineRunName)-logs"
+        - name: SHARED_DIR
+          value: /shared
+      command:
+        - /usr/local/bin/publish-results.sh
+      volumeMounts:
+        - name: deploy-key
+          mountPath: /deploy-key
+          readOnly: true
+        - name: shared
+          mountPath: /shared
+
+    - name: send-slack-notification
+      onError: continue
+      image: $(params.testImageUrl)
+      env:
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: slack-gitops-test-notification-url
+              key: hook-url
+        - name: PIPELINE_RUN_NAME
+          value: $(params.pipelineRunName)
+        - name: AGGREGATE_STATUS
+          value: $(params.aggregateStatus)
+        - name: LOG_URL
+          value: $(params.logUrl)
+        - name: QUAY_REPO
+          value: $(params.quayRepo)
+        - name: QUAY_CREDENTIALS_PATH
+          value: $(params.quayCredentialsPath)
+        - name: TASK_NAMES
+          value: $(params.taskNames)
+        - name: TEST_SCRIPT
+          value: $(params.testScript)
+        - name: TEST_REPO_URL
+          value: $(params.testRepoUrl)
+        - name: TEST_REPO_BRANCH
+          value: $(params.testRepoBranch)
+        - name: OPENSHIFT_VERSION
+          value: $(params.openshiftVersion)
+        - name: OPERATOR_CHANNEL
+          value: $(params.operatorChannel)
+        - name: FIPS_ENABLED
+          value: $(params.fipsEnabled)
+        - name: SHARED_DIR
+          value: /shared
+      command:
+        - /usr/local/bin/send-slack-message.py
+      volumeMounts:
+        - name: credentials
+          mountPath: /credentials
+        - name: quay-credentials
+          mountPath: /quay-credentials
+        - name: shared
+          mountPath: /shared
