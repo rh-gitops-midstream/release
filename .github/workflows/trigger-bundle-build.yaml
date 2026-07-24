@@ -23,7 +23,7 @@ jobs:
       contents: write  # for peter-evans/create-pull-request to create branch
       pull-requests: write  # for peter-evans/create-pull-request to create a PR
     name: Trigger Bundle build for ${{ inputs.TARGET_BRANCH }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
