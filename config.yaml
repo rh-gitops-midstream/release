@@ -29,7 +29,7 @@ sources:
   - path: sources/gitops-operator 
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.21
-    commit: 4648fa06e63571d144eee09712482d60f09412c9
+    commit: e7f6e87b03df2fa0c368d0b1f61b7a0b14a745b2
   - path: sources/argo-cd 
     url: https://github.com/rh-gitops-midstream/argo-cd.git
     ref: v3.4.5
@@ -73,7 +73,7 @@ sources:
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master
-    commit: 18ee1c620ddb72a282f64d682c3108f85aa82a85
+    commit: 2c16e0c8eaa6923ac35d9256a36f13349e10d339
   - path: sources/rollouts-plugin-trafficrouter-openshift
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
     ref: main
