@@ -1,5 +1,5 @@
 # Build Stage
-FROM  brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_1.24 AS builder
+FROM  registry.redhat.io/rhel8/go-toolset:1.25 AS builder
 USER root
 
 COPY sources/gitops-backend /workspace
