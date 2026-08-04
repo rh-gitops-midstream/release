@@ -16,37 +16,36 @@ release:
     - name: "Siddhesh Ghadi"
       github: svghadi
       email: "sghadi@redhat.com"
-
 # Source code repositories
 # This section defines the source repositories for GitOps Operator artifacts built from source.
 # See docs/sources.md for details on each field and usage instructions.
 # On update, run `make sources` to update & validate the submodules.
 # Note: `commit` is always used to perform the actual checkout. `ref` is purely metadata for CI which can be a tag or branch.
 sources:
-  - path: sources/gitops-operator 
+  - path: sources/gitops-operator
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: master
-    commit: facefc0bc143a90b8fec907c8d287793d99c2904
-  - path: sources/argo-cd 
+    commit: 9e51edc62188b658488f9f9890ef09c603709979
+  - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.4.2
-    commit: 0dc6b1b57dd5bb925d5b03c3d09419ab9fb4225e
-  - path: sources/argo-rollouts 
+    ref: v3.4.6
+    commit: e1becb74c728a992804d39c3ceb2e9e6ae58f0ae
+  - path: sources/argo-rollouts
     url: https://github.com/argoproj/argo-rollouts.git
-    ref: v1.8.3
-    commit: 348260aa4219ed79497296b52be87be7f50a5cdd
+    ref: v1.8.4
+    commit: 55e89ddc5329db9ebd72edff5503f2822d2e80ff
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
     ref: kustomize/v5.8.1
     commit: 9790a1c3efd2fd35f1b768d495112834176581c1
   - path: sources/helm
     url: https://github.com/helm/helm.git
-    ref: v3.19.4
-    commit: 7cfb6e486dac026202556836bb910c37d847793e
+    ref: v3.19.5
+    commit: 4a19a5b6fb912c5c28a779e73f2e0880d9e239a4
   - path: sources/dex
     ref: v2.45.0
     url: https://github.com/rh-gitops-midstream/dex.git
-    commit: bcc2283694018a59e9b84c43c6c50ce996e9409b
+    commit: af68bd66272a6505de507fe52d441de7e5e881e4
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
     ref: v3.7.1
@@ -54,19 +53,19 @@ sources:
   - path: sources/ssh-connect
     url: https://github.com/gotoh/ssh-connect.git
     ref: master
-    commit: b65b09a0ee06950972233e8ea86ef87c4e63b3c9
+    commit: a7443d32e6bf6f00698384b0519adc16fa7656fa
   - path: sources/tini
     url: https://github.com/krallin/tini.git
     ref: master
-    commit: 0b44d3665869e46ccbac7414241b8256d6234dc4
+    commit: 369448a167e8b3da4ca5bca0b3307500c3371828
   - path: sources/argocd-extension-installer
     url: https://github.com/argoproj-labs/argocd-extension-installer.git
     ref: main
-    commit: 44a5ab8e6998df0beb6f293b3607262db53aa8c7
+    commit: b1d11a3c312198e11e42bc6868def8ebb36f4270
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: main
-    commit: 246fd142103a25a0b9694d8597370e6bdca980b5
+    commit: d8f88485c2de0b2d6268164932e80ef31ae8893c
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master
@@ -74,7 +73,7 @@ sources:
   - path: sources/rollouts-plugin-trafficrouter-openshift
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
     ref: main
-    commit: 1495bbad184a05cde955fb21dcf35d05c3e58d98
+    commit: ec4d284bed164ab4fdbb152178f2577ba6321e0f
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
@@ -82,16 +81,15 @@ sources:
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
     ref: master
-    commit: 09102635500867f4119ae63008bf1fe1ae7328b5
+    commit: 427493aca64464872b8801875141b70c6ab1318b
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: main
-    commit: 7bf329860e465e5138559fc1f6f79b7f7caba042
+    commit: 0554ad8a94174c38fe353998bc14c712f4201a58
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
-    ref: v1.2.1
-    commit: 1b622412d7ecc2392e86bd5d1d2fee755fc71ca1
-
+    ref: v1.2.2
+    commit: 0e7ba4e51d2f8e64934f738db9f2b57274a401d3
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
 # Bundle generation script will automatically fetch latest sha for each image 
@@ -103,7 +101,6 @@ externalImages:
   - name: "redis"
     image: registry.redhat.io/rhel9/redis-7
     version: 9.6
-
 # Konflux images are images that are built from the source in this repository
 konfluxImages:
   - name: argo-rollouts
