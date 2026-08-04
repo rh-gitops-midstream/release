@@ -3,10 +3,32 @@ set -euo pipefail
 
 source ./hack/deps.sh
 
-CONFIG=${1:-config.yaml}
-IGNORED_BRANCH_REFS=(main master)
+CONFIG=config.yaml
+SKIP_MAIN=false
 errors=0
 updated=0
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --skip-main)
+      SKIP_MAIN=true
+      ;;
+    -*)
+      echo "Unknown option: $1" >&2
+      exit 1
+      ;;
+    *)
+      CONFIG=$1
+      ;;
+  esac
+
+  shift
+done
+
+IGNORED_BRANCH_REFS=()
+if [ "$SKIP_MAIN" = true ]; then
+  IGNORED_BRANCH_REFS=(main master)
+fi
 
 is_ignored_branch_ref() {
   local ref=$1
