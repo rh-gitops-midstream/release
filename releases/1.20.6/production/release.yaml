@@ -6,7 +6,7 @@ metadata:
 spec:
   gracePeriodDays: 7
   releasePlan: gitops-1-20-prod
-  snapshot: gitops-1-20-20260728-051338-000
+  snapshot: gitops-1-20-20260810-140511-000
   data:
     releaseNotes:
       type: RHSA
