@@ -11,7 +11,7 @@ spec:
     releaseNotes:
       type: RHSA
       cves: 
-      - key: CVE-2026-43508
+      - key: CVE-2026-42508
         component: argocd-1-19
       - key: CVE-2026-39828
         component: argocd-1-19
