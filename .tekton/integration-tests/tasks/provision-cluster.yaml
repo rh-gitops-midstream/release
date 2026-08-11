@@ -54,7 +54,7 @@ spec:
           - name: revision
             value: $(params.catalogTaskRevision)
           - name: pathInRepo
-            value: .tekton/stepactions/extract-image-content-sources.yaml
+            value: .tekton/integration-tests/stepactions/extract-image-content-sources.yaml
       params:
         - name: gitUrl
           value: $(params.catalogSourceUrl)
@@ -69,7 +69,7 @@ spec:
           - name: revision
             value: $(params.catalogTaskRevision)
           - name: pathInRepo
-            value: .tekton/stepactions/resolve-openshift-version.yaml
+            value: .tekton/integration-tests/stepactions/resolve-openshift-version.yaml
       params:
         - name: version
           value: $(params.openshiftVersion)
