@@ -24,10 +24,10 @@ spec:
       description: Base image repository (without tag)
     - name: DOCKERFILE_PATH
       type: string
-      default: ".tekton/test-image/Dockerfile"
+      default: ".tekton/integration-tests/test-image/Dockerfile"
     - name: CONTEXT_DIR
       type: string
-      default: ".tekton/test-image"
+      default: ".tekton/integration-tests/test-image"
     - name: BASE_DOCKERFILE
       type: string
       default: "Dockerfile.base-v1.21"
