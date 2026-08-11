@@ -18,23 +18,22 @@ release:
       email: "sghadi@redhat.com"
     - name: "Rizwana Naaz"
       github: Rizwana777
-      email: "rnaaz@redhat.com"      
-
+      email: "rnaaz@redhat.com"
 # Source code repositories
 # This section defines the source repositories for GitOps Operator artifacts built from source.
 # See docs/sources.md for details on each field and usage instructions.
 # On update, run `make sources` to update & validate the submodules.
 # Note: `commit` is always used to perform the actual checkout. `ref` is purely metadata for CI which can be a tag or branch.
 sources:
-  - path: sources/gitops-operator 
+  - path: sources/gitops-operator
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.21
-    commit: b6e4704699572c36ba9ffc5d9af9c47e796d81ed
-  - path: sources/argo-cd 
+    commit: f121e14eca4ac09a20da5d0318652b44d9349422
+  - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.4.5
-    commit: 564b94973b284b8de98da7cee6eeade2cb941e46
-  - path: sources/argo-rollouts 
+    ref: v3.4.6
+    commit: e1becb74c728a992804d39c3ceb2e9e6ae58f0ae
+  - path: sources/argo-rollouts
     url: https://github.com/rh-gitops-midstream/argo-rollouts.git
     ref: v1.9.0
     commit: 53052f202eba02d651190fad7cc4b3e06b875af9
@@ -44,8 +43,8 @@ sources:
     commit: 9790a1c3efd2fd35f1b768d495112834176581c1
   - path: sources/helm
     url: https://github.com/helm/helm.git
-    ref: v3.19.4
-    commit: 7cfb6e486dac026202556836bb910c37d847793e
+    ref: v3.19.5
+    commit: 4a19a5b6fb912c5c28a779e73f2e0880d9e239a4
   - path: sources/dex
     ref: v2.45.0
     url: https://github.com/rh-gitops-midstream/dex.git
@@ -94,7 +93,6 @@ sources:
     url: https://github.com/argoproj-labs/argocd-image-updater.git
     ref: v1.2.2
     commit: 0e7ba4e51d2f8e64934f738db9f2b57274a401d3
-
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
 # Bundle generation script will automatically fetch latest sha for each image 
@@ -106,7 +104,6 @@ externalImages:
   - name: "redis"
     image: registry.redhat.io/rhel9/redis-7
     version: latest
-
 # Konflux images are images that are built from the source in this repository
 konfluxImages:
   - name: argo-rollouts
