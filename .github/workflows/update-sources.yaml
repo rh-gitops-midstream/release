@@ -3,29 +3,31 @@ name: Update Sources
 on:
   schedule:
     - cron: '30 18 * * *'
-  workflow_dispatch:
-    inputs:
-      skip_main:
-        description: 'Skip updates for main/master branch refs'
-        required: false
-        type: boolean
-        default: true
 
 permissions: {}
 
 jobs:
   update-sources:
-    name: Update Sources
+    name: Update Sources (${{ matrix.branch }})
     runs-on: ubuntu-22.04
     permissions:
+      checks: read
       contents: write
       pull-requests: write
+    strategy:
+      matrix:
+        branch:
+          - main
+          - release-1.21
+          - release-1.20
+          - release-1.19
 
     steps:
       - name: Checkout code
         uses: actions/checkout@8410ad0602e1e429cee44a835ae9f77f654a6694 # v4.0.0
         with:
           fetch-depth: 0
+          ref: ${{ matrix.branch }}
           token: ${{ secrets.GITHUB_TOKEN }}
           submodules: true
 
@@ -34,13 +36,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Update sources with skip-main
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' && (github.event.inputs.skip_main == 'true' || github.ref_name != 'main' && github.ref_name != 'master')
-        run: make update-sources SKIP_MAIN=true
-
-      - name: Update sources without skip-main
-        if: github.event_name == 'workflow_dispatch' && (github.event.inputs.skip_main == 'false' || github.ref_name == 'main' || github.ref_name == 'master')
-        run: make update-sources
+      - name: Update sources
+        run: |
+          if [[ "${{ matrix.branch }}" == "main" ]]; then
+            make update-sources
+          else
+            make update-sources SKIP_MAIN=true
+          fi
 
       - name: Create Pull Request
         id: create_pr
@@ -48,7 +50,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore(update-sources): refresh source commits"
-          branch: chore/update-sources-${{ github.run_id }}
+          branch: chore/update-sources-${{ matrix.branch }}-${{ github.run_id }}
+          base: ${{ matrix.branch }}
           delete-branch: true
           title: "chore(update-sources): refresh source commits"
           body: |
@@ -58,9 +61,49 @@ jobs:
           labels: |
             auto-merge
 
-      - name: Enable auto-merge
+      - name: Wait for Red Hat Konflux checks
         if: github.event_name == 'schedule' && steps.create_pr.outputs.pull-request-number != ''
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          gh pr merge ${{ steps.create_pr.outputs.pull-request-number }} --squash --auto
+          PR_NUMBER="${{ steps.create_pr.outputs.pull-request-number }}"
+          REPO="${{ github.repository }}"
+
+          for ATTEMPT in {1..180}; do
+            CHECKS=$(gh pr checks "$PR_NUMBER" --repo "$REPO" \
+              --json name,bucket || true)
+
+            KONFLUX=$(echo "$CHECKS" | jq \
+              '[.[] | select(.name | contains("Red Hat Konflux"))]')
+
+            TOTAL=$(echo "$KONFLUX" | jq 'length')
+            FAILED=$(echo "$KONFLUX" | jq \
+              '[.[] | select(.bucket != "pass" and .bucket != "pending")] | length')
+            PENDING=$(echo "$KONFLUX" | jq \
+              '[.[] | select(.bucket == "pending")] | length')
+
+            echo "Konflux checks: total=$TOTAL pending=$PENDING failed=$FAILED"
+
+            if (( FAILED > 0 )); then
+              echo "Konflux check failed."
+              exit 1
+            fi
+
+            if (( TOTAL > 0 && PENDING == 0 )); then
+              echo "All Konflux checks passed."
+              exit 0
+            fi
+
+            echo "Waiting for Konflux checks... ($ATTEMPT/180)"
+            sleep 60
+          done
+
+          echo "Timed out waiting for Konflux checks."
+          exit 1
+
+      - name: Merge Pull Request
+        if: github.event_name == 'schedule' && steps.create_pr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          gh pr merge ${{ steps.create_pr.outputs.pull-request-number }} --squash --delete-branch
