@@ -342,3 +342,7 @@ spec:
           value: "$(params.TEST_SCRIPT)"
         - name: openshiftVersion
           value: "$(params.OPENSHIFT_VERSION)"
+        - name: catalogUrl
+          value: "$(params.CATALOG_TASK_URL)"
+        - name: catalogRevision
+          value: "$(params.CATALOG_TASK_REVISION)"
