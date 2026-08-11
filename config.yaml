@@ -25,11 +25,11 @@ sources:
   - path: sources/gitops-operator
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.20
-    commit: 3c06fde128de7e66ce7a2e1ae235da98a1727fc3
+    commit: 7f18b149252aaabb8111003d8207e3b2b94fd7bc
   - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.3.12
-    commit: d0b9d3c4dbf7e31ef148066ff8afc5d87a9cf1d5
+    ref: v3.3.13
+    commit: 58a3ab2df2390717685809caa0d0d180dc0bf70e
   - path: sources/argo-rollouts
     url: https://github.com/argoproj/argo-rollouts.git
     ref: release-1.8
@@ -40,8 +40,8 @@ sources:
     commit: 9790a1c3efd2fd35f1b768d495112834176581c1
   - path: sources/helm
     url: https://github.com/helm/helm.git
-    ref: v3.19.4
-    commit: 7cfb6e486dac026202556836bb910c37d847793e
+    ref: v3.19.5
+    commit: 4a19a5b6fb912c5c28a779e73f2e0880d9e239a4
   - path: sources/dex
     ref: v2.43.1
     url: https://github.com/rh-gitops-midstream/dex.git
