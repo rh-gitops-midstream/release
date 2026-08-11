@@ -105,7 +105,7 @@ externalImages:
     version: v4.19
   - name: "redis"
     image: registry.redhat.io/rhel9/redis-7
-    version: 9.6
+    version: latest
 
 # Konflux images are images that are built from the source in this repository
 konfluxImages:
