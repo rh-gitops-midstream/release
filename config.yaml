@@ -100,7 +100,7 @@ externalImages:
     version: v4.19
   - name: "redis"
     image: registry.redhat.io/rhel9/redis-7
-    version: 9.6
+    version: latest
   - name: "kube-rbac-proxy"
     image: registry.redhat.io/openshift4/ose-kube-rbac-proxy-rhel9
     version: v4.19
