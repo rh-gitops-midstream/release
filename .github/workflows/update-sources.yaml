@@ -15,6 +15,7 @@ jobs:
       contents: write
       pull-requests: write
     strategy:
+      fail-fast: false
       matrix:
         branch:
           - main
@@ -68,37 +69,69 @@ jobs:
         run: |
           PR_NUMBER="${{ steps.create_pr.outputs.pull-request-number }}"
           REPO="${{ github.repository }}"
+          CHECK_CREATION_TIMEOUT=300
+          OVERALL_TIMEOUT=10800
+          SECONDS=0
 
-          for ATTEMPT in {1..180}; do
+          while (( SECONDS < OVERALL_TIMEOUT )); do
             CHECKS=$(gh pr checks "$PR_NUMBER" --repo "$REPO" \
-              --json name,bucket || true)
+              --json name,state || true)
 
-            KONFLUX=$(echo "$CHECKS" | jq \
-              '[.[] | select(.name | contains("Red Hat Konflux"))]')
+            KONFLUX=$(jq \
+              '[.[] | select(.name | contains("Red Hat Konflux"))]' \
+              <<< "$CHECKS")
 
-            TOTAL=$(echo "$KONFLUX" | jq 'length')
-            FAILED=$(echo "$KONFLUX" | jq \
-              '[.[] | select(.bucket != "pass" and .bucket != "pending")] | length')
-            PENDING=$(echo "$KONFLUX" | jq \
-              '[.[] | select(.bucket == "pending")] | length')
+            TOTAL=$(jq 'length' <<< "$KONFLUX")
 
-            echo "Konflux checks: total=$TOTAL pending=$PENDING failed=$FAILED"
+            if (( TOTAL == 0 )); then
+              if (( SECONDS >= CHECK_CREATION_TIMEOUT )); then
+                echo "No Red Hat Konflux checks were created within 5 minutes."
+                exit 1
+              fi
+
+              echo "Waiting for Konflux checks to be created..."
+              sleep 60
+              continue
+            fi
+
+            PENDING=$(jq '
+              [.[] | select(
+                .state == "PENDING" or
+                .state == "QUEUED" or
+                .state == "IN_PROGRESS" or
+                .state == "WAITING" or
+                .state == "REQUESTED"
+              )] | length
+            ' <<< "$KONFLUX")
+
+            if (( PENDING > 0 )); then
+              echo "Waiting for Konflux checks to complete... ($PENDING pending)"
+              sleep 60
+              continue
+            fi
+
+            FAILED=$(jq '
+              [.[] | select(
+                .state != "SUCCESS" and
+                .state != "NEUTRAL"
+              )] | length
+            ' <<< "$KONFLUX")
 
             if (( FAILED > 0 )); then
-              echo "Konflux check failed."
+              echo "One or more Konflux checks failed."
+              jq -r '
+                .[] |
+                select(.state != "SUCCESS" and .state != "NEUTRAL") |
+                "\(.name): \(.state)"
+              ' <<< "$KONFLUX"
               exit 1
             fi
 
-            if (( TOTAL > 0 && PENDING == 0 )); then
-              echo "All Konflux checks passed."
-              exit 0
-            fi
-
-            echo "Waiting for Konflux checks... ($ATTEMPT/180)"
-            sleep 60
+            echo "All Red Hat Konflux checks completed successfully."
+            exit 0
           done
 
-          echo "Timed out waiting for Konflux checks."
+          echo "Timed out waiting for Red Hat Konflux checks."
           exit 1
 
       - name: Merge Pull Request
