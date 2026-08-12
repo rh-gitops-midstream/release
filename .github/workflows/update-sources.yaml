@@ -65,7 +65,7 @@ jobs:
       - name: Wait for Red Hat Konflux checks
         if: github.event_name == 'schedule' && steps.create_pr.outputs.pull-request-number != ''
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PR_NUMBER="${{ steps.create_pr.outputs.pull-request-number }}"
           REPO="${{ github.repository }}"
@@ -140,3 +140,21 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           gh pr merge ${{ steps.create_pr.outputs.pull-request-number }} --squash --delete-branch
+      
+      - name: Close pull request if not merged
+        if: always() && github.event_name == 'schedule' && steps.create_pr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER="${{ steps.create_pr.outputs.pull-request-number }}"
+          REPO="${{ github.repository }}"
+
+          sleep 10
+
+          STATE=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json state --jq '.state')
+
+          if [[ "$STATE" == "OPEN" ]]; then
+            gh pr close "$PR_NUMBER" \
+              --repo "$REPO" \
+              --comment "Automatically closed because the scheduled update could not be merged."
+          fi
