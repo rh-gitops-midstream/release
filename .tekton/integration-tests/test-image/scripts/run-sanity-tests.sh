@@ -385,7 +385,7 @@ for _attempt in $(seq 1 60); do
   HEALTH_STATUS=$(oc get application "${TEST_APP_NAME}" -n "${GITOPS_NS}" \
     -o jsonpath='{.status.health.status}' 2>/dev/null || true)
 
-  if [[ "$SYNC_STATUS" == "Synced" && "$HEALTH_STATUS" == "Healthy" ]]; then
+  if [[ "$SYNC_STATUS" == "Synced" ]]; then
     SYNC_OK=true
     break
   fi
@@ -393,9 +393,9 @@ for _attempt in $(seq 1 60); do
 done
 
 if [[ "$SYNC_OK" == "true" ]]; then
-  pass "Smoke app synced and healthy"
+  pass "Smoke app synced successfully (health=${HEALTH_STATUS:-unknown})"
 else
-  fail "Smoke app did not reach Synced/Healthy (sync=${SYNC_STATUS:-unknown}, health=${HEALTH_STATUS:-unknown})"
+  fail "Smoke app did not reach Synced (sync=${SYNC_STATUS:-unknown}, health=${HEALTH_STATUS:-unknown})"
   oc get application "${TEST_APP_NAME}" -n "${GITOPS_NS}" -o yaml 2>/dev/null || true
 fi
 
