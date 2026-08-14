@@ -18,18 +18,22 @@ FROM registry.access.redhat.com/ubi9/nodejs-22 AS builder
 
 USER root
 
-# Install Yarn
+# Install pnpm via npm prefetch bootstrap (same pattern as prefetch/pnpm)
 WORKDIR /workspace
-COPY ["prefetch/yarn/package.json", "prefetch/yarn/package-lock.json", "./"]
+COPY ["prefetch/pnpm/package.json", "prefetch/pnpm/package-lock.json", "./"]
 RUN npm install --prefer-offline --no-progress --non-interactive
-ENV YARN="/workspace/node_modules/.bin/yarn"
-RUN $YARN --version
+ENV PATH="/workspace/node_modules/.bin:${PATH}"
+RUN pnpm --version
 
 # Build Console Plugin Dependencies
-COPY sources/gitops-console-plugin /workspace/gitops-console-plugin
 WORKDIR /workspace/gitops-console-plugin
-RUN $YARN install --no-progress --non-interactive --prefer-offline --network-timeout 600000
-RUN $YARN build
+
+COPY ["sources/gitops-console-plugin/package.json", "sources/gitops-console-plugin/pnpm-lock.yaml", "sources/gitops-console-plugin/.npmrc", "./"]
+RUN pnpm install --frozen-lockfile --offline
+
+COPY ["sources/gitops-console-plugin/", "."]
+
+RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' pnpm build
 
 ####################################################################################################
 
