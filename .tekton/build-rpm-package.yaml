@@ -9,37 +9,6 @@ metadata:
     pipelines.appstudio.openshift.io/type: build
     appstudio.openshift.io/application: rpms
 spec:
-  finally:
-    - name: show-summary
-      params:
-        - name: pipelinerun-name
-          value: $(context.pipelineRun.name)
-        - name: git-url
-          value: $(tasks.clone-repository.results.url)?rev=$(tasks.clone-repository.results.commit)
-        - name: image-url
-          value: $(tasks.upload-to-quay.results.IMAGE_URL)
-      taskRef:
-        params:
-          - name: name
-            value: summary
-          - name: bundle
-            value: quay.io/konflux-ci/tekton-catalog/task-summary:0.2@sha256:a009e5892e0ef23f8c45fe98a96d6c56aff3bdc0343d994f30661e56ff901253
-          - name: kind
-            value: task
-        resolver: bundles
-    - name: show-sbom
-      params:
-        - name: IMAGE_URL
-          value: $(tasks.upload-to-quay.results.IMAGE_URL)
-      taskRef:
-        params:
-          - name: name
-            value: show-sbom
-          - name: bundle
-            value: quay.io/konflux-ci/tekton-catalog/task-show-sbom:0.1@sha256:a7346ed61237db4f82ff782e0c9e8b30536e0e67b907ad600341a6d192e80012
-          - name: kind
-            value: task
-        resolver: bundles
   params:
     - name: package-name
       description: The name of the package we want to build
@@ -230,7 +199,7 @@ spec:
           - name: name
             value: init
           - name: bundle
-            value: quay.io/konflux-ci/tekton-catalog/task-init:0.4@sha256:5a423246792ac501ea279229b42ee57da9927da441c04b5c9ff86817b0856b08
+            value: quay.io/konflux-ci/tekton-catalog/task-init:0.4.3@sha256:4dbbfedc4edb21884fa2ad84521408d2fad090d4d34eb6c555992f8444eba40d
           - name: kind
             value: task
         resolver: bundles
@@ -256,7 +225,7 @@ spec:
           - name: name
             value: git-clone-oci-ta
           - name: bundle
-            value: quay.io/konflux-ci/tekton-catalog/task-git-clone-oci-ta:0.1@sha256:d30f13dd15daf89dd6dc645243b3444d35570d13f7840c3fd65e366022515205
+            value: quay.io/konflux-ci/tekton-catalog/task-git-clone-oci-ta:0.2.5@sha256:437e4a29b0674420af96e497b6492d0408e59b97f98a35b84d2d32016503c2a0
           - name: kind
             value: task
         resolver: bundles
