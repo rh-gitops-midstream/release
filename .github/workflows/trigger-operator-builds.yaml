@@ -8,24 +8,61 @@ on:
         required: true
         type: string
 
+  schedule:
+    - cron: '0 20 * * *'
+    - cron: '0 22 * * *'
+    - cron: '0 0 * * *'
+    - cron: '0 2 * * *'
+
 permissions: {}
 
 jobs:
   prepare-component-builds:
-    name: Trigger Component Builds for ${{ inputs.TARGET_BRANCH }}
+    name: Trigger Component Builds
     runs-on: ubuntu-24.04
+
     permissions:
-      contents: write         # To push branches
-      pull-requests: write    # To create PRs
+      contents: write
+      pull-requests: write
 
     steps:
+      - name: Determine target branch
+        id: branch
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            TARGET_BRANCH="${{ inputs.TARGET_BRANCH }}"
+          else
+            case "${{ github.event.schedule }}" in
+              "0 20 * * *")
+                TARGET_BRANCH="release-1.19"
+                ;;
+              "0 22 * * *")
+                TARGET_BRANCH="release-1.20"
+                ;;
+              "0 0 * * *")
+                TARGET_BRANCH="release-1.21"
+                ;;
+              "0 2 * * *")
+                TARGET_BRANCH="main"
+                ;;
+              *)
+                echo "Unknown schedule: ${{ github.event.schedule }}"
+                exit 1
+                ;;
+            esac
+          fi
+
+          echo "TARGET_BRANCH=$TARGET_BRANCH" >> "$GITHUB_ENV"
+          echo "Using branch: $TARGET_BRANCH"
+
       - name: Checkout code
-        uses: actions/checkout@8410ad0602e1e429cee44a835ae9f77f654a6694  # v4.0.0
+        uses: actions/checkout@8410ad0602e1e429cee44a835ae9f77f654a6694 # v4.0.0
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-          ref: ${{ inputs.TARGET_BRANCH }}
-      
+          ref: ${{ env.TARGET_BRANCH }}
+       
       - name: Set up Git config
         run: |
           git config user.name "github-actions[bot]"
