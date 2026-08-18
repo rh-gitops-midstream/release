@@ -14,6 +14,7 @@ metadata:
         "sources/gitops-console-plugin".pathChanged() ||
         "containers/console-plugin/***".pathChanged() ||
         ".tekton/console-plugin-push.yaml".pathChanged() ||
+        "prefetch/pnpm/***".pathChanged() ||
         "BUILD".pathChanged() ||
         ".tekton/build-multi-platform-image.yaml".pathChanged() ||
         ".tekton/tasks/***".pathChanged()
@@ -39,7 +40,7 @@ spec:
   - name: dockerfile
     value: containers/console-plugin/Dockerfile
   - name: prefetch-input
-    value: '[{"type": "npm", "path": "prefetch/yarn"}, {"type": "yarn", "path": "./sources/gitops-console-plugin"}]'
+    value: '[{"type": "npm", "path": "prefetch/pnpm"}, {"type": "pnpm", "path": "./sources/gitops-console-plugin"}]'
   - name: git-metadata-directories
     value:
       - sources/gitops-console-plugin

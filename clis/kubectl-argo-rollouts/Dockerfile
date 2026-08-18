@@ -21,25 +21,24 @@ FROM registry.access.redhat.com/ubi9/nodejs-22 AS argo-rollouts-ui
 
 USER root
 
-# Install Yarn
+# Install pnpm via npm prefetch bootstrap
 WORKDIR /usr/src/app
-COPY ["prefetch/yarn/package.json", "prefetch/yarn/package-lock.json", "./"]
+COPY ["prefetch/pnpm/package.json", "prefetch/pnpm/package-lock.json", "./"]
 RUN npm install --prefer-offline --no-progress --non-interactive
-ENV YARN="/usr/src/app/node_modules/.bin/yarn"
-RUN $YARN --version
+ENV PATH="/usr/src/app/node_modules/.bin:${PATH}"
+RUN pnpm --version
 
 WORKDIR /usr/src/app/argo-rollouts/ui
 
-COPY ["sources/argo-rollouts/ui/package.json", "sources/argo-rollouts/ui/yarn.lock", "./"]
+COPY ["sources/argo-rollouts/ui/package.json", "sources/argo-rollouts/ui/pnpm-lock.yaml", "sources/argo-rollouts/ui/.npmrc", "./"]
 
-RUN $YARN  install --no-progress --non-interactive --prefer-offline --network-timeout 300000 && \
-    $YARN cache clean
+RUN pnpm install --frozen-lockfile --offline
 
 COPY ["sources/argo-rollouts/ui/", "."]
 
 ARG ARGO_VERSION=latest
 ENV ARGO_VERSION=$ARGO_VERSION
-RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' $YARN build
+RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' pnpm build
 
 
 ####################################################################################################
@@ -64,7 +63,7 @@ RUN go mod download
 # Copy UI files for plugin build
 COPY --from=argo-rollouts-ui /usr/src/app/argo-rollouts/ui/dist/app /src/argo-rollouts/ui/dist/app
 
-# Create required UI build markers to avoid rebuilds without Yarn installed
+# Create required UI build markers to avoid rebuilds without pnpm installed
 RUN mkdir -p ui/dist/app && \
     touch ui/dist/node_modules.marker && \
     touch ui/dist/app/index.html && \
