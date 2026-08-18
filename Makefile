@@ -13,6 +13,7 @@ CHART_REGISTRY ?=
 sources:
 	@./hack/sync-sources.sh
 	@./hack/verify-sources.sh
+	@./hack/pin-pnpm-deps.sh
 
 .PHONY: update-sources
 update-sources: deps

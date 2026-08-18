@@ -28,13 +28,23 @@ RUN npm install --prefer-offline --no-progress --non-interactive
 ENV PATH="/usr/src/app/node_modules/.bin:${PATH}"
 RUN pnpm --version
 
-WORKDIR /usr/src/app/argo-rollouts/ui
+# Keep file:../../../sources/argo-ui valid for both Hermeto prefetch and the image layout.
+# Overlay pnpm-lock.yaml already rewrites argo-ui to sources/argo-ui so Hermeto does not
+# fetch the GitHub tarball (allowed_package_sources). The package contents still come
+# from the sources/argo-ui submodule at the pinned commit.
+WORKDIR /usr/src/app/clis/kubectl-argo-rollouts/ui
+COPY ["sources/argo-rollouts/ui/package.json", "clis/kubectl-argo-rollouts/ui/pnpm-lock.yaml", "clis/kubectl-argo-rollouts/ui/.npmrc", "clis/kubectl-argo-rollouts/ui/pin-argo-ui.js", "./"]
+COPY sources/argo-ui /usr/src/app/sources/argo-ui
+RUN node pin-argo-ui.js
 
-COPY ["sources/argo-rollouts/ui/package.json", "sources/argo-rollouts/ui/pnpm-lock.yaml", "sources/argo-rollouts/ui/.npmrc", "./"]
-
-RUN pnpm install --frozen-lockfile --offline
+# packageManager pins pnpm@10.28.1; use the bootstrapped pnpm offline.
+RUN pnpm config set manage-package-manager-versions false
+RUN pnpm install --frozen-lockfile --offline --ignore-scripts
 
 COPY ["sources/argo-rollouts/ui/", "."]
+# Restore the overlay lockfile (Hermeto-injected) and re-pin package.json after the submodule copy.
+COPY ["clis/kubectl-argo-rollouts/ui/pnpm-lock.yaml", "clis/kubectl-argo-rollouts/ui/pin-argo-ui.js", "./"]
+RUN node pin-argo-ui.js
 
 ARG ARGO_VERSION=latest
 ENV ARGO_VERSION=$ARGO_VERSION
@@ -61,7 +71,7 @@ WORKDIR /src/argo-rollouts
 RUN go mod download
 
 # Copy UI files for plugin build
-COPY --from=argo-rollouts-ui /usr/src/app/argo-rollouts/ui/dist/app /src/argo-rollouts/ui/dist/app
+COPY --from=argo-rollouts-ui /usr/src/app/clis/kubectl-argo-rollouts/ui/dist/app /src/argo-rollouts/ui/dist/app
 
 # Create required UI build markers to avoid rebuilds without pnpm installed
 RUN mkdir -p ui/dist/app && \
