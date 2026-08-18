@@ -1,0 +1,55 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  annotations:
+    build.appstudio.openshift.io/repo: https://github.com/rh-gitops-midstream/release?rev={{revision}}
+    build.appstudio.redhat.com/commit_sha: '{{revision}}'
+    build.appstudio.redhat.com/target_branch: '{{target_branch}}'
+    pipelinesascode.tekton.dev/cancel-in-progress: "false"
+    pipelinesascode.tekton.dev/max-keep-runs: "3"
+    pipelinesascode.tekton.dev/on-cel-expression: >-
+      event == "push" &&
+      target_branch == "main" &&
+      (
+        "sources/gitops-console-plugin-4.18".pathChanged() ||
+        "containers/console-plugin-4.18/***".pathChanged() ||
+        ".tekton/console-plugin-4.18-push.yaml".pathChanged() ||
+        "prefetch/pnpm/***".pathChanged() ||
+        "BUILD".pathChanged() ||
+        ".tekton/build-multi-platform-image.yaml".pathChanged() ||
+        ".tekton/tasks/***".pathChanged()
+      )
+  creationTimestamp: null
+  labels:
+    appstudio.openshift.io/application: gitops-main
+    appstudio.openshift.io/component: console-plugin-4.18
+    pipelines.appstudio.openshift.io/type: build
+  name: console-plugin-4.18-on-push
+  namespace: rh-openshift-gitops-tenant
+spec:
+  params:
+  - name: git-url
+    value: '{{source_url}}'
+  - name: revision
+    value: '{{revision}}'
+  - name: output-image
+    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-4.18-rhel9:{{revision}}
+  - name: additional-tags
+    value:
+      - '{{target_branch}}'
+  - name: dockerfile
+    value: containers/console-plugin-4.18/Dockerfile
+  - name: prefetch-input
+    value: '[{"type": "npm", "path": "prefetch/pnpm"}, {"type": "pnpm", "path": "./sources/gitops-console-plugin-4.18"}]'
+  - name: git-metadata-directories
+    value:
+      - sources/gitops-console-plugin-4.18
+  pipelineRef:
+    name: build-multi-platform-image
+  taskRunTemplate: 
+    serviceAccountName: build-pipeline-console-plugin-main
+  workspaces:
+  - name: git-auth
+    secret:
+      secretName: '{{ git_auth_secret }}'
+status: {}

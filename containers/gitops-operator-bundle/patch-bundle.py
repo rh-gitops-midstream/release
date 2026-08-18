@@ -82,6 +82,7 @@ relatedImages = [
     {'name': 'argocd_redis_image', 'image': images['redis']},
     {'name': 'argocd_redis_ha_proxy_image', 'image': images['haproxy']},
     {'name': 'gitops_console_plugin_image', 'image': images['console-plugin']},
+    {'name': 'gitops_console_plugin_4_18_image', 'image': images['console-plugin-4.18']},
     {'name': 'argocd_extension_image', 'image': images['argocd-extenstions']},
     {'name': 'argo_rollouts_image', 'image': images['argo-rollouts']},
     {'name': 'must_gather_image', 'image': images['must-gather']},
