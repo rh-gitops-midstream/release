@@ -51,8 +51,6 @@ spec:
     - '{{target_branch}}'
   - name: dockerfile
     value: clis/kubectl-argo-rollouts/Dockerfile
-  - name: hermetic
-    value: "true"
   - name: prefetch-input
     value: '[{"type":"gomod","path":"./sources/argo-rollouts"}, {"type":"npm","path":"prefetch/pnpm"}, {"type":"pnpm","path":"./sources/argo-rollouts/ui"}]'
   - name: git-metadata-directories

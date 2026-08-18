@@ -27,13 +27,6 @@ metadata:
   name: console-plugin-main-on-push
   namespace: rh-openshift-gitops-tenant
 spec:
-  taskRunSpecs:
-    - pipelineTaskName: prefetch-dependencies
-      computeResources:
-        requests:
-          memory: 4Gi
-        limits:
-          memory: 8Gi
   params:
   - name: git-url
     value: '{{source_url}}'
@@ -46,8 +39,6 @@ spec:
       - '{{target_branch}}'
   - name: dockerfile
     value: containers/console-plugin/Dockerfile
-  - name: hermetic
-    value: "true"
   - name: prefetch-input
     value: '[{"type": "npm", "path": "prefetch/pnpm"}, {"type": "pnpm", "path": "./sources/gitops-console-plugin"}]'
   - name: git-metadata-directories
