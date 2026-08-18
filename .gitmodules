@@ -52,3 +52,9 @@
 [submodule "sources/dex"]
 	path = sources/dex
 	url = https://github.com/rh-gitops-midstream/dex.git
+[submodule "sources/argo-ui"]
+	path = sources/argo-ui
+	url = https://github.com/argoproj/argo-ui.git
+[submodule "sources/argo-ui-cd"]
+	path = sources/argo-ui-cd
+	url = https://github.com/argoproj/argo-ui.git
