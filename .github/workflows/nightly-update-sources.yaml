@@ -7,8 +7,8 @@ on:
 permissions: {}
 
 jobs:
-  update-sources:
-    name: Update Sources (${{ matrix.branch }})
+  nightly-update-sources:
+    name: Nightly Update Sources (${{ matrix.branch }})
     runs-on: ubuntu-24.04
     permissions:
       checks: read
@@ -54,7 +54,7 @@ jobs:
           branch: chore/update-sources-${{ matrix.branch }}-${{ github.run_id }}
           base: ${{ matrix.branch }}
           delete-branch: true
-          title: "chore(update-sources): refresh source commits"
+          title: "chore(update-sources): refresh source commits [${{ matrix.branch }}]"
           body: |
             This PR refreshes source commits by running `make update-sources`.
 
