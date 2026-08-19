@@ -1,11 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Copy UI lockfiles out of submodules and rewrite the argo-ui GitHub pin to a
+# local file: path so Hermeto does not fetch GitHub.
+#
+# Argo Rollouts and Argo CD pin different argo-ui commits, so each overlay
+# points at its own submodule (sources/argo-rollouts-ui-ref vs sources/argo-cd-ui-ref).
+
+GIT_SPEC='git\+https://github\.com/argoproj/argo-ui\.git#[0-9a-f]+'
+TARBALL='https://codeload\.github\.com/argoproj/argo-ui/tar\.gz/[0-9a-f]+'
+
 pin_lockfile() {
   local src=$1
   local dst=$2
-  local pin=$3
-  local file_spec=$4
+  local file_spec=$3
+  local directory=${file_spec#file:}
+  local resolution="resolution: {directory: ${directory}, type: directory, tarball: ${file_spec}}"
 
   if [[ ! -f "$src" ]]; then
     echo ">>> $src not found. Run 'make sources' first."
@@ -13,41 +23,19 @@ pin_lockfile() {
   fi
 
   echo ">>> Refreshing $dst from $src"
-  # Replace a symlink or previous overlay file so we never write through into the submodule.
   mkdir -p "$(dirname "$dst")"
-  rm -f "$dst"
-  cp "$src" "$dst"
+  rm -f "$dst" # never write through a symlink into the submodule
 
-  if command -v node >/dev/null 2>&1; then
-    node "$pin" "$dst"
-  else
-    echo ">>> node not found; pinning lockfile with python3"
-    python3 - "$dst" "$file_spec" <<'PY'
-import re
-import sys
+  # Order matters: rewrite the resolution object before remaining tarball URLs.
+  sed -E \
+    -e "s|${GIT_SPEC}|${file_spec}|g" \
+    -e "s|resolution: \{tarball: ${TARBALL}\}|${resolution}|g" \
+    -e "s|${TARBALL}|${file_spec}|g" \
+    "$src" > "$dst"
 
-path = sys.argv[1]
-file_spec = sys.argv[2]
-directory = file_spec[5:] if file_spec.startswith("file:") else file_spec
-file_resolution = (
-    f"resolution: {{directory: {directory}, type: directory, "
-    f"tarball: {file_spec}}}"
-)
-git_spec = re.compile(r"git\+https://github\.com/argoproj/argo-ui\.git#[0-9a-f]+")
-tarball = re.compile(r"https://codeload\.github\.com/argoproj/argo-ui/tar\.gz/[0-9a-f]+")
-resolution = re.compile(
-    r"resolution: \{tarball: https://codeload\.github\.com/argoproj/argo-ui/tar\.gz/[0-9a-f]+\}"
-)
-original = open(path, encoding="utf-8").read()
-if not git_spec.search(original) and not tarball.search(original):
-    if file_spec not in original:
-        raise SystemExit(f"{path} has no argo-ui git/tarball reference to pin")
-    raise SystemExit(0)
-pinned = git_spec.sub(file_spec, original)
-pinned = resolution.sub(file_resolution, pinned)
-pinned = tarball.sub(file_spec, pinned)
-open(path, "w", encoding="utf-8").write(pinned)
-PY
+  if ! grep -qF "$file_spec" "$dst"; then
+    echo ">>> $dst has no argo-ui git/tarball reference to pin"
+    exit 1
   fi
 
   echo ">>> Pinned argo-ui to $file_spec"
@@ -56,11 +44,9 @@ PY
 pin_lockfile \
   sources/argo-rollouts/ui/pnpm-lock.yaml \
   clis/kubectl-argo-rollouts/ui/pnpm-lock.yaml \
-  clis/kubectl-argo-rollouts/ui/pin-argo-ui.js \
-  "file:../../../sources/argo-ui"
+  "file:../../../sources/argo-rollouts-ui-ref"
 
 pin_lockfile \
   sources/argo-cd/ui/pnpm-lock.yaml \
   containers/argocd/ui/pnpm-lock.yaml \
-  containers/argocd/ui/pin-argo-ui.js \
-  "file:../../../sources/argo-ui-cd"
+  "file:../../../sources/argo-cd-ui-ref"

@@ -28,13 +28,13 @@ RUN npm install --prefer-offline --no-progress --non-interactive
 ENV PATH="/usr/src/app/node_modules/.bin:${PATH}"
 RUN pnpm --version
 
-# Keep file:../../../sources/argo-ui-cd valid for both Hermeto prefetch and the image layout.
-# Overlay pnpm-lock.yaml already rewrites argo-ui to sources/argo-ui-cd so Hermeto does not
+# Keep file:../../../sources/argo-cd-ui-ref valid for both Hermeto prefetch and the image layout.
+# Overlay pnpm-lock.yaml already rewrites argo-ui to sources/argo-cd-ui-ref so Hermeto does not
 # fetch the GitHub tarball (allowed_package_sources). The package contents still come
-# from the sources/argo-ui-cd submodule at the pinned commit.
+# from the sources/argo-cd-ui-ref submodule at the pinned commit.
 WORKDIR /usr/src/app/containers/argocd/ui
 COPY ["sources/argo-cd/ui/package.json", "containers/argocd/ui/pnpm-lock.yaml", "containers/argocd/ui/.npmrc", "containers/argocd/ui/pin-argo-ui.js", "./"]
-COPY sources/argo-ui-cd /usr/src/app/sources/argo-ui-cd
+COPY sources/argo-cd-ui-ref /usr/src/app/sources/argo-cd-ui-ref
 RUN node pin-argo-ui.js
 
 # packageManager pins pnpm@10.28.1; use the bootstrapped pnpm offline.
