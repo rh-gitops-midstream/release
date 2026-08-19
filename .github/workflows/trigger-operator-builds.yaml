@@ -57,7 +57,7 @@ jobs:
           echo "Using branch: $TARGET_BRANCH"
 
       - name: Checkout code
-        uses: actions/checkout@8410ad0602e1e429cee44a835ae9f77f654a6694 # v4.0.0
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
