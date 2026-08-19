@@ -13,7 +13,7 @@ metadata:
       target_branch == "main" &&
       (
         "sources/argo-cd".pathChanged() ||
-        "sources/argo-ui-cd".pathChanged() ||
+        "sources/argo-cd-ui-ref".pathChanged() ||
         "sources/git-lfs".pathChanged() ||
         "sources/helm".pathChanged() ||
         "sources/kustomize".pathChanged() ||

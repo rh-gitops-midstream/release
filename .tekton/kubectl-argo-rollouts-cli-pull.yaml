@@ -13,7 +13,7 @@ metadata:
       target_branch == "main" &&
       (
         "sources/argo-rollouts".pathChanged() ||
-        "sources/argo-ui".pathChanged() ||
+        "sources/argo-rollouts-ui-ref".pathChanged() ||
         "clis/kubectl-argo-rollouts/***".pathChanged() ||
         ".tekton/kubectl-argo-rollouts-cli-pull.yaml".pathChanged() ||
         "prefetch/pnpm/***".pathChanged() ||
