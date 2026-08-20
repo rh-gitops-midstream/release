@@ -109,6 +109,8 @@ new_env = [
     {'name': 'ARGOCD_REDIS_HA_PROXY_IMAGE', 'value': images['haproxy']},
     {'name': 'RELATED_IMAGE_GITOPS_CONSOLE_PLUGIN_IMAGE', 'value': images['console-plugin']},
     {'name': 'GITOPS_CONSOLE_PLUGIN_IMAGE', 'value': images['console-plugin']},
+    {'name': 'RELATED_IMAGE_GITOPS_CONSOLE_PLUGIN_1_18_IMAGE', 'value': images['console-plugin-1.18']},
+    {'name': 'GITOPS_CONSOLE_PLUGIN_1_18_IMAGE', 'value': images['console-plugin-1.18']},
     {'name': 'RELATED_IMAGE_ARGOCD_EXTENSION_IMAGE', 'value': images['argocd-extenstions']},
     {'name': 'ARGOCD_EXTENSION_IMAGE', 'value': images['argocd-extenstions']},
     {'name': 'RELATED_IMAGE_ARGO_ROLLOUTS_IMAGE', 'value': images['argo-rollouts']},
