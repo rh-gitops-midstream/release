@@ -66,7 +66,7 @@ sources:
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: main
     commit: 89bc2b85e05b6abb5d4fe7c9a59c0ba295f9f452
-  - path: sources/gitops-console-plugin-4.18
+  - path: sources/gitops-console-plugin-4-18
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: release-4.18
     commit: 0dca06a9f10b454b3f69615b44b887f4112ea747
@@ -125,9 +125,9 @@ konfluxImages:
   - name: console-plugin
     buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-rhel9"
     releaseRef: "registry.redhat.io/openshift-gitops-1/console-plugin-rhel9"
-  - name: console-plugin-4.18
-    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-4.18-rhel9"
-    releaseRef: "registry.redhat.io/openshift-gitops-1/console-plugin-4.18-rhel9"
+  - name: console-plugin-4-18
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-4-18-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/console-plugin-4-18-rhel9"
   - name: dex
     buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex-rhel9"
     releaseRef: "registry.redhat.io/openshift-gitops-1/dex-rhel9"

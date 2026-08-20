@@ -30,10 +30,10 @@ RUN pnpm config set manage-package-manager-versions false
 # Build Console Plugin Dependencies
 WORKDIR /workspace/gitops-console-plugin
 
-COPY ["sources/gitops-console-plugin-4.18/package.json", "sources/gitops-console-plugin-4.18/pnpm-lock.yaml", "sources/gitops-console-plugin-4.18/.npmrc", "./"]
+COPY ["sources/gitops-console-plugin-4-18/package.json", "sources/gitops-console-plugin-4-18/pnpm-lock.yaml", "sources/gitops-console-plugin-4-18/.npmrc", "./"]
 RUN pnpm install --frozen-lockfile --offline
 
-COPY ["sources/gitops-console-plugin-4.18/", "."]
+COPY ["sources/gitops-console-plugin-4-18/", "."]
 
 RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' pnpm build
 
@@ -52,15 +52,15 @@ COPY --from=builder /workspace/gitops-console-plugin/dist /var/www/html/plugin
 CMD run-httpd
 
 LABEL \
-    name="openshift-gitops-1/console-plugin-4.18-rhel9" \
-    cpe="cpe:/a:redhat:openshift_gitops-4.18:99.99::el9" \
+    name="openshift-gitops-1/console-plugin-4-18-rhel9" \
+    cpe="cpe:/a:redhat:openshift_gitops-4-18:99.99::el9" \
     License="Apache 2.0" \
-    com.redhat.component="openshift-gitops-console-plugin-4.18-container" \
+    com.redhat.component="openshift-gitops-console-plugin-4-18-container" \
     com.redhat.delivery.appregistry="false" \
     upstream-vcs-type="git" \
     summary="Red Hat OpenShift GitOps Console Plugin for OCP 4.18" \
     maintainer="William Tam <wtam@redhat.com>" \
-    io.openshift.tags="openshift,gitops-console-plugin-4.18" \
+    io.openshift.tags="openshift,gitops-console-plugin-4-18" \
     io.k8s.display-name="Red Hat OpenShift GitOps Console Plugin for OCP 4.18" \
     io.k8s.description="Red Hat OpenShift GitOps Console Plugin for OCP 4.18" \
     io.openshift.maintainer.product="Red Hat OpenShift GitOps" \
