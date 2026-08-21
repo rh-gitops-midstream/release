@@ -24,7 +24,7 @@ COPY ["prefetch/pnpm/package.json", "prefetch/pnpm/package-lock.json", "./"]
 RUN npm install --prefer-offline --no-progress --non-interactive
 ENV PATH="/workspace/node_modules/.bin:${PATH}"
 RUN pnpm --version
-# packageManager in gitops-console-plugin pins pnpm@10.33.2; use bootstrapped pnpm offline.
+# Prevent pnpm from automatically switching the package manager version
 RUN pnpm config set manage-package-manager-versions false
 
 # Build Console Plugin Dependencies

@@ -27,6 +27,8 @@ COPY ["prefetch/pnpm/package.json", "prefetch/pnpm/package-lock.json", "./"]
 RUN npm install --prefer-offline --no-progress --non-interactive
 ENV PATH="/usr/src/app/node_modules/.bin:${PATH}"
 RUN pnpm --version
+# Prevent pnpm from automatically switching the package manager version
+RUN pnpm config set manage-package-manager-versions false
 
 WORKDIR /usr/src/app/argo-rollouts/ui
 
