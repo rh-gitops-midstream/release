@@ -1,7 +1,7 @@
 {
   "name": "pnpm-install",
-  "version": "10.28.1",
+  "version": "10.34.5",
   "dependencies": {
-    "pnpm": "10.28.1"
+    "pnpm": "^10.34.5"
   }
 }
