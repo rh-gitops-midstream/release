@@ -69,7 +69,7 @@ jobs:
 
       - name: Create Pull Request
         id: create_pr
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GH_TOKEN }}    # Default GITHUB_TOKEN has insufficient permissions to enable GHA workflow and block auto-merge until Konflux check suite passes
           commit-message: "chore(bundle): latest bundle updates for ${{ steps.metadata.outputs.build }}"
