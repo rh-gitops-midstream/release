@@ -28,14 +28,23 @@ RUN npm install --prefer-offline --no-progress --non-interactive
 ENV PATH="/usr/src/app/node_modules/.bin:${PATH}"
 RUN pnpm --version
 
-WORKDIR /usr/src/app/argo-cd/ui
+# Keep file:../../../sources/argo-cd-ui-ref valid for both Hermeto prefetch and the image layout.
+# Overlay pnpm-lock.yaml already rewrites argo-ui to sources/argo-cd-ui-ref so Hermeto does not
+# fetch the GitHub tarball (allowed_package_sources). The package contents still come
+# from the sources/argo-cd-ui-ref submodule at the pinned commit.
+WORKDIR /usr/src/app/containers/argocd/ui
+COPY ["sources/argo-cd/ui/package.json", "containers/argocd/ui/pnpm-lock.yaml", "containers/argocd/ui/.npmrc", "containers/argocd/ui/pin-argo-ui.js", "./"]
+COPY sources/argo-cd-ui-ref /usr/src/app/sources/argo-cd-ui-ref
+RUN node pin-argo-ui.js
 
-# Hermeto inject-files (prefetch) patches pnpm-lock.yaml and creates .npmrc in the source tree.
-COPY ["sources/argo-cd/ui/package.json", "sources/argo-cd/ui/pnpm-lock.yaml", "sources/argo-cd/ui/.npmrc", "./"]
-
-RUN pnpm install --frozen-lockfile --offline
+# packageManager pins pnpm@10.28.1; use the bootstrapped pnpm offline.
+RUN pnpm config set manage-package-manager-versions false
+RUN pnpm install --frozen-lockfile --offline --ignore-scripts
 
 COPY ["sources/argo-cd/ui/", "."]
+# Restore the overlay lockfile (Hermeto-injected) and re-pin package.json after the submodule copy.
+COPY ["containers/argocd/ui/pnpm-lock.yaml", "containers/argocd/ui/pin-argo-ui.js", "./"]
+RUN node pin-argo-ui.js
 
 ARG ARGO_VERSION=latest
 ENV ARGO_VERSION=$ARGO_VERSION
@@ -65,7 +74,7 @@ ARG CI_ARGO_CD_VERSION
 ENV EXTRA_BUILD_INFO="{Vendor Information: Red Hat OpenShift GitOps version: $CI_VERSION}"
 
 # Perform the build
-COPY --from=argocd-ui /usr/src/app/argo-cd/ui/dist/app /go/src/github.com/argoproj/argo-cd/ui/dist/app
+COPY --from=argocd-ui /usr/src/app/containers/argocd/ui/dist/app /go/src/github.com/argoproj/argo-cd/ui/dist/app
 RUN export PACKAGE=github.com/argoproj/argo-cd/v3/common &&\
 export VERSION=$(cat VERSION) &&\
 export BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') &&\

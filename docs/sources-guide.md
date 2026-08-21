@@ -35,6 +35,13 @@ sources:
 make sources
 ```
 
+`make sources` also copies UI lockfiles out of the submodules and rewrites the `argo-ui` git pin to a local `file:` path so Hermeto does not fetch GitHub:
+
+- `sources/argo-rollouts/ui/pnpm-lock.yaml` → `clis/kubectl-argo-rollouts/ui/` (`file:../../../sources/argo-rollouts-ui-ref`)
+- `sources/argo-cd/ui/pnpm-lock.yaml` → `containers/argocd/ui/` (`file:../../../sources/argo-cd-ui-ref`)
+
+Argo Rollouts and Argo CD pin different `argo-ui` commits, so they use separate submodules.
+
 ## Refreshing Sources Automatically
 
 Use the updater script when you want to refresh the `sources` section directly from GitHub:
