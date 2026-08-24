@@ -4,6 +4,7 @@ set -euo pipefail
 source ./hack/deps.sh
 
 CONFIG=config.yaml
+source ./hack/ui-refs.sh
 
 echo ">>> Initializing submodules..."
 git submodule update --init --recursive
@@ -30,5 +31,7 @@ for i in $(seq 0 $((count - 1))); do
     git checkout "$commit"
   )
 done
+
+sync_ui_refs
 
 echo ">>> Sync completed."

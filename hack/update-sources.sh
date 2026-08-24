@@ -120,6 +120,8 @@ classify_ref() {
   return 1
 }
 
+source ./hack/ui-refs.sh
+
 echo ">>> Updating sources in $CONFIG..."
 count=$($YQ e '.sources | length' "$CONFIG")
 
@@ -198,6 +200,10 @@ for i in $(seq 0 $((count - 1))); do
       ;;
   esac
 done
+
+if ! sync_ui_refs; then
+  errors=1
+fi
 
 if [ "$errors" -ne 0 ]; then
   echo ">>> Source update finished with errors."

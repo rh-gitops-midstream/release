@@ -3,6 +3,7 @@ set -euo pipefail
 
 source ./hack/deps.sh
 CONFIG=config.yaml
+source ./hack/ui-refs.sh
 errors=0
 
 echo ">>> Verifying sources from $CONFIG..."
@@ -36,6 +37,8 @@ for i in $(seq 0 $((count - 1))); do
   fi
 
 done
+
+verify_ui_refs
 
 if [ "$errors" -ne 0 ]; then
   echo ">>> One or more sources failed verification."

@@ -34,14 +34,6 @@ sources:
     url: https://github.com/argoproj/argo-rollouts.git
     ref: v1.10.0-rc1
     commit: d1c296793cfd2dffc90fb89d919ee2bbf9b10ab5
-  - path: sources/argo-rollouts-ui-ref
-    url: https://github.com/argoproj/argo-ui.git
-    ref: master
-    commit: 5ff344ac9692c14dd108468bd3c020c3c75181cb
-  - path: sources/argo-cd-ui-ref
-    url: https://github.com/argoproj/argo-ui.git
-    ref: master
-    commit: ad616de862f60d5348fe41ccaa72d7b74f9c3a13
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
     ref: kustomize/v5.8.1

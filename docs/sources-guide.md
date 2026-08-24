@@ -40,7 +40,7 @@ make sources
 - `sources/argo-rollouts/ui/pnpm-lock.yaml` → `clis/kubectl-argo-rollouts/ui/` (`file:../../../sources/argo-rollouts-ui-ref`)
 - `sources/argo-cd/ui/pnpm-lock.yaml` → `containers/argocd/ui/` (`file:../../../sources/argo-cd-ui-ref`)
 
-Argo Rollouts and Argo CD pin different `argo-ui` commits, so they use separate submodules.
+Argo Rollouts and Argo CD pin different `argo-ui` commits, so they use separate submodules (`sources/argo-rollouts-ui-ref` and `sources/argo-cd-ui-ref`). Those checkouts are not listed in `config.yaml`; `make sources` sets them to the `argo-ui` git SHA pinned in the parent `ui/package.json`.
 
 ## Refreshing Sources Automatically
 
@@ -57,6 +57,7 @@ The script applies these rules:
 - It skips the mainline branches `main` and `master`.
 - If that exact ref is a tag and it looks like a release version, it searches for the latest available z-stream tag in the same major/minor stream and updates both `ref` and `commit`.
 - If a tag is not semver-like or there is no newer z-stream tag, it keeps the current `ref` and only ensures the tag commit is correct.
+- After the other sources refresh, it checks out `sources/argo-cd-ui-ref` and `sources/argo-rollouts-ui-ref` to the `argo-ui` git SHA pinned in the parent product's `ui/package.json`.
 
 ## Adding a New Source
 
