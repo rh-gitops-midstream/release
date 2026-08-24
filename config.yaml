@@ -69,7 +69,7 @@ sources:
   - path: sources/gitops-console-plugin-4-18
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: release-4.18
-    commit: d735d0cd96eeafa8a3502f5e5c84c94a42cd4b5d
+    commit: 4210de65fba1a959b58720e2be8cd2a90a45f1f7
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master
