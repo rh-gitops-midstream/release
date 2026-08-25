@@ -25,11 +25,11 @@ sources:
   - path: sources/gitops-operator
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: master
-    commit: facefc0bc143a90b8fec907c8d287793d99c2904
+    commit: 881d9810020875ee3a44daf583649a28c82b2fa0
   - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
     ref: master
-    commit: c78cce03169b628f5c76eea9893bc80d4fc846c4
+    commit: ec1defca99e1a7a1a6788b4717287958532c0ff7
   - path: sources/argo-rollouts
     url: https://github.com/argoproj/argo-rollouts.git
     ref: v1.10.0-rc1
@@ -45,7 +45,7 @@ sources:
   - path: sources/dex
     ref: v2.45.0
     url: https://github.com/rh-gitops-midstream/dex.git
-    commit: af68bd66272a6505de507fe52d441de7e5e881e4
+    commit: 4473c175de1bbabccc3b3783f1af71e342b8cd50
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
     ref: v3.7.1
@@ -53,23 +53,23 @@ sources:
   - path: sources/ssh-connect
     url: https://github.com/gotoh/ssh-connect.git
     ref: master
-    commit: b65b09a0ee06950972233e8ea86ef87c4e63b3c9
+    commit: a7443d32e6bf6f00698384b0519adc16fa7656fa
   - path: sources/tini
     url: https://github.com/krallin/tini.git
     ref: master
-    commit: 0b44d3665869e46ccbac7414241b8256d6234dc4
+    commit: 369448a167e8b3da4ca5bca0b3307500c3371828
   - path: sources/argocd-extension-installer
     url: https://github.com/argoproj-labs/argocd-extension-installer.git
     ref: main
-    commit: 44a5ab8e6998df0beb6f293b3607262db53aa8c7
+    commit: b1d11a3c312198e11e42bc6868def8ebb36f4270
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: main
-    commit: 89bc2b85e05b6abb5d4fe7c9a59c0ba295f9f452
+    commit: 2da6a8fe1a6d427164ac9dfcf7e6ee276ee5d95d
   - path: sources/gitops-console-plugin-4-18
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: release-4.18
-    commit: 4210de65fba1a959b58720e2be8cd2a90a45f1f7
+    commit: f99321a17ece9aaab4a0dd3d1534e6e082e27b9f
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master
@@ -77,7 +77,7 @@ sources:
   - path: sources/rollouts-plugin-trafficrouter-openshift
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
     ref: main
-    commit: 1495bbad184a05cde955fb21dcf35d05c3e58d98
+    commit: f316fad99b3555be0612dc34098d22392bba3492
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
@@ -85,11 +85,11 @@ sources:
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
     ref: master
-    commit: 09102635500867f4119ae63008bf1fe1ae7328b5
+    commit: 427493aca64464872b8801875141b70c6ab1318b
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: main
-    commit: 7bf329860e465e5138559fc1f6f79b7f7caba042
+    commit: e0ea1801af9c6a65b01a17bccbe93c7fa2a8d0e6
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
     ref: v1.3.0
