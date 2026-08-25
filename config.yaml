@@ -77,7 +77,7 @@ sources:
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
-    commit: cb9160c0d5d3ff42668999fc530ecacad9e69d08
+    commit: 2d10f1d873120c6ab95df99e262430f4ea05f7c5
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
     ref: master
