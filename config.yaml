@@ -29,7 +29,7 @@ sources:
   - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
     ref: master
-    commit: 2ecd93094b7036e29d9144b622d2ad600d0016e6
+    commit: c78cce03169b628f5c76eea9893bc80d4fc846c4
   - path: sources/argo-rollouts
     url: https://github.com/argoproj/argo-rollouts.git
     ref: v1.10.0-rc1

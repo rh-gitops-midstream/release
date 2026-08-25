@@ -13,6 +13,7 @@ metadata:
       target_branch == "main" &&
       (
         "sources/argo-rollouts".pathChanged() ||
+        "sources/argo-rollouts-ui-ref".pathChanged() ||
         "clis/kubectl-argo-rollouts/***".pathChanged() ||
         ".tekton/kubectl-argo-rollouts-cli-pull.yaml".pathChanged() ||
         "prefetch/pnpm/***".pathChanged() ||
@@ -52,7 +53,7 @@ spec:
   - name: dockerfile
     value: clis/kubectl-argo-rollouts/Dockerfile
   - name: prefetch-input
-    value: '[{"type":"gomod","path":"./sources/argo-rollouts"}, {"type":"npm","path":"prefetch/pnpm"}, {"type":"pnpm","path":"./sources/argo-rollouts/ui"}]'
+    value: '[{"type":"gomod","path":"./sources/argo-rollouts"}, {"type":"npm","path":"prefetch/pnpm"}, {"type":"pnpm","path":"./clis/kubectl-argo-rollouts/ui"}]'
   - name: git-metadata-directories
     value:
     - sources/argo-rollouts
