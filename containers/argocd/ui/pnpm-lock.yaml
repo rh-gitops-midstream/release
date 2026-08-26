@@ -10,7 +10,7 @@ overrides:
   normalize-url: 4.5.1
   rxjs: 6.6.7
   formidable: 2.1.3
-  dompurify: 3.4.7
+  dompurify: 3.4.0
 
 importers:
 
@@ -29,8 +29,8 @@ importers:
         specifier: ^6.1.6
         version: 6.2.6(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       argo-ui:
-        specifier: file:../../../sources/argo-cd-ui-ref
-        version: file:../../../sources/argo-cd-ui-ref(@types/react@19.2.14)(jquery@4.0.0)(react-dom@19.2.6(react@19.2.6))(react-router-dom@5.3.4(react@19.2.6))(react@19.2.6)(what-input@5.2.12)
+        specifier: git+https://github.com/argoproj/argo-ui.git#ad616de862f60d5348fe41ccaa72d7b74f9c3a13
+        version: https://codeload.github.com/argoproj/argo-ui/tar.gz/ad616de862f60d5348fe41ccaa72d7b74f9c3a13(@types/react@19.2.14)(jquery@4.0.0)(react-dom@19.2.6(react@19.2.6))(react-router-dom@5.3.4(react@19.2.6))(react@19.2.6)(what-input@5.2.12)
       buffer:
         specifier: ^6.0.3
         version: 6.0.3
@@ -59,7 +59,7 @@ importers:
         specifier: ^4.7.2
         version: 4.10.1
       js-yaml:
-        specifier: ^4.3.1
+        specifier: ^4.1.1
         version: 4.3.1
       json-merge-patch:
         specifier: ^0.2.3
@@ -94,15 +94,15 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.2.6(react@19.2.6)
-      react-ga4:
-        specifier: ^3.0.1
-        version: 3.0.1
+      react-ga:
+        specifier: ^2.7.0
+        version: 2.7.0(prop-types@15.8.1)(react@19.2.6)
       react-helmet:
         specifier: ^6.1.0
         version: 6.1.0(react@19.2.6)
       react-hot-loader:
-        specifier: ^3.1.3
-        version: 3.1.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: ^4.0.0
+        version: 4.13.1(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       react-moment:
         specifier: ^1.1.3
         version: 1.2.2(moment@2.30.1)(prop-types@15.8.1)(react@19.2.6)
@@ -318,7 +318,7 @@ importers:
         specifier: ^1.16.1
         version: 1.16.1
       postcss:
-        specifier: ^8.5.23
+        specifier: ^8.5.10
         version: 8.5.23
       prettier:
         specifier: ^3.9.6
@@ -327,8 +327,8 @@ importers:
         specifier: ^0.5.1
         version: 0.5.1
       react-toastify:
-        specifier: 11.1.0
-        version: 11.1.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 9.0.3
+        version: 9.0.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       sass:
         specifier: ^1.100.0
         version: 1.100.0
@@ -342,7 +342,7 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0(webpack@5.106.2)
       ts-jest:
-        specifier: ^29.4.12
+        specifier: ^29.1.2
         version: 29.4.12(@babel/core@7.29.6)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.29.6))(jest-util@29.7.0)(jest@29.7.0(@types/node@24.12.4)(ts-node@10.9.2(@types/node@24.12.4)(typescript@5.9.3)))(typescript@5.9.3)
       ts-node:
         specifier: 10.9.2
@@ -1776,42 +1776,36 @@ packages:
     engines: {node: '>= 10.0.0'}
     cpu: [arm]
     os: [linux]
-    libc: [glibc]
 
   '@parcel/watcher-linux-arm-musl@2.5.6':
     resolution: {integrity: sha512-Ve3gUCG57nuUUSyjBq/MAM0CzArtuIOxsBdQ+ftz6ho8n7s1i9E1Nmk/xmP323r2YL0SONs1EuwqBp2u1k5fxg==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm]
     os: [linux]
-    libc: [musl]
 
   '@parcel/watcher-linux-arm64-glibc@2.5.6':
     resolution: {integrity: sha512-f2g/DT3NhGPdBmMWYoxixqYr3v/UXcmLOYy16Bx0TM20Tchduwr4EaCbmxh1321TABqPGDpS8D/ggOTaljijOA==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@parcel/watcher-linux-arm64-musl@2.5.6':
     resolution: {integrity: sha512-qb6naMDGlbCwdhLj6hgoVKJl2odL34z2sqkC7Z6kzir8b5W65WYDpLB6R06KabvZdgoHI/zxke4b3zR0wAbDTA==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@parcel/watcher-linux-x64-glibc@2.5.6':
     resolution: {integrity: sha512-kbT5wvNQlx7NaGjzPFu8nVIW1rWqV780O7ZtkjuWaPUgpv2NMFpjYERVi0UYj1msZNyCzGlaCWEtzc+exjMGbQ==}
     engines: {node: '>= 10.0.0'}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@parcel/watcher-linux-x64-musl@2.5.6':
     resolution: {integrity: sha512-1JRFeC+h7RdXwldHzTsmdtYR/Ku8SylLgTU/reMuqdVD7CtLwf0VR1FqeprZ0eHQkO0vqsbvFLXUmYm/uNKJBg==}
     engines: {node: '>= 10.0.0'}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@parcel/watcher-win32-arm64@2.5.6':
     resolution: {integrity: sha512-3ukyebjc6eGlw9yRt678DxVF7rjXatWiHvTXqphZLvo7aC5NdEgFufVwjFfY51ijYEWpXbqF5jtrK275z52D4Q==}
@@ -2437,8 +2431,8 @@ packages:
   arg@4.1.3:
     resolution: {integrity: sha512-58S9QDqG0Xx27YwPSt9fJxivjYl432YCwfDMfZ+71RAqUrZef7LrKQZ3LHLOwCS4FLNBplP533Zx895SeOCHvA==}
 
-  argo-ui@file:../../../sources/argo-cd-ui-ref:
-    resolution: {directory: ../../../sources/argo-cd-ui-ref, type: directory, tarball: file:../../../sources/argo-cd-ui-ref}
+  argo-ui@https://codeload.github.com/argoproj/argo-ui/tar.gz/ad616de862f60d5348fe41ccaa72d7b74f9c3a13:
+    resolution: {tarball: https://codeload.github.com/argoproj/argo-ui/tar.gz/ad616de862f60d5348fe41ccaa72d7b74f9c3a13}
     version: 1.0.0
     peerDependencies:
       '@types/react': ^19.0.0
@@ -3075,8 +3069,8 @@ packages:
     resolution: {integrity: sha512-GrwoxYN+uWlzO8uhUXRl0P+kHE4GtVPfYzVLcUxPL7KNdHKj66vvlhiweIHqYYXWlw+T8iLMp42Lm67ghw4WMQ==}
     engines: {node: '>= 4'}
 
-  dompurify@3.4.7:
-    resolution: {integrity: sha512-2jBxDJY4RR06tQNy4w5FlFH7kfxsQZlufd0sbv+chfHCxeJwrFw2baUDsSwvBISD4K4RDbd0PTfy3uNXsR6siA==}
+  dompurify@3.4.0:
+    resolution: {integrity: sha512-nolgK9JcaUXMSmW+j1yaSvaEaoXYHwWyGJlkoCTghc97KgGDDSnpoU/PlEnw63Ah+TGKFOyY+X5LnxaWbCSfXg==}
 
   domutils@2.8.0:
     resolution: {integrity: sha512-w96Cjofp72M5IIhpjgobBimYEfoPjx1Vx0BSX9P30WBdZW2WIKU0T1Bd0kz2eNZ9ikjKgHbEyKx8BB6H1L3h3A==}
@@ -3132,9 +3126,6 @@ packages:
 
   error-ex@1.3.4:
     resolution: {integrity: sha512-sqQamAnR14VgCr1A618A3sGrygcpK+HEbenA/HiEAkkUwcZIIB/tgWqHFxWgOyDh4nB4JCRimh79dR5Ywc9MDQ==}
-
-  error-stack-parser@1.3.6:
-    resolution: {integrity: sha512-xhuSYd8wLgOXwNgjcPeXMPL/IiiA1Huck+OPvClpJViVNNlJVtM41o+1emp7bPvlCJwCatFX2DWc05/DgfbWzA==}
 
   es-abstract@1.24.2:
     resolution: {integrity: sha512-2FpH9Q5i2RRwyEP1AylXe6nYLR5OhaJTZwmlcP0dL/+JCbgg7yyEo/sEK6HeGZRf3dFpWwThaRHVApXSkW3xeg==}
@@ -3274,6 +3265,7 @@ packages:
   eslint@9.39.4:
     resolution: {integrity: sha512-XoMjdBOwe/esVgEvLmNsD3IRHkm7fbKIUGvrleloJXUZgDHig2IPWNniv+GwjyJXzuNqVjlr5+4yVUZjycJwfQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -4878,9 +4870,6 @@ packages:
       react: ^0.14.7 || ^15.0.0-0 || ^16.0.0-0
       react-dom: ^0.14.7 || ^15.0.0-0 || ^16.0.0-0
 
-  react-deep-force-update@2.1.3:
-    resolution: {integrity: sha512-lqD4eHKVuB65RyO/hGbEST53E2/GPbcIPcFYyeW/p4vNngtH4G7jnKGlU6u1OqrFo0uNfIvwuBOg98IbLHlNEA==}
-
   react-diff-view@3.3.3:
     resolution: {integrity: sha512-CPveApk6n7ZbkW7T6PoptR7LWAvD9hohTHZ7WnKnu3GZkTfUB5rvg486apPo94iYVi4fZd3Nt+rtBZ5877exoQ==}
     peerDependencies:
@@ -4894,17 +4883,27 @@ packages:
   react-fast-compare@3.2.2:
     resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
 
-  react-ga4@3.0.1:
-    resolution: {integrity: sha512-GyCc01bSheWXjzGDyHsXMOqk/SP5Cf/JrcJTg4hcpKx4eeSwaJKpJUc+ipF4ffLTZkmabmf3ZGBv4OKHTXNXyA==}
+  react-ga@2.7.0:
+    resolution: {integrity: sha512-AjC7UOZMvygrWTc2hKxTDvlMXEtbmA0IgJjmkhgmQQ3RkXrWR11xEagLGFGaNyaPnmg24oaIiaNPnEoftUhfXA==}
+    peerDependencies:
+      prop-types: ^15.6.0
+      react: ^15.6.2 || ^16.0
 
   react-helmet@6.1.0:
     resolution: {integrity: sha512-4uMzEY9nlDlgxr61NL3XbKRy1hEkXmKNXhjbAIOVw5vcFrsdYbH2FEwcNyWvWinl103nXgzYNlns9ca+8kFiWw==}
     peerDependencies:
       react: '>=16.3.0'
 
-  react-hot-loader@3.1.3:
-    resolution: {integrity: sha512-d7nZf78irxoGN5PY4zd6CSgZiroOhvIWzRast3qwTn4sSnBwlt08kV8WMQ9mitmxEdlCTwZt+5ClrRSjxWguMQ==}
+  react-hot-loader@4.13.1:
+    resolution: {integrity: sha512-ZlqCfVRqDJmMXTulUGic4lN7Ic1SXgHAFw7y/Jb7t25GBgTR0fYAJ8uY4mrpxjRyWGWmqw77qJQGnYbzCvBU7g==}
     engines: {node: '>= 6'}
+    peerDependencies:
+      '@types/react': ^19.0.0
+      react: ^15.0.0 || ^16.0.0 || ^17.0.0
+      react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -4929,9 +4928,6 @@ packages:
     resolution: {integrity: sha512-TptZE37HPkT3R+7AszWA++LOTIsIHXcCSWMP9WW/abeF8sLpJzExFB/dVs7xbtqteJ5njF6kk+udTDC0AR3y5w==}
     peerDependencies:
       react: ^16 || ^17 || ^18 || ^19
-
-  react-proxy@3.0.0-alpha.1:
-    resolution: {integrity: sha512-uyPHKDJ99eBf/wTi768z176I8+c2NvGG5wKdctvHJO5XyZl/brIiwDQ+HBA8Zag5nDdTICYxdBafxBiUxJARrQ==}
 
   react-router-dom@5.3.4:
     resolution: {integrity: sha512-m4EqFMHv/Ih4kpcBCONHbkT68KoAeHN4p3lAGoNryfHi0dMy0kCzEZakiKRsvg5wHZ/JLrLW8o8KomWiz/qbYQ==}
@@ -4959,11 +4955,11 @@ packages:
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
 
-  react-toastify@11.1.0:
-    resolution: {integrity: sha512-e9h23x3phN0wbFeB6yovmWp7lobzV4CaCH0LO8nVP6H7Y+3GbcLpIzMm9dJhcp1RXbpyfvjgpfXqO80QAmn7sg==}
+  react-toastify@9.0.3:
+    resolution: {integrity: sha512-0QZJk0SqYBxouRBGCFU3ymvjlwimRRhVH7SzqGRiVrQ001KSoUNbGKx9Yq42aoPv18n45yJzEFG82zqv3HnASg==}
     peerDependencies:
-      react: ^18 || ^19
-      react-dom: ^18 || ^19
+      react: '>=16'
+      react-dom: '>=16'
 
   react-virtualized@9.22.6:
     resolution: {integrity: sha512-U5j7KuUQt3AaMatlMJ0UJddqSiX+Km0YJxSqbAzIiGw5EmNz0khMyqP2hzgu4+QUtm+QPIrxzUX4raJxmVJnHg==}
@@ -4993,12 +4989,6 @@ packages:
   rechoir@0.8.0:
     resolution: {integrity: sha512-/vxpCXddiX8NGfGO/mTafwjq4aFa/71pvamip0++IQk3zG8cbCj0fifNPrjjF1XMXUne91jL9OoxmdykoEtifQ==}
     engines: {node: '>= 10.13.0'}
-
-  redbox-react@1.6.0:
-    resolution: {integrity: sha512-mLjM5eYR41yOp5YKHpd3syFeGq6B4Wj5vZr64nbLvTZW5ZLff4LYk7VE4ITpVxkZpCY6OZuqh0HiP3A3uEaCpg==}
-    peerDependencies:
-      react: ^0.14.0 || ^15.0.0 || ^16.0.0-beta || ^16.0.0
-      react-dom: ^0.14.0 || ^15.0.0 || ^16.0.0-beta || ^16.0.0
 
   redent@3.0.0:
     resolution: {integrity: sha512-6tDA8g98We0zd0GvVeMT9arEOnTw9qM03L9cJXaCjrip1OO764RDBLBfrB4cwzNGDj5OA5ioymC9GkizgWJDUg==}
@@ -5235,6 +5225,9 @@ packages:
   shallow-equal@3.1.0:
     resolution: {integrity: sha512-pfVOw8QZIXpMbhBWvzBISicvToTiM5WBF1EeAUZDDSb5Dt29yl4AYbyywbJFSEsRUMr7gJaxqCdr4L3tQf9wVg==}
 
+  shallowequal@1.1.0:
+    resolution: {integrity: sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ==}
+
   shebang-command@2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
     engines: {node: '>=8'}
@@ -5325,16 +5318,13 @@ packages:
   source-map-support@0.5.21:
     resolution: {integrity: sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==}
 
-  source-map@0.5.6:
-    resolution: {integrity: sha512-MjZkVp0NHr5+TPihLcadqnlVoGIoWo4IBHptutGh9wI3ttUYvCG26HkSuDi+K6lsZ25syXJXcctwgyVCt//xqA==}
-    engines: {node: '>=0.10.0'}
-
   source-map@0.6.1:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
 
-  sourcemapped-stacktrace@1.1.11:
-    resolution: {integrity: sha512-O0pcWjJqzQFVsisPlPXuNawJHHg9N9UgpJ/aDmvi9+vnS3x1C0NhwkVFzzZ1VN0Xo+bekyweoqYvBw5ZBKiNnQ==}
+  source-map@0.7.6:
+    resolution: {integrity: sha512-i5uvt8C3ikiWeNZSVZNWcfZPItFQOsYTUAOkcUPGd8DqDy1uOUikjt5dG+uRlwyvR108Fb9DOd4GvXfT0N2/uQ==}
+    engines: {node: '>= 12'}
 
   spdy-transport@3.0.0:
     resolution: {integrity: sha512-hsLVFE5SjA6TCisWeJXFKniGGOpBgMLmerfO2aCyCU5s7nJ/rpAepqmFifv/GCbSbueEeAJJnmSQ2rKC/g8Fcw==}
@@ -5349,9 +5339,6 @@ packages:
   stack-utils@2.0.6:
     resolution: {integrity: sha512-XlkWvfIm6RmsWtNJx+uqtKLS8eqFbxUg0ZzLXqY0caEy9l7hruX8IpiDnjsLavoBgqCCR71TqWO8MaXYheJ3RQ==}
     engines: {node: '>=10'}
-
-  stackframe@0.3.1:
-    resolution: {integrity: sha512-XmoiF4T5nuWEp2x2w92WdGjdHGY/cZa6LIbRsDRQR/Xlk4uW0PAUlH1zJYVffocwKpCdwyuypIp25xsSXEtZHw==}
 
   statuses@1.5.0:
     resolution: {integrity: sha512-OpZ3zP+jT1PI7I8nemJX4AKmAX070ZkYPVWV/AaKTJl+tXCTGyVdC1a4SL8RUQYEwk/f34ZX8UTykN68FwrqAA==}
@@ -8491,7 +8478,7 @@ snapshots:
 
   arg@4.1.3: {}
 
-  argo-ui@file:../../../sources/argo-cd-ui-ref(@types/react@19.2.14)(jquery@4.0.0)(react-dom@19.2.6(react@19.2.6))(react-router-dom@5.3.4(react@19.2.6))(react@19.2.6)(what-input@5.2.12):
+  argo-ui@https://codeload.github.com/argoproj/argo-ui/tar.gz/ad616de862f60d5348fe41ccaa72d7b74f9c3a13(@types/react@19.2.14)(jquery@4.0.0)(react-dom@19.2.6(react@19.2.6))(react-router-dom@5.3.4(react@19.2.6))(react@19.2.6)(what-input@5.2.12):
     dependencies:
       '@fortawesome/fontawesome-free': 6.7.2
       '@tippy.js/react': 3.1.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -8506,7 +8493,7 @@ snapshots:
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
       react-router-dom: 5.3.4(react@19.2.6)
-      react-toastify: 11.1.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react-toastify: 9.0.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       rxjs: 6.6.7
       typescript: 4.9.5
       uuid: 9.0.1
@@ -9194,7 +9181,7 @@ snapshots:
     dependencies:
       domelementtype: 2.3.0
 
-  dompurify@3.4.7:
+  dompurify@3.4.0:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
@@ -9250,10 +9237,6 @@ snapshots:
   error-ex@1.3.4:
     dependencies:
       is-arrayish: 0.2.1
-
-  error-stack-parser@1.3.6:
-    dependencies:
-      stackframe: 0.3.1
 
   es-abstract@1.24.2:
     dependencies:
@@ -11399,8 +11382,6 @@ snapshots:
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
 
-  react-deep-force-update@2.1.3: {}
-
   react-diff-view@3.3.3(react@19.2.6):
     dependencies:
       classnames: 2.5.1
@@ -11418,7 +11399,10 @@ snapshots:
 
   react-fast-compare@3.2.2: {}
 
-  react-ga4@3.0.1: {}
+  react-ga@2.7.0(prop-types@15.8.1)(react@19.2.6):
+    dependencies:
+      prop-types: 15.8.1
+      react: 19.2.6
 
   react-helmet@6.1.0(react@19.2.6):
     dependencies:
@@ -11428,16 +11412,20 @@ snapshots:
       react-fast-compare: 3.2.2
       react-side-effect: 2.1.2(react@19.2.6)
 
-  react-hot-loader@3.1.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6):
+  react-hot-loader@4.13.1(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6):
     dependencies:
+      fast-levenshtein: 2.0.6
       global: 4.4.0
-      react-deep-force-update: 2.1.3
-      react-proxy: 3.0.0-alpha.1
-      redbox-react: 1.6.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      source-map: 0.6.1
-    transitivePeerDependencies:
-      - react
-      - react-dom
+      hoist-non-react-statics: 3.3.2
+      loader-utils: 2.0.4
+      prop-types: 15.8.1
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
+      react-lifecycles-compat: 3.0.4
+      shallowequal: 1.1.0
+      source-map: 0.7.6
+    optionalDependencies:
+      '@types/react': 19.2.14
 
   react-is@16.13.1: {}
 
@@ -11457,10 +11445,6 @@ snapshots:
     dependencies:
       prop-types: 15.8.1
       react: 19.2.6
-
-  react-proxy@3.0.0-alpha.1:
-    dependencies:
-      lodash: 4.18.1
 
   react-router-dom@5.3.4(react@19.2.6):
     dependencies:
@@ -11501,9 +11485,9 @@ snapshots:
       prop-types: 15.8.1
       react: 19.2.6
 
-  react-toastify@11.1.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6):
+  react-toastify@9.0.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6):
     dependencies:
-      clsx: 2.1.1
+      clsx: 1.2.1
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
 
@@ -11546,15 +11530,6 @@ snapshots:
     dependencies:
       resolve: 1.22.12
 
-  redbox-react@1.6.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6):
-    dependencies:
-      error-stack-parser: 1.3.6
-      object-assign: 4.1.1
-      prop-types: 15.8.1
-      react: 19.2.6
-      react-dom: 19.2.6(react@19.2.6)
-      sourcemapped-stacktrace: 1.1.11
-
   redent@3.0.0:
     dependencies:
       indent-string: 4.0.0
@@ -11566,7 +11541,7 @@ snapshots:
       classnames: 2.5.1
       core-js: 3.49.0
       decko: 1.2.0
-      dompurify: 3.4.7
+      dompurify: 3.4.0
       eventemitter3: 5.0.4
       json-pointer: 0.6.2
       lunr: 2.3.9
@@ -11843,6 +11818,8 @@ snapshots:
 
   shallow-equal@3.1.0: {}
 
+  shallowequal@1.1.0: {}
+
   shebang-command@2.0.0:
     dependencies:
       shebang-regex: 3.0.0
@@ -11951,13 +11928,9 @@ snapshots:
       buffer-from: 1.1.2
       source-map: 0.6.1
 
-  source-map@0.5.6: {}
-
   source-map@0.6.1: {}
 
-  sourcemapped-stacktrace@1.1.11:
-    dependencies:
-      source-map: 0.5.6
+  source-map@0.7.6: {}
 
   spdy-transport@3.0.0:
     dependencies:
@@ -11985,8 +11958,6 @@ snapshots:
   stack-utils@2.0.6:
     dependencies:
       escape-string-regexp: 2.0.0
-
-  stackframe@0.3.1: {}
 
   statuses@1.5.0: {}
 
