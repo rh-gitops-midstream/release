@@ -12,6 +12,10 @@
     "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8",
     "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9",
   ],
+  "ignorePaths": [
+    "containers/argocd/ui/**",
+    "clis/kubectl-argo-rollouts/ui/**"
+  ]
   "packageRules": [
     {
       "matchManagers": [
