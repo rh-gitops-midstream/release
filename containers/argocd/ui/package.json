@@ -80,7 +80,7 @@
     "@testing-library/user-event": "^14.5.0",
     "@tippy.js/react": "^3.1.1",
     "@types/classnames": "^2.2.3",
-    "@types/cookie": "^0.5.1",
+    "@types/cookie": "^0.6.0",
     "@types/dagre": "0.7.54",
     "@types/deepmerge": "^2.2.0",
     "@types/git-url-parse": "^9.0.1",
