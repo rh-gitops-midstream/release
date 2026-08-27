@@ -20,9 +20,9 @@ metadata:
   creationTimestamp: null
   labels:
     appstudio.openshift.io/application: gitops-main
-    appstudio.openshift.io/component: gitops-promoter-main
+    appstudio.openshift.io/component: gitops-promoter-cli-main
     pipelines.appstudio.openshift.io/type: build
-  name: gitops-promoter-main-on-push
+  name: gitops-promoter-cli-main-on-push
   namespace: rh-openshift-gitops-tenant
 spec:
   params:
@@ -31,7 +31,7 @@ spec:
     - name: revision
       value: "{{revision}}"
     - name: output-image
-      value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-promoter:{{revision}}
+      value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-promoter-cli:{{revision}}
     - name: build-platforms
       value:
         - linux/x86_64
@@ -48,7 +48,7 @@ spec:
   pipelineRef:
     name: build-multi-platform-image
   taskRunTemplate:
-    serviceAccountName: build-pipeline-gitops-promoter-main
+    serviceAccountName: build-pipeline-gitops-promoter-cli-main
   workspaces:
     - name: git-auth
       secret:
