@@ -179,7 +179,7 @@ metadata:
       ]
     capabilities: Deep Insights
     console.openshift.io/plugins: '["gitops-plugin"]'
-    containerImage: registry.redhat.io/openshift-gitops-1/gitops-rhel9-operator@sha256:eb57ee768b35a475bdd5ed743479d2e560fc0d4807e79208f2f837ced7326bca
+    containerImage: registry.redhat.io/openshift-gitops-1/gitops-rhel9-operator@sha256:eb65e933c35a515ed50511a191f44eb4bff076cc8fb7d531d210c3c0cb4321c3
     createdAt: "2026-05-20T03:47:13Z"
     description: Enables teams to adopt GitOps principles for managing cluster configurations and application delivery across hybrid multi-cluster Kubernetes environments.
     features.operators.openshift.io/disconnected: "true"
@@ -198,7 +198,7 @@ metadata:
     support: Red Hat
     operators.openshift.io/valid-subscription: '["OpenShift Container Platform", "OpenShift Platform Plus"]'
     operators.operatorframework.io/internal-objects: '["gitopsservices.pipelines.openshift.io"]'
-    operators.openshift.io/must-gather-image: registry.redhat.io/openshift-gitops-1/must-gather-rhel9@sha256:43d493fb50f2ccd7b355da3f1518fa5883554b00e7e635e6699b418ac2a98530
+    operators.openshift.io/must-gather-image: registry.redhat.io/openshift-gitops-1/must-gather-rhel9@sha256:2264ca79ceb313bfec7a64cb0ce1c44d4be1b1427e27512eed6a9a4cb71bf5ed
     features.operators.openshift.io/cnf: 'false'
     features.operators.openshift.io/cni: 'false'
     features.operators.openshift.io/csi: 'false'
@@ -843,19 +843,19 @@ spec:
                       - name: ENABLE_CONVERSION_WEBHOOK
                         value: 'true'
                       - name: RELATED_IMAGE_ARGOCD_DEX_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/dex-rhel9@sha256:b2b08ffd72ea707def95a407fcc389d3019bea1135094761fc0e4eee51576f9a
+                        value: registry.redhat.io/openshift-gitops-1/dex-rhel9@sha256:7ce221bf355547fc8834807014d75d6dac80f3efe0299ac353e0f855bb0acd79
                       - name: ARGOCD_DEX_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/dex-rhel9@sha256:b2b08ffd72ea707def95a407fcc389d3019bea1135094761fc0e4eee51576f9a
+                        value: registry.redhat.io/openshift-gitops-1/dex-rhel9@sha256:7ce221bf355547fc8834807014d75d6dac80f3efe0299ac353e0f855bb0acd79
                       - name: RELATED_IMAGE_BACKEND_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/gitops-rhel9@sha256:b315c5606a063ab1ab5c49d2e435f4bb4faa43557faf97601f9d2ab43e407cf3
+                        value: registry.redhat.io/openshift-gitops-1/gitops-rhel9@sha256:90b474fe9fa42e59297dacff78b8457a66d9b7a18c2372e48e9505b7ca301853
                       - name: BACKEND_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/gitops-rhel9@sha256:b315c5606a063ab1ab5c49d2e435f4bb4faa43557faf97601f9d2ab43e407cf3
+                        value: registry.redhat.io/openshift-gitops-1/gitops-rhel9@sha256:90b474fe9fa42e59297dacff78b8457a66d9b7a18c2372e48e9505b7ca301853
                       - name: RELATED_IMAGE_ARGOCD_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:ec3e3a114ff1185ca0f1f06e04d4f5c952ee11ae2fed7df3616a25b3a0ac6356
+                        value: registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:b7c77fb34c8be37040d7c28427040e7f47137973035f4dd4a9b88e8ba5e2f454
                       - name: ARGOCD_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:ec3e3a114ff1185ca0f1f06e04d4f5c952ee11ae2fed7df3616a25b3a0ac6356
+                        value: registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:b7c77fb34c8be37040d7c28427040e7f47137973035f4dd4a9b88e8ba5e2f454
                       - name: ARGOCD_REPOSERVER_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:ec3e3a114ff1185ca0f1f06e04d4f5c952ee11ae2fed7df3616a25b3a0ac6356
+                        value: registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:b7c77fb34c8be37040d7c28427040e7f47137973035f4dd4a9b88e8ba5e2f454
                       - name: RELATED_IMAGE_ARGOCD_REDIS_IMAGE
                         value: registry.redhat.io/rhel9/redis-7@sha256:a80410df2069f112c05b633a7756f767163d4084dad8fbcd224ace63870f76e8
                       - name: ARGOCD_REDIS_IMAGE
@@ -867,34 +867,34 @@ spec:
                       - name: ARGOCD_REDIS_HA_PROXY_IMAGE
                         value: registry.redhat.io/openshift4/ose-haproxy-router-rhel9@sha256:49b80fd7b8516b7eacb1d5b57fc73ea0d7a76b9b203e6e4f5d7753da4224c52a
                       - name: RELATED_IMAGE_GITOPS_CONSOLE_PLUGIN_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/console-plugin-rhel9@sha256:5d7d926480f49bbb0219c43aedddc665808e5430ecbec47c0ade0dce3d3d15ee
+                        value: registry.redhat.io/openshift-gitops-1/console-plugin-rhel9@sha256:e2b85d57c612bcd3e3b7b1d396d3c4c2f1a07d5ae13371fbd8cb76fe6d7aa2d2
                       - name: GITOPS_CONSOLE_PLUGIN_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/console-plugin-rhel9@sha256:5d7d926480f49bbb0219c43aedddc665808e5430ecbec47c0ade0dce3d3d15ee
+                        value: registry.redhat.io/openshift-gitops-1/console-plugin-rhel9@sha256:e2b85d57c612bcd3e3b7b1d396d3c4c2f1a07d5ae13371fbd8cb76fe6d7aa2d2
                       - name: RELATED_IMAGE_ARGOCD_EXTENSION_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel9@sha256:238ce1658cb85e5b3e1b7182ba6a0b1ce209a24230a0957e2d6c899a695c9679
+                        value: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel9@sha256:747884f54b8c6afdb02ec27c89299dbc5539b8d5391f97c37ecbeb165e26fdf1
                       - name: ARGOCD_EXTENSION_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel9@sha256:238ce1658cb85e5b3e1b7182ba6a0b1ce209a24230a0957e2d6c899a695c9679
+                        value: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel9@sha256:747884f54b8c6afdb02ec27c89299dbc5539b8d5391f97c37ecbeb165e26fdf1
                       - name: RELATED_IMAGE_ARGO_ROLLOUTS_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel9@sha256:97dba2e10e9550e0f5a10dc97421ced6ffaeedd352e03e60576f7960c884f21f
+                        value: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel9@sha256:67501bbb1cab3d3e91b19174f780723669484c46d08488afbe3803618077cee0
                       - name: ARGO_ROLLOUTS_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel9@sha256:97dba2e10e9550e0f5a10dc97421ced6ffaeedd352e03e60576f7960c884f21f
+                        value: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel9@sha256:67501bbb1cab3d3e91b19174f780723669484c46d08488afbe3803618077cee0
                       - name: RELATED_IMAGE_MUST_GATHER_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/must-gather-rhel9@sha256:43d493fb50f2ccd7b355da3f1518fa5883554b00e7e635e6699b418ac2a98530
+                        value: registry.redhat.io/openshift-gitops-1/must-gather-rhel9@sha256:2264ca79ceb313bfec7a64cb0ce1c44d4be1b1427e27512eed6a9a4cb71bf5ed
                       - name: RELATED_IMAGE_KUBE_RBAC_PROXY_IMAGE
                         value: registry.redhat.io/openshift4/ose-kube-rbac-proxy-rhel9@sha256:3f829dbe77cfd050983a585ccd98fbc5aa9553d04500ee1fe164933635df742a
                       - name: ARGOCD_PRINCIPAL_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9@sha256:74a06cfde48f008aeb250bdebb07e8bea3749e6b21b8e10bf412ca223fe7195c
+                        value: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9@sha256:19c44b799f2639eacb0d3f577fb8cbe09c3784d3fb11a6d54035d3bd5927dad8
                       - name: RELATED_IMAGE_ARGOCD_PRINCIPAL_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9@sha256:74a06cfde48f008aeb250bdebb07e8bea3749e6b21b8e10bf412ca223fe7195c
+                        value: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9@sha256:19c44b799f2639eacb0d3f577fb8cbe09c3784d3fb11a6d54035d3bd5927dad8
                       - name: ARGOCD_AGENT_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9@sha256:74a06cfde48f008aeb250bdebb07e8bea3749e6b21b8e10bf412ca223fe7195c
+                        value: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9@sha256:19c44b799f2639eacb0d3f577fb8cbe09c3784d3fb11a6d54035d3bd5927dad8
                       - name: RELATED_IMAGE_ARGOCD_AGENT_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9@sha256:74a06cfde48f008aeb250bdebb07e8bea3749e6b21b8e10bf412ca223fe7195c
+                        value: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9@sha256:19c44b799f2639eacb0d3f577fb8cbe09c3784d3fb11a6d54035d3bd5927dad8
                       - name: ARGOCD_IMAGE_UPDATER_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel9@sha256:1a2ee7763263fe849a3b70ee5071f86a874eacba6f4f8798e57bed35a3b167fe
+                        value: registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel9@sha256:deed04396ca003454e4ffce984962bd11344fe4c8e36e449e293d66b76f22b9e
                       - name: RELATED_IMAGE_ARGOCD_IMAGE_UPDATER_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel9@sha256:1a2ee7763263fe849a3b70ee5071f86a874eacba6f4f8798e57bed35a3b167fe
-                    image: registry.redhat.io/openshift-gitops-1/gitops-rhel9-operator@sha256:eb57ee768b35a475bdd5ed743479d2e560fc0d4807e79208f2f837ced7326bca
+                        value: registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel9@sha256:deed04396ca003454e4ffce984962bd11344fe4c8e36e449e293d66b76f22b9e
+                    image: registry.redhat.io/openshift-gitops-1/gitops-rhel9-operator@sha256:eb65e933c35a515ed50511a191f44eb4bff076cc8fb7d531d210c3c0cb4321c3
                     livenessProbe:
                       httpGet:
                         path: /healthz
@@ -1029,32 +1029,32 @@ spec:
       webhookPath: /convert
   relatedImages:
     - name: manager
-      image: registry.redhat.io/openshift-gitops-1/gitops-rhel9-operator@sha256:eb57ee768b35a475bdd5ed743479d2e560fc0d4807e79208f2f837ced7326bca
+      image: registry.redhat.io/openshift-gitops-1/gitops-rhel9-operator@sha256:eb65e933c35a515ed50511a191f44eb4bff076cc8fb7d531d210c3c0cb4321c3
     - name: kube-rbac-proxy
       image: registry.redhat.io/openshift4/ose-kube-rbac-proxy-rhel9@sha256:3f829dbe77cfd050983a585ccd98fbc5aa9553d04500ee1fe164933635df742a
     - name: kube_rbac_proxy_image
       image: registry.redhat.io/openshift4/ose-kube-rbac-proxy-rhel9@sha256:3f829dbe77cfd050983a585ccd98fbc5aa9553d04500ee1fe164933635df742a
     - name: argocd_dex_image
-      image: registry.redhat.io/openshift-gitops-1/dex-rhel9@sha256:b2b08ffd72ea707def95a407fcc389d3019bea1135094761fc0e4eee51576f9a
+      image: registry.redhat.io/openshift-gitops-1/dex-rhel9@sha256:7ce221bf355547fc8834807014d75d6dac80f3efe0299ac353e0f855bb0acd79
     - name: backend_image
-      image: registry.redhat.io/openshift-gitops-1/gitops-rhel9@sha256:b315c5606a063ab1ab5c49d2e435f4bb4faa43557faf97601f9d2ab43e407cf3
+      image: registry.redhat.io/openshift-gitops-1/gitops-rhel9@sha256:90b474fe9fa42e59297dacff78b8457a66d9b7a18c2372e48e9505b7ca301853
     - name: argocd_image
-      image: registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:ec3e3a114ff1185ca0f1f06e04d4f5c952ee11ae2fed7df3616a25b3a0ac6356
+      image: registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:b7c77fb34c8be37040d7c28427040e7f47137973035f4dd4a9b88e8ba5e2f454
     - name: argocd_redis_image
       image: registry.redhat.io/rhel9/redis-7@sha256:a80410df2069f112c05b633a7756f767163d4084dad8fbcd224ace63870f76e8
     - name: argocd_redis_ha_proxy_image
       image: registry.redhat.io/openshift4/ose-haproxy-router-rhel9@sha256:49b80fd7b8516b7eacb1d5b57fc73ea0d7a76b9b203e6e4f5d7753da4224c52a
     - name: gitops_console_plugin_image
-      image: registry.redhat.io/openshift-gitops-1/console-plugin-rhel9@sha256:5d7d926480f49bbb0219c43aedddc665808e5430ecbec47c0ade0dce3d3d15ee
+      image: registry.redhat.io/openshift-gitops-1/console-plugin-rhel9@sha256:e2b85d57c612bcd3e3b7b1d396d3c4c2f1a07d5ae13371fbd8cb76fe6d7aa2d2
     - name: argocd_extension_image
-      image: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel9@sha256:238ce1658cb85e5b3e1b7182ba6a0b1ce209a24230a0957e2d6c899a695c9679
+      image: registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel9@sha256:747884f54b8c6afdb02ec27c89299dbc5539b8d5391f97c37ecbeb165e26fdf1
     - name: argo_rollouts_image
-      image: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel9@sha256:97dba2e10e9550e0f5a10dc97421ced6ffaeedd352e03e60576f7960c884f21f
+      image: registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel9@sha256:67501bbb1cab3d3e91b19174f780723669484c46d08488afbe3803618077cee0
     - name: must_gather_image
-      image: registry.redhat.io/openshift-gitops-1/must-gather-rhel9@sha256:43d493fb50f2ccd7b355da3f1518fa5883554b00e7e635e6699b418ac2a98530
+      image: registry.redhat.io/openshift-gitops-1/must-gather-rhel9@sha256:2264ca79ceb313bfec7a64cb0ce1c44d4be1b1427e27512eed6a9a4cb71bf5ed
     - name: argocd_principal_image
-      image: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9@sha256:74a06cfde48f008aeb250bdebb07e8bea3749e6b21b8e10bf412ca223fe7195c
+      image: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9@sha256:19c44b799f2639eacb0d3f577fb8cbe09c3784d3fb11a6d54035d3bd5927dad8
     - name: argocd_agent_image
-      image: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9@sha256:74a06cfde48f008aeb250bdebb07e8bea3749e6b21b8e10bf412ca223fe7195c
+      image: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9@sha256:19c44b799f2639eacb0d3f577fb8cbe09c3784d3fb11a6d54035d3bd5927dad8
     - name: argocd_image_updater_image
-      image: registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel9@sha256:1a2ee7763263fe849a3b70ee5071f86a874eacba6f4f8798e57bed35a3b167fe
+      image: registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel9@sha256:deed04396ca003454e4ffce984962bd11344fe4c8e36e449e293d66b76f22b9e
