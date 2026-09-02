@@ -4,15 +4,11 @@ set -euo pipefail
 source ./hack/deps.sh
 
 CONFIG=config.yaml
-SKIP_MAIN=false
 errors=0
 updated=0
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
-    --skip-main)
-      SKIP_MAIN=true
-      ;;
     -*)
       echo "Unknown option: $1" >&2
       exit 1
@@ -24,23 +20,6 @@ while [ "$#" -gt 0 ]; do
 
   shift
 done
-
-IGNORED_BRANCH_REFS=()
-if [ "$SKIP_MAIN" = true ]; then
-  IGNORED_BRANCH_REFS=(main master)
-fi
-
-is_ignored_branch_ref() {
-  local ref=$1
-
-  for ignored_ref in "${IGNORED_BRANCH_REFS[@]}"; do
-    if [ "$ref" = "$ignored_ref" ]; then
-      return 0
-    fi
-  done
-
-  return 1
-}
 
 escape_regex() {
   printf '%s' "$1" | sed 's/[.[\*^$()+?{|]/\\&/g; s#/#\\/#g'
@@ -135,8 +114,14 @@ for i in $(seq 0 $((count - 1))); do
   url=$($YQ e ".sources[$i].url" "$CONFIG")
   ref=$($YQ e ".sources[$i].ref" "$CONFIG")
   commit=$($YQ e ".sources[$i].commit" "$CONFIG")
+  auto_update=$($YQ e ".sources[$i].auto-update // true" "$CONFIG")
 
   echo ">>> Processing $path ($ref)"
+
+  if [ "$auto_update" = "false" ]; then
+    echo "- Skipping $path (auto-update: false)"
+    continue
+  fi
 
   if ! ref_type=$(classify_ref "$url" "$ref"); then
     echo "✗ Could not resolve ref '$ref' in $url"
@@ -146,11 +131,6 @@ for i in $(seq 0 $((count - 1))); do
 
   case "$ref_type" in
     branch)
-      if is_ignored_branch_ref "$ref"; then
-        echo "- Skipping ignored branch ref '$ref'"
-        continue
-      fi
-
       new_commit=$(branch_commit "$url" "$ref")
       if [ -z "$new_commit" ]; then
         echo "✗ Could not resolve latest commit for branch '$ref' in $url"

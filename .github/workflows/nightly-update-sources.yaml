@@ -38,12 +38,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Update sources
-        run: |
-          if [[ "${{ matrix.branch }}" == "main" ]]; then
-            make update-sources
-          else
-            make update-sources SKIP_MAIN=true
-          fi
+        run: make update-sources
 
       - name: Create Pull Request
         id: create_pr

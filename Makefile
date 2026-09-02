@@ -17,7 +17,7 @@ sources:
 
 .PHONY: update-sources
 update-sources: deps
-	@bash ./hack/update-sources.sh $(if $(filter true 1 yes,$(SKIP_MAIN)),--skip-main,) $(UPDATE_SOURCES_ARGS)
+	@bash ./hack/update-sources.sh $(UPDATE_SOURCES_ARGS)
 	@$(MAKE) sources
 
 # Update bundle manifests with latest images
