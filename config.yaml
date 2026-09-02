@@ -75,12 +75,12 @@ sources:
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: main
-    commit: 2da6a8fe1a6d427164ac9dfcf7e6ee276ee5d95d
+    commit: 3ea06fd60b5aeefd514988a108bc805c940687e7
     auto-update: true
   - path: sources/gitops-console-plugin-4-18
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: release-4.18
-    commit: f99321a17ece9aaab4a0dd3d1534e6e082e27b9f
+    commit: be9441150705d789652822d8fe9396f132dd4bf1
     auto-update: true
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
