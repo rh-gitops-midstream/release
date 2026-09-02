@@ -1,0 +1,582 @@
+name: Build Release Candidate
+
+on:
+  schedule:
+    - cron: '0 20 * * *'
+    - cron: '0 22 * * *'
+    - cron: '0 0 * * *'
+    - cron: '0 2 * * *'
+
+  workflow_dispatch:
+    inputs:
+      TARGET_BRANCH:
+        description: 'Branch to build RC for (e.g. release-1.21, main)'
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  build-rc:
+    name: Build RC
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+
+    permissions:
+      checks: read
+      contents: write
+      pull-requests: write
+
+    steps:
+      # ──────────────────────────────────────────────
+      # Setup
+      # ──────────────────────────────────────────────
+
+      - name: Determine target branch
+        id: branch
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            TARGET_BRANCH="${{ inputs.TARGET_BRANCH }}"
+          else
+            case "${{ github.event.schedule }}" in
+              "0 20 * * *")
+                TARGET_BRANCH="release-1.19"
+                ;;
+              "0 22 * * *")
+                TARGET_BRANCH="release-1.20"
+                ;;
+              "0 0 * * *")
+                TARGET_BRANCH="release-1.21"
+                ;;
+              "0 2 * * *")
+                TARGET_BRANCH="main"
+                ;;
+              *)
+                echo "Unknown schedule: ${{ github.event.schedule }}"
+                exit 1
+                ;;
+            esac
+          fi
+
+          echo "target=$TARGET_BRANCH" >> "$GITHUB_OUTPUT"
+          echo "Using branch: $TARGET_BRANCH"
+
+      - name: Checkout code
+        uses: actions/checkout@8410ad0602e1e429cee44a835ae9f77f654a6694 # v4.0.0
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.branch.outputs.target }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: true
+
+      - name: Set up Git config
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y skopeo podman
+
+      - name: Log in to registry.redhat.io
+        run: |
+          mkdir -p ~/.config/containers
+          podman login registry.redhat.io -u ${{ secrets.RH_USERNAME }} -p ${{ secrets.RH_PASSWORD }}
+
+      - name: Log in to quay.io
+        run: |
+          mkdir -p ~/.config/containers
+          podman login quay.io -u ${{ secrets.KONFLUX_QUAY_USERNAME }} -p ${{ secrets.KONFLUX_QUAY_TOKEN }}
+
+      # ──────────────────────────────────────────────
+      # Phase 1: Bump BUILD
+      # ──────────────────────────────────────────────
+
+      - name: "Phase 1: Update BUILD file"
+        run: make update-build
+
+      - name: "Phase 1: Prepare metadata"
+        id: p1_metadata
+        run: |
+          BUILD=$(cat BUILD)
+          TIMESTAMP=$(date -u +"%Y%m%d-%H%M%S")
+          echo "build=$BUILD" >> "$GITHUB_OUTPUT"
+          echo "ts=$TIMESTAMP" >> "$GITHUB_OUTPUT"
+
+      - name: "Phase 1: Create Pull Request"
+        id: p1_create_pr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(build): bump to ${{ steps.p1_metadata.outputs.build }}"
+          branch: build/component-${{ steps.p1_metadata.outputs.build }}-${{ steps.p1_metadata.outputs.ts }}
+          base: ${{ steps.branch.outputs.target }}
+          delete-branch: true
+          title: "chore(build): bump to ${{ steps.p1_metadata.outputs.build }}"
+          body: |
+            This PR updates the `BUILD` file with the next operator build version.
+
+            **Build:** `${{ steps.p1_metadata.outputs.build }}`
+
+            Automatically generated for `${{ steps.branch.outputs.target }}` using GitHub Actions.
+          labels: |
+            auto-merge
+
+      - name: "Phase 1: Wait for Konflux PR checks"
+        if: steps.p1_create_pr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER="${{ steps.p1_create_pr.outputs.pull-request-number }}"
+          REPO="${{ github.repository }}"
+          CHECK_CREATION_TIMEOUT=300
+          OVERALL_TIMEOUT=7200
+          SECONDS=0
+
+          while (( SECONDS < OVERALL_TIMEOUT )); do
+            CHECKS=$(gh pr checks "$PR_NUMBER" --repo "$REPO" \
+              --json name,state || true)
+
+            KONFLUX=$(jq \
+              '[.[] | select(.name | contains("Red Hat Konflux"))]' \
+              <<< "$CHECKS")
+
+            TOTAL=$(jq 'length' <<< "$KONFLUX")
+
+            if (( TOTAL == 0 )); then
+              if (( SECONDS >= CHECK_CREATION_TIMEOUT )); then
+                echo "No Red Hat Konflux checks were created within 5 minutes."
+                exit 1
+              fi
+
+              echo "Waiting for Konflux checks to be created..."
+              sleep 60
+              continue
+            fi
+
+            PENDING=$(jq '
+              [.[] | select(
+                .state == "PENDING" or
+                .state == "QUEUED" or
+                .state == "IN_PROGRESS" or
+                .state == "WAITING" or
+                .state == "REQUESTED"
+              )] | length
+            ' <<< "$KONFLUX")
+
+            if (( PENDING > 0 )); then
+              echo "Waiting for Konflux checks to complete... ($PENDING pending)"
+              sleep 60
+              continue
+            fi
+
+            FAILED=$(jq '
+              [.[] | select(
+                .state != "SUCCESS" and
+                .state != "NEUTRAL"
+              )] | length
+            ' <<< "$KONFLUX")
+
+            if (( FAILED > 0 )); then
+              echo "One or more Konflux checks failed."
+              jq -r '
+                .[] |
+                select(.state != "SUCCESS" and .state != "NEUTRAL") |
+                "\(.name): \(.state)"
+              ' <<< "$KONFLUX"
+              exit 1
+            fi
+
+            echo "All Red Hat Konflux checks completed successfully."
+            exit 0
+          done
+
+          echo "Timed out waiting for Red Hat Konflux checks."
+          exit 1
+
+      - name: "Phase 1: Merge Pull Request"
+        if: steps.p1_create_pr.outputs.pull-request-number != ''
+        id: p1_merge
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          gh pr merge ${{ steps.p1_create_pr.outputs.pull-request-number }} \
+            --repo "${{ github.repository }}" --squash --delete-branch
+
+      - name: "Phase 1: Cleanup - close PR if still open"
+        if: always() && steps.p1_create_pr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER="${{ steps.p1_create_pr.outputs.pull-request-number }}"
+          REPO="${{ github.repository }}"
+          sleep 10
+          STATE=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json state --jq '.state')
+          if [[ "$STATE" == "OPEN" ]]; then
+            gh pr close "$PR_NUMBER" --repo "$REPO" \
+              --comment "Automatically closed: RC build workflow could not merge this PR."
+          fi
+
+      # ──────────────────────────────────────────────
+      # Wait: Post-merge component builds
+      # ──────────────────────────────────────────────
+
+      - name: "Wait: Refresh checkout after Phase 1 merge"
+        if: steps.p1_merge.outcome == 'success'
+        run: |
+          git fetch origin ${{ steps.branch.outputs.target }}
+          git reset --hard origin/${{ steps.branch.outputs.target }}
+          git submodule update --init --recursive
+
+      - name: "Wait: Get merge commit SHA"
+        if: steps.p1_merge.outcome == 'success'
+        id: p1_merge_sha
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          MERGE_SHA=$(gh api "repos/${{ github.repository }}/git/ref/heads/${{ steps.branch.outputs.target }}" --jq '.object.sha')
+          echo "sha=$MERGE_SHA" >> "$GITHUB_OUTPUT"
+          echo "Merge commit SHA: $MERGE_SHA"
+
+      - name: "Wait: Poll post-merge Konflux component builds"
+        if: steps.p1_merge.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          COMMIT_SHA="${{ steps.p1_merge_sha.outputs.sha }}"
+          REPO="${{ github.repository }}"
+          CHECK_CREATION_TIMEOUT=300
+          OVERALL_TIMEOUT=7200
+          SECONDS=0
+
+          echo "Monitoring Konflux builds on commit $COMMIT_SHA..."
+
+          while (( SECONDS < OVERALL_TIMEOUT )); do
+            CHECK_RUNS=$(gh api "repos/$REPO/commits/$COMMIT_SHA/check-runs" \
+              --paginate --jq '.check_runs' 2>/dev/null || echo '[]')
+
+            ALL_RUNS=$(echo "$CHECK_RUNS" | jq -s 'add // []')
+
+            KONFLUX=$(jq '
+              [.[] | select(
+                (.app.slug // "" | test("konflux"; "i")) or
+                (.name // "" | test("Red Hat Konflux"; "i"))
+              )]
+            ' <<< "$ALL_RUNS")
+
+            TOTAL=$(jq 'length' <<< "$KONFLUX")
+
+            if (( TOTAL == 0 )); then
+              if (( SECONDS >= CHECK_CREATION_TIMEOUT )); then
+                echo "No Konflux check-runs found on commit $COMMIT_SHA within 5 minutes."
+                exit 1
+              fi
+              echo "Waiting for Konflux check-runs to appear on commit..."
+              sleep 60
+              continue
+            fi
+
+            PENDING=$(jq '
+              [.[] | select(.status != "completed")] | length
+            ' <<< "$KONFLUX")
+
+            if (( PENDING > 0 )); then
+              COMPLETED=$((TOTAL - PENDING))
+              echo "Waiting for Konflux builds... ($COMPLETED/$TOTAL completed, $PENDING pending)"
+              sleep 300
+              continue
+            fi
+
+            FAILED=$(jq '
+              [.[] | select(
+                .conclusion != "success" and
+                .conclusion != "neutral" and
+                .conclusion != "skipped"
+              )] | length
+            ' <<< "$KONFLUX")
+
+            if (( FAILED > 0 )); then
+              echo "One or more Konflux builds failed on commit $COMMIT_SHA:"
+              jq -r '
+                .[] |
+                select(.conclusion != "success" and .conclusion != "neutral" and .conclusion != "skipped") |
+                "  \(.name): \(.conclusion)"
+              ' <<< "$KONFLUX"
+              exit 1
+            fi
+
+            echo "All $TOTAL Konflux builds completed successfully on commit $COMMIT_SHA."
+            exit 0
+          done
+
+          echo "Timed out waiting for Konflux builds on commit $COMMIT_SHA."
+          exit 1
+
+      # ──────────────────────────────────────────────
+      # Phase 2: Update Bundle
+      # ──────────────────────────────────────────────
+
+      - name: "Phase 2: Update bundle with latest image SHAs"
+        if: steps.p1_merge.outcome == 'success'
+        run: make bundle
+
+      - name: "Phase 2: Prepare metadata"
+        if: steps.p1_merge.outcome == 'success'
+        id: p2_metadata
+        run: |
+          BUILD=$(cat BUILD)
+          TIMESTAMP=$(date -u +"%Y%m%d-%H%M%S")
+          echo "build=$BUILD" >> "$GITHUB_OUTPUT"
+          echo "ts=$TIMESTAMP" >> "$GITHUB_OUTPUT"
+
+      - name: "Phase 2: Create Pull Request"
+        if: steps.p1_merge.outcome == 'success'
+        id: p2_create_pr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          commit-message: "chore(bundle): latest bundle updates for ${{ steps.p2_metadata.outputs.build }}"
+          branch: build/bundle-${{ steps.p2_metadata.outputs.build }}-${{ steps.p2_metadata.outputs.ts }}
+          base: ${{ steps.branch.outputs.target }}
+          delete-branch: true
+          title: "chore(bundle): latest bundle updates for ${{ steps.p2_metadata.outputs.build }}"
+          body: |
+            This PR updates the bundle files with the latest image SHAs for ${{ steps.branch.outputs.target }}.
+
+            Automatically generated by GitHub Actions.
+          labels: |
+            auto-merge
+
+      - name: "Phase 2: Wait for Konflux PR checks"
+        if: steps.p2_create_pr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER="${{ steps.p2_create_pr.outputs.pull-request-number }}"
+          REPO="${{ github.repository }}"
+          CHECK_CREATION_TIMEOUT=300
+          OVERALL_TIMEOUT=7200
+          SECONDS=0
+
+          while (( SECONDS < OVERALL_TIMEOUT )); do
+            CHECKS=$(gh pr checks "$PR_NUMBER" --repo "$REPO" \
+              --json name,state || true)
+
+            KONFLUX=$(jq \
+              '[.[] | select(.name | contains("Red Hat Konflux"))]' \
+              <<< "$CHECKS")
+
+            TOTAL=$(jq 'length' <<< "$KONFLUX")
+
+            if (( TOTAL == 0 )); then
+              if (( SECONDS >= CHECK_CREATION_TIMEOUT )); then
+                echo "No Red Hat Konflux checks were created within 5 minutes."
+                exit 1
+              fi
+
+              echo "Waiting for Konflux checks to be created..."
+              sleep 60
+              continue
+            fi
+
+            PENDING=$(jq '
+              [.[] | select(
+                .state == "PENDING" or
+                .state == "QUEUED" or
+                .state == "IN_PROGRESS" or
+                .state == "WAITING" or
+                .state == "REQUESTED"
+              )] | length
+            ' <<< "$KONFLUX")
+
+            if (( PENDING > 0 )); then
+              echo "Waiting for Konflux checks to complete... ($PENDING pending)"
+              sleep 60
+              continue
+            fi
+
+            FAILED=$(jq '
+              [.[] | select(
+                .state != "SUCCESS" and
+                .state != "NEUTRAL"
+              )] | length
+            ' <<< "$KONFLUX")
+
+            if (( FAILED > 0 )); then
+              echo "One or more Konflux checks failed."
+              jq -r '
+                .[] |
+                select(.state != "SUCCESS" and .state != "NEUTRAL") |
+                "\(.name): \(.state)"
+              ' <<< "$KONFLUX"
+              exit 1
+            fi
+
+            echo "All Red Hat Konflux checks completed successfully."
+            exit 0
+          done
+
+          echo "Timed out waiting for Red Hat Konflux checks."
+          exit 1
+
+      - name: "Phase 2: Merge Pull Request"
+        if: steps.p2_create_pr.outputs.pull-request-number != ''
+        id: p2_merge
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          gh pr merge ${{ steps.p2_create_pr.outputs.pull-request-number }} \
+            --repo "${{ github.repository }}" --squash --delete-branch
+
+      - name: "Phase 2: Cleanup - close PR if still open"
+        if: always() && steps.p2_create_pr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER="${{ steps.p2_create_pr.outputs.pull-request-number }}"
+          REPO="${{ github.repository }}"
+          sleep 10
+          STATE=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json state --jq '.state')
+          if [[ "$STATE" == "OPEN" ]]; then
+            gh pr close "$PR_NUMBER" --repo "$REPO" \
+              --comment "Automatically closed: RC build workflow could not merge this PR."
+          fi
+
+      # ──────────────────────────────────────────────
+      # Wait: Post-merge bundle build
+      # ──────────────────────────────────────────────
+
+      - name: "Wait: Refresh checkout after Phase 2 merge"
+        if: steps.p2_merge.outcome == 'success'
+        run: |
+          git fetch origin ${{ steps.branch.outputs.target }}
+          git reset --hard origin/${{ steps.branch.outputs.target }}
+          git submodule update --init --recursive
+
+      - name: "Wait: Get bundle merge commit SHA"
+        if: steps.p2_merge.outcome == 'success'
+        id: p2_merge_sha
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          MERGE_SHA=$(gh api "repos/${{ github.repository }}/git/ref/heads/${{ steps.branch.outputs.target }}" --jq '.object.sha')
+          echo "sha=$MERGE_SHA" >> "$GITHUB_OUTPUT"
+          echo "Bundle merge commit SHA: $MERGE_SHA"
+
+      - name: "Wait: Poll post-merge Konflux bundle build"
+        if: steps.p2_merge.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          COMMIT_SHA="${{ steps.p2_merge_sha.outputs.sha }}"
+          REPO="${{ github.repository }}"
+          CHECK_CREATION_TIMEOUT=300
+          OVERALL_TIMEOUT=7200
+          SECONDS=0
+
+          echo "Monitoring Konflux bundle build on commit $COMMIT_SHA..."
+
+          while (( SECONDS < OVERALL_TIMEOUT )); do
+            CHECK_RUNS=$(gh api "repos/$REPO/commits/$COMMIT_SHA/check-runs" \
+              --paginate --jq '.check_runs' 2>/dev/null || echo '[]')
+
+            ALL_RUNS=$(echo "$CHECK_RUNS" | jq -s 'add // []')
+
+            KONFLUX=$(jq '
+              [.[] | select(
+                (.app.slug // "" | test("konflux"; "i")) or
+                (.name // "" | test("Red Hat Konflux"; "i"))
+              )]
+            ' <<< "$ALL_RUNS")
+
+            TOTAL=$(jq 'length' <<< "$KONFLUX")
+
+            if (( TOTAL == 0 )); then
+              if (( SECONDS >= CHECK_CREATION_TIMEOUT )); then
+                echo "No Konflux check-runs found on commit $COMMIT_SHA within 5 minutes."
+                exit 1
+              fi
+              echo "Waiting for Konflux check-runs to appear on commit..."
+              sleep 60
+              continue
+            fi
+
+            PENDING=$(jq '
+              [.[] | select(.status != "completed")] | length
+            ' <<< "$KONFLUX")
+
+            if (( PENDING > 0 )); then
+              COMPLETED=$((TOTAL - PENDING))
+              echo "Waiting for Konflux bundle build... ($COMPLETED/$TOTAL completed, $PENDING pending)"
+              sleep 300
+              continue
+            fi
+
+            FAILED=$(jq '
+              [.[] | select(
+                .conclusion != "success" and
+                .conclusion != "neutral" and
+                .conclusion != "skipped"
+              )] | length
+            ' <<< "$KONFLUX")
+
+            if (( FAILED > 0 )); then
+              echo "One or more Konflux builds failed on commit $COMMIT_SHA:"
+              jq -r '
+                .[] |
+                select(.conclusion != "success" and .conclusion != "neutral" and .conclusion != "skipped") |
+                "  \(.name): \(.conclusion)"
+              ' <<< "$KONFLUX"
+              exit 1
+            fi
+
+            echo "All $TOTAL Konflux builds completed successfully on commit $COMMIT_SHA."
+            exit 0
+          done
+
+          echo "Timed out waiting for Konflux builds on commit $COMMIT_SHA."
+          exit 1
+
+      # ──────────────────────────────────────────────
+      # Phase 3: Generate Catalog
+      # ──────────────────────────────────────────────
+
+      - name: "Phase 3: Generate catalog"
+        if: steps.p2_merge.outcome == 'success'
+        run: make catalog
+
+      - name: "Phase 3: Prepare metadata"
+        if: steps.p2_merge.outcome == 'success'
+        id: p3_metadata
+        run: |
+          BUILD=$(cat BUILD)
+          TIMESTAMP=$(date -u +"%Y%m%d-%H%M%S")
+          echo "build=$BUILD" >> "$GITHUB_OUTPUT"
+          echo "ts=$TIMESTAMP" >> "$GITHUB_OUTPUT"
+
+      - name: "Phase 3: Create catalog pull request"
+        if: steps.p2_merge.outcome == 'success'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          path: catalog
+          commit-message: "chore(nightly): update catalog for build ${{ steps.p3_metadata.outputs.build }}"
+          branch: build/catalog-${{ steps.p3_metadata.outputs.build }}-${{ steps.p3_metadata.outputs.ts }}
+          delete-branch: true
+          title: "chore(nightly): update catalog for build ${{ steps.p3_metadata.outputs.build }}"
+          committer: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+          author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+          body: |
+            This PR updates the catalog using the nightly bundle build.
+
+            **Build:** ${{ steps.p3_metadata.outputs.build }}
+            **Timestamp:** ${{ steps.p3_metadata.outputs.ts }}
+
+            Please **do not merge** this PR. It is auto-generated to trigger a catalog build from Konflux.
+            Separate PRs will be created for production bundle updates.
+
+            Automatically generated by GitHub Actions.
+          labels: |
+            nightly
+            do-not-merge
