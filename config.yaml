@@ -45,7 +45,7 @@ sources:
   - path: sources/dex
     ref: v2.43.1
     url: https://github.com/rh-gitops-midstream/dex.git
-    commit: 06299860249d4fca939044027ee0db6d5dcd29e3
+    commit: 32b0a27a8f562eba016e1c2b52efeeff7402b0fa
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
     ref: v3.7.1
@@ -61,7 +61,7 @@ sources:
   - path: sources/argocd-extension-installer
     url: https://github.com/argoproj-labs/argocd-extension-installer.git
     ref: main
-    commit: 6e0961fc99b62de558f34808dba23b560ef50dcb
+    commit: b1d11a3c312198e11e42bc6868def8ebb36f4270
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: v1.19
@@ -73,15 +73,15 @@ sources:
   - path: sources/rollouts-plugin-trafficrouter-openshift
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
     ref: main
-    commit: 1495bbad184a05cde955fb21dcf35d05c3e58d98
+    commit: f316fad99b3555be0612dc34098d22392bba3492
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
-    commit: cb9160c0d5d3ff42668999fc530ecacad9e69d08
+    commit: 55efec56df8eb7bd07dca8caebc900842fb2c678
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
     ref: master
-    commit: 09102635500867f4119ae63008bf1fe1ae7328b5
+    commit: 427493aca64464872b8801875141b70c6ab1318b
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: v0.5.5
