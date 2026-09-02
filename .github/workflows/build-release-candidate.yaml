@@ -13,6 +13,15 @@ on:
         description: 'Branch to build RC for (e.g. release-1.21, main)'
         required: true
         type: string
+      START_FROM:
+        description: 'Build stage to start from (skip earlier stages if they already completed)'
+        required: false
+        default: 'full-build'
+        type: choice
+        options:
+          - full-build
+          - bundle-build
+          - catalog-build
 
 permissions: {}
 
@@ -90,13 +99,15 @@ jobs:
           podman login quay.io -u ${{ secrets.KONFLUX_QUAY_USERNAME }} -p ${{ secrets.KONFLUX_QUAY_TOKEN }}
 
       # ──────────────────────────────────────────────
-      # Phase 1: Bump BUILD
+      # Operator Build
       # ──────────────────────────────────────────────
 
-      - name: "Phase 1: Update BUILD file"
+      - name: "Operator Build: Update BUILD file"
+        if: (inputs.START_FROM || 'full-build') == 'full-build'
         run: make update-build
 
-      - name: "Phase 1: Prepare metadata"
+      - name: "Operator Build: Prepare metadata"
+        if: (inputs.START_FROM || 'full-build') == 'full-build'
         id: p1_metadata
         run: |
           BUILD=$(cat BUILD)
@@ -104,7 +115,8 @@ jobs:
           echo "build=$BUILD" >> "$GITHUB_OUTPUT"
           echo "ts=$TIMESTAMP" >> "$GITHUB_OUTPUT"
 
-      - name: "Phase 1: Create Pull Request"
+      - name: "Operator Build: Create Pull Request"
+        if: (inputs.START_FROM || 'full-build') == 'full-build'
         id: p1_create_pr
         uses: peter-evans/create-pull-request@v6
         with:
@@ -123,8 +135,8 @@ jobs:
           labels: |
             auto-merge
 
-      - name: "Phase 1: Wait for Konflux PR checks"
-        if: steps.p1_create_pr.outputs.pull-request-number != ''
+      - name: "Operator Build: Wait for Konflux PR checks"
+        if: (inputs.START_FROM || 'full-build') == 'full-build' && steps.p1_create_pr.outputs.pull-request-number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -195,8 +207,8 @@ jobs:
           echo "Timed out waiting for Red Hat Konflux checks."
           exit 1
 
-      - name: "Phase 1: Merge Pull Request"
-        if: steps.p1_create_pr.outputs.pull-request-number != ''
+      - name: "Operator Build: Merge Pull Request"
+        if: (inputs.START_FROM || 'full-build') == 'full-build' && steps.p1_create_pr.outputs.pull-request-number != ''
         id: p1_merge
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -204,8 +216,8 @@ jobs:
           gh pr merge ${{ steps.p1_create_pr.outputs.pull-request-number }} \
             --repo "${{ github.repository }}" --squash --delete-branch
 
-      - name: "Phase 1: Cleanup - close PR if still open"
-        if: always() && steps.p1_create_pr.outputs.pull-request-number != ''
+      - name: "Operator Build: Cleanup - close PR if still open"
+        if: always() && (inputs.START_FROM || 'full-build') == 'full-build' && steps.p1_create_pr.outputs.pull-request-number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -222,7 +234,7 @@ jobs:
       # Wait: Post-merge component builds
       # ──────────────────────────────────────────────
 
-      - name: "Wait: Refresh checkout after Phase 1 merge"
+      - name: "Wait: Refresh checkout after Operator Build merge"
         if: steps.p1_merge.outcome == 'success'
         run: |
           git fetch origin ${{ steps.branch.outputs.target }}
@@ -314,15 +326,15 @@ jobs:
           exit 1
 
       # ──────────────────────────────────────────────
-      # Phase 2: Update Bundle
+      # Bundle Build
       # ──────────────────────────────────────────────
 
-      - name: "Phase 2: Update bundle with latest image SHAs"
-        if: steps.p1_merge.outcome == 'success'
+      - name: "Bundle Build: Update bundle with latest image SHAs"
+        if: steps.p1_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'bundle-build'
         run: make bundle
 
-      - name: "Phase 2: Prepare metadata"
-        if: steps.p1_merge.outcome == 'success'
+      - name: "Bundle Build: Prepare metadata"
+        if: steps.p1_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'bundle-build'
         id: p2_metadata
         run: |
           BUILD=$(cat BUILD)
@@ -330,8 +342,8 @@ jobs:
           echo "build=$BUILD" >> "$GITHUB_OUTPUT"
           echo "ts=$TIMESTAMP" >> "$GITHUB_OUTPUT"
 
-      - name: "Phase 2: Create Pull Request"
-        if: steps.p1_merge.outcome == 'success'
+      - name: "Bundle Build: Create Pull Request"
+        if: steps.p1_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'bundle-build'
         id: p2_create_pr
         uses: peter-evans/create-pull-request@v6
         with:
@@ -348,7 +360,7 @@ jobs:
           labels: |
             auto-merge
 
-      - name: "Phase 2: Wait for Konflux PR checks"
+      - name: "Bundle Build: Wait for Konflux PR checks"
         if: steps.p2_create_pr.outputs.pull-request-number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -420,7 +432,7 @@ jobs:
           echo "Timed out waiting for Red Hat Konflux checks."
           exit 1
 
-      - name: "Phase 2: Merge Pull Request"
+      - name: "Bundle Build: Merge Pull Request"
         if: steps.p2_create_pr.outputs.pull-request-number != ''
         id: p2_merge
         env:
@@ -429,8 +441,8 @@ jobs:
           gh pr merge ${{ steps.p2_create_pr.outputs.pull-request-number }} \
             --repo "${{ github.repository }}" --squash --delete-branch
 
-      - name: "Phase 2: Cleanup - close PR if still open"
-        if: always() && steps.p2_create_pr.outputs.pull-request-number != ''
+      - name: "Bundle Build: Cleanup - close PR if still open"
+        if: always() && (inputs.START_FROM || 'full-build') != 'catalog-build' && steps.p2_create_pr.outputs.pull-request-number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -447,7 +459,7 @@ jobs:
       # Wait: Post-merge bundle build
       # ──────────────────────────────────────────────
 
-      - name: "Wait: Refresh checkout after Phase 2 merge"
+      - name: "Wait: Refresh checkout after Bundle Build merge"
         if: steps.p2_merge.outcome == 'success'
         run: |
           git fetch origin ${{ steps.branch.outputs.target }}
@@ -539,15 +551,15 @@ jobs:
           exit 1
 
       # ──────────────────────────────────────────────
-      # Phase 3: Generate Catalog
+      # Catalog Build
       # ──────────────────────────────────────────────
 
-      - name: "Phase 3: Generate catalog"
-        if: steps.p2_merge.outcome == 'success'
+      - name: "Catalog Build: Generate catalog"
+        if: steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build'
         run: make catalog
 
-      - name: "Phase 3: Prepare metadata"
-        if: steps.p2_merge.outcome == 'success'
+      - name: "Catalog Build: Prepare metadata"
+        if: steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build'
         id: p3_metadata
         run: |
           BUILD=$(cat BUILD)
@@ -555,8 +567,8 @@ jobs:
           echo "build=$BUILD" >> "$GITHUB_OUTPUT"
           echo "ts=$TIMESTAMP" >> "$GITHUB_OUTPUT"
 
-      - name: "Phase 3: Create catalog pull request"
-        if: steps.p2_merge.outcome == 'success'
+      - name: "Catalog Build: Create catalog pull request"
+        if: steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GH_TOKEN }}
