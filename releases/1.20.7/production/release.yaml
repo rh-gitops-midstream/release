@@ -10,6 +10,14 @@ spec:
   data:
     releaseNotes:
       type: RHSA
+      issues:
+        fixed:
+          - id: GITOPS-10464
+            source: issues.redhat.com
+          - id: GITOPS-7957
+            source: issues.redhat.com
+          - id: GITOPS-10466
+            source: issues.redhat.com
       cves: 
       - key: CVE-2026-42504
         component: dex-1-20
