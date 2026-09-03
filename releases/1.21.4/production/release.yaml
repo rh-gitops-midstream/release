@@ -19,3 +19,5 @@ spec:
       cves:
         - key: CVE-2026-44740
           component: gitops-operator-1-21
+        - key: CVE-2026-59869
+          component: argocd-1-21
