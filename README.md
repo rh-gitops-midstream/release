@@ -13,5 +13,5 @@ This repository contains the configurations used to release the RedHat OpenShift
 - [Development/Stage Catalog Installation](docs/catalog-installation.md)  
   Instructions to install the GitOps Operator using a development/stage catalog.
 
-- [Releasing with Konflux](docs/releasing-with-konflux.md)  
+- [Releasing with Konflux](docs/releasing-gitops-with-konflux.md)  
   Instructions to release OpenShift GitOps artifacts with Konflux.
