@@ -10,6 +10,12 @@ spec:
   data:
     releaseNotes:
       type: RHSA
+      issues:
+        fixed:
+          - id: GITOPS-10472
+            source: issues.redhat.com
+          - id: GITOPS-10477
+            source: issues.redhat.com
       cves:
         - key: CVE-2026-44740
           component: gitops-operator-1-21
