@@ -1,0 +1,20 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.19.7-prod-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-19-prod
+  snapshot: gitops-1-19-20260826-141409-000
+  data:
+    releaseNotes:
+      type: RHSA
+      issues:
+        fixed:
+          - id: GITOPS-10464
+            source: issues.redhat.com
+      cves: 
+      - key: CVE-2026-42504
+        component: dex-1-19
+ 
