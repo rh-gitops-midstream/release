@@ -58,3 +58,6 @@
 [submodule "sources/argo-cd-ui-ref"]
 	path = sources/argo-cd-ui-ref
 	url = https://github.com/argoproj/argo-ui.git
+[submodule "sources/gitops-promoter"]
+	path = sources/gitops-promoter
+	url = https://github.com/argoproj-labs/gitops-promoter

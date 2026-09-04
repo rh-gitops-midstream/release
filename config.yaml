@@ -112,9 +112,14 @@ sources:
     ref: v1.3.0
     commit: 098b544f1c7d6d1368e89c3f8d92415ede353916
     auto-update: true
+  - path: sources/gitops-promoter
+    url: https://github.com/argoproj-labs/gitops-promoter.git
+    ref: v0.35.0
+    commit: cabfecc9ba28cffb0da2f32a7d5a93516ae059c1
+    auto-update: true
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
-# Bundle generation script will automatically fetch latest sha for each image 
+# Bundle generation script will automatically fetch latest sha for each image
 # based on the version specified.
 externalImages:
   - name: "haproxy"
