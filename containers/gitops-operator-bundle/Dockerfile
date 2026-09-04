@@ -1,5 +1,7 @@
 FROM scratch
 
+# Trivial touch to trigger a gitops-operator-bundle-main build for the bundle-install
+# integration test (gitops-release-bundle-sanity).
 # Core bundle labels.
 LABEL operators.operatorframework.io.bundle.mediatype.v1=registry+v1
 LABEL operators.operatorframework.io.bundle.manifests.v1=manifests/
