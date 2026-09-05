@@ -64,7 +64,7 @@ sources:
   - path: sources/argocd-extension-installer
     url: https://github.com/argoproj-labs/argocd-extension-installer.git
     ref: main
-    commit: b1d11a3c312198e11e42bc6868def8ebb36f4270
+    commit: 379284c7aaa0717c4224ab119133bf2bad2c7bfd
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: v1.21
