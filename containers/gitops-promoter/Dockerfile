@@ -46,7 +46,7 @@ RUN mkdir -p ../web/static && cp -r dist/* ../web/static
 #################################################################################################
 # GitOps Promoter Binary Build Stage
 #################################################################################################
-FROM registry.redhat.com/rhel9/go-toolset:1.26 AS promoter-build
+FROM registry.redhat.io/rhel9/go-toolset:1.26 AS promoter-build
 
 ARG TARGETOS
 ARG TARGETARCH
