@@ -112,7 +112,7 @@ ENTRYPOINT ["/usr/bin/tini", "--", "/gitops-promoter"]
 
 LABEL \
     name="openshift-gitops-1/gitops-promoter-rhel9" \
-    cpe="cpe:/a:redhat:openshift_gitops:99.99::el9" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.22::el9" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-gitops-promoter-container" \
     com.redhat.delivery.appregistry="false" \

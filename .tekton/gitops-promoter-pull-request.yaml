@@ -10,7 +10,7 @@ metadata:
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: >-
       event == "pull_request" &&
-      target_branch == "main" &&
+      target_branch == "release-1.22" &&
       (
         "sources/gitops-promoter".pathChanged() ||
         "sources/tini".pathChanged() ||
@@ -22,10 +22,10 @@ metadata:
       )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: gitops-main
-    appstudio.openshift.io/component: gitops-promoter-main
+    appstudio.openshift.io/application: gitops-1-22
+    appstudio.openshift.io/component: gitops-promoter-1-22
     pipelines.appstudio.openshift.io/type: build
-  name: gitops-promoter-main-on-pull-request
+  name: gitops-promoter-1-22-on-pull-request
   namespace: rh-openshift-gitops-tenant
 spec:
   params:
@@ -50,7 +50,7 @@ spec:
   pipelineRef:
     name: build-multi-platform-image
   taskRunTemplate: 
-    serviceAccountName: build-pipeline-gitops-promoter-main
+    serviceAccountName: build-pipeline-gitops-promoter-1-22
   workspaces:
   - name: git-auth
     secret:

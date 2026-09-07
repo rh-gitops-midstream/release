@@ -10,7 +10,7 @@ metadata:
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: >-
       event == "pull_request" &&
-      target_branch == "main" &&
+      target_branch == "release-1.22" &&
       (
         "sources/argocd-extension-installer".pathChanged() ||
         "sources/gitops-promoter".pathChanged() ||
@@ -22,10 +22,10 @@ metadata:
       )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: gitops-main
-    appstudio.openshift.io/component: argocd-promoter-extension-main
+    appstudio.openshift.io/application: gitops-1-22
+    appstudio.openshift.io/component: argocd-promoter-extension-1-22
     pipelines.appstudio.openshift.io/type: build
-  name: argocd-promoter-extension-main-on-pull-request
+  name: argocd-promoter-extension-1-22-on-pull-request
   namespace: rh-openshift-gitops-tenant
 spec:
   params:
@@ -51,7 +51,7 @@ spec:
   pipelineRef:
     name: build-multi-platform-image
   taskRunTemplate: 
-    serviceAccountName: build-pipeline-argocd-promoter-extension-main
+    serviceAccountName: build-pipeline-argocd-promoter-extension-1-22
   workspaces:
   - name: git-auth
     secret:
