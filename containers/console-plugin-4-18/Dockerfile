@@ -53,7 +53,7 @@ CMD run-httpd
 
 LABEL \
     name="openshift-gitops-1/console-plugin-4-18-rhel9" \
-    cpe="cpe:/a:redhat:openshift_gitops-4-18:99.99::el9" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.22::el9" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-console-plugin-4-18-container" \
     com.redhat.delivery.appregistry="false" \
