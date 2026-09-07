@@ -77,11 +77,12 @@ RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -a -o gi
 #################################################################################################
 # Build tini binary
 #################################################################################################
-FROM registry.access.redhat.com/ubi9/ubi-minimal AS tini-build
+FROM registry.redhat.io/rhel9/go-toolset:1.26 AS tini-build
 
 # Install cmake and build tini from the source in midstream
 WORKDIR /src/tini
-RUN microdnf install -y cmake gcc && microdnf clean all
+# TODO: install gcc to switch to a UBI9 base image instead of go-toolset, which is a heavier image but contains gcc. 
+RUN microdnf install -y cmake && microdnf clean all
 COPY sources/tini /src/tini
 ENV CFLAGS="-DPR_SET_CHILD_SUBREAPER=36 -DPR_GET_CHILD_SUBREAPER=37"
 RUN cmake . && make tini
