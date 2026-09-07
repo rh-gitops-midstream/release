@@ -89,6 +89,8 @@ relatedImages = [
     {'name': 'argocd_principal_image', 'image': images['argocd-agent']},
     {'name': 'argocd_agent_image', 'image': images['argocd-agent']},
     {'name': 'argocd_image_updater_image', 'image': images['argocd-image-updater']},
+    {'name': 'argocd_promoter_extension_image', 'image': images['argocd-promoter-extension']},
+    {'name': 'gitops_promoter_image', 'image': images['gitops-promoter']},
 ]
 
 new_env = [
@@ -122,6 +124,10 @@ new_env = [
     {'name': 'RELATED_IMAGE_ARGOCD_AGENT_IMAGE', 'value': images['argocd-agent']},
     {'name': 'ARGOCD_IMAGE_UPDATER_IMAGE', 'value': images['argocd-image-updater']},
     {'name': 'RELATED_IMAGE_ARGOCD_IMAGE_UPDATER_IMAGE', 'value': images['argocd-image-updater']},
+    {'name': 'RELATED_IMAGE_ARGOCD_PROMOTER_EXTENSION_IMAGE', 'value': images['argocd-promoter-extension']},
+    {'name': 'ARGOCD_PROMOTER_EXTENSION_IMAGE', 'value': images['argocd-promoter-extension']},
+    {'name': 'RELATED_IMAGE_GITOPS_PROMOTER_IMAGE', 'value': images['gitops-promoter']},
+    {'name': 'GITOPS_PROMOTER_IMAGE', 'value': images['gitops-promoter']},
 ]
 
 # --- OLM fields ---

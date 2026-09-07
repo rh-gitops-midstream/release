@@ -166,3 +166,9 @@ konfluxImages:
   - name: must-gather
     buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/must-gather-rhel9"
     releaseRef: "registry.redhat.io/openshift-gitops-1/must-gather-rhel9"
+  - name: argocd-promoter-extension
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-promoter-extension-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-promoter-extension-rhel9"
+  - name: gitops-promoter
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-promoter-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-promoter-rhel9"
