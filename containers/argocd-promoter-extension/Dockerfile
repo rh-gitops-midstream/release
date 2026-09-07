@@ -1,4 +1,4 @@
-# Copyright 2024 Red Hat
+# Copyright 2026 Red Hat
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,21 +15,20 @@
 # ------------------------------------------------------------------------
 
 ####################################################################################################
-# Rollouts Extensions UI stage
+# Promoter Extension UI
 ####################################################################################################
-FROM registry.access.redhat.com/ubi9/ubi-minimal as rollout-extensions
+FROM registry.access.redhat.com/ubi9/ubi-minimal as promoter-extension
 
 USER root
 
-COPY sources/rollout-extension /app/rollout-extension
 COPY containers/argocd-extensions/install.sh /app/install.sh
 
 RUN microdnf install -y tar && microdnf clean all
 
-WORKDIR /app/rollout-extension/ui
+WORKDIR /app/promoter-extension/ui
 RUN mkdir -p dist && mkdir -p resources
 
-COPY containers/argocd-extensions/extensions-Rollout.js resources/extension-Rollout.js
+COPY containers/argocd-promoter-extension/extension-promoter.js resources/extension-promoter.js
 
 RUN tar cvf dist/extension.tar resources
 
@@ -45,25 +44,25 @@ RUN microdnf install -y file jq shadow-utils tar && microdnf clean all
 
 WORKDIR $HOME
 
-COPY --from=rollout-extensions /app/rollout-extension/ui/dist/extension.tar rollout-extension.tar
-COPY --from=rollout-extensions /app/install.sh install.sh
+COPY --from=promoter-extension /app/promoter-extension/ui/dist/extension.tar promoter-extension.tar
+COPY --from=promoter-extension /app/install.sh install.sh
 
-ENV EXTENSION_NAME="Rollout"
-ENV EXTENSION_URL="file://$HOME/rollout-extension.tar"
-ENV EXTENSION_VERSION="0.3.6"
+ENV EXTENSION_NAME="Promoter"
+ENV EXTENSION_URL="file://$HOME/promoter-extension.tar"
+ENV EXTENSION_VERSION="0.35.0"
 
 ENTRYPOINT ["./install.sh"]
 
 LABEL \
-    name="openshift-gitops-1/argocd-extensions-rhel9" \
+    name="openshift-gitops-1/argocd-promoter-extension-rhel9" \
     cpe="cpe:/a:redhat:openshift_gitops:99.99::el9" \
     License="Apache 2.0" \
-    com.redhat.component="openshift-gitops-argocd-extensions-container" \
+    com.redhat.component="openshift-gitops-argocd-promoter-extension-container" \
     com.redhat.delivery.appregistry="false" \
-    summary="Red Hat OpenShift GitOps Argocd Extensions" \
+    summary="Red Hat OpenShift GitOps Argo CD Promoter UI Extension" \
     io.openshift.expose-services="" \
-    io.openshift.tags="openshift,gitops,extensions,argocd" \
-    io.k8s.display-name="Red Hat OpenShift GitOps ArgoCD Extensions" \
+    io.openshift.tags="openshift,gitops,extensions,argocd,gitops-promoter" \
+    io.k8s.display-name="Red Hat OpenShift GitOps Argo CD Promoter UI Extension" \
     maintainer="William Tam <wtam@redhat.com>" \
-    description="Red Hat OpenShift GitOps ArgoCD Extensions" \
-    io.k8s.description="Red Hat OpenShift GitOps ArgoCD Extensions"
+    description="Red Hat OpenShift GitOps GitOps Promoter UI Extension" \
+    io.k8s.description="Red Hat OpenShift GitOps Argo CD Promoter UI Extension"
