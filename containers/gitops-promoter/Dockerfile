@@ -82,7 +82,7 @@ FROM registry.redhat.io/rhel9/go-toolset:1.26 AS tini-build
 # Install cmake and build tini from the source in midstream
 WORKDIR /src/tini
 # TODO: install gcc to switch to a UBI9 base image instead of go-toolset, which is a heavier image but contains gcc. 
-RUN microdnf install -y cmake && microdnf clean all
+RUN dnf install -y cmake && dnf clean all
 COPY sources/tini /src/tini
 ENV CFLAGS="-DPR_SET_CHILD_SUBREAPER=36 -DPR_GET_CHILD_SUBREAPER=37"
 RUN cmake . && make tini
