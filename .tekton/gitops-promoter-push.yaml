@@ -40,7 +40,7 @@ spec:
   - name: dockerfile
     value: containers/gitops-promoter/Dockerfile
   - name: prefetch-input
-    value: '[{"type": "gomod", "path": "./sources/gitops-promoter"}]'
+    value: '[{"type": "gomod", "path": "./sources/gitops-promoter"}, {"type": "rpm", "path": "prefetch/rpms/ubi9"}, {"type":"npm","path":"sources/gitops-promoter/ui/components-lib"}, {"type":"npm","path":"sources/gitops-promoter/ui/dashboard"}]'
   - name: git-metadata-directories
     value:
       - sources/gitops-promoter
