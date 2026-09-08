@@ -25,17 +25,17 @@ sources:
   - path: sources/gitops-operator
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: master
-    commit: facefc0bc143a90b8fec907c8d287793d99c2904
+    commit: 43d1e800e850c51304576f8d412db3a83a041f8f
     auto-update: true
   - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
-    ref: master
-    commit: c78cce03169b628f5c76eea9893bc80d4fc846c4
+    ref: v3.5.2
+    commit: e258ee23c3e52266d407572f4bcdfe7d9ed36cb5
     auto-update: true
   - path: sources/argo-rollouts
     url: https://github.com/argoproj/argo-rollouts.git
-    ref: v1.10.0-rc1
-    commit: d1c296793cfd2dffc90fb89d919ee2bbf9b10ab5
+    ref: v1.10.0
+    commit: d90700ae8d71d141561f0c546e19f999bb335cbd
     auto-update: true
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
@@ -44,13 +44,13 @@ sources:
     auto-update: true
   - path: sources/helm
     url: https://github.com/helm/helm.git
-    ref: v3.19.5
-    commit: 4a19a5b6fb912c5c28a779e73f2e0880d9e239a4
+    ref: v4.2.4
+    commit: 3900f434fd3ef2b84065dc04508df48f288dba00
     auto-update: true
   - path: sources/dex
     url: https://github.com/rh-gitops-midstream/dex.git
-    ref: v2.45.0
-    commit: af68bd66272a6505de507fe52d441de7e5e881e4
+    ref: v2.45.1
+    commit: 03f0d045357764788673462e4a4a2396416b50a2
     auto-update: true
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
@@ -59,8 +59,8 @@ sources:
     auto-update: true
   - path: sources/ssh-connect
     url: https://github.com/gotoh/ssh-connect.git
-    ref: master
-    commit: b65b09a0ee06950972233e8ea86ef87c4e63b3c9
+    ref: 1.106
+    commit: a7443d32e6bf6f00698384b0519adc16fa7656fa
     auto-update: true
   - path: sources/tini
     url: https://github.com/krallin/tini.git
@@ -70,18 +70,18 @@ sources:
   - path: sources/argocd-extension-installer
     url: https://github.com/argoproj-labs/argocd-extension-installer.git
     ref: main
-    commit: 44a5ab8e6998df0beb6f293b3607262db53aa8c7
-    auto-update: true
+    commit: 379284c7aaa0717c4224ab119133bf2bad2c7bfd
+    auto-update: false
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: main
     commit: 0a2a15ca903e078d712127fb74492bcce96e83ba
-    auto-update: true
+    auto-update: false
   - path: sources/gitops-console-plugin-4-18
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: release-4.18
     commit: bc5872a4aa59a01c75eb96da9549a92aee9fb9a8
-    auto-update: true
+    auto-update: false
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master
@@ -90,22 +90,22 @@ sources:
   - path: sources/rollouts-plugin-trafficrouter-openshift
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
     ref: main
-    commit: 1495bbad184a05cde955fb21dcf35d05c3e58d98
+    commit: f316fad99b3555be0612dc34098d22392bba3492
     auto-update: true
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
-    commit: 2d10f1d873120c6ab95df99e262430f4ea05f7c5
+    commit: 55efec56df8eb7bd07dca8caebc900842fb2c678
     auto-update: true
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
-    ref: master
-    commit: 09102635500867f4119ae63008bf1fe1ae7328b5
+    ref: v0.4.0
+    commit: ceef45e6288c4c64f5274f7272f0e3488b3a9332
     auto-update: true
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
-    ref: main
-    commit: 7bf329860e465e5138559fc1f6f79b7f7caba042
+    ref: v0.10.0
+    commit: 78a3788f5aa757707c00e563198f3d4c676fe04b
     auto-update: true
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
