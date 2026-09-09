@@ -23,24 +23,39 @@ USER root
 
 # Install pnpm via npm prefetch bootstrap
 WORKDIR /usr/src/app
-COPY ["prefetch/pnpm/package.json", "prefetch/pnpm/package-lock.json", "./"]
+COPY ["prefetch/pnpm/11.9.0/package.json", "prefetch/pnpm/11.9.0/package-lock.json", "./"]
 RUN npm install --prefer-offline --no-progress --non-interactive
 ENV PATH="/usr/src/app/node_modules/.bin:${PATH}"
+# Prevent pnpm from downloading/enforcing a different package manager version
+# pnpm v11 removed the old `manage-package-manager-versions`
+# config key  the direct  replacement is `pmOnFail: ignore` (see https://pnpm.io/settings/cli#pmonfail).
+ENV PNPM_CONFIG_PM_ON_FAIL=ignore
+# Starting with pnpm 11.3, `trustLockfile` gates a supply-chain verification pass that re-queries
+# the configured registry for every lockfile entry. Hermeto's pnpm prefetch rewrites .npmrc to a
+# local `file://.../deps/pnpm/npm/` mirror with no host component, and pnpm's registry encoder
+# (encodeRegistry -> getHost) throws `Couldn't get host from file://...` for any registry lacking a
+# host. Trusting the lockfile skips that verification/resolution pass entirely (see
+# https://hermetoproject.github.io/hermeto/latest/pnpm/#generate-environment-variables).
+ENV PNPM_CONFIG_TRUST_LOCKFILE=true
+# pnpm v11 defaults `verifyDepsBeforeRun` to "install": every `pnpm <script>` (including the
+# `pnpm build` below) first runs an internal dependency-status check and, if it looks even
+# slightly stale (e.g. package.json/pnpm-lock.yaml mtimes bumped by the COPY steps below, which
+# is unavoidable in a multi-stage Dockerfile), silently shells out to a real `pnpm install` with
+# none of our --frozen-lockfile/--offline flags. That install re-resolves against the configured
+# registry and hits the same file:// getHost crash as above. We already install deps explicitly
+# and deliberately (see below), so disable this implicit re-check.
+ENV PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN=false
 RUN pnpm --version
-# Prevent pnpm from automatically switching the package manager version
-RUN pnpm config set manage-package-manager-versions false
 
 # Keep file:../../../sources/argo-rollouts-ui-ref valid for both Hermeto prefetch and the image layout.
 # Overlay pnpm-lock.yaml already rewrites argo-ui to sources/argo-rollouts-ui-ref so Hermeto does not
 # fetch the GitHub tarball (allowed_package_sources). The package contents still come
 # from the sources/argo-rollouts-ui-ref submodule at the pinned commit.
 WORKDIR /usr/src/app/clis/kubectl-argo-rollouts/ui
-COPY ["sources/argo-rollouts/ui/package.json", "clis/kubectl-argo-rollouts/ui/pnpm-lock.yaml", "clis/kubectl-argo-rollouts/ui/.npmrc", "clis/kubectl-argo-rollouts/ui/pin-argo-ui.js", "./"]
+COPY ["sources/argo-rollouts/ui/package.json", "sources/argo-rollouts/ui/pnpm-workspace.yaml", "clis/kubectl-argo-rollouts/ui/pnpm-lock.yaml", "clis/kubectl-argo-rollouts/ui/.npmrc", "clis/kubectl-argo-rollouts/ui/pin-argo-ui.js", "./"]
 COPY sources/argo-rollouts-ui-ref /usr/src/app/sources/argo-rollouts-ui-ref
 RUN node pin-argo-ui.js
 
-# packageManager pins pnpm@10.28.1; use the bootstrapped pnpm offline.
-RUN pnpm config set manage-package-manager-versions false
 RUN pnpm install --frozen-lockfile --offline --ignore-scripts
 
 COPY ["sources/argo-rollouts/ui/", "."]
