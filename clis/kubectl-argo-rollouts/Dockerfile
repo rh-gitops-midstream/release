@@ -23,35 +23,24 @@ USER root
 
 # Install pnpm via npm prefetch bootstrap
 WORKDIR /usr/src/app
-COPY ["prefetch/pnpm/package.json", "prefetch/pnpm/package-lock.json", "./"]
+COPY ["prefetch/pnpm/11.9.0/package.json", "prefetch/pnpm/11.9.0/package-lock.json", "./"]
 RUN npm install --prefer-offline --no-progress --non-interactive
 ENV PATH="/usr/src/app/node_modules/.bin:${PATH}"
+ENV PNPM_CONFIG_PM_ON_FAIL=ignore
+ENV PNPM_CONFIG_TRUST_LOCKFILE=true
+ENV PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN=false
 RUN pnpm --version
-# Prevent pnpm from automatically switching the package manager version
-RUN pnpm config set manage-package-manager-versions false
 
-# Keep file:../../../sources/argo-rollouts-ui-ref valid for both Hermeto prefetch and the image layout.
-# Overlay pnpm-lock.yaml already rewrites argo-ui to sources/argo-rollouts-ui-ref so Hermeto does not
-# fetch the GitHub tarball (allowed_package_sources). The package contents still come
-# from the sources/argo-rollouts-ui-ref submodule at the pinned commit.
+
 WORKDIR /usr/src/app/clis/kubectl-argo-rollouts/ui
-COPY ["sources/argo-rollouts/ui/package.json", "clis/kubectl-argo-rollouts/ui/pnpm-lock.yaml", "clis/kubectl-argo-rollouts/ui/.npmrc", "clis/kubectl-argo-rollouts/ui/pin-argo-ui.js", "./"]
-COPY sources/argo-rollouts-ui-ref /usr/src/app/sources/argo-rollouts-ui-ref
-RUN node pin-argo-ui.js
-
-# packageManager pins pnpm@10.28.1; use the bootstrapped pnpm offline.
-RUN pnpm config set manage-package-manager-versions false
+COPY ["sources/argo-rollouts/ui/package.json", "sources/argo-rollouts/ui/pnpm-workspace.yaml", "sources/argo-rollouts/ui/pnpm-lock.yaml", "./"]
 RUN pnpm install --frozen-lockfile --offline --ignore-scripts
 
 COPY ["sources/argo-rollouts/ui/", "."]
-# Restore the overlay lockfile (Hermeto-injected) and re-pin package.json after the submodule copy.
-COPY ["clis/kubectl-argo-rollouts/ui/pnpm-lock.yaml", "clis/kubectl-argo-rollouts/ui/pin-argo-ui.js", "./"]
-RUN node pin-argo-ui.js
 
 ARG ARGO_VERSION=latest
 ENV ARGO_VERSION=$ARGO_VERSION
 RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' pnpm build
-
 
 ####################################################################################################
 # Builder stage which performs the build of argo-rollouts-cli binaries
