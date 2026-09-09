@@ -2386,7 +2386,7 @@ packages:
     resolution: {integrity: sha512-PYjyFOLKQ9y57JvQ6QLo8dAgNqswh8M1RMJYdQduT6xbWSgK36P/Z/v+p888pM69jMMfS8Xd8F6I1kQ/I9HUGg==}
 
   argo-ui@file:../../../sources/argo-rollouts-ui-ref:
-    resolution: {gitHosted: true, integrity: sha512-466pbRJUzhrrnPrnccKDcYKNE0ZCz3IHlNGwoAOk5aze0Krd0FIvUp6B2rOA8n+4aGkX/22UvZ+BKSFhpHkYqg==, tarball: file:../../../sources/argo-rollouts-ui-ref}
+    resolution: {directory: ../../../sources/argo-rollouts-ui-ref, type: directory, tarball: file:../../../sources/argo-rollouts-ui-ref}
     version: 1.0.0
     peerDependencies:
       '@types/react': 16.9.3

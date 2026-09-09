@@ -27,9 +27,13 @@ pin_lockfile() {
   rm -f "$dst" # never write through a symlink into the submodule
 
   # Order matters: rewrite the resolution object before remaining tarball URLs.
+  # The resolution object isn't always the minimal `{tarball: URL}` shape: depending on the
+  # pnpm version that generated the submodule's lockfile, it may include extra fields first,
+  # e.g. `{gitHosted: true, integrity: sha512-..., tarball: URL}`. Match `[^}]*` before
+  # `tarball:` so any such fields are swallowed and replaced along with the URL.
   sed -E \
     -e "s|${GIT_SPEC}|${file_spec}|g" \
-    -e "s|resolution: \{tarball: ${TARBALL}\}|${resolution}|g" \
+    -e "s|resolution: \{[^}]*tarball: ${TARBALL}\}|${resolution}|g" \
     -e "s|${TARBALL}|${file_spec}|g" \
     "$src" > "$dst"
 

@@ -8,8 +8,11 @@ const fs = require("fs");
 
 const GIT_SPEC_RE = /git\+https:\/\/github\.com\/argoproj\/argo-ui\.git#[0-9a-f]+/g;
 const TARBALL_RE = /https:\/\/codeload\.github\.com\/argoproj\/argo-ui\/tar\.gz\/[0-9a-f]+/g;
+// Match any fields (e.g. `gitHosted: true, integrity: sha512-...,`) that may precede `tarball:`
+// depending on the pnpm version that generated the lockfile, so the whole resolution object is
+// replaced with a well-formed directory resolution (see hack/pin-pnpm-deps.sh for details).
 const RESOLUTION_RE =
-    /resolution: \{tarball: https:\/\/codeload\.github\.com\/argoproj\/argo-ui\/tar\.gz\/[0-9a-f]+\}/g;
+    /resolution: \{[^}]*tarball: https:\/\/codeload\.github\.com\/argoproj\/argo-ui\/tar\.gz\/[0-9a-f]+\}/g;
 const FILE_SPEC = "file:../../../sources/argo-rollouts-ui-ref";
 const FILE_RESOLUTION =
     "resolution: {directory: ../../../sources/argo-rollouts-ui-ref, type: directory, tarball: file:../../../sources/argo-rollouts-ui-ref}";

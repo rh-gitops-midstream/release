@@ -1,0 +1,7 @@
+{
+  "name": "pnpm-install",
+  "version": "11.9.0",
+  "dependencies": {
+    "pnpm": "11.9.0"
+  }
+}
