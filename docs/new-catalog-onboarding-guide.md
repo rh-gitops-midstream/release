@@ -7,15 +7,9 @@ The `<new-catalog>` name should align with "catalog-<new-catalog-version>" (repl
 Example:
 For ocp 5.0, the application and the component names are `catalog-5-0`.
 
-### Step 1: Konflux UI: Add the new catalog application and component
-Access Konflux UI: https://konflux-ui.apps.stone-prd-rh01.pg1f.p1.openshiftapps.com/ns/rh-openshift-gitops-tenant/applications
-Create a new application for the new catalog version:
-
-![Create catalog application](assets/create-new-catalog-app.png)
-
-### Step 2: Internal GitLab Configuration
-#### 2.1 Create a development branch in the `konflux-release-data` GitLab repository. (**Do not fork the repository.**)
-#### 2.2 Add the new catalog config
+### Step 1: Internal GitLab Configuration
+#### 1.1 Create a development branch in the `konflux-release-data` GitLab repository. (**Do not fork the repository.**)
+#### 1.2 Add the new catalog config
 
 - Path:
   `tenants-config/cluster/stone-prd-rh01/tenants/rh-openshift-gitops-tenant/catalogs`
@@ -69,7 +63,7 @@ spec:
     - <new-catalog>
 ```
 
-#### 2.3 Build and Test
+#### 1.3 Build and Test
 
 - Run the manifest generator:
 ```bash
@@ -80,29 +74,29 @@ spec:
 tox
 ```
 
-#### 2.4 Submit Changes
+#### 1.4 Submit Changes
 
 - Commit your changes.
 - Create a Merge Request (MR) for review. For reference see [[GITOPS] Add 4.22 catalog config](https://gitlab.cee.redhat.com/releng/konflux-release-data/-/merge_requests/16449) MR
 
-### Step 3: GitHub Repository Updates
+### Step 2: GitHub Repository Updates
 
 In https://github.com/rh-gitops-midstream/catalog repo:
 
-#### 3.1 Add the new catalog configs
+#### 2.1 Add the new catalog configs
 - Path:
   `catalog/`
   - Add a new folder under `catalog/` with the name `v<new-catalog-version>` (e.g., `v5.0`). Copy an existing folder from older catalog version (ex: `v4.22`) into a new one called `v<new-catalog-version>`
   - Modify the new `Dockerfile` base image to the new catalog one and keep `Readme.md` and `template.yaml` untouched. 
     Example: (for ocp 5.0 it changed to `FROM registry.redhat.io/openshift5/ose-operator-registry-rhel9:v5.0`)
 
-#### 3.2 Add new catalog releases folder
+#### 2.2 Add new catalog releases folder
    - Path:
   `releases/`
 - Copy an existing folder from older catalog version (ex: `v4.22`) into a new one called `v<new-catalog-version>`
 - Modify the new `prod-release.yaml` and `stage-release.yaml` updating the `generateName` to `<new-catalog>-*-` and the `releasePlan` to `<new-catalog>-*`
 
-#### 3.3 Configure CI Pipelines
+#### 2.3 Configure CI Pipelines
 
 - Path: `.tekton/`
 - Copy an older catalog version tekton files (ex: `catalog-4-22-pull-request.yaml` and `catalog-4-22-push.yaml`) and rename to match your new component:
@@ -113,7 +107,7 @@ In https://github.com/rh-gitops-midstream/catalog repo:
   - replace `4.22` by `<new-catalog-version>`
 
 ```yaml
-piVersion: tekton.dev/v1
+apiVersion: tekton.dev/v1
 kind: PipelineRun
 metadata:
   annotations:
@@ -171,7 +165,7 @@ spec:
 
 See PRs [#111](https://github.com/rh-gitops-midstream/catalog/pull/111) for reference. 
 
-#### 3.4 Submit PR
+#### 2.4 Submit PR
 
 - Commit your changes to a new branch.
 - Open a Pull Request for review.
