@@ -50,7 +50,7 @@ sources:
   - path: sources/dex
     url: https://github.com/rh-gitops-midstream/dex.git
     ref: v2.45.1
-    commit: 03f0d045357764788673462e4a4a2396416b50a2
+    commit: e1ba05cb7eb04cf72bfa785c0e57a5baf4d849f0
     auto-update: true
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
@@ -65,7 +65,7 @@ sources:
   - path: sources/tini
     url: https://github.com/krallin/tini.git
     ref: master
-    commit: 0b44d3665869e46ccbac7414241b8256d6234dc4
+    commit: 369448a167e8b3da4ca5bca0b3307500c3371828
     auto-update: true
   - path: sources/argocd-extension-installer
     url: https://github.com/argoproj-labs/argocd-extension-installer.git
