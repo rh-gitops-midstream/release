@@ -1,0 +1,60 @@
+ARG BASE_IMAGE=quay.io/devtools_gitops/test_image:base
+FROM ${BASE_IMAGE}
+
+LABEL name="gitops-ginkgo-test-runner-testsuites" \
+      description="Base image with pre-compiled Ginkgo test suites" \
+      maintainer="GitOps Team"
+
+ARG TEST_REPO_URL=https://github.com/redhat-developer/gitops-operator.git
+ARG TEST_REPO_BRANCH=master
+
+WORKDIR /testsuites
+
+RUN git clone --depth 1 --branch ${TEST_REPO_BRANCH} ${TEST_REPO_URL} gitops-operator
+
+WORKDIR /testsuites/gitops-operator
+
+RUN make ginkgo && go mod download
+
+RUN ./bin/ginkgo build -r ./test/openshift/e2e/ginkgo/parallel/
+
+RUN ./bin/ginkgo build -r ./test/openshift/e2e/ginkgo/sequential/
+
+RUN go clean -cache \
+    && rm -rf /root/go/pkg/mod/cache/download \
+    && rm -rf /tmp/* \
+    && rm -rf .git \
+    && git init && git remote add origin ${TEST_REPO_URL}
+
+# Pre-compile ArgoCD E2E tests for common versions
+# Note: These are compiled for the image's native architecture (TARGETARCH)
+# For cross-arch testing, the test script will recompile if needed
+WORKDIR /testsuites/argocd
+
+ARG TARGETARCH
+ENV GOARCH=${TARGETARCH}
+
+# ArgoCD v2.14.x (stable)
+ARG ARGOCD_VERSION_2_14=v2.14.1
+RUN git clone --depth 1 --branch ${ARGOCD_VERSION_2_14} https://github.com/argoproj/argo-cd.git v2.14 && \
+    cd v2.14 && \
+    go mod download && \
+    CLIENT_VERSION=$(cat VERSION 2>/dev/null || echo ${ARGOCD_VERSION_2_14}) && \
+    CLIENT_VERSION="${CLIENT_VERSION#v}" && \
+    MODULE_PATH=$(head -1 go.mod | awk '{print $2}') && \
+    mkdir -p dist && \
+    GOOS=linux GOARCH=${TARGETARCH} go test -c \
+      -ldflags "-X ${MODULE_PATH}/common.version=${CLIENT_VERSION}" \
+      -o e2e.test ./test/e2e && \
+    # dist/argocd is a fallback — at runtime, scripts prefer the argocd CLI
+    # extracted from the deployed release-candidate image
+    GOOS=linux GOARCH=${TARGETARCH} go build \
+      -ldflags "-X ${MODULE_PATH}/common.version=${CLIENT_VERSION}" \
+      -o dist/argocd ./cmd && \
+    rm -rf .git /root/.cache/go-build /root/go/pkg/mod/cache
+
+# ArgoCD master (latest)
+# Note: Skipped for now — will compile from source at runtime if master branch is requested
+
+WORKDIR /workspace
+ENTRYPOINT ["/bin/bash"]

@@ -1,0 +1,57 @@
+FROM registry.access.redhat.com/ubi9/ubi:9.8
+
+LABEL name="gitops-ginkgo-test-runner-base" \
+      description="Base image with CLI tools and Go toolchain" \
+      maintainer="GitOps Team"
+
+ARG GO_VERSION=1.26.2
+ARG OC_VERSION=4.14.67
+ARG ORAS_VERSION=1.2.0
+ARG YQ_VERSION=4.44.3
+
+RUN dnf -y install \
+    jq \
+    git \
+    python3-pyyaml \
+    skopeo \
+    make \
+    tar \
+    gzip \
+    file \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf
+
+# Install Go from official tarball (UBI9 dnf only provides older versions)
+RUN ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac) \
+    && curl -Lo /tmp/go.tar.gz \
+    "https://go.dev/dl/go${GO_VERSION}.linux-${ARCH}.tar.gz" \
+    && tar -xzf /tmp/go.tar.gz -C /usr/local \
+    && rm /tmp/go.tar.gz \
+    && ln -s /usr/local/go/bin/go /usr/local/bin/go \
+    && ln -s /usr/local/go/bin/gofmt /usr/local/bin/gofmt \
+    && go version
+
+# Install OpenShift CLI (oc)
+RUN curl -Lo /tmp/openshift-client.tar.gz \
+    https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux.tar.gz \
+    && tar -xzf /tmp/openshift-client.tar.gz -C /usr/local/bin/ oc kubectl \
+    && rm /tmp/openshift-client.tar.gz \
+    && oc version --client
+
+# Install ORAS for log artifact upload
+RUN ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac) \
+    && curl -Lo /tmp/oras.tar.gz \
+    https://github.com/oras-project/oras/releases/download/v${ORAS_VERSION}/oras_${ORAS_VERSION}_linux_${ARCH}.tar.gz \
+    && tar -xzf /tmp/oras.tar.gz -C /usr/local/bin/ oras \
+    && rm /tmp/oras.tar.gz \
+    && oras version
+
+# Install yq for YAML parsing
+RUN ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac) \
+    && curl -Lo /usr/local/bin/yq \
+    https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${ARCH} \
+    && chmod +x /usr/local/bin/yq \
+    && yq --version
+
+WORKDIR /workspace
+ENTRYPOINT ["/bin/bash"]
