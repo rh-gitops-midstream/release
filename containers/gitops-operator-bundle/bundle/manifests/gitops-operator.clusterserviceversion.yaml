@@ -1003,9 +1003,9 @@ spec:
                       - name: RELATED_IMAGE_ARGOCD_IMAGE_UPDATER_IMAGE
                         value: registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel9@sha256:e7fc638f3781b3706475e1af9cdcd3853ac50894b01091311a74faeaa57d4b53
                       - name: RELATED_IMAGE_ARGOCD_PROMOTER_EXTENSION_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argocd-promoter-extension-rhel9@sha256:29b3fae477ac5b880a026f755b4678ae94508457e08ba9ffa24bc39db6351e62
+                        value: registry.redhat.io/openshift-gitops-1/argocd-promoter-extension-rhel9@sha256:948d5195758a1e0d908ec87ad2c7f23b0c0d57c589db99fa0dcab98cfec980b0
                       - name: ARGOCD_PROMOTER_EXTENSION_IMAGE
-                        value: registry.redhat.io/openshift-gitops-1/argocd-promoter-extension-rhel9@sha256:29b3fae477ac5b880a026f755b4678ae94508457e08ba9ffa24bc39db6351e62
+                        value: registry.redhat.io/openshift-gitops-1/argocd-promoter-extension-rhel9@sha256:948d5195758a1e0d908ec87ad2c7f23b0c0d57c589db99fa0dcab98cfec980b0
                       - name: RELATED_IMAGE_GITOPS_PROMOTER_IMAGE
                         value: registry.redhat.io/openshift-gitops-1/gitops-promoter-rhel9@sha256:650d30af197284b84f7ea6b4175183b69f0f66b3de51bcf84e29629dfc629efa
                       - name: GITOPS_PROMOTER_IMAGE
@@ -1154,6 +1154,6 @@ spec:
     - name: argocd_image_updater_image
       image: registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel9@sha256:e7fc638f3781b3706475e1af9cdcd3853ac50894b01091311a74faeaa57d4b53
     - name: argocd_promoter_extension_image
-      image: registry.redhat.io/openshift-gitops-1/argocd-promoter-extension-rhel9@sha256:29b3fae477ac5b880a026f755b4678ae94508457e08ba9ffa24bc39db6351e62
+      image: registry.redhat.io/openshift-gitops-1/argocd-promoter-extension-rhel9@sha256:948d5195758a1e0d908ec87ad2c7f23b0c0d57c589db99fa0dcab98cfec980b0
     - name: gitops_promoter_image
       image: registry.redhat.io/openshift-gitops-1/gitops-promoter-rhel9@sha256:650d30af197284b84f7ea6b4175183b69f0f66b3de51bcf84e29629dfc629efa
