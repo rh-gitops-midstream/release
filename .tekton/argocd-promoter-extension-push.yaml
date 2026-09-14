@@ -16,6 +16,7 @@ metadata:
         "containers/argocd-promoter-extension/***".pathChanged() ||
         ".tekton/argocd-promoter-extension-push.yaml".pathChanged() ||
         "prefetch/rpms/ubi9/***".pathChanged() ||
+        "BUILD".pathChanged() ||
         ".tekton/build-multi-platform-image.yaml".pathChanged() ||
         ".tekton/tasks/***".pathChanged()
       )
