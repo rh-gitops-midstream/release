@@ -72,7 +72,7 @@ COPY sources/gitops-promoter/ui/web/ ./ui/web
 COPY --from=promoter-dashboard-ui /app/gitops-promoter/ui/web/static ./ui/web/static
 
 # Build binary
-RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -a -o gitops-promoter cmd/main.go
+RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -a -tags strictfipsruntime -o gitops-promoter cmd/main.go
 
 #################################################################################################
 # Build tini binary
