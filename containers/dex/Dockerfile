@@ -15,7 +15,7 @@
 # ------------------------------------------------------------------------
 
 # --- start build stage #1
-FROM registry.redhat.io/rhel9/go-toolset:1.25 as builder
+FROM registry.redhat.io/rhel9/go-toolset:1.26 as builder
 USER root
 
 COPY sources/dex /app/dex
@@ -34,7 +34,7 @@ FROM registry.access.redhat.com/ubi9/ubi-minimal
 #
 # OpenSSL is required so wget can query HTTPS endpoints for health checking.
 
-RUN microdnf install -y ca-certificates openssl && microdnf clean all
+RUN microdnf install -y ca-certificates openssl openssl-libs && microdnf clean all
 
 RUN mkdir -p /var/dex
 RUN chown -R 1001:1001 /var/dex
