@@ -112,8 +112,11 @@ COPY sources/helm /go/src/github.com/argoproj/helm
 WORKDIR /go/src/github.com/argoproj/helm
 ARG CI_HELM_VERSION
 ARG CI_HELM_COMMIT
-RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 go build -ldflags="-w -s -X helm.sh/helm/v3/internal/version.version=${CI_HELM_VERSION} \
--X helm.sh/helm/v3/internal/version.gitCommit=${CI_HELM_COMMIT}" -tags strictfipsruntime ./cmd/helm
+RUN set -x; \
+    GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 \
+    go build \
+    -ldflags="-w -s -X helm.sh/helm/v4/internal/version.version=${CI_HELM_VERSION} -X helm.sh/helm/v4/internal/version.gitCommit=${CI_HELM_COMMIT}" \
+    -tags strictfipsruntime ./cmd/helm
 
 # build tini
 COPY sources/tini /go/src/github.com/argoproj/tini
