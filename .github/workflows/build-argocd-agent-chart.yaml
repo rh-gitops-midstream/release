@@ -1,4 +1,4 @@
-name: Publish Agent Helm Chart to Quay
+name: Build Argo CD Agent Helm Chart
 
 on:
   workflow_dispatch:
@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   publish-chart:
-    name: Build and Publish Agent Chart
+    name: Build and Publish Agent Chart to GHCR
     runs-on: ubuntu-24.04
 
     steps:
@@ -37,24 +37,24 @@ jobs:
       - name: Build chart package
         run: make agent-helm-chart-package
 
-      - name: Login to Quay
+      - name: Login to GHCR
         shell: bash
         run: |
           set -euo pipefail
-          echo "${{ secrets.QUAY_TOKEN }}" | helm registry login quay.io -u "${{ secrets.QUAY_USERNAME }}" --password-stdin
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Push chart to Quay
+      - name: Push chart to GHCR
         shell: bash
         run: |
           set -euo pipefail
-          make agent-helm-chart-push CHART_REGISTRY="oci://quay.io/svghadi"
+          make agent-helm-chart-push CHART_REGISTRY="oci://ghcr.io/${{ github.repository_owner }}/charts"
 
-      - name: Output test command
+      - name: Output install command
         shell: bash
         run: |
           set -euo pipefail
           CHART_ARCHIVE=$(ls -1 dist/*.tgz | head -n1)
           CHART_FILE=$(basename "${CHART_ARCHIVE}")
           CHART_VERSION=$(echo "${CHART_FILE}" | sed -E 's/^.*-([0-9][0-9A-Za-z\.-]*)\.tgz$/\1/')
-          echo "Run this to test:"
-          echo "helm install agent-test oci://quay.io/svghadi/redhat-argocd-agent --version ${CHART_VERSION}"
+          echo "Run this to install:"
+          echo "helm install agent-test oci://ghcr.io/${{ github.repository_owner }}/charts/redhat-argocd-agent --version ${CHART_VERSION}"
