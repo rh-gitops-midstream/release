@@ -41,6 +41,7 @@ Kubernetes: `>=1.24.0-0`
 | image.repository | string | `"ghcr.io/argoproj-labs/argocd-agent/argocd-agent"` | Container image repository for the agent. |
 | image.tag | string | `"latest"` | Container image tag for the agent. |
 | keepAliveInterval | string | `"50s"` | Keep-alive interval for connections. |
+| labelSelector | string | `""` | Kubernetes label selector to restrict which resources the agent watches. Only matching resources will be listed, watched, and processed. |
 | logFormat | string | `"text"` | Log format for the agent (text or json). |
 | logLevel | string | `"info"` | Log level for the agent. |
 | metricsPort | string | `"8181"` | Metrics server port exposed by the agent. |
@@ -62,6 +63,11 @@ Kubernetes: `>=1.24.0-0`
 | probes.readiness.periodSeconds | int | `10` | Frequency of readiness probes. |
 | probes.readiness.timeoutSeconds | int | `2` | Timeout for readiness probe. |
 | redisAddress | string | `"argocd-redis:6379"` | Redis address used by the agent. |
+| redisTLS | object | `{"caPath":"/app/config/redis-tls/ca.crt","enabled":false,"insecure":false,"secretName":"argocd-redis-tls"}` | Redis TLS configuration. |
+| redisTLS.caPath | string | `"/app/config/redis-tls/ca.crt"` | Path to CA certificate for verifying Redis TLS certificate. This path is where the CA certificate will be mounted inside the container. |
+| redisTLS.enabled | bool | `false` | Enable TLS for Redis connections. |
+| redisTLS.insecure | bool | `false` | Skip verification of Redis TLS certificate (INSECURE - for development only). |
+| redisTLS.secretName | string | `"argocd-redis-tls"` | Name of the Kubernetes Secret containing the Redis TLS CA certificate. The secret should have a key 'ca.crt' containing the CA certificate in PEM format. Set to empty string to disable mounting (requires system CAs or insecure mode). |
 | redisUsername | string | `""` | Redis username for authentication. |
 | replicaCount | int | `1` | Number of replicas for the agent Deployment. |
 | resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Resource requests and limits for the agent Pod. |
@@ -74,10 +80,23 @@ Kubernetes: `>=1.24.0-0`
 | service.metrics.annotations | object | `{}` | Annotations to add to the metrics Service. |
 | service.metrics.port | int | `8181` | Service port for metrics. |
 | service.metrics.targetPort | int | `8181` | Target port for metrics. |
-| serviceAccount | object | `{"annotations":{},"create":true,"name":""}` | ServiceAccount configuration. |
+| serviceAccount | object | `{"annotations":{},"automountServiceAccountToken":true,"create":true,"name":""}` | ServiceAccount configuration. |
 | serviceAccount.annotations | object | `{}` | Annotations to add to the ServiceAccount. |
+| serviceAccount.automountServiceAccountToken | bool | `true` | Automount API credentials for the Service Account |
 | serviceAccount.create | bool | `true` | Whether to create the ServiceAccount. |
 | serviceAccount.name | string | `""` | Name of the ServiceAccount to use. If empty, a name is generated. |
+| serviceMonitor | object | `{"additionalLabels":{},"annotations":{},"enabled":false,"honorLabels":false,"interval":"30s","metricRelabelings":[],"namespace":"","relabelings":[],"scheme":"","scrapeTimeout":"10s","tlsConfig":{}}` | Prometheus ServiceMonitor configuration. |
+| serviceMonitor.additionalLabels | object | `{}` | Prometheus ServiceMonitor labels |
+| serviceMonitor.annotations | object | `{}` | Prometheus ServiceMonitor annotations |
+| serviceMonitor.enabled | bool | `false` | Whether to create a ServiceMonitor resource. |
+| serviceMonitor.honorLabels | bool | `false` | When true, honorLabels preserves the metric’s labels when they collide with the target’s labels. |
+| serviceMonitor.interval | string | `"30s"` | Prometheus scrape interval. Must be a valid duration string (e.g. "30s"). |
+| serviceMonitor.metricRelabelings | list | `[]` | Prometheus [MetricRelabelConfigs] to apply to samples before ingestion |
+| serviceMonitor.namespace | string | `""` | Namespace where the ServiceMonitor should be created. Defaults to release namespace. |
+| serviceMonitor.relabelings | list | `[]` | Prometheus [RelabelConfigs] to apply to samples before scraping |
+| serviceMonitor.scheme | string | `""` | Prometheus ServiceMonitor scheme |
+| serviceMonitor.scrapeTimeout | string | `"10s"` | Prometheus scrape timeout. Must be a valid duration string (e.g. "10s"). |
+| serviceMonitor.tlsConfig | object | `{}` | Prometheus ServiceMonitor tlsConfig |
 | tests | object | `{"enabled":false,"image":"bitnamilegacy/kubectl","tag":"1.33.4"}` | Configuration for helm-chart tests. |
 | tests.enabled | bool | `false` | By default, chart tests are disabled. |
 | tests.image | string | `"bitnamilegacy/kubectl"` | Test image. |
