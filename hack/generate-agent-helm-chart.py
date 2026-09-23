@@ -53,6 +53,10 @@ def read_release_image_tag(config_path: Path) -> str:
 	return release_version if str(release_version).startswith("v") else f"v{release_version}"
 
 
+def is_semver_like(ref: str) -> bool:
+	return bool(re.match(r"^v?\d+\.\d+", ref))
+
+
 def normalize_version(ref: str) -> str:
 	version = re.sub(r"^v", "", ref)
 	version = re.sub(r"[-+].*$", "", version)
@@ -128,9 +132,24 @@ def regenerate_chart_layout(version: str, image_repository: str, image_tag: str)
 	update_copied_chart_files(version, image_repository, image_tag)
 
 
+def read_release_version(config_path: Path) -> str:
+	with config_path.open("r", encoding="utf-8") as file:
+		config = yaml.safe_load(file)
+
+	release = config.get("release") or {}
+	version = release.get("version")
+	if not version:
+		raise ValueError("Missing release.version in config.yaml")
+	return str(version)
+
+
 def main() -> None:
 	agent_ref = read_agent_ref(CONFIG_PATH)
-	version = normalize_version(agent_ref)
+	if is_semver_like(agent_ref):
+		version = normalize_version(agent_ref)
+	else:
+		version = normalize_version(read_release_version(CONFIG_PATH))
+		print(f"Agent ref '{agent_ref}' is not a version tag, using release version: {version}")
 	image_repository = read_agent_image_repository(CONFIG_PATH)
 	image_tag = read_release_image_tag(CONFIG_PATH)
 	regenerate_chart_layout(version, image_repository, image_tag)

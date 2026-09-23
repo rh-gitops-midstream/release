@@ -14,6 +14,7 @@ sources:
 	@./hack/sync-sources.sh
 	@./hack/verify-sources.sh
 	@./hack/pin-pnpm-deps.sh
+	@$(MAKE) agent-helm-chart
 
 .PHONY: update-sources
 update-sources: deps
