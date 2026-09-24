@@ -581,13 +581,13 @@ jobs:
           webhook-type: incoming-webhook
           payload: |
             {
-              "text": ":red_circle: *Build Release Candidate failed*",
+              "text": ":red_circle: *${{ github.event_name == 'schedule' && 'Nightly build' || 'Release candidate build' }} failed for ${{ needs.build-rc.outputs.build_version || 'unknown' }}*",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": ":red_circle: *Build Release Candidate failed*\n*Branch:* `${{ needs.build-rc.outputs.target_branch || 'unknown' }}`\n*Version:* `${{ needs.build-rc.outputs.build_version || 'unknown' }}`\n*Failed stage:* ${{ needs.build-rc.outputs.failed_stage || 'unknown' }}\n*Trigger:* ${{ github.event_name }}\n*Run:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View logs>"
+                    "text": ":red_circle: *${{ github.event_name == 'schedule' && 'Nightly build' || 'Release candidate build' }} failed for ${{ needs.build-rc.outputs.build_version || 'unknown' }}*\n*Branch:* `${{ needs.build-rc.outputs.target_branch || 'unknown' }}`\n*Failed stage:* ${{ needs.build-rc.outputs.failed_stage || 'unknown' }}\n*Run:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View logs>"
                   }
                 }
               ]
