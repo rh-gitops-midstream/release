@@ -86,6 +86,11 @@ catalog: deps
 	python3 hack/generate-catalog.py
 	cd catalog && make catalog-template && git status
 
+.PHONY: nightly-catalog
+nightly-catalog: deps
+	python3 hack/generate-catalog.py
+	cd catalog && make catalog-template && git status
+
 # Update bundle manifests with latest images
 .PHONY: agent-helm-chart
 agent-helm-chart: deps
