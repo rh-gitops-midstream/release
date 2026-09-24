@@ -31,6 +31,11 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 360
 
+    outputs:
+      target_branch: ${{ steps.branch.outputs.target }}
+      build_version: ${{ steps.capture_state.outputs.build_version }}
+      failed_stage: ${{ steps.capture_state.outputs.failed_stage }}
+
     permissions:
       checks: read
       contents: write
@@ -101,6 +106,10 @@ jobs:
       # ──────────────────────────────────────────────
       # Operator Build
       # ──────────────────────────────────────────────
+
+      - name: "Set stage: Operator Build"
+        if: (inputs.START_FROM || 'full-build') == 'full-build'
+        run: echo "CURRENT_STAGE=Operator Build" >> "$GITHUB_ENV"
 
       - name: "Operator Build: Update BUILD file"
         if: (inputs.START_FROM || 'full-build') == 'full-build'
@@ -256,6 +265,10 @@ jobs:
       # ──────────────────────────────────────────────
       # Bundle Build
       # ──────────────────────────────────────────────
+
+      - name: "Set stage: Bundle Build"
+        if: steps.p1_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'bundle-build'
+        run: echo "CURRENT_STAGE=Bundle Build" >> "$GITHUB_ENV"
 
       - name: "Bundle Build: Update bundle with latest image SHAs"
         if: steps.p1_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'bundle-build'
@@ -482,6 +495,10 @@ jobs:
       # Catalog Build
       # ──────────────────────────────────────────────
 
+      - name: "Set stage: Catalog Build"
+        if: steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build'
+        run: echo "CURRENT_STAGE=Catalog Build" >> "$GITHUB_ENV"
+
       - name: "Catalog Build: Generate catalog"
         if: steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build'
         run: make catalog
@@ -542,3 +559,36 @@ jobs:
           author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
           body: "${{ steps.p3_metadata.outputs.body }}"
           labels: "${{ steps.p3_metadata.outputs.labels }}"
+
+      - name: "Capture build state"
+        id: capture_state
+        if: always()
+        run: |
+          echo "build_version=$(cat BUILD)" >> "$GITHUB_OUTPUT"
+          echo "failed_stage=${CURRENT_STAGE:-unknown}" >> "$GITHUB_OUTPUT"
+
+  notify-failure:
+    name: Notify Slack on Failure
+    runs-on: ubuntu-24.04
+    needs: build-rc
+    if: failure()
+
+    steps:
+      - name: Send Slack notification
+        uses: slackapi/slack-github-action@v2.1.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": ":red_circle: *Build Release Candidate failed*",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":red_circle: *Build Release Candidate failed*\n*Branch:* `${{ needs.build-rc.outputs.target_branch || 'unknown' }}`\n*Version:* `${{ needs.build-rc.outputs.build_version || 'unknown' }}`\n*Failed stage:* ${{ needs.build-rc.outputs.failed_stage || 'unknown' }}\n*Trigger:* ${{ github.event_name }}\n*Run:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View logs>"
+                  }
+                }
+              ]
+            }
