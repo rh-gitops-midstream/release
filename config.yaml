@@ -25,7 +25,7 @@ sources:
   - path: sources/gitops-operator
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.22
-    commit: 8c37485c861690bb8ad4cf38171655b736251535
+    commit: 1c443d06e1064852792feaa5acdee5a92654ccaa
     auto-update: true
   - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
@@ -50,7 +50,7 @@ sources:
   - path: sources/dex
     url: https://github.com/rh-gitops-midstream/dex.git
     ref: v2.45.1
-    commit: 8aeac3a12dae5361b82ee0613cd5b32017e462a9
+    commit: 8f8ee426b78dd12f74b1bac7d9f76c3388341235
     auto-update: true
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
