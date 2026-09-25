@@ -86,6 +86,26 @@ catalog: deps
 
 .PHONY: nightly-catalog
 nightly-catalog: deps
+	@echo "Generating Nightly Catalog..."
+	rm -rf catalog
+	@NIGHTLY_BRANCH="build/nightly-catalog"; \
+	REPO="https://github.com/rh-gitops-midstream/catalog.git"; \
+	if git ls-remote --heads "$$REPO" "$$NIGHTLY_BRANCH" | grep -q "$$NIGHTLY_BRANCH"; then \
+		echo "Nightly branch exists. Cloning and rebasing onto main..."; \
+		git clone "$$REPO" catalog; \
+		cd catalog && git checkout "$$NIGHTLY_BRANCH"; \
+		if ! git rebase origin/main; then \
+			echo "Rebase conflict. Starting fresh from main."; \
+			git rebase --abort; \
+			git checkout main; \
+			git branch -D "$$NIGHTLY_BRANCH"; \
+			git checkout -b "$$NIGHTLY_BRANCH"; \
+		fi; \
+	else \
+		echo "Nightly branch does not exist. Creating from main..."; \
+		git clone "$$REPO" catalog; \
+		cd catalog && git checkout -b "$$NIGHTLY_BRANCH"; \
+	fi
 	python3 hack/generate-catalog.py
 	cd catalog && make catalog-template && git status
 
