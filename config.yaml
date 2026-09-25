@@ -29,70 +29,87 @@ sources:
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.21
     commit: 0266e44b2cdcf18ed4e17b349d4488b13b70aeb7
+    auto-update: true
   - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
     ref: v3.4.9
     commit: f4554f40bc545e1d633151cd43cf3784c4e35de3
+    auto-update: true
   - path: sources/argo-rollouts
     url: https://github.com/rh-gitops-midstream/argo-rollouts.git
     ref: v1.9.0
     commit: 53052f202eba02d651190fad7cc4b3e06b875af9
+    auto-update: true
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
     ref: kustomize/v5.8.1
     commit: 9790a1c3efd2fd35f1b768d495112834176581c1
+    auto-update: true
   - path: sources/helm
     url: https://github.com/helm/helm.git
     ref: v3.19.5
     commit: 4a19a5b6fb912c5c28a779e73f2e0880d9e239a4
+    auto-update: true
   - path: sources/dex
     ref: v2.45.0
     url: https://github.com/rh-gitops-midstream/dex.git
     commit: eb01aaea07337393b92910439f8467527be3e08f
+    auto-update: true
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
     ref: v3.7.1
     commit: b84b33847fe6458f36ef521534dc0eac953cb379
+    auto-update: true
   - path: sources/ssh-connect
     url: https://github.com/gotoh/ssh-connect.git
     ref: master
     commit: a7443d32e6bf6f00698384b0519adc16fa7656fa
+    auto-update: true
   - path: sources/tini
     url: https://github.com/krallin/tini.git
     ref: master
     commit: 369448a167e8b3da4ca5bca0b3307500c3371828
+    auto-update: true
   - path: sources/argocd-extension-installer
     url: https://github.com/argoproj-labs/argocd-extension-installer.git
     ref: main
     commit: 379284c7aaa0717c4224ab119133bf2bad2c7bfd
+    auto-update: false
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: v1.21
     commit: 37acd6ed7d95835091ef6f3571c0e8a6be1e46ef
+    auto-update: true
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master
     commit: 2c16e0c8eaa6923ac35d9256a36f13349e10d339
+    auto-update: true
   - path: sources/rollouts-plugin-trafficrouter-openshift
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
     ref: main
     commit: f316fad99b3555be0612dc34098d22392bba3492
+    auto-update: true
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
     commit: 55efec56df8eb7bd07dca8caebc900842fb2c678
+    auto-update: true
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
     ref: master
     commit: 427493aca64464872b8801875141b70c6ab1318b
+    auto-update: true
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: v0.9.0
     commit: 8b3b9d42adc0f1a7ae3fd06a7645176b38940d4d
+    auto-update: true
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
     ref: v1.2.2
     commit: 0e7ba4e51d2f8e64934f738db9f2b57274a401d3
+    auto-update: true
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
 # Bundle generation script will automatically fetch latest sha for each image 
