@@ -51,17 +51,43 @@
       "title": "cacheRefreshInterval",
       "type": "string"
     },
+    "informerSyncTimeout": {
+      "default": "10s",
+      "description": "Timeout for the initial informer sync at agent startup. Increase on large clusters or when the API server is under heavy load.",
+      "title": "informerSyncTimeout",
+      "type": "string"
+    },
     "createNamespace": {
       "default": false,
       "description": "Whether to create target namespaces automatically when they don't exist.\nUsed with destination-based mapping.",
       "title": "createNamespace",
       "type": "boolean"
     },
+    "deploymentAnnotations": {
+      "additionalProperties": true,
+      "description": "Additional annotations to add to the agent Deployment metadata.",
+      "required": [],
+      "title": "deploymentAnnotations",
+      "type": "object"
+    },
     "destinationBasedMapping": {
       "default": false,
       "description": "#\nWhether to enable destination-based mapping. When enabled, the agent\ncreates applications in their original namespace (preserving the namespace\nfrom the principal) instead of the agent's own namespace.",
       "title": "destinationBasedMapping",
       "type": "boolean"
+    },
+    "dnsConfig": {
+      "additionalProperties": true,
+      "description": "DNS config for the Pod. Only honored when `dnsPolicy` is \"None\".",
+      "required": [],
+      "title": "dnsConfig",
+      "type": "object"
+    },
+    "dnsPolicy": {
+      "default": "",
+      "description": "DNS policy for the Pod (e.g. ClusterFirst, None). Empty leaves the default.",
+      "title": "dnsPolicy",
+      "type": "string"
     },
     "enableCompression": {
       "default": false,
@@ -81,6 +107,12 @@
       "title": "enableWebSocket",
       "type": "boolean"
     },
+    "fullnameOverride": {
+      "default": "",
+      "description": "Override the fully-qualified resource name (defaults to `\u003crelease\u003e-agent-helm`).",
+      "title": "fullnameOverride",
+      "type": "string"
+    },
     "global": {
       "description": "Global values are values that can be accessed from any chart or subchart by exactly the same name.",
       "required": [],
@@ -93,12 +125,20 @@
       "title": "healthzPort",
       "type": "string"
     },
+    "hostAliases": {
+      "description": "Host aliases injected into /etc/hosts of the agent Pod.",
+      "items": {
+        "required": []
+      },
+      "title": "hostAliases",
+      "type": "array"
+    },
     "image": {
       "additionalProperties": false,
       "description": "#",
       "properties": {
         "pullPolicy": {
-          "default": "Always",
+          "default": "IfNotPresent",
           "description": "Image pull policy for the agent container.",
           "title": "pullPolicy",
           "type": "string"
@@ -110,8 +150,8 @@
           "type": "string"
         },
         "tag": {
-          "default": "latest",
-          "description": "Container image tag for the agent.",
+          "default": "",
+          "description": "Overrides the image tag whose default is the chart appVersion.",
           "title": "tag",
           "type": "string"
         }
@@ -124,10 +164,25 @@
       "title": "image",
       "type": "object"
     },
+    "imagePullSecrets": {
+      "description": "Image pull secrets for private registries.",
+      "items": {
+        "required": []
+      },
+      "title": "imagePullSecrets",
+      "type": "array"
+    },
     "keepAliveInterval": {
       "default": "50s",
       "description": "Keep-alive interval for connections.",
       "title": "keepAliveInterval",
+      "type": "string"
+    },
+    "heartbeatInterval": {
+      "default": "",
+      "description": "Heartbeat ping interval for the gRPC Subscribe stream. Keeps connections alive through proxies that terminate idle TCP connections (e.g. Istio Ambient Mesh). Empty string disables heartbeats.",
+      "pattern": "^$|^[-+]?([0-9]*(\\.[0-9]+)?[a-z]+)+$",
+      "title": "heartbeatInterval",
       "type": "string"
     },
     "logFormat": {
@@ -146,6 +201,12 @@
       "default": "8181",
       "description": "Metrics server port exposed by the agent.",
       "title": "metricsPort",
+      "type": "string"
+    },
+    "nameOverride": {
+      "default": "",
+      "description": "Override the chart name used in `app.kubernetes.io/name`\nAlso changes `spec.selector.matchLabels`, which is immutable — do not set after initial\ninstall unless you are prepared to delete+reinstall.",
+      "title": "nameOverride",
       "type": "string"
     },
     "namespaceOverride": {
@@ -173,6 +234,55 @@
       "description": "Additional labels to add to the agent Pod.",
       "required": [],
       "title": "podLabels",
+      "type": "object"
+    },
+    "podSecurityContext": {
+      "additionalProperties": true,
+      "description": "#\nPod-level securityContext. Applied to the Pod spec.",
+      "properties": {
+        "fsGroup": {
+          "default": 999,
+          "title": "fsGroup",
+          "type": "integer"
+        },
+        "fsGroupChangePolicy": {
+          "default": "OnRootMismatch",
+          "title": "fsGroupChangePolicy",
+          "type": "string"
+        },
+        "runAsGroup": {
+          "default": 999,
+          "title": "runAsGroup",
+          "type": "integer"
+        },
+        "runAsNonRoot": {
+          "default": true,
+          "title": "runAsNonRoot",
+          "type": "boolean"
+        },
+        "runAsUser": {
+          "default": 999,
+          "title": "runAsUser",
+          "type": "integer"
+        },
+        "seccompProfile": {
+          "additionalProperties": true,
+          "properties": {
+            "type": {
+              "default": "RuntimeDefault",
+              "title": "type",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "title": "seccompProfile",
+          "type": "object"
+        }
+      },
+      "required": [],
+      "title": "podSecurityContext",
       "type": "object"
     },
     "pprofPort": {
@@ -331,6 +441,36 @@
       "title": "probes",
       "type": "object"
     },
+    "progressDeadlineSeconds": {
+      "default": 600,
+      "description": "Time allowed for the Deployment to make progress before the controller reports failure.",
+      "title": "progressDeadlineSeconds",
+      "type": "integer"
+    },
+    "rbac": {
+      "additionalProperties": false,
+      "description": "#",
+      "properties": {
+        "create": {
+          "default": true,
+          "description": "Create namespace-scoped Role and RoleBinding for the agent.",
+          "title": "create",
+          "type": "boolean"
+        },
+        "createClusterRole": {
+          "default": true,
+          "description": "Create cluster-scoped ClusterRole and ClusterRoleBinding. Required for\ndestination-based mapping, create-namespace, and resource-proxy discovery\nacross multiple namespaces. Leave `false` to keep the agent strictly\nnamespace-scoped.",
+          "title": "createClusterRole",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "create",
+        "createClusterRole"
+      ],
+      "title": "rbac",
+      "type": "object"
+    },
     "redisAddress": {
       "default": "argocd-redis:6379",
       "description": "Redis address used by the agent.",
@@ -431,6 +571,88 @@
         "requests"
       ],
       "title": "resources",
+      "type": "object"
+    },
+    "revisionHistoryLimit": {
+      "default": 10,
+      "description": "Number of old ReplicaSets to retain for rollback.",
+      "title": "revisionHistoryLimit",
+      "type": "integer"
+    },
+    "securityContext": {
+      "additionalProperties": true,
+      "description": "#\nContainer-level securityContext. Applied to the agent container.",
+      "properties": {
+        "allowPrivilegeEscalation": {
+          "default": false,
+          "title": "allowPrivilegeEscalation",
+          "type": "boolean"
+        },
+        "capabilities": {
+          "additionalProperties": false,
+          "properties": {
+            "drop": {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  }
+                ],
+                "required": []
+              },
+              "title": "drop",
+              "type": "array"
+            }
+          },
+          "required": [
+            "drop"
+          ],
+          "title": "capabilities",
+          "type": "object"
+        },
+        "privileged": {
+          "default": false,
+          "title": "privileged",
+          "type": "boolean"
+        },
+        "readOnlyRootFilesystem": {
+          "default": true,
+          "title": "readOnlyRootFilesystem",
+          "type": "boolean"
+        },
+        "runAsGroup": {
+          "default": 999,
+          "title": "runAsGroup",
+          "type": "integer"
+        },
+        "runAsNonRoot": {
+          "default": true,
+          "title": "runAsNonRoot",
+          "type": "boolean"
+        },
+        "runAsUser": {
+          "default": 999,
+          "title": "runAsUser",
+          "type": "integer"
+        },
+        "seccompProfile": {
+          "additionalProperties": true,
+          "properties": {
+            "type": {
+              "default": "RuntimeDefault",
+              "title": "type",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "title": "seccompProfile",
+          "type": "object"
+        }
+      },
+      "required": [],
+      "title": "securityContext",
       "type": "object"
     },
     "server": {
@@ -652,6 +874,12 @@
       "title": "serviceMonitor",
       "type": "object"
     },
+    "terminationGracePeriodSeconds": {
+      "default": 30,
+      "description": "Grace period for Pod termination (seconds).",
+      "title": "terminationGracePeriodSeconds",
+      "type": "integer"
+    },
     "tests": {
       "additionalProperties": false,
       "description": "#\nConfiguration for helm-chart tests.",
@@ -707,6 +935,12 @@
       "title": "tlsClientKeyPath",
       "type": "string"
     },
+    "tlsInsecurePlaintext": {
+      "default": "false",
+      "description": "Whether to connect to the principal without TLS",
+      "title": "tlsInsecurePlaintext",
+      "type": "string"
+    },
     "tlsMaxVersion": {
       "default": "",
       "description": "Maximum TLS version to use (tls1.1, tls1.2, tls1.3). Empty uses highest available.",
@@ -745,28 +979,128 @@
       "title": "tolerations",
       "type": "array"
     },
+    "topologySpreadConstraints": {
+      "description": "Topology spread constraints for the agent Pod.",
+      "items": {
+        "required": []
+      },
+      "title": "topologySpreadConstraints",
+      "type": "array"
+    },
+    "updateStrategy": {
+      "additionalProperties": true,
+      "description": "Deployment update strategy (passed through as `spec.strategy`).",
+      "properties": {
+        "rollingUpdate": {
+          "additionalProperties": true,
+          "properties": {
+            "maxSurge": {
+              "default": "25%",
+              "title": "maxSurge",
+              "type": "string"
+            },
+            "maxUnavailable": {
+              "default": "25%",
+              "title": "maxUnavailable",
+              "type": "string"
+            }
+          },
+          "required": [
+            "maxSurge",
+            "maxUnavailable"
+          ],
+          "title": "rollingUpdate",
+          "type": "object"
+        },
+        "type": {
+          "default": "RollingUpdate",
+          "title": "type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "updateStrategy",
+      "type": "object"
+    },
     "userPasswordSecretName": {
       "default": "argocd-agent-agent-userpass",
       "description": "Name of the Secret containing agent username/password (if used).",
       "title": "userPasswordSecretName",
       "type": "string"
+    },
+    "spire": {
+      "additionalProperties": false,
+      "description": "SPIRE integration for automatic mTLS certificate provisioning.",
+      "properties": {
+        "enabled": {
+          "default": false,
+          "description": "Enable SPIRE-based TLS. When enabled, TLS credentials are obtained from the SPIRE Workload API instead of static Kubernetes secrets.",
+          "title": "enabled",
+          "type": "boolean"
+        },
+        "authMethod": {
+          "default": "",
+          "description": "SPIFFE authentication method. Required when SPIRE is enabled. 'jwt' uses JWT-SVIDs (for federated SPIRE), 'mtls' uses X.509-SVIDs (for centralized SPIRE).",
+          "title": "authMethod",
+          "type": "string",
+          "enum": ["", "jwt", "mtls"]
+        },
+        "socketPath": {
+          "default": "unix:///run/spire/agent-sockets/spire-agent.sock",
+          "description": "SPIRE Agent socket URI passed to --spire-agent-socket.",
+          "title": "socketPath",
+          "type": "string"
+        },
+        "mountMethod": {
+          "default": "hostPath",
+          "description": "How to mount the SPIRE Agent socket into the pod.",
+          "title": "mountMethod",
+          "type": "string",
+          "enum": ["hostPath", "csi"]
+        },
+        "hostSocketDir": {
+          "default": "/run/spire/agent-sockets",
+          "description": "Path to the SPIRE Agent socket directory. Used as the container mountPath and host path.",
+          "title": "hostSocketDir",
+          "type": "string"
+        }
+      },
+      "required": ["enabled", "authMethod", "socketPath", "mountMethod", "hostSocketDir"],
+      "if": {
+        "properties": { "enabled": { "const": true } }
+      },
+      "then": {
+        "properties": { "authMethod": { "enum": ["jwt", "mtls"] } }
+      },
+      "title": "spire",
+      "type": "object"
     }
   },
   "required": [
     "namespaceOverride",
     "image",
     "replicaCount",
+    "updateStrategy",
+    "revisionHistoryLimit",
+    "progressDeadlineSeconds",
     "tlsSecretName",
     "tlsRootCASecretName",
     "userPasswordSecretName",
     "resources",
     "serviceAccount",
+    "podSecurityContext",
+    "securityContext",
+    "rbac",
     "nodeSelector",
     "affinity",
     "tolerations",
+    "deploymentAnnotations",
     "podAnnotations",
     "podLabels",
     "priorityClassName",
+    "terminationGracePeriodSeconds",
     "probes",
     "agentMode",
     "auth",
@@ -786,7 +1120,9 @@
     "pprofPort",
     "enableResourceProxy",
     "cacheRefreshInterval",
+    "informerSyncTimeout",
     "keepAliveInterval",
+    "heartbeatInterval",
     "tlsClientKeyPath",
     "tlsClientCertPath",
     "tlsRootCAPath",
@@ -794,8 +1130,11 @@
     "tlsMaxVersion",
     "tlsCipherSuites",
     "allowedNamespaces",
+    "tlsInsecurePlaintext",
     "destinationBasedMapping",
     "createNamespace",
+    "labelSelector",
+    "redisTLS",
     "service",
     "serviceMonitor",
     "tests"
