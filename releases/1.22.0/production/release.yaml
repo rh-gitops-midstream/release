@@ -10,5 +10,165 @@ spec:
   data:
     releaseNotes:
       type: RHEA
+      issues:
+        fixed:
+          - id: GITOPS-11390
+            source: issues.redhat.com
+          - id: GITOPS-11339
+            source: issues.redhat.com
+          - id: GITOPS-11335
+            source: issues.redhat.com
+          - id: GITOPS-11308
+            source: issues.redhat.com
+          - id: GITOPS-11274
+            source: issues.redhat.com
+          - id: GITOPS-11176
+            source: issues.redhat.com
+          - id: GITOPS-11139
+            source: issues.redhat.com
+          - id: GITOPS-11094
+            source: issues.redhat.com
+          - id: GITOPS-10933
+            source: issues.redhat.com
+          - id: GITOPS-10920
+            source: issues.redhat.com
+          - id: GITOPS-10896
+            source: issues.redhat.com
+          - id: GITOPS-10855
+            source: issues.redhat.com
+          - id: GITOPS-10780
+            source: issues.redhat.com
+          - id: GITOPS-10654
+            source: issues.redhat.com
+          - id: GITOPS-10585
+            source: issues.redhat.com
+          - id: GITOPS-10530
+            source: issues.redhat.com
+          - id: GITOPS-10508
+            source: issues.redhat.com
+          - id: GITOPS-10491
+            source: issues.redhat.com
+          - id: GITOPS-10429
+            source: issues.redhat.com
+          - id: GITOPS-10364
+            source: issues.redhat.com
+          - id: GITOPS-10132
+            source: issues.redhat.com
+          - id: GITOPS-10130
+            source: issues.redhat.com
+          - id: GITOPS-10082
+            source: issues.redhat.com
+          - id: GITOPS-10013
+            source: issues.redhat.com
+          - id: GITOPS-9972
+            source: issues.redhat.com
+          - id: GITOPS-9952
+            source: issues.redhat.com
+          - id: GITOPS-9851
+            source: issues.redhat.com
+          - id: GITOPS-9746
+            source: issues.redhat.com
+          - id: GITOPS-9330
+            source: issues.redhat.com
+          - id: GITOPS-9296
+            source: issues.redhat.com
+          - id: GITOPS-9186
+            source: issues.redhat.com
+          - id: GITOPS-9035
+            source: issues.redhat.com
+          - id: GITOPS-8894
+            source: issues.redhat.com
+          - id: GITOPS-8124
+            source: issues.redhat.com
+          - id: GITOPS-8042
+            source: issues.redhat.com
+          - id: GITOPS-5804
+            source: issues.redhat.com
+          - id: GITOPS-10700
+            source: issues.redhat.com
+          - id: GITOPS-10614
+            source: issues.redhat.com
+          - id: GITOPS-10518
+            source: issues.redhat.com
+          - id: GITOPS-10494
+            source: issues.redhat.com
+          - id: GITOPS-10467
+            source: issues.redhat.com
+          - id: GITOPS-10419
+            source: issues.redhat.com
+          - id: GITOPS-10334
+            source: issues.redhat.com
+          - id: GITOPS-10307
+            source: issues.redhat.com
+          - id: GITOPS-10293
+            source: issues.redhat.com
+          - id: GITOPS-10243
+            source: issues.redhat.com
+          - id: GITOPS-10230
+            source: issues.redhat.com
+          - id: GITOPS-10080
+            source: issues.redhat.com
+          - id: GITOPS-10019
+            source: issues.redhat.com
+          - id: GITOPS-10000
+            source: issues.redhat.com
+          - id: GITOPS-9993
+            source: issues.redhat.com
+          - id: GITOPS-9990
+            source: issues.redhat.com
+          - id: GITOPS-9963
+            source: issues.redhat.com
+          - id: GITOPS-9948
+            source: issues.redhat.com
+          - id: GITOPS-9934
+            source: issues.redhat.com
+          - id: GITOPS-9886
+            source: issues.redhat.com
+          - id: GITOPS-9885
+            source: issues.redhat.com
+          - id: GITOPS-9879
+            source: issues.redhat.com
+          - id: GITOPS-9793
+            source: issues.redhat.com
+          - id: GITOPS-9787
+            source: issues.redhat.com
+          - id: GITOPS-9708
+            source: issues.redhat.com
+          - id: GITOPS-9429
+            source: issues.redhat.com
+          - id: GITOPS-9347
+            source: issues.redhat.com
+          - id: GITOPS-9277
+            source: issues.redhat.com
+          - id: GITOPS-9258
+            source: issues.redhat.com
+          - id: GITOPS-9204
+            source: issues.redhat.com
+          - id: GITOPS-9197
+            source: issues.redhat.com
+          - id: GITOPS-9173
+            source: issues.redhat.com
+          - id: GITOPS-9136
+            source: issues.redhat.com
+          - id: GITOPS-9092
+            source: issues.redhat.com
+          - id: GITOPS-9091
+            source: issues.redhat.com
+          - id: GITOPS-9088
+            source: issues.redhat.com
+          - id: GITOPS-9050
+            source: issues.redhat.com
+          - id: GITOPS-9033
+            source: issues.redhat.com
+          - id: GITOPS-8288
+            source: issues.redhat.com
+          - id: GITOPS-8245
+            source: issues.redhat.com
+          - id: GITOPS-8224
+            source: issues.redhat.com
+          - id: GITOPS-8087
+            source: issues.redhat.com
+          - id: GITOPS-7686
+            source: issues.redhat.com
       cves: []
       
