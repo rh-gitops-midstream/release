@@ -28,7 +28,7 @@ sources:
   - path: sources/gitops-operator
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.21
-    commit: 0266e44b2cdcf18ed4e17b349d4488b13b70aeb7
+    commit: 152ed1cb40e1579c064a73efa295d34c58bdfe54
     auto-update: true
   - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
@@ -73,7 +73,7 @@ sources:
   - path: sources/argocd-extension-installer
     url: https://github.com/argoproj-labs/argocd-extension-installer.git
     ref: main
-    commit: 379284c7aaa0717c4224ab119133bf2bad2c7bfd
+    commit: 225d9f62385af2d6a4e302dd22e2263fe344cde8
     auto-update: false
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
