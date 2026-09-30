@@ -1,0 +1,24 @@
+---
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: gitops-operator-bundle-sanity-
+spec:
+  pipelineRef:
+    resolver: git
+    params:
+      - name: url
+        value: https://github.com/rh-gitops-midstream/release
+      - name: revision
+        value: konflux-integration
+      - name: pathInRepo
+        value: .tekton/integration-tests/pipelines/gitops-operator-bundle-sanity.yaml
+  workspaces:
+    - name: shared-workspace
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi

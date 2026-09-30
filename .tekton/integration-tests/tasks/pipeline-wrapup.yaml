@@ -9,9 +9,7 @@ spec:
     Consolidates upload-logs, publish-results, and send-slack-notification
     into a single task with shared volumes between steps.
   params:
-    - name: eaasSpaceSecretRef
-      type: string
-    - name: clusterName
+    - name: clusterCredentialsSecretRef
       type: string
     - name: pipelineRunName
       type: string
@@ -61,7 +59,8 @@ spec:
       default: "/quay-credentials/.dockerconfigjson"
   volumes:
     - name: credentials
-      emptyDir: {}
+      secret:
+        secretName: $(params.clusterCredentialsSecretRef)
     - name: shared
       emptyDir: {}
     - name: quay-credentials
@@ -72,25 +71,6 @@ spec:
         secretName: catalog-results-deploy-key
         defaultMode: 0400
   steps:
-    - name: get-kubeconfig
-      onError: continue
-      ref:
-        resolver: git
-        params:
-          - name: url
-            value: https://github.com/konflux-ci/build-definitions.git
-          - name: revision
-            value: main
-          - name: pathInRepo
-            value: stepactions/eaas-get-ephemeral-cluster-credentials/0.1/eaas-get-ephemeral-cluster-credentials.yaml
-      params:
-        - name: eaasSpaceSecretRef
-          value: $(params.eaasSpaceSecretRef)
-        - name: clusterName
-          value: $(params.clusterName)
-        - name: credentials
-          value: credentials
-
     - name: collect-and-upload-logs
       onError: continue
       image: $(params.testImageUrl)

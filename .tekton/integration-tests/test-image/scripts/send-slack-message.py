@@ -279,7 +279,7 @@ def build_blocks(
         task_order = [
             "parse-metadata",
             "build-ginkgo-test-image",
-            "provision-eaas-space",
+            "prepare-cluster-env",
             "provision-cluster",
             "install-operator",
             "test-operator",

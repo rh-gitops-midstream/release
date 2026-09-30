@@ -4,6 +4,8 @@ kind: Pipeline
 metadata:
   name: gitops-operator-bundle-sanity
 spec:
+  workspaces:
+    - name: shared-workspace
   description: |
     An integration test which provisions an ephemeral Hypershift cluster, installs the
     GitOps operator directly from its bundle image (via `operator-sdk run bundle`,
@@ -57,6 +59,14 @@ spec:
       name: CLUSTER_INSTANCE_TYPE
       default: "m6g.large"
       type: string
+    - description: Number of worker nodes for the ephemeral HyperShift cluster
+      name: HYPERSHIFT_NODE_COUNT
+      default: "3"
+      type: string
+    - description: Hosted management cluster used to provision the ephemeral cluster
+      name: HOSTED_MANAGEMENT_CLUSTER
+      default: "hosted-mgmt2"
+      type: string
     - description: PR label required to run tests (empty = no gating, always run). When set, push events always proceed but pull_request events require this label on the PR.
       name: GATE_LABEL
       default: ""
@@ -74,10 +84,8 @@ spec:
           - name: pathInRepo
             value: .tekton/integration-tests/tasks/pipeline-wrapup.yaml
       params:
-        - name: eaasSpaceSecretRef
-          value: $(tasks.provision-eaas-space.results.secretRef)
-        - name: clusterName
-          value: "$(tasks.provision-cluster.results.clusterName)"
+        - name: clusterCredentialsSecretRef
+          value: $(tasks.provision-cluster.results.secretRef)
         - name: pipelineRunName
           value: "$(context.pipelineRun.name)"
         - name: testImageUrl
@@ -95,7 +103,7 @@ spec:
         - name: openshiftVersion
           value: "$(params.OPENSHIFT_VERSION)"
         - name: resolvedOpenshiftVersion
-          value: "$(tasks.provision-cluster.results.resolvedVersion)"
+          value: "$(params.OPENSHIFT_VERSION)"
         - name: operatorChannel
           value: "bundle"
         - name: fipsEnabled
@@ -231,7 +239,7 @@ spec:
         - name: SOURCE_REVISION
           value: $(params.CATALOG_TASK_REVISION)
 
-    - name: provision-eaas-space
+    - name: prepare-cluster-env
       runAfter:
         - overlay-test-scripts
       when:
@@ -242,47 +250,66 @@ spec:
         resolver: git
         params:
           - name: url
-            value: https://github.com/konflux-ci/build-definitions.git
+            value: $(params.CATALOG_TASK_URL)
+          - name: revision
+            value: $(params.CATALOG_TASK_REVISION)
+          - name: pathInRepo
+            value: .tekton/integration-tests/tasks/prepare-cluster-env.yaml
+      params:
+        - name: taskGitUrl
+          value: $(params.CATALOG_TASK_URL)
+        - name: taskGitRevision
+          value: $(params.CATALOG_TASK_REVISION)
+        - name: sourceGitUrl
+          value: $(params.CATALOG_TASK_URL)
+        - name: sourceGitRevision
+          value: $(params.CATALOG_TASK_REVISION)
+        - name: computeNodeType
+          value: $(params.CLUSTER_INSTANCE_TYPE)
+        - name: hypershiftNodeCount
+          value: $(params.HYPERSHIFT_NODE_COUNT)
+        - name: hostedManagementCluster
+          value: $(params.HOSTED_MANAGEMENT_CLUSTER)
+        - name: fips
+          value: $(params.FIPS_ENABLED)
+      workspaces:
+        - name: env-files
+          workspace: shared-workspace
+
+    - name: provision-cluster
+      runAfter:
+        - prepare-cluster-env
+      when:
+        - input: $(tasks.check-gate.results.proceed)
+          operator: in
+          values: ["true"]
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: https://github.com/openshift/konflux-tasks
           - name: revision
             value: main
           - name: pathInRepo
-            value: task/eaas-provision-space/0.1/eaas-provision-space.yaml
+            value: tasks/provision-ephemeral-cluster/0.1/provision-ephemeral-cluster.yaml
+      workspaces:
+        - name: env-files
+          workspace: shared-workspace
+          subPath: cluster-env
       params:
         - name: ownerName
           value: $(context.pipelineRun.name)
         - name: ownerUid
           value: $(context.pipelineRun.uid)
-
-    - name: provision-cluster
-      runAfter:
-        - provision-eaas-space
-      taskRef:
-        resolver: git
-        params:
-          - name: url
-            value: $(params.CATALOG_TASK_URL)
-          - name: revision
-            value: $(params.CATALOG_TASK_REVISION)
-          - name: pathInRepo
-            value: .tekton/integration-tests/tasks/provision-cluster.yaml
-      params:
-        - name: eaasSpaceSecretRef
-          value: $(tasks.provision-eaas-space.results.secretRef)
-        - name: catalogSourceUrl
-          value: $(params.CATALOG_TASK_URL)
-        - name: catalogSourceRevision
-          value: $(params.CATALOG_TASK_REVISION)
-        - name: catalogTaskUrl
-          value: $(params.CATALOG_TASK_URL)
-        - name: catalogTaskRevision
-          value: $(params.CATALOG_TASK_REVISION)
-        - name: openshiftVersion
-          value: $(params.OPENSHIFT_VERSION)
-        - name: fipsEnabled
-          value: $(params.FIPS_ENABLED)
-        - name: clusterInstanceType
-          value: $(params.CLUSTER_INSTANCE_TYPE)
-
+        - name: workflow
+          value: hypershift-hostedcluster-workflow
+        - name: clusterProfile
+          value: aws-konflux-prod
+        - name: timeout
+          value: 1h
+        - name: releases
+          value: >-
+            {"latest":{"release":{"channel":"stable","version":"$(params.OPENSHIFT_VERSION)","architecture":"multi"}}}
     - name: install-operator-bundle
       runAfter:
         - provision-cluster
@@ -298,10 +325,8 @@ spec:
       params:
         - name: testImageUrl
           value: "$(tasks.overlay-test-scripts.results.image-url)"
-        - name: eaasSpaceSecretRef
-          value: $(tasks.provision-eaas-space.results.secretRef)
-        - name: clusterName
-          value: "$(tasks.provision-cluster.results.clusterName)"
+        - name: clusterCredentialsSecretRef
+          value: $(tasks.provision-cluster.results.secretRef)
         - name: pipelineRunName
           value: "$(context.pipelineRun.name)"
         - name: openshiftVersion
@@ -328,10 +353,8 @@ spec:
       params:
         - name: testImageUrl
           value: "$(tasks.overlay-test-scripts.results.image-url)"
-        - name: eaasSpaceSecretRef
-          value: $(tasks.provision-eaas-space.results.secretRef)
-        - name: clusterName
-          value: "$(tasks.provision-cluster.results.clusterName)"
+        - name: clusterCredentialsSecretRef
+          value: $(tasks.provision-cluster.results.secretRef)
         - name: pipelineRunName
           value: "$(context.pipelineRun.name)"
         - name: testRepoUrl

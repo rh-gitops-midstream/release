@@ -1,0 +1,64 @@
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: prepare-cluster-env
+spec:
+  description: Prepare OpenShift CI workflow environment files for cluster provisioning.
+  params:
+    - name: taskGitUrl
+      type: string
+    - name: taskGitRevision
+      type: string
+    - name: sourceGitUrl
+      type: string
+    - name: sourceGitRevision
+      type: string
+    - name: computeNodeType
+      type: string
+    - name: hypershiftNodeCount
+      type: string
+    - name: hostedManagementCluster
+      type: string
+    - name: fips
+      type: string
+  workspaces:
+    - name: env-files
+  steps:
+    - name: prepare-env-files
+      image: registry.redhat.io/ubi9/ubi-minimal:latest
+      env:
+        - name: COMPUTE_NODE_TYPE
+          value: $(params.computeNodeType)
+        - name: HYPERSHIFT_NODE_COUNT
+          value: $(params.hypershiftNodeCount)
+        - name: HOSTED_MANAGEMENT_CLUSTER
+          value: $(params.hostedManagementCluster)
+        - name: FIPS
+          value: $(params.fips)
+      script: |
+        #!/usr/bin/env sh
+        set -eu
+        env_dir="$(workspaces.env-files.path)/cluster-env"
+        mkdir -p "${env_dir}"
+        printf '%s' "${COMPUTE_NODE_TYPE}" > "${env_dir}/COMPUTE_NODE_TYPE"
+        printf '%s' "${HYPERSHIFT_NODE_COUNT}" > "${env_dir}/HYPERSHIFT_NODE_COUNT"
+        printf '%s' "${HOSTED_MANAGEMENT_CLUSTER}" > "${env_dir}/HOSTED_MANAGEMENT_CLUSTER"
+        printf '%s' "${FIPS}" > "${env_dir}/FIPS"
+    - name: extract-image-content-sources
+      ref:
+        resolver: git
+        params:
+          - name: url
+            value: $(params.taskGitUrl)
+          - name: revision
+            value: $(params.taskGitRevision)
+          - name: pathInRepo
+            value: .tekton/integration-tests/stepactions/extract-image-content-sources.yaml
+      params:
+        - name: gitUrl
+          value: $(params.sourceGitUrl)
+        - name: gitRevision
+          value: $(params.sourceGitRevision)
+        - name: outputPath
+          value: $(workspaces.env-files.path)/cluster-env/IMAGE_CONTENT_SOURCES
