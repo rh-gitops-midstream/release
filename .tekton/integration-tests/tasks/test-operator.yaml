@@ -10,9 +10,7 @@ spec:
   params:
     - name: testImageUrl
       type: string
-    - name: eaasSpaceSecretRef
-      type: string
-    - name: clusterName
+    - name: clusterCredentialsSecretRef
       type: string
     - name: pipelineRunName
       type: string
@@ -43,7 +41,8 @@ spec:
       description: Tag of uploaded log artifact from sidecar
   volumes:
     - name: credentials
-      emptyDir: {}
+      secret:
+        secretName: $(params.clusterCredentialsSecretRef)
     - name: quay-credentials
       secret:
         secretName: gitops-test-runner-image-push
@@ -52,24 +51,6 @@ spec:
         secretName: confluence-api-credentials
         optional: true
   steps:
-    - name: get-kubeconfig
-      onError: continue
-      ref:
-        resolver: git
-        params:
-          - name: url
-            value: https://github.com/konflux-ci/build-definitions.git
-          - name: revision
-            value: main
-          - name: pathInRepo
-            value: stepactions/eaas-get-ephemeral-cluster-credentials/0.1/eaas-get-ephemeral-cluster-credentials.yaml
-      params:
-        - name: eaasSpaceSecretRef
-          value: $(params.eaasSpaceSecretRef)
-        - name: clusterName
-          value: $(params.clusterName)
-        - name: credentials
-          value: credentials
     - name: run-tests
       image: $(params.testImageUrl)
       volumeMounts:

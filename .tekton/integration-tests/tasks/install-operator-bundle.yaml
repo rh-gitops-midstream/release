@@ -12,9 +12,7 @@ spec:
   params:
     - name: testImageUrl
       type: string
-    - name: eaasSpaceSecretRef
-      type: string
-    - name: clusterName
+    - name: clusterCredentialsSecretRef
       type: string
     - name: pipelineRunName
       type: string
@@ -40,7 +38,8 @@ spec:
       value: "$(steps.get-installed-version.results.installedCSV)"
   volumes:
     - name: credentials
-      emptyDir: {}
+      secret:
+        secretName: $(params.clusterCredentialsSecretRef)
     - name: quay-credentials
       secret:
         secretName: gitops-test-runner-image-push
@@ -48,23 +47,6 @@ spec:
       secret:
         secretName: gitops-quay-pull-secret-merged
   steps:
-    - name: get-kubeconfig
-      ref:
-        resolver: git
-        params:
-          - name: url
-            value: https://github.com/konflux-ci/build-definitions.git
-          - name: revision
-            value: main
-          - name: pathInRepo
-            value: stepactions/eaas-get-ephemeral-cluster-credentials/0.1/eaas-get-ephemeral-cluster-credentials.yaml
-      params:
-        - name: eaasSpaceSecretRef
-          value: $(params.eaasSpaceSecretRef)
-        - name: clusterName
-          value: $(params.clusterName)
-        - name: credentials
-          value: credentials
     - name: install-operator-bundle
       image: $(params.testImageUrl)
       volumeMounts:
@@ -88,7 +70,7 @@ spec:
         - name: BUNDLE_COMPONENT_NAME
           value: $(params.bundleComponentName)
         - name: KUBECONFIG
-          value: "/credentials/$(steps.get-kubeconfig.results.kubeconfig)"
+          value: /credentials/kubeconfig
         - name: TASK_LOG_NAME
           value: "install-operator-bundle"
         - name: PIPELINE_RUN_NAME
@@ -110,7 +92,7 @@ spec:
           mountPath: /credentials
       env:
         - name: KUBECONFIG
-          value: "/credentials/$(steps.get-kubeconfig.results.kubeconfig)"
+          value: /credentials/kubeconfig
         - name: NAMESPACE
           value: $(params.namespace)
         - name: USE_SUBSCRIPTION
