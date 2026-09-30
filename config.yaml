@@ -42,8 +42,8 @@ sources:
     auto-update: true
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
-    ref: kustomize/v5.8.1
-    commit: 9790a1c3efd2fd35f1b768d495112834176581c1
+    ref: kustomize/v5.8.2
+    commit: 2e294e3e92a56fe9cfa1e755e6e57c5f1268ce22
     auto-update: true
   - path: sources/helm
     url: https://github.com/helm/helm.git
