@@ -4,18 +4,18 @@
     "main",
     "release-1.21",
     "release-1.20",
-    "release-1.19",
+    "release-1.19"
   ],
   "ignoreDeps": [
     "registry.redhat.io/rhel9/go-toolset",
     "registry.redhat.io/rhel8/go-toolset",
     "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel8",
-    "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9",
+    "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9"
   ],
   "ignorePaths": [
     "containers/argocd/ui/**",
     "clis/kubectl-argo-rollouts/ui/**"
-  ]
+  ],
   "packageRules": [
     {
       "matchManagers": [
