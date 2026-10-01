@@ -127,7 +127,7 @@ jobs:
       - name: "Operator Build: Create Pull Request"
         if: (inputs.START_FROM || 'full-build') == 'full-build'
         id: p1_create_pr
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore(build): bump to ${{ steps.p1_metadata.outputs.build }}"
@@ -286,7 +286,7 @@ jobs:
       - name: "Bundle Build: Create Pull Request"
         if: steps.p1_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'bundle-build'
         id: p2_create_pr
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GH_TOKEN }}
           commit-message: "chore(bundle): latest bundle updates for ${{ steps.p2_metadata.outputs.build }}"
@@ -544,7 +544,7 @@ jobs:
         if: |
           github.event_name == 'workflow_dispatch' &&
           (steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GH_TOKEN }}
           path: catalog
