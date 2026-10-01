@@ -1,0 +1,52 @@
+apiVersion: tekton.dev/v1beta1
+kind: StepAction
+metadata:
+  name: resolve-openshift-version
+spec:
+  params:
+    - name: version
+      type: string
+      description: OpenShift version (e.g., "4.17" or "4.17.5")
+  results:
+    - name: resolvedVersion
+      description: Resolved OpenShift version (full x.y.z format)
+  env:
+    - name: OPENSHIFT_VERSION
+      value: $(params.version)
+    - name: RESULT_PATH
+      value: $(step.results.resolvedVersion.path)
+  image: registry.access.redhat.com/ubi9/python-311:latest
+  script: |
+    #!/usr/bin/env python3
+    import urllib.request, json, re, os
+
+    version = os.environ["OPENSHIFT_VERSION"]
+    result_path = os.environ["RESULT_PATH"]
+
+    if re.match(r'^\d+\.\d+\.\d+$', version):
+        with open(result_path, "w") as f:
+            f.write(version)
+        print(f"Using exact version: {version}")
+        raise SystemExit(0)
+
+    url = f"https://quay.io/api/v1/repository/openshift-release-dev/ocp-release/tag/?filter_tag_name=like:{version}.&limit=100&onlyActiveTags=true"
+    data = json.loads(urllib.request.urlopen(url).read())
+
+    candidates = []
+    for tag in data.get("tags", []):
+        name = tag["name"]
+        if name.endswith("-multi"):
+            bare = name.removesuffix("-multi")
+            if re.match(rf'^{re.escape(version)}\.\d+$', bare):
+                candidates.append(bare)
+
+    if not candidates:
+        print(f"ERROR: Could not resolve minor version {version} to a patch release")
+        raise SystemExit(1)
+
+    candidates.sort(key=lambda v: list(map(int, v.split("."))))
+    latest = candidates[-1]
+
+    with open(result_path, "w") as f:
+        f.write(latest)
+    print(f"Resolved {version} -> {latest}")
