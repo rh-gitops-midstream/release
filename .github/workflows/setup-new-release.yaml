@@ -49,15 +49,32 @@ jobs:
             SKIP_RANGE=">=1.0.0 <${NEXT_VERSION}"
           fi
 
+          # Determine if this is the latest release branch
+          LATEST_BRANCH=$(git branch -r --list 'origin/release-*' | sed 's|origin/||' | sort -t. -k2,2n | tail -1 | tr -d ' ')
+          IS_LATEST="false"
+          if [ "${{ inputs.TARGET_BRANCH }}" = "$LATEST_BRANCH" ] || [ "${{ inputs.TARGET_BRANCH }}" = "main" ]; then
+            IS_LATEST="true"
+          fi
+
+          if [ "$IS_LATEST" = "true" ]; then
+            CHANNEL="latest,gitops-${MAJOR}.${MINOR}"
+          else
+            CHANNEL="gitops-${MAJOR}.${MINOR}"
+          fi
+
           echo "current=$CURRENT_VERSION" >> "$GITHUB_OUTPUT"
           echo "next=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
           echo "skip_range=$SKIP_RANGE" >> "$GITHUB_OUTPUT"
           echo "major=$MAJOR" >> "$GITHUB_OUTPUT"
           echo "minor=$MINOR" >> "$GITHUB_OUTPUT"
+          echo "channel=$CHANNEL" >> "$GITHUB_OUTPUT"
 
           echo "Current version: $CURRENT_VERSION"
           echo "Next version:    $NEXT_VERSION"
           echo "Skip range:      $SKIP_RANGE"
+          echo "Latest branch:   $LATEST_BRANCH"
+          echo "Is latest:       $IS_LATEST"
+          echo "Channel:         $CHANNEL"
 
       - name: Update config.yaml
         run: |
@@ -74,7 +91,8 @@ jobs:
           $YQ e -i ".release.olm.name = \"openshift-gitops-operator.v${VERSION}\"" config.yaml
           $YQ e -i ".release.olm.replaces = \"openshift-gitops-operator.v${CURRENT}\"" config.yaml
           $YQ e -i ".release.olm.skip-range = \"${SKIP_RANGE}\"" config.yaml
-          $YQ e -i ".release.olm.channel = \"latest,gitops-${MAJOR}.${MINOR}\"" config.yaml
+          CHANNEL="${{ steps.version.outputs.channel }}"
+          $YQ e -i ".release.olm.channel = \"${CHANNEL}\"" config.yaml
 
           echo "Updated config.yaml:"
           $YQ e '.release' config.yaml
