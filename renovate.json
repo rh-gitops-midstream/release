@@ -2,9 +2,9 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "baseBranchPatterns": [
     "main",
+    "release-1.22",
     "release-1.21",
-    "release-1.20",
-    "release-1.19"
+    "release-1.20"
   ],
   "ignoreDeps": [
     "registry.redhat.io/rhel9/go-toolset",
@@ -19,7 +19,8 @@
   "packageRules": [
     {
       "matchManagers": [
-        "git-submodules"
+        "git-submodules",
+        "github-actions"
       ],
       "enabled": false
     }
