@@ -31,9 +31,9 @@ sources:
     commit: 152ed1cb40e1579c064a73efa295d34c58bdfe54
     auto-update: true
   - path: sources/argo-cd
-    url: https://github.com/argoproj/argo-cd.git
-    ref: v3.4.9
-    commit: f4554f40bc545e1d633151cd43cf3784c4e35de3
+    url: https://github.com/rh-gitops-midstream/argo-cd.git
+    ref: v3.4.10
+    commit: f3ef891ac89d40dd20d19dddd555acbd57d15166
     auto-update: true
   - path: sources/argo-rollouts
     url: https://github.com/rh-gitops-midstream/argo-rollouts.git
