@@ -6,8 +6,8 @@ for the full picture — pipeline steps, log storage, results dashboard, skip li
 all of which apply here unchanged).
 
 Only the **sanity check** is ported: an `IntegrationTestScenario` that provisions an
-ephemeral HyperShift cluster and runs `run-sanity-tests.sh` against a freshly installed
-GitOps operator. DAST, UI e2e, ArgoCD upstream e2e, and the full parallel/sequential
+ephemeral HyperShift cluster through OpenShift CI and runs `run-sanity-tests.sh` against a
+freshly installed GitOps operator. DAST, UI e2e, ArgoCD upstream e2e, and the full parallel/sequential
 Ginkgo suites are not part of this repo — those remain in `catalog`.
 
 ## The one real difference: bundle-direct install
@@ -35,10 +35,13 @@ read the CSV directly instead of via a `Subscription`.
 └── integration-tests/
     ├── pipelines/
     │   └── gitops-operator-bundle-sanity.yaml
+    ├── pipelineruns/
+    │   └── gitops-operator-bundle-sanity.yaml # PipelineRun wrapper with shared PVC
     ├── scenarios/
     │   └── gitops-bundle-sanity-tests.yaml   # sanity + sanity-fips
     ├── stepactions/                          # copied verbatim from catalog
     ├── tasks/
+    │   ├── prepare-cluster-env.yaml           # OpenShift CI environment workspace files
     │   ├── install-operator-bundle.yaml      # new: operator-sdk run bundle
     │   └── *.yaml                            # copied verbatim from catalog
     └── test-image/

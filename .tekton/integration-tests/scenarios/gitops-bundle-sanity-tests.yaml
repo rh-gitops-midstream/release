@@ -24,14 +24,14 @@ spec:
       value: rc-sanity-check
   resolverRef:
     resolver: git
-    resourceKind: pipeline
+    resourceKind: pipelinerun
     params:
       - name: url
         value: https://github.com/rh-gitops-midstream/release
       - name: revision
         value: konflux-integration
       - name: pathInRepo
-        value: .tekton/integration-tests/pipelines/gitops-operator-bundle-sanity.yaml
+        value: .tekton/integration-tests/pipelineruns/gitops-operator-bundle-sanity.yaml
 ---
 apiVersion: appstudio.redhat.com/v1beta2
 kind: IntegrationTestScenario
@@ -60,11 +60,11 @@ spec:
       value: rc-sanity-check
   resolverRef:
     resolver: git
-    resourceKind: pipeline
+    resourceKind: pipelinerun
     params:
       - name: url
         value: https://github.com/rh-gitops-midstream/release
       - name: revision
         value: konflux-integration
       - name: pathInRepo
-        value: .tekton/integration-tests/pipelines/gitops-operator-bundle-sanity.yaml
+        value: .tekton/integration-tests/pipelineruns/gitops-operator-bundle-sanity.yaml
