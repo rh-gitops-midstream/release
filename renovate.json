@@ -14,7 +14,8 @@
   ],
   "ignorePaths": [
     "containers/argocd/ui/**",
-    "clis/kubectl-argo-rollouts/ui/**"
+    "clis/kubectl-argo-rollouts/ui/**",
+    "prefetch/pnpm"
   ],
   "packageRules": [
     {
