@@ -80,8 +80,8 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ steps.branch.outputs.target }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          submodules: false
+          token: ${{ secrets.GH_TOKEN }}
+          submodules: true
 
       - name: Set up Git config
         run: |
