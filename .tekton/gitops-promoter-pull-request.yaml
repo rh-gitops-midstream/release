@@ -16,7 +16,6 @@ metadata:
         "sources/tini".pathChanged() ||
         "containers/gitops-promoter/***".pathChanged() ||
         ".tekton/gitops-promoter-pull-request.yaml".pathChanged() ||
-        "BUILD".pathChanged() ||
         ".tekton/build-multi-platform-image.yaml".pathChanged() ||
         ".tekton/tasks/***".pathChanged()
       )
