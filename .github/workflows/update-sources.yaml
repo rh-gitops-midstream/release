@@ -46,7 +46,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ matrix.branch }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
           submodules: true
 
       - name: Set up Git config
