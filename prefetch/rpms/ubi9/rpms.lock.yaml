@@ -1366,13 +1366,13 @@ arches:
     name: util-linux-core
     evr: 2.37.4-25.el9
     sourcerpm: util-linux-2.37.4-25.el9.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/ppc64le/baseos/os/Packages/v/vim-filesystem-8.2.2637-26.el9_8.21.noarch.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/ppc64le/baseos/os/Packages/v/vim-filesystem-8.2.2637-26.el9_8.23.noarch.rpm
     repoid: ubi-9-for-ppc64le-baseos-rpms
-    size: 24156
-    checksum: sha256:4362190912229b1a670e20a7e46d1f20fb2d1d30e80ec22342bba1318784f742
+    size: 24487
+    checksum: sha256:4018dd580ce61bf3628d682e6966dd214e95ef704971ad02020651648cc9cb9f
     name: vim-filesystem
-    evr: 2:8.2.2637-26.el9_8.21
-    sourcerpm: vim-8.2.2637-26.el9_8.21.src.rpm
+    evr: 2:8.2.2637-26.el9_8.23
+    sourcerpm: vim-8.2.2637-26.el9_8.23.src.rpm
   source: []
   module_metadata: []
 - arch: s390x
@@ -2049,13 +2049,13 @@ arches:
     name: util-linux-core
     evr: 2.37.4-25.el9
     sourcerpm: util-linux-2.37.4-25.el9.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/s390x/baseos/os/Packages/v/vim-filesystem-8.2.2637-26.el9_8.21.noarch.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/s390x/baseos/os/Packages/v/vim-filesystem-8.2.2637-26.el9_8.23.noarch.rpm
     repoid: ubi-9-for-s390x-baseos-rpms
-    size: 24156
-    checksum: sha256:4362190912229b1a670e20a7e46d1f20fb2d1d30e80ec22342bba1318784f742
+    size: 24487
+    checksum: sha256:4018dd580ce61bf3628d682e6966dd214e95ef704971ad02020651648cc9cb9f
     name: vim-filesystem
-    evr: 2:8.2.2637-26.el9_8.21
-    sourcerpm: vim-8.2.2637-26.el9_8.21.src.rpm
+    evr: 2:8.2.2637-26.el9_8.23
+    sourcerpm: vim-8.2.2637-26.el9_8.23.src.rpm
   source: []
   module_metadata: []
 - arch: x86_64
