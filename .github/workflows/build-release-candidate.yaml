@@ -1,11 +1,11 @@
 name: Build Release Candidate
 
 on:
-  #schedule:
-    #- cron: '0 20 * * *'
-    #- cron: '0 22 * * *'
-    #- cron: '0 0 * * *'
-    #- cron: '0 2 * * *'
+  schedule:
+    - cron: '0 20 * * *'
+    - cron: '0 22 * * *'
+    - cron: '0 0 * * *'
+    - cron: '0 2 * * *'
 
   workflow_dispatch:
     inputs:
@@ -54,13 +54,13 @@ jobs:
           else
             case "${{ github.event.schedule }}" in
               "0 20 * * *")
-                TARGET_BRANCH="release-1.19"
-                ;;
-              "0 22 * * *")
                 TARGET_BRANCH="release-1.20"
                 ;;
-              "0 0 * * *")
+              "0 22 * * *")
                 TARGET_BRANCH="release-1.21"
+                ;;
+              "0 0 * * *")
+                TARGET_BRANCH="release-1.22"
                 ;;
               "0 2 * * *")
                 TARGET_BRANCH="main"
