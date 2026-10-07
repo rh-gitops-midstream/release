@@ -25,7 +25,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ inputs.TARGET_BRANCH }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
           submodules: true
 
       - name: Compute next version
