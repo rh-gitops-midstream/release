@@ -42,7 +42,7 @@
 	url = https://github.com/helm/helm.git
 [submodule "sources/argo-cd"]
 	path = sources/argo-cd
-	url = https://github.com/rh-gitops-midstream/argo-cd.git
+	url = https://github.com/argoproj/argo-cd.git
 [submodule "sources/argocd-agent"]
 	path = sources/argocd-agent
 	url = https://github.com/argoproj-labs/argocd-agent.git
