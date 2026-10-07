@@ -1,0 +1,34 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.20.8-prod-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-20-prod
+  snapshot: gitops-1-20-20261005-075520-000
+  data:
+    releaseNotes:
+      type: RHSA
+      issues:
+        fixed:
+          - id: GITOPS-10791
+            source: issues.redhat.com
+      cves: 
+      - key: CVE-2026-56860
+        component: dex-1-20
+      - key: CVE-2026-56859
+        component: dex-1-20
+      - key: CVE-2026-56853
+        component: dex-1-20
+      - key: CVE-2026-56862
+        component: dex-1-20
+      - key: CVE-2026-33818
+        component: dex-1-20
+      - key: CVE-2026-56852
+        component: dex-1-20
+      - key: CVE-2026-50162
+        component: argocd-1-20
+      - key: CVE-2026-56854
+        component: argocd-1-20
+      
