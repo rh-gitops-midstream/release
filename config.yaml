@@ -39,8 +39,8 @@ sources:
     auto-update: true
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
-    ref: kustomize/v5.8.1
-    commit: 9790a1c3efd2fd35f1b768d495112834176581c1
+    ref: kustomize/v5.8.2
+    commit: 2e294e3e92a56fe9cfa1e755e6e57c5f1268ce22
     auto-update: true
   - path: sources/helm
     url: https://github.com/helm/helm.git
@@ -50,7 +50,7 @@ sources:
   - path: sources/dex
     url: https://github.com/rh-gitops-midstream/dex.git
     ref: v2.45.1
-    commit: 8f8ee426b78dd12f74b1bac7d9f76c3388341235
+    commit: 06972f53f908aa5f7ed40b671100f55cf9e2f06b
     auto-update: true
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
@@ -70,7 +70,7 @@ sources:
   - path: sources/argocd-extension-installer
     url: https://github.com/argoproj-labs/argocd-extension-installer.git
     ref: main
-    commit: 379284c7aaa0717c4224ab119133bf2bad2c7bfd
+    commit: 225d9f62385af2d6a4e302dd22e2263fe344cde8
     auto-update: false
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
@@ -90,7 +90,7 @@ sources:
   - path: sources/rollouts-plugin-trafficrouter-openshift
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
     ref: main
-    commit: f316fad99b3555be0612dc34098d22392bba3492
+    commit: cd2cb638dfc1d1ae4eb299f3bcad1dd98ddefc57
     auto-update: true
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
