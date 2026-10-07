@@ -24,7 +24,7 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo 'branches=["${{ inputs.TARGET_BRANCH }}"]' >> "$GITHUB_OUTPUT"
           else
-            echo 'branches=["main","release-1.21","release-1.20","release-1.19"]' >> "$GITHUB_OUTPUT"
+            echo 'branches=["main","release-1.22","release-1.21","release-1.20"]' >> "$GITHUB_OUTPUT"
           fi
 
   update-sources:
