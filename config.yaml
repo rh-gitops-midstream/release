@@ -25,7 +25,7 @@ sources:
   - path: sources/gitops-operator
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: master
-    commit: 53570b461573b27ee03950381576005a1e91b749
+    commit: a9c9ff06a2229697eff0e2dd2405efc403c906d0
     auto-update: true
   - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
@@ -39,8 +39,8 @@ sources:
     auto-update: true
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
-    ref: kustomize/v5.8.2
-    commit: 2e294e3e92a56fe9cfa1e755e6e57c5f1268ce22
+    ref: kustomize/v5.8.3
+    commit: 6e4452f7b136fb9a261afe60830867a875183a71
     auto-update: false
   - path: sources/helm
     url: https://github.com/helm/helm.git
@@ -50,7 +50,7 @@ sources:
   - path: sources/dex
     url: https://github.com/rh-gitops-midstream/dex.git
     ref: v2.45.1
-    commit: 06972f53f908aa5f7ed40b671100f55cf9e2f06b
+    commit: 91a2448e908419290186ed1c263e6c539aa14161
     auto-update: true
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
@@ -105,12 +105,12 @@ sources:
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: main
-    commit: e79b7b5d7313194edff28d62eb558bc22982be13
+    commit: 904103597be519bc29c6db4dd789efd64754057f
     auto-update: true
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
-    ref: v1.3.0
-    commit: 098b544f1c7d6d1368e89c3f8d92415ede353916
+    ref: v1.3.1
+    commit: 6032a807ecf893734999a9f8eb514407b2707b28
     auto-update: true
   - path: sources/gitops-promoter
     url: https://github.com/argoproj-labs/gitops-promoter.git
