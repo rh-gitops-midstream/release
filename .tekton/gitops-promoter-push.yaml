@@ -27,6 +27,13 @@ metadata:
   name: gitops-promoter-1-22-on-push
   namespace: rh-openshift-gitops-tenant
 spec:
+  taskRunSpecs:
+    - pipelineTaskName: build-images
+      computeResources:
+        requests:
+          memory: 4Gi
+        limits:
+          memory: 8Gi
   params:
   - name: git-url
     value: '{{source_url}}'
