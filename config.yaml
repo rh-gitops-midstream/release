@@ -86,7 +86,7 @@ sources:
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
     ref: main
     commit: 1495bbad184a05cde955fb21dcf35d05c3e58d98
-    auto-update: true
+    auto-update: false
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
