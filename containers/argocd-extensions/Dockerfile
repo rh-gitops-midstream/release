@@ -50,7 +50,7 @@ COPY --from=rollout-extensions /app/install.sh install.sh
 
 ENV EXTENSION_NAME="Rollout"
 ENV EXTENSION_URL="file://$HOME/rollout-extension.tar"
-ENV EXTENSION_VERSION="0.3.6"
+ENV EXTENSION_VERSION="0.4.0"
 
 ENTRYPOINT ["./install.sh"]
 
