@@ -1,0 +1,3 @@
+# Default values for openshift-gitops-operator-crd.
+
+# This chart contains only CRDs.
