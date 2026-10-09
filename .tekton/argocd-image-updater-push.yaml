@@ -12,6 +12,7 @@ metadata:
       target_branch == "main" &&
       (
         "sources/argocd-image-updater".pathChanged() ||
+        "sources/tini".pathChanged() ||
         "containers/argocd-image-updater/***".pathChanged() ||
         ".tekton/argocd-image-updater-push.yaml".pathChanged() ||
         "BUILD".pathChanged() ||
@@ -43,6 +44,7 @@ spec:
   - name: git-metadata-directories
     value:
       - sources/argocd-image-updater
+      - sources/tini
   pipelineRef:
     name: build-multi-platform-image
   taskRunTemplate:
