@@ -1,0 +1,38 @@
+annotations:
+  kubectl-catalog.io/catalog-ref: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.20
+  kubectl-catalog.io/channel: gitops-1.22
+  kubectl-catalog.io/maturity: GA
+apiVersion: v2
+appVersion: 1.22.1
+description: "Red Hat OpenShift GitOps is a declarative continuous delivery platform
+  based on [Argo CD](https://argoproj.github.io/argo-cd/). It enables teams to adopt
+  GitOps principles for managing cluster configurations and automating secure and
+  repeatable application delivery across hybrid multi-cluster Kubernetes environments.
+  Following GitOps and infrastructure as code principles, you can store the configuration
+  of clusters and applications in Git repositories and use Git workflows to roll them
+  out to the target clusters.\n\n## Features\n* Automated install and upgrades of
+  Argo CD\n* Manual and automated configuration sync from Git repositories to target
+  OpenShift and Kubernetes clusters\n* Support for the Helm and Kustomize templating
+  tools\n* Configuration drift detection and visualization on live clusters\n* Audit
+  trails of rollouts to the clusters\n* Monitoring and logging integration with OpenShift\n##Components\n*
+  Argo CD v3.5.4\n\n## How to Install \nAfter installing the OpenShift GitOps operator,
+  an instance  of Argo CD is installed in the `openshift-gitops` namespace which has
+  sufficient privileges for managing cluster configurations. You can create additional
+  Argo CD instances using the `ArgoCD` custom resource within the desired namespaces.\n```yaml\napiVersion:
+  argoproj.io/v1beta1\nkind: ArgoCD\nmetadata:\n  name: argocd\nspec:\n  server:\n
+  \   route:\n      enabled: true\n```\n\nOpenShift GitOps is a layered product on
+  top of OpenShift that enables teams to adopt GitOps principles for managing cluster
+  configurations and automating secure and repeatable application delivery across
+  hybrid multi-cluster Kubernetes environments. OpenShift GitOps is built around Argo
+  CD as the core upstream project and assists customers to establish an end-to-end
+  application delivery workflow on GitOps principles.\n"
+keywords:
+- devtools
+- gitops
+- pipelines
+maintainers:
+- email: team-gitops@redhat.com
+  name: OpenShift GitOps Team
+name: openshift-gitops-operator
+type: application
+version: 1.22.1
