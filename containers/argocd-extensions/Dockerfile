@@ -22,7 +22,7 @@ FROM registry.access.redhat.com/ubi9/ubi-minimal as rollout-extensions
 USER root
 
 COPY sources/rollout-extension /app/rollout-extension
-COPY containers/argocd-extensions/install.sh /app/install.sh
+COPY sources/argocd-extension-installer/install.sh /app/install.sh
 
 RUN microdnf install -y tar && microdnf clean all
 
@@ -39,6 +39,7 @@ RUN tar cvf dist/extension.tar resources
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 
 ARG USER=ext-installer
+ARG CI_ROLLOUT_EXTENSION_VERSION
 ENV HOME=/home/$USER
 
 RUN microdnf install -y file jq shadow-utils tar && microdnf clean all
@@ -48,9 +49,10 @@ WORKDIR $HOME
 COPY --from=rollout-extensions /app/rollout-extension/ui/dist/extension.tar rollout-extension.tar
 COPY --from=rollout-extensions /app/install.sh install.sh
 
+ENV EXTENSIONS_DIR="/tmp/extensions"
 ENV EXTENSION_NAME="Rollout"
+ENV EXTENSION_VERSION=${CI_ROLLOUT_EXTENSION_VERSION}
 ENV EXTENSION_URL="file://$HOME/rollout-extension.tar"
-ENV EXTENSION_VERSION="0.4.0"
 
 ENTRYPOINT ["./install.sh"]
 
