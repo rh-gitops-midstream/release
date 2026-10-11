@@ -47,7 +47,7 @@ spec:
   - name: git-metadata-directories
     value:
       - sources/argocd-extension-installer
-      - sources/rollout-extension
+      - sources/gitops-promoter
   pipelineRef:
     name: build-multi-platform-image
   taskRunTemplate: 

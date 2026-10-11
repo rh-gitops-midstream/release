@@ -69,8 +69,8 @@ sources:
     auto-update: true
   - path: sources/argocd-extension-installer
     url: https://github.com/argoproj-labs/argocd-extension-installer.git
-    ref: main
-    commit: 225d9f62385af2d6a4e302dd22e2263fe344cde8
+    ref: v1.1.0
+    commit: 379284c7aaa0717c4224ab119133bf2bad2c7bfd
     auto-update: true
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
@@ -99,8 +99,8 @@ sources:
     auto-update: true
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
-    ref: master
-    commit: 427493aca64464872b8801875141b70c6ab1318b
+    ref: v0.4.0
+    commit: ceef45e6288c4c64f5274f7272f0e3488b3a9332
     auto-update: true
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
