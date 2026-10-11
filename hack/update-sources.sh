@@ -114,7 +114,8 @@ for i in $(seq 0 $((count - 1))); do
   url=$($YQ e ".sources[$i].url" "$CONFIG")
   ref=$($YQ e ".sources[$i].ref" "$CONFIG")
   commit=$($YQ e ".sources[$i].commit" "$CONFIG")
-  auto_update=$($YQ e ".sources[$i].auto-update // true" "$CONFIG")
+  auto_update=$($YQ e ".sources[$i].\"auto-update\"" "$CONFIG")
+  [ "$auto_update" = "null" ] && auto_update="true"
 
   echo ">>> Processing $path ($ref)"
 
