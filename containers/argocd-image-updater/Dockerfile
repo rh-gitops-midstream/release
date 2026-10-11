@@ -31,6 +31,23 @@ RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime \
               -X github.com/argoproj-labs/argocd-image-updater/pkg/version.buildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
     -o dist/argocd-image-updater ./cmd
 
+####################################################################################################
+# Build tini from source. tini is the image entrypoint and reaps the git child processes that the
+# image updater forks; without it they accumulate as zombies (GITOPS-11648). There is no tini RPM
+# in the UBI9 repos, so it is built from the pinned sources/tini submodule, the same way the argocd
+# and gitops-promoter images do it.
+####################################################################################################
+FROM registry.redhat.io/rhel9/go-toolset:1.26 AS tini-build
+USER root
+
+# Install cmake and build tini from the source in midstream
+WORKDIR /src/tini
+# TODO: install gcc to switch to a UBI9 base image instead of go-toolset, which is a heavier image but contains gcc.
+RUN yum install -y cmake
+COPY sources/tini /src/tini
+ENV CFLAGS="-DPR_SET_CHILD_SUBREAPER=36 -DPR_GET_CHILD_SUBREAPER=37"
+RUN cmake . && make tini
+
 # Final image
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 
@@ -45,11 +62,15 @@ RUN useradd -l -r -u 1000 -d /app argocd && \
     chmod -R g=u /app
 
 COPY --from=builder /src/argocd-image-updater/dist/argocd-image-updater /manager
+COPY --from=tini-build /src/tini/tini /usr/local/bin/tini
 COPY sources/argocd-image-updater/hack/git-ask-pass.sh /usr/local/bin/git-ask-pass.sh
 
 WORKDIR /app
 USER 1000
-ENTRYPOINT ["/manager"]
+# Run the manager under tini so that tini is PID 1 and reaps exited git child processes.
+# Upstream uses /sbin/tini (from the alpine package); here tini is built from source, so it
+# lives in /usr/local/bin alongside the other locally built binaries, as in the argocd image.
+ENTRYPOINT ["/usr/local/bin/tini", "--", "/manager"]
 
 LABEL \
     name="openshift-gitops-1/argocd-image-updater-rhel9" \
