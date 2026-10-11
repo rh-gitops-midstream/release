@@ -33,5 +33,6 @@ for i in $(seq 0 $((count - 1))); do
 done
 
 sync_ui_refs
+sync_extension_js_refs
 
 echo ">>> Sync completed."

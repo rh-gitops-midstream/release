@@ -69,9 +69,9 @@ sources:
     auto-update: true
   - path: sources/argocd-extension-installer
     url: https://github.com/argoproj-labs/argocd-extension-installer.git
-    ref: main
-    commit: 225d9f62385af2d6a4e302dd22e2263fe344cde8
-    auto-update: false
+    ref: v1.1.0
+    commit: 379284c7aaa0717c4224ab119133bf2bad2c7bfd
+    auto-update: true
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: v1.22
