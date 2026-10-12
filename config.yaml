@@ -25,17 +25,17 @@ sources:
   - path: sources/gitops-operator
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: master
-    commit: 53570b461573b27ee03950381576005a1e91b749
+    commit: 0ebd352900311382c8b91adcda97359354e95205
     auto-update: true
   - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.6.0-rc2
-    commit: f922b44b5d17765910e31a583dfb253d75afebe6
+    ref: v3.5.4
+    commit: d6d5b248ce00e1a2c512068002a93d3319767087
     auto-update: true
   - path: sources/argo-rollouts
     url: https://github.com/argoproj/argo-rollouts.git
-    ref: v1.10.0-rc1
-    commit: d1c296793cfd2dffc90fb89d919ee2bbf9b10ab5
+    ref: v1.10.0
+    commit: d90700ae8d71d141561f0c546e19f999bb335cbd
     auto-update: true
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
@@ -50,7 +50,7 @@ sources:
   - path: sources/dex
     url: https://github.com/rh-gitops-midstream/dex.git
     ref: v2.45.1
-    commit: 06972f53f908aa5f7ed40b671100f55cf9e2f06b
+    commit: c205840eb6e81ab03bac51b33a42d3c31f947a3c
     auto-update: true
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
@@ -85,7 +85,7 @@ sources:
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master
-    commit: 2c16e0c8eaa6923ac35d9256a36f13349e10d339
+    commit: 3dc2367e46bd1e05b8f1915c0c80371412635fe4
     auto-update: true
   - path: sources/rollouts-plugin-trafficrouter-openshift
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
@@ -105,7 +105,7 @@ sources:
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: main
-    commit: e79b7b5d7313194edff28d62eb558bc22982be13
+    commit: 25e3fdbd1d64a963fa5821e7ec96805cec60507e
     auto-update: true
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
