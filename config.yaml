@@ -84,7 +84,7 @@ sources:
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master
     commit: 2c16e0c8eaa6923ac35d9256a36f13349e10d339
-    auto-update: true
+    auto-update: false
   - path: sources/rollouts-plugin-trafficrouter-openshift
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
     ref: main
