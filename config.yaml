@@ -90,12 +90,12 @@ sources:
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
-    commit: 652c9890d6c5c7429d4edb6bed4d006e8d415c32
+    commit: 57902bfad7d3e812d15b673ce370dd824acea074
     auto-update: true
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
     ref: master
-    commit: 427493aca64464872b8801875141b70c6ab1318b
+    commit: a6e0cf49da603f83ec5ef4f0eb2561f302bbcdc8
     auto-update: true
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
