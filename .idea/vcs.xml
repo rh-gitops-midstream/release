@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/argo-cd" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/argo-rollouts" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/argocd-agent" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/argocd-extension-installer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/argocd-image-updater" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/dex" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/git-lfs" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/gitops-backend" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/gitops-console-plugin" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/gitops-must-gather" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/gitops-operator" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/helm" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/kustomize" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/kustomize/site/themes/docsy" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/kustomize/site/themes/docsy/assets/vendor/Font-Awesome" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/kustomize/site/themes/docsy/assets/vendor/bootstrap" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/rollout-extension" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/rollouts-plugin-trafficrouter-openshift" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/ssh-connect" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sources/tini" vcs="Git" />
+  </component>
+</project>
