@@ -1,0 +1,144 @@
+# Default values for openshift-gitops-operator.
+
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+
+image:
+  manager:
+    registry: registry.redhat.io
+    repository: openshift-gitops-1/gitops-rhel9-operator
+    tag: "sha256:069804a0e785b838eff869ef8cea480285875daa313ab28cbb500a12d8866639"
+    pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+rbac:
+  create: true
+
+# resources:
+#   limits:
+#     cpu: 500m
+#     memory: 128Mi
+#   requests:
+#     cpu: 10m
+#     memory: 64Mi
+resources: {}
+
+# livenessProbe:
+#   httpGet:
+#     path: /healthz
+#     port: 8081
+#   initialDelaySeconds: 15
+#   periodSeconds: 20
+livenessProbe: {}
+
+# readinessProbe:
+#   httpGet:
+#     path: /readyz
+#     port: 8081
+#   initialDelaySeconds: 5
+#   periodSeconds: 10
+readinessProbe: {}
+
+# args:
+#   - --leader-elect
+#   - --health-probe-bind-address=:8081
+args: []
+
+service:
+  type: ClusterIP
+  annotations: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+topologySpreadConstraints: []
+
+podSecurityContext: {}
+securityContext: {}
+
+commonLabels: {}
+commonAnnotations: {}
+podAnnotations: {}
+
+priorityClassName: ""
+
+# strategy:
+#   type: RollingUpdate
+#   rollingUpdate:
+#     maxSurge: 1
+#     maxUnavailable: 0
+strategy: {}
+
+revisionHistoryLimit: 10
+
+extraVolumes: []
+extraVolumeMounts: []
+
+# envFrom:
+#   - configMapRef:
+#       name: my-config
+#   - secretRef:
+#       name: my-secret
+envFrom: []
+
+certManager:
+  enabled: false
+  issuer:
+    kind: Issuer
+    name: ""
+  duration: "8760h"
+  renewBefore: "720h"
+
+monitoring:
+  enabled: true
+
+webhooks:
+  enabled: false
+
+# Operator image environment variables.
+# Override these to use custom builds or mirrors.
+operatorImageEnv:
+  ARGOCD_DEX_IMAGE: "registry.redhat.io/openshift-gitops-1/dex-rhel9@sha256:6d8febb1b7cb2281e82fd03d098c70b62789c1541af940842d36177c57616511"
+  BACKEND_IMAGE: "registry.redhat.io/openshift-gitops-1/gitops-rhel9@sha256:cb3f5119570638f3f16c1a2cc517aff6bd57e419102b8b4c7a35fd298447ca11"
+  ARGOCD_IMAGE: "registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:1a35282aa2ad03f4a0c4f583b5339c97768350121112a941da82c9a95774ffe7"
+  ARGOCD_REPOSERVER_IMAGE: "registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:1a35282aa2ad03f4a0c4f583b5339c97768350121112a941da82c9a95774ffe7"
+  ARGOCD_REDIS_IMAGE: "registry.redhat.io/rhel9/redis-7@sha256:c0e55c59b0765ce2037fe8ed57965d6d357d50c0538ec9c7ab5be6e19ac9b1b2"
+  ARGOCD_REDIS_HA_IMAGE: "registry.redhat.io/rhel9/redis-7@sha256:c0e55c59b0765ce2037fe8ed57965d6d357d50c0538ec9c7ab5be6e19ac9b1b2"
+  ARGOCD_REDIS_HA_PROXY_IMAGE: "registry.redhat.io/openshift4/ose-haproxy-router-rhel9@sha256:7f74daf4d1b96494f8d8d75b3b542b66c29a825aa700a0a4f8a6b3e86f02b88a"
+  GITOPS_CONSOLE_PLUGIN_IMAGE: "registry.redhat.io/openshift-gitops-1/console-plugin-rhel9@sha256:e35128a640c9358cb10b1861b443d10d2e38fa27bdd4d7e085034f187e011ad2"
+  GITOPS_CONSOLE_PLUGIN_IMAGE_PF5: "registry.redhat.io/openshift-gitops-1/console-plugin-4-18-rhel9@sha256:89d41fadaa360a3b09147a07f5c1fc53c4a106db2d7e3a718fde97c596b03e63"
+  ARGOCD_EXTENSION_IMAGE: "registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel9@sha256:1a704d788e2ed80b4cc9a34eaef9b347f8441ad783e185236fb005a933b99c2a"
+  ARGO_ROLLOUTS_IMAGE: "registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel9@sha256:752efb28fc4ff393a13b885cd7cb93e990e6a81a20e1b8132f80f971f916f3ff"
+  MUST_GATHER_IMAGE: "registry.redhat.io/openshift-gitops-1/must-gather-rhel9@sha256:5b1b7db06e65875c3b1aa418fad475a5a21bad6f9b33787f23b0826fab54c59e"
+  ARGOCD_PRINCIPAL_IMAGE: "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9@sha256:050c5899d1cf00f07f75ddfb8bfeaffb26e5ca2804b69a086a9153b09097315e"
+  ARGOCD_AGENT_IMAGE: "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9@sha256:050c5899d1cf00f07f75ddfb8bfeaffb26e5ca2804b69a086a9153b09097315e"
+  ARGOCD_IMAGE_UPDATER_IMAGE: "registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel9@sha256:374ec7d6e0d81b82965927c2fa3782cba69f7720021cce8a959722124fb21e11"
+  ARGOCD_PROMOTER_EXTENSION_IMAGE: "registry.redhat.io/openshift-gitops-1/argocd-promoter-extension-rhel9@sha256:d4b7b60c79216749b37174e5a50fcbb8925c46393e5ac7dcea207ddf1ce0a4f6"
+  GITOPS_PROMOTER_IMAGE: "registry.redhat.io/openshift-gitops-1/gitops-promoter-rhel9@sha256:4e9f591240a9d2ab32b9a3a596406e2f9b034c1c961bffb8ff16b8f37e72a830"
+
+# pullSecret creates a Secret of type kubernetes.io/dockerconfigjson.
+# Provide the pull secret JSON file at install time:
+#   helm install <release> <chart> --set-file pullSecret.dockerConfigJson=/path/to/pull-secret.json
+pullSecret:
+  create: true
+  name: "redhat-registry-pull-secret"
+  dockerConfigJson: ""
+  labels: {}
+
+# env:
+#   LOG_LEVEL: info
+env: {}
+
+installMode: "AllNamespaces"
+watchNamespace: ""

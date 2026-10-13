@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "openshift-gitops-operator.labels" . | nindent 4 }}
+  name: openshift-gitops-operator-controller-manager-webhook-service
+spec:
+  ports:
+    - port: 443
+      protocol: TCP
+      targetPort: 443
+  selector:
+    control-plane: gitops-operator
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.beta.openshift.io/serving-cert-secret-name: openshift-gitops-operator-metrics-tls
+  creationTimestamp: null
+  labels:
+    {{- include "openshift-gitops-operator.labels" . | nindent 4 }}
+    control-plane: gitops-operator
+  name: openshift-gitops-operator-metrics-service
+spec:
+  ports:
+    - name: metrics
+      port: 8443
+      protocol: TCP
+      targetPort: metrics
+  selector:
+    control-plane: gitops-operator
+  type: {{ .Values.service.type | default "ClusterIP" }}
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "openshift-gitops-operator.labels" . | nindent 4 }}
+  name: openshift-gitops-operator-webhook-service
+spec:
+  ports:
+    - port: 443
+      protocol: TCP
+      targetPort: 9443
+  selector:
+    control-plane: gitops-operator
+status:
+  loadBalancer: {}

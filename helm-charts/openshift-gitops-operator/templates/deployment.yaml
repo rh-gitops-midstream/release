@@ -1,0 +1,198 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    {{- include "openshift-gitops-operator.labels" . | nindent 4 }}
+  name: openshift-gitops-operator-controller-manager
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      control-plane: gitops-operator
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      annotations:
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        kubectl.kubernetes.io/default-container: manager
+      labels:
+        control-plane: gitops-operator
+    spec:
+      containers:
+        - command:
+            - /usr/local/bin/manager
+          env:
+            - name: ARGOCD_CLUSTER_CONFIG_NAMESPACES
+              value: {{ if hasKey .Values.env "ARGOCD_CLUSTER_CONFIG_NAMESPACES" }}{{ index .Values.env "ARGOCD_CLUSTER_CONFIG_NAMESPACES" | quote }}{{ else }}"openshift-gitops"{{ end }}
+            - name: CLUSTER_SCOPED_ARGO_ROLLOUTS_NAMESPACES
+              value: {{ if hasKey .Values.env "CLUSTER_SCOPED_ARGO_ROLLOUTS_NAMESPACES" }}{{ index .Values.env "CLUSTER_SCOPED_ARGO_ROLLOUTS_NAMESPACES" | quote }}{{ else }}"openshift-gitops"{{ end }}
+            - name: OPERATOR_NAME
+              value: {{ if hasKey .Values.env "OPERATOR_NAME" }}{{ index .Values.env "OPERATOR_NAME" | quote }}{{ else }}"gitops-operator"{{ end }}
+            - name: LABEL_SELECTOR
+              value: {{ if hasKey .Values.env "LABEL_SELECTOR" }}{{ index .Values.env "LABEL_SELECTOR" | quote }}{{ else }}""{{ end }}
+            - name: DISABLE_CLUSTER_TLS_PROFILE
+              value: {{ if hasKey .Values.env "DISABLE_CLUSTER_TLS_PROFILE" }}{{ index .Values.env "DISABLE_CLUSTER_TLS_PROFILE" | quote }}{{ else }}"false"{{ end }}
+            - name: ENABLE_CONVERSION_WEBHOOK
+              value: {{ if hasKey .Values.env "ENABLE_CONVERSION_WEBHOOK" }}{{ index .Values.env "ENABLE_CONVERSION_WEBHOOK" | quote }}{{ else }}"true"{{ end }}
+            - name: RELATED_IMAGE_ARGOCD_DEX_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_DEX_IMAGE }}
+            - name: ARGOCD_DEX_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_DEX_IMAGE }}
+            - name: RELATED_IMAGE_BACKEND_IMAGE
+              value: {{ .Values.operatorImageEnv.BACKEND_IMAGE }}
+            - name: BACKEND_IMAGE
+              value: {{ .Values.operatorImageEnv.BACKEND_IMAGE }}
+            - name: RELATED_IMAGE_ARGOCD_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_IMAGE }}
+            - name: ARGOCD_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_IMAGE }}
+            - name: ARGOCD_REPOSERVER_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_REPOSERVER_IMAGE }}
+            - name: RELATED_IMAGE_ARGOCD_REDIS_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_REDIS_IMAGE }}
+            - name: ARGOCD_REDIS_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_REDIS_IMAGE }}
+            - name: ARGOCD_REDIS_HA_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_REDIS_HA_IMAGE }}
+            - name: RELATED_IMAGE_ARGOCD_REDIS_HA_PROXY_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_REDIS_HA_PROXY_IMAGE }}
+            - name: ARGOCD_REDIS_HA_PROXY_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_REDIS_HA_PROXY_IMAGE }}
+            - name: RELATED_IMAGE_GITOPS_CONSOLE_PLUGIN_IMAGE
+              value: {{ .Values.operatorImageEnv.GITOPS_CONSOLE_PLUGIN_IMAGE }}
+            - name: GITOPS_CONSOLE_PLUGIN_IMAGE
+              value: {{ .Values.operatorImageEnv.GITOPS_CONSOLE_PLUGIN_IMAGE }}
+            - name: RELATED_IMAGE_GITOPS_CONSOLE_PLUGIN_IMAGE_PF5
+              value: {{ .Values.operatorImageEnv.GITOPS_CONSOLE_PLUGIN_IMAGE_PF5 }}
+            - name: GITOPS_CONSOLE_PLUGIN_IMAGE_PF5
+              value: {{ .Values.operatorImageEnv.GITOPS_CONSOLE_PLUGIN_IMAGE_PF5 }}
+            - name: RELATED_IMAGE_ARGOCD_EXTENSION_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_EXTENSION_IMAGE }}
+            - name: ARGOCD_EXTENSION_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_EXTENSION_IMAGE }}
+            - name: RELATED_IMAGE_ARGO_ROLLOUTS_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGO_ROLLOUTS_IMAGE }}
+            - name: ARGO_ROLLOUTS_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGO_ROLLOUTS_IMAGE }}
+            - name: RELATED_IMAGE_MUST_GATHER_IMAGE
+              value: {{ .Values.operatorImageEnv.MUST_GATHER_IMAGE }}
+            - name: ARGOCD_PRINCIPAL_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_PRINCIPAL_IMAGE }}
+            - name: RELATED_IMAGE_ARGOCD_PRINCIPAL_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_PRINCIPAL_IMAGE }}
+            - name: ARGOCD_AGENT_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_AGENT_IMAGE }}
+            - name: RELATED_IMAGE_ARGOCD_AGENT_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_AGENT_IMAGE }}
+            - name: ARGOCD_IMAGE_UPDATER_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_IMAGE_UPDATER_IMAGE }}
+            - name: RELATED_IMAGE_ARGOCD_IMAGE_UPDATER_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_IMAGE_UPDATER_IMAGE }}
+            - name: RELATED_IMAGE_ARGOCD_PROMOTER_EXTENSION_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_PROMOTER_EXTENSION_IMAGE }}
+            - name: ARGOCD_PROMOTER_EXTENSION_IMAGE
+              value: {{ .Values.operatorImageEnv.ARGOCD_PROMOTER_EXTENSION_IMAGE }}
+            - name: RELATED_IMAGE_GITOPS_PROMOTER_IMAGE
+              value: {{ .Values.operatorImageEnv.GITOPS_PROMOTER_IMAGE }}
+            - name: GITOPS_PROMOTER_IMAGE
+              value: {{ .Values.operatorImageEnv.GITOPS_PROMOTER_IMAGE }}
+            - name: WATCH_NAMESPACE
+            {{- if eq .Values.installMode "AllNamespaces" }}
+              value: ""
+            {{- else }}
+              value: {{ .Values.watchNamespace | default .Release.Namespace | quote }}
+            {{- end }}
+            {{- range $key, $value := .Values.env }}
+            {{- if not (has $key (list "WATCH_NAMESPACE" "ARGOCD_CLUSTER_CONFIG_NAMESPACES" "CLUSTER_SCOPED_ARGO_ROLLOUTS_NAMESPACES" "OPERATOR_NAME" "LABEL_SELECTOR" "DISABLE_CLUSTER_TLS_PROFILE" "ENABLE_CONVERSION_WEBHOOK")) }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- end }}
+          image: {{ include "openshift-gitops-operator.image" .Values.image.manager }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          name: manager
+          ports:
+            - containerPort: 9443
+              name: webhook-server
+              protocol: TCP
+            - containerPort: 8443
+              name: metrics
+              protocol: TCP
+            - containerPort: 8081
+              name: health
+              protocol: TCP
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- if .Values.webhooks.enabled }}
+            - mountPath: /tmp/k8s-metrics-server/serving-certs
+              name: metrics-certs
+              readOnly: true
+            {{- end }}
+          {{- with .Values.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "openshift-gitops-operator.serviceAccountName" . }}
+      terminationGracePeriodSeconds: 10
+      volumes:
+        {{- if .Values.webhooks.enabled }}
+        - name: metrics-certs
+          secret:
+            secretName: {{ include "openshift-gitops-operator.fullname" . }}-webhook-server-cert
+        {{- end }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

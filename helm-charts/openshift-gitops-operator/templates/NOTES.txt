@@ -1,0 +1,11 @@
+{{ .Chart.Name }} has been installed.
+
+Release:   {{ .Release.Name }}
+Namespace: {{ .Release.Namespace }}
+Version:   {{ .Chart.AppVersion }}
+
+Check operator status:
+  kubectl get deployment -l app.kubernetes.io/instance={{ .Release.Name }} -n {{ .Release.Namespace }}
+
+View operator logs:
+  kubectl logs -l app.kubernetes.io/instance={{ .Release.Name }} -n {{ .Release.Namespace }} -f
