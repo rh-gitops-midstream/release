@@ -15,5 +15,5 @@ kubectl-catalog generate openshift-gitops-operator --channel gitops-1.22  --outp
 
 To generate CRD only chart for openshift-gitops
 ```sh
-kubectl-catalog generate openshift-gitops-operator --channel gitops-1.22  --output-format helm --pull-secret ~/keys/pull-secret.txt --catalog quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.20 --chart-name openshift-gitops-operator --skip-templates 
+kubectl-catalog generate openshift-gitops-operator --channel gitops-1.22  --output-format helm --pull-secret ~/keys/pull-secret.txt --catalog quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.20 --chart-name openshift-gitops-operator-crds --skip-templates
 ```
