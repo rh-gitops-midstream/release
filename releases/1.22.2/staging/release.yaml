@@ -1,0 +1,31 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.22.2-stage-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-22-stage
+  snapshot: gitops-1-22-20261013-065206-000        
+  data:
+    releaseNotes:
+      type: RHBA
+      issues:
+        fixed:
+          - id: GITOPS-10904
+            source: issues.redhat.com
+          - id: GITOPS-11441
+            source: issues.redhat.com
+          - id: GITOPS-11466
+            source: issues.redhat.com
+          - id: GITOPS-11515
+            source: issues.redhat.com
+          - id: GITOPS-11521
+            source: issues.redhat.com
+          - id: GITOPS-11592
+            source: issues.redhat.com
+          - id: GITOPS-11604
+            source: issues.redhat.com
+          - id: GITOPS-11648
+            source: issues.redhat.com
+      cves: []
