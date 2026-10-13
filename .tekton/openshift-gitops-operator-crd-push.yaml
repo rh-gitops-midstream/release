@@ -49,7 +49,7 @@ spec:
     - default: "false"
       description: Enable cache proxy configuration
       name: enable-cache-proxy
-    - default: helm-charts/openshift-gitops-operator-crd/
+    - default: helm-charts/openshift-gitops-operator-crds/
       description: Path relative to SOURCE_CODE_DIR where the Helm chart is located
       name: chart-context
       type: string
@@ -96,8 +96,6 @@ spec:
         value: $(params.image-expires-after)
       - name: enableSymlinkCheck
         value: "false"
-      - name: depth
-        value: '0'
       runAfter:
       - init
       taskRef:
