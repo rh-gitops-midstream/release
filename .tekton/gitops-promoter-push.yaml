@@ -27,6 +27,14 @@ metadata:
   name: gitops-promoter-main-on-push
   namespace: rh-openshift-gitops-tenant
 spec:
+  taskRunSpecs:
+    # dashboard build on arm requires more memory
+    - pipelineTaskName: build-images
+      computeResources:
+        requests:
+          memory: 16Gi
+        limits:
+          memory: 32Gi
   params:
   - name: git-url
     value: '{{source_url}}'
