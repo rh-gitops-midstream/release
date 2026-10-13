@@ -31,10 +31,6 @@ COPY sources/gitops-promoter/ui/dashboard/package*.json ./ui/dashboard
 # Copy all UI sources
 COPY sources/gitops-promoter/ui ./ui/
 
-ENV UV_THREADPOOL_SIZE=2 \
-    npm_config_maxsockets=2 \
-    MAKEFLAGS="-j1"
-
 # Install deps for the component library
 WORKDIR /app/gitops-promoter/ui/components-lib
 RUN npm ci

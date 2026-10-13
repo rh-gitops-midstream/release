@@ -31,9 +31,9 @@ spec:
     - pipelineTaskName: build-images
       computeResources:
         requests:
-          memory: 4Gi
+          memory: 16Gi
         limits:
-          memory: 8Gi
+          memory: 32Gi
   params:
   - name: git-url
     value: '{{source_url}}'
