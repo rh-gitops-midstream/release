@@ -126,7 +126,7 @@ spec:
       - name: TAG_PREFIX
         value: $(params.tag-prefix)
       - name: CHART_VERSION
-        value: 1.22.1+$(tasks.clone-repository.results.commit)
+        value: 1.22.1+$(tasks.clone-repository.results.short-commit)
       runAfter:
       - clone-repository
       taskRef:
