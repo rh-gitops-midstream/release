@@ -534,7 +534,9 @@ jobs:
           git commit -m "chore(nightly): update catalog channel for $BRANCH (build $BUILD)"
 
           CATALOG_REPO_URL="https://x-access-token:${GH_TOKEN}@github.com/rh-gitops-midstream/catalog.git"
-          git push "$CATALOG_REPO_URL" "$NIGHTLY_BRANCH" --force-with-lease
+          # Plain --force: a bare --force-with-lease needs a remote-tracking ref,
+          # which a URL push does not have, so it is always rejected ("stale info").
+          git push "$CATALOG_REPO_URL" "$NIGHTLY_BRANCH" --force
 
       - name: "Catalog Build [nightly]: Create or update PR"
         if: |
