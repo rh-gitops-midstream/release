@@ -1,0 +1,111 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-clis-1.22.2-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-clis-1-22-prod
+  snapshot: gitops-1-22-20261013-065206-000
+  data:
+    releaseNotes:
+      type: RHSA
+      topic: Red Hat OpenShift GitOps v1.22.2 security update
+      synopsis: Red Hat OpenShift GitOps v1.22.2 security update
+      issues:
+        fixed:
+          - id: GITOPS-11591
+            source: issues.redhat.com
+      cves: 
+        - key: CVE-2026-82277
+          component: kubectl-argo-rollouts-cli-1-22
+      content: 
+        artifacts:
+          # argocd-cli
+          - component: argocd-cli-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: amd64
+          - component: argocd-cli-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: arm64
+          - component: argocd-cli-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: ppc64le
+          - component: argocd-cli-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: s390x
+          - component: argocd-cli-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: amd64
+            architecture: darwin
+          - component: argocd-cli-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: arm64
+            architecture: darwin
+          - component: argocd-cli-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: amd64
+            architecture: windows
+          # argocd-agentctl
+          - component: argocd-agentctl-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: amd64
+          - component: argocd-agentctl-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: arm64
+          - component: argocd-agentctl-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: arm
+          - component: argocd-agentctl-cli-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: amd64
+            architecture: darwin
+          - component: argocd-agentctl-cli-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: arm64
+            architecture: darwin
+          # kubectl-argo-rollouts-cli
+          - component: kubectl-argo-rollouts-cli-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: amd64
+          - component: kubectl-argo-rollouts-cli-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: arm64
+          - component: kubectl-argo-rollouts-cli-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: amd64
+            architecture: darwin
+          - component: kubectl-argo-rollouts-cli-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: arm64
+            architecture: darwin
+          - component: kubectl-argo-rollouts-cli-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: amd64
+            architecture: windows
+          # gitops-promoter-cli
+          - component: gitops-promoter-cli-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: amd64
+          - component: gitops-promoter-cli-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: linux
+            architecture: arm64
+          - component: gitops-promoter-cli-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: amd64
+            architecture: darwin
+          - component: gitops-promoter-cli-1-22
+            purl: https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/
+            os: arm64
+            architecture: darwin
