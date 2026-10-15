@@ -9,7 +9,7 @@ spec:
   snapshot: gitops-1-22-20261013-065206-000
   data:
     releaseNotes:
-      type: RHEA
+      type: RHBA
       content: 
         artifacts:
           # argocd-cli
