@@ -14,7 +14,7 @@ spec:
       synopsis: Red Hat OpenShift GitOps v1.22.2 bug fix and enhancement update
       issues:
         fixed:
-         - id: GITOPS-10904
+          - id: GITOPS-10904
             source: issues.redhat.com
           - id: GITOPS-11441
             source: issues.redhat.com
