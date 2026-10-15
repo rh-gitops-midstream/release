@@ -25,7 +25,7 @@ sources:
   - path: sources/gitops-operator
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: master
-    commit: e7d770e24f558ca3b1722b3d6518bdace1146135
+    commit: 97ddce15cd9c3542499bd31b0ce21afa87a329d7
     auto-update: true
   - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
@@ -44,8 +44,8 @@ sources:
     auto-update: false
   - path: sources/helm
     url: https://github.com/helm/helm.git
-    ref: v4.3.0
-    commit: bec5b06ed841fe5269972d864d5177944fd5970f
+    ref: v4.3.1
+    commit: c0d08d0d6d9424d4a14febb5e8a3e51b0dd00dff
     auto-update: true
   - path: sources/dex
     url: https://github.com/rh-gitops-midstream/dex.git
@@ -90,22 +90,22 @@ sources:
   - path: sources/rollouts-plugin-trafficrouter-openshift
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
     ref: main
-    commit: cd2cb638dfc1d1ae4eb299f3bcad1dd98ddefc57
+    commit: 98c7fb9c86aa3d067fb4d1e87954c9560567d9e2
     auto-update: true
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
-    commit: 652c9890d6c5c7429d4edb6bed4d006e8d415c32
+    commit: 57902bfad7d3e812d15b673ce370dd824acea074
     auto-update: true
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
-    ref: v0.4.0
-    commit: ceef45e6288c4c64f5274f7272f0e3488b3a9332
+    ref: v0.4.1
+    commit: a6e0cf49da603f83ec5ef4f0eb2561f302bbcdc8
     auto-update: true
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: main
-    commit: 25e3fdbd1d64a963fa5821e7ec96805cec60507e
+    commit: 2e7ef5500e3672b26f247a75b0ae563ea904e552
     auto-update: true
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
@@ -114,8 +114,8 @@ sources:
     auto-update: true
   - path: sources/gitops-promoter
     url: https://github.com/argoproj-labs/gitops-promoter.git
-    ref: v0.35.0
-    commit: cabfecc9ba28cffb0da2f32a7d5a93516ae059c1
+    ref: v0.35.1
+    commit: d1d297fb1a60911448543357ae04e3b4ca04f89f
     auto-update: true
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
