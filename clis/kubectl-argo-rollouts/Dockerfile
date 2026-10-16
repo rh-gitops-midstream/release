@@ -47,21 +47,16 @@ ENV PNPM_CONFIG_TRUST_LOCKFILE=true
 ENV PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN=false
 RUN pnpm --version
 
-# Keep file:../../../sources/argo-rollouts-ui-ref valid for both Hermeto prefetch and the image layout.
-# Overlay pnpm-lock.yaml already rewrites argo-ui to sources/argo-rollouts-ui-ref so Hermeto does not
-# fetch the GitHub tarball (allowed_package_sources). The package contents still come
-# from the sources/argo-rollouts-ui-ref submodule at the pinned commit.
 WORKDIR /usr/src/app/clis/kubectl-argo-rollouts/ui
-COPY ["sources/argo-rollouts/ui/package.json", "sources/argo-rollouts/ui/pnpm-workspace.yaml", "clis/kubectl-argo-rollouts/ui/pnpm-lock.yaml", "clis/kubectl-argo-rollouts/ui/.npmrc", "clis/kubectl-argo-rollouts/ui/pin-argo-ui.js", "./"]
+COPY ["clis/kubectl-argo-rollouts/ui/package.json", "sources/argo-rollouts/ui/pnpm-workspace.yaml", "clis/kubectl-argo-rollouts/ui/pnpm-lock.yaml", "clis/kubectl-argo-rollouts/ui/.npmrc", "./"]
 COPY sources/argo-rollouts-ui-ref /usr/src/app/sources/argo-rollouts-ui-ref
-RUN node pin-argo-ui.js
 
 RUN pnpm install --frozen-lockfile --offline --ignore-scripts
 
 COPY ["sources/argo-rollouts/ui/", "."]
-# Restore the overlay lockfile (Hermeto-injected) and re-pin package.json after the submodule copy.
-COPY ["clis/kubectl-argo-rollouts/ui/pnpm-lock.yaml", "clis/kubectl-argo-rollouts/ui/pin-argo-ui.js", "./"]
-RUN node pin-argo-ui.js
+# Restore the overlay package.json + pnpm-lock.yaml  after the submodule copy above
+# overwrote both with the pristine upstream versions.
+COPY ["clis/kubectl-argo-rollouts/ui/package.json", "clis/kubectl-argo-rollouts/ui/pnpm-lock.yaml", "./"]
 
 ARG ARGO_VERSION=latest
 ENV ARGO_VERSION=$ARGO_VERSION
