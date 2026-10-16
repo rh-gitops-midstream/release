@@ -30,23 +30,18 @@ RUN pnpm --version
 # Prevent pnpm from automatically switching the package manager version
 RUN pnpm config set manage-package-manager-versions false
 
-# Keep file:../../../sources/argo-cd-ui-ref valid for both Hermeto prefetch and the image layout.
-# Overlay pnpm-lock.yaml already rewrites argo-ui to sources/argo-cd-ui-ref so Hermeto does not
-# fetch the GitHub tarball (allowed_package_sources). The package contents still come
-# from the sources/argo-cd-ui-ref submodule at the pinned commit.
 WORKDIR /usr/src/app/containers/argocd/ui
-COPY ["sources/argo-cd/ui/package.json", "containers/argocd/ui/pnpm-lock.yaml", "containers/argocd/ui/.npmrc", "containers/argocd/ui/pin-argo-ui.js", "./"]
+COPY ["containers/argocd/ui/package.json", "containers/argocd/ui/pnpm-lock.yaml", "containers/argocd/ui/.npmrc", "./"]
 COPY sources/argo-cd-ui-ref /usr/src/app/sources/argo-cd-ui-ref
-RUN node pin-argo-ui.js
 
 # packageManager pins pnpm@10.28.1; use the bootstrapped pnpm offline.
 RUN pnpm config set manage-package-manager-versions false
 RUN pnpm install --frozen-lockfile --offline --ignore-scripts
 
 COPY ["sources/argo-cd/ui/", "."]
-# Restore the overlay lockfile (Hermeto-injected) and re-pin package.json after the submodule copy.
-COPY ["containers/argocd/ui/pnpm-lock.yaml", "containers/argocd/ui/pin-argo-ui.js", "./"]
-RUN node pin-argo-ui.js
+# Restore the overlay package.json + pnpm-lock.yaml  after the submodule copy above
+# overwrote both with the pristine upstream versions.
+COPY ["containers/argocd/ui/package.json", "containers/argocd/ui/pnpm-lock.yaml", "./"]
 
 ARG ARGO_VERSION=latest
 ENV ARGO_VERSION=$ARGO_VERSION

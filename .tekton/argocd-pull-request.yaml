@@ -20,6 +20,8 @@ metadata:
         "sources/ssh-connect".pathChanged() ||
         "sources/tini".pathChanged() ||
         "containers/argocd/***".pathChanged() ||
+        "hack/ui-refs.sh".pathChanged() ||
+        "hack/pin-pnpm-deps.sh".pathChanged() ||
         ".tekton/argocd-pull-request.yaml".pathChanged() ||
         "prefetch/rpms/ubi9/***".pathChanged() ||
         "prefetch/pnpm/***".pathChanged() ||
