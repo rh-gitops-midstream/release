@@ -97,8 +97,8 @@ sources:
     auto-update: true
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
-    ref: v0.3.6
-    commit: 944a5e659dec72b6ee6477ee6aef4c2bf4fcd8b4
+    ref: v0.3.7
+    commit: 6f6289da54237a7ed084b22f3161317bfa9a9b4f
     auto-update: true
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
