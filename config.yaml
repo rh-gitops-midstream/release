@@ -84,12 +84,12 @@ sources:
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master
     commit: f91b189b909df1bc247607cf3d289b79b5e13943
-    auto-update: false
+    auto-update: true
   - path: sources/rollouts-plugin-trafficrouter-openshift
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
     ref: main
     commit: 98c7fb9c86aa3d067fb4d1e87954c9560567d9e2
-    auto-update: true
+    auto-update: false
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
@@ -97,8 +97,8 @@ sources:
     auto-update: true
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
-    ref: master
-    commit: a6e0cf49da603f83ec5ef4f0eb2561f302bbcdc8
+    ref: v0.3.6
+    commit: 944a5e659dec72b6ee6477ee6aef4c2bf4fcd8b4
     auto-update: true
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
