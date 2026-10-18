@@ -549,6 +549,8 @@ jobs:
           NIGHTLY_BRANCH="build/nightly-catalog-$BUILD"
           CATALOG_REPO="rh-gitops-midstream/catalog"
 
+          gh label create "$BRANCH" --repo "$CATALOG_REPO" --color "0075ca" 2>/dev/null || true
+
           echo "Creating nightly PR for build $BUILD..."
           gh pr create \
             --repo "$CATALOG_REPO" \
@@ -565,7 +567,8 @@ jobs:
           EOFBODY
             )" \
             --label "nightly" \
-            --label "do-not-merge"
+            --label "do-not-merge" \
+            --label "$BRANCH"
 
       # ── RC path: separate PR per build ──
 
