@@ -564,9 +564,9 @@ jobs:
             gh pr comment "$EXISTING_PR" \
               --repo "$CATALOG_REPO" \
               --body "Updated with catalog changes from **${BRANCH}** (build \`${BUILD}\`) at ${TIMESTAMP}."
-            gh pr edit "$EXISTING_PR" \
-              --repo "$CATALOG_REPO" \
-              --title "chore(nightly): consolidated catalog updates (latest: $BUILD)"
+            gh api "repos/$CATALOG_REPO/pulls/$EXISTING_PR" \
+              --method PATCH \
+              -f title="chore(nightly): consolidated catalog updates (latest: $BUILD)"
           else
             echo "Creating new nightly PR..."
             gh pr create \
