@@ -34,7 +34,7 @@ sources:
     auto-update: true
   - path: sources/argo-rollouts
     url: https://github.com/argoproj/argo-rollouts.git
-    ref: release-1.8
+    ref: v1.8.5
     commit: 2c9de84c17a06eef6056f52ba7dfe663f05c671b
     auto-update: true
   - path: sources/kustomize
@@ -94,9 +94,9 @@ sources:
     auto-update: true
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
-    ref: master
-    commit: a6e0cf49da603f83ec5ef4f0eb2561f302bbcdc8
-    auto-update: true
+    ref: v0.3.6
+    commit: 944a5e659dec72b6ee6477ee6aef4c2bf4fcd8b4
+    auto-update: false
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: v0.7.7
