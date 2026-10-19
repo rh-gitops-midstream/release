@@ -48,4 +48,4 @@
 	url = https://github.com/argoproj-labs/argocd-image-updater.git
 [submodule "sources/argo-rollouts"]
 	path = sources/argo-rollouts
-	url = https://github.com/argoproj/argo-rollouts.git
+	url = https://github.com/rh-gitops-midstream/argo-rollouts.git
