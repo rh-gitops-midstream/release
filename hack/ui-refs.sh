@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # Sourced by update-sources.sh, sync-sources.sh, and verify-sources.sh.
-# The *-ui-ref submodules track the argo-ui commit pinned in the parent product's UI.
+# sync_ui_refs: Sync *-ui-ref submodules to the argo-ui commit pinned in their parent
+# sync_extension_js_ref:  downloads prebuilt extension JS assets
 # This ensures hermetic builds have deterministic, pinned UI dependencies.
 
 set -euo pipefail
+source ./hack/pin-pnpm-deps.sh
 
 PKG_FILE="ui/package.json"
 
@@ -149,6 +151,27 @@ sync_ui_refs() {
   echo ">>> Syncing *-ui-ref checkouts from parent UI package.json"
   checkout_ui_ref sources/argo-cd-ui-ref sources/argo-cd
   checkout_ui_ref sources/argo-rollouts-ui-ref sources/argo-rollouts
+  echo ">>>    Overlay pnpm with github deps files"
+  stage_overlay_file \
+    sources/argo-rollouts/ui/pnpm-lock.yaml \
+    clis/kubectl-argo-rollouts/ui/pnpm-lock.yaml \
+    "file:../../../sources/argo-rollouts-ui-ref"
+
+  stage_overlay_file \
+    sources/argo-rollouts/ui/package.json \
+    clis/kubectl-argo-rollouts/ui/package.json \
+    "file:../../../sources/argo-rollouts-ui-ref"
+
+  stage_overlay_file \
+    sources/argo-cd/ui/pnpm-lock.yaml \
+    containers/argocd/ui/pnpm-lock.yaml \
+    "file:../../../sources/argo-cd-ui-ref"
+
+  stage_overlay_file \
+    sources/argo-cd/ui/package.json \
+    containers/argocd/ui/package.json \
+    "file:../../../sources/argo-cd-ui-ref"
+
 }
 
 # Verify that a *-ui-ref submodule is at the commit pinned by its parent.

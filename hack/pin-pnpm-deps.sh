@@ -3,8 +3,8 @@
 # with local file:// paths.
 #
 # This script enables hermetic builds by replacing remote argo-ui dependencies
-# with references to locally-pinned sources. It runs after `make sources` has
-# fetched the submodules and is called before container image builds.
+# with references to locally-pinned sources. It runs as part of sync_ui_refs after has
+# fetched the submodules.
 
 set -euo pipefail
 
@@ -113,23 +113,3 @@ stage_overlay_file() {
 
   pin_ui_deps_to_local_file "$dst" "$file_spec"
 }
-
-stage_overlay_file \
-  sources/argo-rollouts/ui/pnpm-lock.yaml \
-  clis/kubectl-argo-rollouts/ui/pnpm-lock.yaml \
-  "file:../../../sources/argo-rollouts-ui-ref"
-
-stage_overlay_file \
-  sources/argo-rollouts/ui/package.json \
-  clis/kubectl-argo-rollouts/ui/package.json \
-  "file:../../../sources/argo-rollouts-ui-ref"
-
-stage_overlay_file \
-  sources/argo-cd/ui/pnpm-lock.yaml \
-  containers/argocd/ui/pnpm-lock.yaml \
-  "file:../../../sources/argo-cd-ui-ref"
-
-stage_overlay_file \
-  sources/argo-cd/ui/package.json \
-  containers/argocd/ui/package.json \
-  "file:../../../sources/argo-cd-ui-ref"

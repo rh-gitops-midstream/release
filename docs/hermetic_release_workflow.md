@@ -3,7 +3,7 @@
 This document explains how this repository builds the Argo CD and Argo
 Rollouts web UIs inside **hermetic** (network-isolated) Konflux container
 builds, even though their upstream `package.json` pins the `argo-ui`
-package directly from a GitHub commit instead of an npm registry release.
+package directly from a GitHub commit instead of a npm registry release.
 
 ## Table of Contents
 
@@ -69,11 +69,10 @@ diff.
 flowchart TD
     subgraph DEV["Phase 1 — Local Workspace Staging (network allowed)"]
         A["make sources"] --> A1["hack/sync-sources.sh\ngit submodule checkout per config.yaml"]
-        A1 --> A2["hack/ui-refs.sh: sync_ui_refs\nCheckout sources/argo-cd-ui-ref and\nsources/argo-rollouts-ui-ref at the\nargo-ui SHA pinned by their parent UI"]
+        A1 --> A2["hack/ui-refs.sh: sync_ui_refs:\n\nCheckout sources/argo-cd-ui-ref and\nsources/argo-rollouts-ui-ref at the\nargo-ui SHA pinned by their parent UI\n\n Copy package.json + pnpm-lock.yaml from the\nsubmodule and rewrite argo-ui deps:\nfrom  git+https://.../argo-ui#sha \nto file:../../../sources/*-ui-ref"]
         A2 --> A3["hack/ui-refs.sh: sync_extension_js_refs\nDownload extension .js release assets"]
         A3 --> A4["hack/verify-sources.sh\nAssert commits/refs and *-ui-ref\npins match config.yaml"]
-        A4 --> A5["hack/pin-pnpm-deps.sh\nCopy package.json + pnpm-lock.yaml from the\nsubmodule and rewrite argo-ui:\ngit+https://.../argo-ui#sha -> file:../../../sources/*-ui-ref"]
-        A5 --> A6["git commit\n(submodule pins + overlay package.json/pnpm-lock.yaml)"]
+        A4 --> A5["git commit\n(submodule pins + overlay package.json/pnpm-lock.yaml)"]
     end
 
     subgraph KONFLUX["Phase 2 — Konflux Pipeline (hermetic from prefetch onward)"]
@@ -87,18 +86,19 @@ flowchart TD
         C5 --> D["Final image: argocd / kubectl-argo-rollouts"]
     end
 
-    A6 -. "git push / PR merge" .-> B1
+    A5 -. "git push / PR merge" .-> B1
 ```
 ## 4. Scripts
 
-### 4.1 `hack/ui-refs.sh` — source sync library
+### 4.1 `hack/ui-refs.sh` 
 
 Sourced (not executed directly) by `sync-sources.sh`, `verify-sources.sh`,
 and `update-sources.sh`. Provides:
 
 - `sync_ui_refs` — checks out `sources/argo-cd-ui-ref` and
   `sources/argo-rollouts-ui-ref` at the `argo-ui` commit each parent UI's
-  `package.json` pins.
+  `package.json` pins and overlay their package.json and pnpm-lock.yaml to replace 
+  github deps by file referenced using `./hack/pin-pnpm-deps.sh`.
 - `verify_ui_refs` — verifies both of those submodules are checked out at
   the commit their parent currently pins; used by `verify-sources.sh` to
   catch drift.
@@ -112,9 +112,9 @@ and `update-sources.sh`. Provides:
   network) and falling back to GitHub's raw-content API only when the
   target commit isn't checked out locally yet.
 
-### 4.2 `../hack/pin-pnpm-deps.sh` — overlay manifest generator & rewrite engine
+### 4.2 `../hack/pin-pnpm-deps.sh` 
 
-Run as part of the `make sources` target. For each product, it regenerates
+For each product, it regenerates
 **both** overlay files Hermeto's `pnpm` prefetch-input reads from
 `containers/argocd/ui` or `clis/kubectl-argo-rollouts/ui` — `package.json`
 and `pnpm-lock.yaml` — from the pristine copies checked out in the
