@@ -534,7 +534,7 @@ jobs:
           git commit -m "chore(nightly): update catalog channel for $BRANCH (build $BUILD)"
 
           CATALOG_REPO_URL="https://x-access-token:${GH_TOKEN}@github.com/rh-gitops-midstream/catalog.git"
-          git push "$CATALOG_REPO_URL" "$NIGHTLY_BRANCH"
+          git push "$CATALOG_REPO_URL" "HEAD:$NIGHTLY_BRANCH"
 
       - name: "Catalog Build [nightly]: Create PR"
         if: |
