@@ -25,7 +25,7 @@ sources:
   - path: sources/gitops-operator
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.20
-    commit: 5f26ee206284bb234362dfd428909a41e916d7fb
+    commit: 9a32a06c8c1b4add1f04ea968c2f7b151dd7c013
     auto-update: true
   - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
