@@ -37,8 +37,8 @@ sources:
     auto-update: true
   - path: sources/argo-rollouts
     url: https://github.com/rh-gitops-midstream/argo-rollouts.git
-    ref: v1.9.0
-    commit: 53052f202eba02d651190fad7cc4b3e06b875af9
+    ref: v1.9.2
+    commit: d4f4146683b4be26f6c61dc0d2b155072455d5e6
     auto-update: true
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
