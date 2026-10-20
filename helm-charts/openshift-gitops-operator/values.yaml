@@ -115,7 +115,7 @@ operatorImageEnv:
   ARGOCD_REPOSERVER_IMAGE: "registry.redhat.io/openshift-gitops-1/argocd-rhel9@sha256:1a35282aa2ad03f4a0c4f583b5339c97768350121112a941da82c9a95774ffe7"
   ARGOCD_REDIS_IMAGE: "registry.redhat.io/rhel9/redis-7@sha256:c0e55c59b0765ce2037fe8ed57965d6d357d50c0538ec9c7ab5be6e19ac9b1b2"
   ARGOCD_REDIS_HA_IMAGE: "registry.redhat.io/rhel9/redis-7@sha256:c0e55c59b0765ce2037fe8ed57965d6d357d50c0538ec9c7ab5be6e19ac9b1b2"
-  ARGOCD_REDIS_HA_PROXY_IMAGE: "registry.redhat.io/openshift4/ose-haproxy-router-rhel9@sha256:7f74daf4d1b96494f8d8d75b3b542b66c29a825aa700a0a4f8a6b3e86f02b88a"
+  ARGOCD_REDIS_HA_PROXY_IMAGE: "registry.redhat.io/openshift4/ose-haproxy-router-rhel9@sha256:b9c70418a34e60ae7e103cd670ca17bf2b6aff0e5303cbb33b721d7a9a182ed3"
   GITOPS_CONSOLE_PLUGIN_IMAGE: "registry.redhat.io/openshift-gitops-1/console-plugin-rhel9@sha256:e35128a640c9358cb10b1861b443d10d2e38fa27bdd4d7e085034f187e011ad2"
   GITOPS_CONSOLE_PLUGIN_IMAGE_PF5: "registry.redhat.io/openshift-gitops-1/console-plugin-4-18-rhel9@sha256:89d41fadaa360a3b09147a07f5c1fc53c4a106db2d7e3a718fde97c596b03e63"
   ARGOCD_EXTENSION_IMAGE: "registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel9@sha256:1a704d788e2ed80b4cc9a34eaef9b347f8441ad783e185236fb005a933b99c2a"
