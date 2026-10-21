@@ -1,0 +1,32 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.21.6-stage-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-21-stage
+  snapshot: gitops-1-21-20261021-013724-000
+  data:
+    releaseNotes:
+      type: RHSA
+      issues:
+        fixed:
+          fixed:
+          - id: GITOPS-10780
+            source: issues.redhat.com
+          - id: GITOPS-10904
+            source: issues.redhat.com
+          - id: GITOPS-11176
+            source: issues.redhat.com
+      cves:
+        - key: CVE-2026-84375
+          component: argocd-1-21
+        - key: CVE-2026-71556
+          component: argocd-1-20
+        - key: CVE-2026-71556
+          component: gitops-operator-1-20
+        - key: CVE-2026-71556
+          component: gitops-1-20
+        - key: CVE-2026-82277
+          component: argo-rollouts-1-20
