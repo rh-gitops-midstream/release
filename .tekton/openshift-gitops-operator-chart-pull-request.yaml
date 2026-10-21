@@ -1,0 +1,167 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  annotations:
+    build.appstudio.openshift.io/repo: https://github.com/rh-gitops-midstream/release?rev={{revision}}
+    build.appstudio.redhat.com/commit_sha: '{{revision}}'
+    build.appstudio.redhat.com/pull_request_number: '{{pull_request_number}}'
+    build.appstudio.redhat.com/target_branch: '{{target_branch}}'
+    pipelinesascode.tekton.dev/cancel-in-progress: "true"
+    pipelinesascode.tekton.dev/max-keep-runs: "3"
+    pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
+      == "main"
+  labels:
+    appstudio.openshift.io/application: gitops-main
+    appstudio.openshift.io/component: openshift-gitops-operator-chart
+    pipelines.appstudio.openshift.io/type: build
+  name: openshift-gitops-operator-chart-on-pull-request
+  namespace: rh-openshift-gitops-tenant
+spec:
+  params:
+  - name: git-url
+    value: '{{source_url}}'
+  - name: revision
+    value: '{{revision}}'
+  - name: output-image
+    value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/openshift-gitops-operator-chart:on-pr-{{revision}}
+  - name: image-expires-after
+    value: 5d
+  pipelineSpec:
+    description: |
+      This pipeline packages and pushes a Helm chart as an OCI artifact using trusted artifacts.
+
+      _Uses `build-helm-chart-oci-ta` to package the Helm chart located at `chart-context` and push it
+      to an OCI registry. Git tags prefixed with `tag-prefix` are used for semver version calculation.
+      Information is shared between tasks using OCI artifacts instead of PVCs._
+    params:
+    - description: Source Repository URL
+      name: git-url
+      type: string
+    - default: ""
+      description: Revision of the Source Repository
+      name: revision
+      type: string
+    - description: Fully Qualified Output Image
+      name: output-image
+      type: string
+    - default: ""
+      description: Image tag expiration time, time values could be something like
+        1h, 2d, 3w for hours, days, and weeks, respectively.
+      name: image-expires-after
+      type: string
+    - default: "false"
+      description: Enable cache proxy configuration
+      name: enable-cache-proxy
+    - default: helm-charts/openshift-gitops-operator/
+      description: Path relative to SOURCE_CODE_DIR where the Helm chart is located
+      name: chart-context
+      type: string
+    - default: helm-
+      description: Tag prefix for git tags used in version calculation
+      name: tag-prefix
+      type: string
+    results:
+    - description: ""
+      name: IMAGE_URL
+      value: $(tasks.build-helm-chart.results.IMAGE_URL)
+    - description: ""
+      name: IMAGE_DIGEST
+      value: $(tasks.build-helm-chart.results.IMAGE_DIGEST)
+    - description: ""
+      name: CHAINS-GIT_URL
+      value: $(tasks.clone-repository.results.url)
+    - description: ""
+      name: CHAINS-GIT_COMMIT
+      value: $(tasks.clone-repository.results.commit)
+    tasks:
+    - name: init
+      params:
+      - name: enable-cache-proxy
+        value: $(params.enable-cache-proxy)
+      taskRef:
+        params:
+        - name: name
+          value: init
+        - name: bundle
+          value: quay.io/konflux-ci/tekton-catalog/task-init:0.4.2@sha256:421003a5c077ecb820460e71637125ec9093d2101c749a32ede28e190283e9db
+        - name: kind
+          value: task
+        resolver: bundles
+    - name: clone-repository
+      params:
+      - name: url
+        value: $(params.git-url)
+      - name: revision
+        value: $(params.revision)
+      - name: ociStorage
+        value: $(params.output-image).git
+      - name: ociArtifactExpiresAfter
+        value: $(params.image-expires-after)
+      - name: enableSymlinkCheck
+        value: "false"
+      runAfter:
+      - init
+      taskRef:
+        params:
+        - name: name
+          value: git-clone-oci-ta
+        - name: bundle
+          value: quay.io/konflux-ci/tekton-catalog/task-git-clone-oci-ta:0.2.4@sha256:df3c42d78223f07b40a84dd29e5c8860d14777ffdf150ea08c738770f51216dc
+        - name: kind
+          value: task
+        resolver: bundles
+      workspaces:
+      - name: basic-auth
+        workspace: git-auth
+    - name: build-helm-chart
+      params:
+      - name: IMAGE
+        value: $(params.output-image)
+      - name: COMMIT_SHA
+        value: $(tasks.clone-repository.results.commit)
+      - name: SOURCE_ARTIFACT
+        value: $(tasks.clone-repository.results.SOURCE_ARTIFACT)
+      - name: CHART_CONTEXT
+        value: $(params.chart-context)
+      - name: TAG_PREFIX
+        value: $(params.tag-prefix)
+      - name: CHART_VERSION
+        value: 1.22.1+$(tasks.clone-repository.results.short-commit)
+      runAfter:
+      - clone-repository
+      taskRef:
+        params:
+        - name: name
+          value: build-helm-chart-oci-ta
+        - name: bundle
+          value: quay.io/konflux-ci/tekton-catalog/task-build-helm-chart-oci-ta:0.3@sha256:64430541d3a066c61495125b1e6e562b5960e1f9148b9b63bbbaaf13ba136cbc
+        - name: kind
+          value: task
+        resolver: bundles
+    - name: apply-tags
+      params:
+      - name: IMAGE_URL
+        value: $(tasks.build-helm-chart.results.IMAGE_URL)
+      - name: IMAGE_DIGEST
+        value: $(tasks.build-helm-chart.results.IMAGE_DIGEST)
+      runAfter:
+      - build-helm-chart
+      taskRef:
+        params:
+        - name: name
+          value: apply-tags
+        - name: bundle
+          value: quay.io/konflux-ci/tekton-catalog/task-apply-tags:0.3@sha256:3ab844157eccd68e95e4852adc06c3c4ea674edb7865a474b0a898227f2893d6
+        - name: kind
+          value: task
+        resolver: bundles
+    workspaces:
+    - name: git-auth
+      optional: true
+  taskRunTemplate:
+    serviceAccountName: build-pipeline-openshift-gitops-operator-chart
+  workspaces:
+  - name: git-auth
+    secret:
+      secretName: '{{ git_auth_secret }}'
+status: {}
