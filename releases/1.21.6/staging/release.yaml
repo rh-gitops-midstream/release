@@ -6,7 +6,7 @@ metadata:
 spec:
   gracePeriodDays: 7
   releasePlan: gitops-1-21-stage
-  snapshot: gitops-1-21-20261021-013724-000
+  snapshot: gitops-1-21-20261019-033120-000
   data:
     releaseNotes:
       type: RHSA
@@ -23,10 +23,10 @@ spec:
         - key: CVE-2026-84375
           component: argocd-1-21
         - key: CVE-2026-71556
-          component: argocd-1-20
+          component: argocd-1-21
         - key: CVE-2026-71556
-          component: gitops-operator-1-20
+          component: gitops-operator-1-21
         - key: CVE-2026-71556
-          component: gitops-1-20
+          component: gitops-1-21
         - key: CVE-2026-82277
-          component: argo-rollouts-1-20
+          component: argo-rollouts-1-21
