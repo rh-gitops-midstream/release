@@ -14,6 +14,8 @@ metadata:
         "sources/argo-rollouts".pathChanged() ||
         "sources/argo-rollouts-ui-ref".pathChanged() ||
         "clis/kubectl-argo-rollouts/***".pathChanged() ||
+        "hack/ui-refs.sh".pathChanged() ||
+        "hack/pin-pnpm-deps.sh".pathChanged() ||
         ".tekton/kubectl-argo-rollouts-cli-push.yaml".pathChanged() ||
         "prefetch/pnpm/***".pathChanged() ||
         "BUILD".pathChanged() ||
