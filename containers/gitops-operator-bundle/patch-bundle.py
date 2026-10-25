@@ -139,11 +139,28 @@ channel = olm.get('channel', '')
 skip_range = olm.get('skip-range', '')
 replaces = olm.get('replaces', '')
 
-argocd_version = None
-for source in config.get("sources", []):
-    if source.get("path") == "sources/argo-cd":
-        argocd_version = source.get("ref")
-        break
+COMPONENT_SOURCES = [
+    ('Argo CD',               'sources/argo-cd'),
+    ('Argo Rollouts',         'sources/argo-rollouts'),
+    ('Kustomize',             'sources/kustomize'),
+    ('Helm',                  'sources/helm'),
+    ('Dex',                   'sources/dex'),
+    ('Rollouts Extension',    'sources/rollout-extension'),
+    ('ArgoCD Agent',          'sources/argocd-agent'),
+    ('ArgoCD Image Updater',  'sources/argocd-image-updater'),
+    ('GitOps Promoter',       'sources/gitops-promoter'),
+]
+
+source_by_path = {s['path']: s for s in config.get('sources', [])}
+
+components_table = "## Components\n\n| Component | Version |\n|---|---|\n"
+for display_name, path in COMPONENT_SOURCES:
+    src = source_by_path.get(path, {})
+    ref = src.get('ref', 'unknown')
+    short_commit = src.get('commit', '')[:7]
+    version_str = f"{ref} ({short_commit})" if short_commit else ref
+    components_table += f"| {display_name} | {version_str} |\n"
+components_table += "\n"
 
 # --- Patch Dockerfile ---
 
@@ -209,8 +226,7 @@ csv['spec']['description'] = (
     f"* Configuration drift detection and visualization on live clusters\n"
     f"* Audit trails of rollouts to the clusters\n"
     f"* Monitoring and logging integration with OpenShift\n"
-    f"##Components\n"
-    f"* Argo CD {argocd_version}\n\n"
+    f"{components_table}"
     f"## How to Install \n"
     f"After installing the OpenShift GitOps operator, an instance  of Argo CD is installed in the `openshift-gitops` namespace which has sufficient privileges for managing cluster configurations. "
     f"You can create additional Argo CD instances using the `ArgoCD` custom resource within the desired namespaces.\n"
