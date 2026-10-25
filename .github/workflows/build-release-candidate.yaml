@@ -37,7 +37,7 @@ jobs:
       failed_stage: ${{ steps.capture_state.outputs.failed_stage }}
 
     permissions:
-      checks: read
+      checks: write
       contents: write
       pull-requests: write
 
@@ -197,7 +197,9 @@ jobs:
           REPO="${{ github.repository }}"
           CHECK_CREATION_TIMEOUT=300
           OVERALL_TIMEOUT=7200
+          MAX_RETRIES=2
           SECONDS=0
+          declare -A RETRY_COUNT
 
           echo "Monitoring Konflux builds on commit $COMMIT_SHA..."
 
@@ -241,18 +243,49 @@ jobs:
               [.[] | select(
                 .conclusion != "success" and
                 .conclusion != "neutral" and
-                .conclusion != "skipped"
+                .conclusion != "skipped" and
+                .conclusion != "action_required"
               )] | length
             ' <<< "$KONFLUX")
 
             if (( FAILED > 0 )); then
-              echo "One or more Konflux builds failed on commit $COMMIT_SHA:"
-              jq -r '
+              ALL_GAVE_UP=true
+              while IFS=$'\t' read -r ID NAME; do
+                COUNT=${RETRY_COUNT[$NAME]:-0}
+                if (( COUNT < MAX_RETRIES )); then
+                  echo "Retrying Konflux build '$NAME' (attempt $((COUNT+1))/$MAX_RETRIES)..."
+                  gh api -X POST "repos/$REPO/check-runs/$ID/rerequest" 2>/dev/null || true
+                  RETRY_COUNT[$NAME]=$(( COUNT + 1 ))
+                  ALL_GAVE_UP=false
+                fi
+              done < <(jq -r '
                 .[] |
-                select(.conclusion != "success" and .conclusion != "neutral" and .conclusion != "skipped") |
-                "  \(.name): \(.conclusion)"
-              ' <<< "$KONFLUX"
-              exit 1
+                select(
+                  .conclusion != "success" and
+                  .conclusion != "neutral" and
+                  .conclusion != "skipped" and
+                  .conclusion != "action_required"
+                ) |
+                [.id, .name] | @tsv
+              ' <<< "$KONFLUX")
+
+              if $ALL_GAVE_UP; then
+                echo "One or more Konflux builds failed after $MAX_RETRIES retries on commit $COMMIT_SHA:"
+                jq -r '
+                  .[] |
+                  select(
+                    .conclusion != "success" and
+                    .conclusion != "neutral" and
+                    .conclusion != "skipped" and
+                    .conclusion != "action_required"
+                  ) |
+                  "  \(.name): \(.conclusion)"
+                ' <<< "$KONFLUX"
+                exit 1
+              fi
+
+              sleep 60
+              continue
             fi
 
             echo "All $TOTAL Konflux builds completed successfully on commit $COMMIT_SHA."
@@ -310,15 +343,25 @@ jobs:
           REPO="${{ github.repository }}"
           CHECK_CREATION_TIMEOUT=300
           OVERALL_TIMEOUT=7200
+          MAX_RETRIES=2
           SECONDS=0
+          declare -A RETRY_COUNT
+
+          HEAD_SHA=$(gh api "repos/$REPO/pulls/$PR_NUMBER" --jq '.head.sha')
+          echo "Monitoring Konflux checks on PR #$PR_NUMBER (head $HEAD_SHA)..."
 
           while (( SECONDS < OVERALL_TIMEOUT )); do
-            CHECKS=$(gh pr checks "$PR_NUMBER" --repo "$REPO" \
-              --json name,state || true)
+            CHECK_RUNS=$(gh api "repos/$REPO/commits/$HEAD_SHA/check-runs" \
+              --paginate --jq '.check_runs' 2>/dev/null || echo '[]')
 
-            KONFLUX=$(jq \
-              '[.[] | select(.name | contains("Red Hat Konflux"))]' \
-              <<< "$CHECKS")
+            ALL_RUNS=$(echo "$CHECK_RUNS" | jq -s 'add // []')
+
+            KONFLUX=$(jq '
+              [.[] | select(
+                (.app.slug // "" | test("konflux"; "i")) or
+                (.name // "" | test("Red Hat Konflux"; "i"))
+              )]
+            ' <<< "$ALL_RUNS")
 
             TOTAL=$(jq 'length' <<< "$KONFLUX")
 
@@ -334,39 +377,66 @@ jobs:
             fi
 
             PENDING=$(jq '
-              [.[] | select(
-                .state == "PENDING" or
-                .state == "QUEUED" or
-                .state == "IN_PROGRESS" or
-                .state == "WAITING" or
-                .state == "REQUESTED"
-              )] | length
+              [.[] | select(.status != "completed")] | length
             ' <<< "$KONFLUX")
 
             if (( PENDING > 0 )); then
-              echo "Waiting for Konflux checks to complete... ($PENDING pending)"
+              COMPLETED=$((TOTAL - PENDING))
+              echo "Waiting for Konflux checks to complete... ($COMPLETED/$TOTAL completed, $PENDING pending)"
               sleep 60
               continue
             fi
 
             FAILED=$(jq '
               [.[] | select(
-                .state != "SUCCESS" and
-                .state != "NEUTRAL"
+                .conclusion != "success" and
+                .conclusion != "neutral" and
+                .conclusion != "skipped" and
+                .conclusion != "action_required"
               )] | length
             ' <<< "$KONFLUX")
 
             if (( FAILED > 0 )); then
-              echo "One or more Konflux checks failed."
-              jq -r '
+              ALL_GAVE_UP=true
+              while IFS=$'\t' read -r ID NAME; do
+                COUNT=${RETRY_COUNT[$NAME]:-0}
+                if (( COUNT < MAX_RETRIES )); then
+                  echo "Retrying Konflux check '$NAME' (attempt $((COUNT+1))/$MAX_RETRIES)..."
+                  gh api -X POST "repos/$REPO/check-runs/$ID/rerequest" 2>/dev/null || true
+                  RETRY_COUNT[$NAME]=$(( COUNT + 1 ))
+                  ALL_GAVE_UP=false
+                fi
+              done < <(jq -r '
                 .[] |
-                select(.state != "SUCCESS" and .state != "NEUTRAL") |
-                "\(.name): \(.state)"
-              ' <<< "$KONFLUX"
-              exit 1
+                select(
+                  .conclusion != "success" and
+                  .conclusion != "neutral" and
+                  .conclusion != "skipped" and
+                  .conclusion != "action_required"
+                ) |
+                [.id, .name] | @tsv
+              ' <<< "$KONFLUX")
+
+              if $ALL_GAVE_UP; then
+                echo "One or more Konflux checks failed after $MAX_RETRIES retries:"
+                jq -r '
+                  .[] |
+                  select(
+                    .conclusion != "success" and
+                    .conclusion != "neutral" and
+                    .conclusion != "skipped" and
+                    .conclusion != "action_required"
+                  ) |
+                  "  \(.name): \(.conclusion)"
+                ' <<< "$KONFLUX"
+                exit 1
+              fi
+
+              sleep 60
+              continue
             fi
 
-            echo "All Red Hat Konflux checks completed successfully."
+            echo "All $TOTAL Red Hat Konflux checks completed successfully."
             exit 0
           done
 
@@ -426,7 +496,9 @@ jobs:
           REPO="${{ github.repository }}"
           CHECK_CREATION_TIMEOUT=300
           OVERALL_TIMEOUT=7200
+          MAX_RETRIES=2
           SECONDS=0
+          declare -A RETRY_COUNT
 
           echo "Monitoring Konflux bundle build on commit $COMMIT_SHA..."
 
@@ -470,18 +542,49 @@ jobs:
               [.[] | select(
                 .conclusion != "success" and
                 .conclusion != "neutral" and
-                .conclusion != "skipped"
+                .conclusion != "skipped" and
+                .conclusion != "action_required"
               )] | length
             ' <<< "$KONFLUX")
 
             if (( FAILED > 0 )); then
-              echo "One or more Konflux builds failed on commit $COMMIT_SHA:"
-              jq -r '
+              ALL_GAVE_UP=true
+              while IFS=$'\t' read -r ID NAME; do
+                COUNT=${RETRY_COUNT[$NAME]:-0}
+                if (( COUNT < MAX_RETRIES )); then
+                  echo "Retrying Konflux build '$NAME' (attempt $((COUNT+1))/$MAX_RETRIES)..."
+                  gh api -X POST "repos/$REPO/check-runs/$ID/rerequest" 2>/dev/null || true
+                  RETRY_COUNT[$NAME]=$(( COUNT + 1 ))
+                  ALL_GAVE_UP=false
+                fi
+              done < <(jq -r '
                 .[] |
-                select(.conclusion != "success" and .conclusion != "neutral" and .conclusion != "skipped") |
-                "  \(.name): \(.conclusion)"
-              ' <<< "$KONFLUX"
-              exit 1
+                select(
+                  .conclusion != "success" and
+                  .conclusion != "neutral" and
+                  .conclusion != "skipped" and
+                  .conclusion != "action_required"
+                ) |
+                [.id, .name] | @tsv
+              ' <<< "$KONFLUX")
+
+              if $ALL_GAVE_UP; then
+                echo "One or more Konflux builds failed after $MAX_RETRIES retries on commit $COMMIT_SHA:"
+                jq -r '
+                  .[] |
+                  select(
+                    .conclusion != "success" and
+                    .conclusion != "neutral" and
+                    .conclusion != "skipped" and
+                    .conclusion != "action_required"
+                  ) |
+                  "  \(.name): \(.conclusion)"
+                ' <<< "$KONFLUX"
+                exit 1
+              fi
+
+              sleep 60
+              continue
             fi
 
             echo "All $TOTAL Konflux builds completed successfully on commit $COMMIT_SHA."
