@@ -191,7 +191,7 @@ jobs:
       - name: "Wait: Poll post-merge Konflux component builds"
         if: steps.p1_merge.outcome == 'success'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           COMMIT_SHA="${{ steps.p1_merge_sha.outputs.sha }}"
           REPO="${{ github.repository }}"
@@ -337,7 +337,7 @@ jobs:
       - name: "Bundle Build: Wait for Konflux PR checks"
         if: steps.p2_create_pr.outputs.pull-request-number != ''
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           PR_NUMBER="${{ steps.p2_create_pr.outputs.pull-request-number }}"
           REPO="${{ github.repository }}"
@@ -490,7 +490,7 @@ jobs:
       - name: "Wait: Poll post-merge Konflux bundle build"
         if: steps.p2_merge.outcome == 'success'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           COMMIT_SHA="${{ steps.p2_merge_sha.outputs.sha }}"
           REPO="${{ github.repository }}"
