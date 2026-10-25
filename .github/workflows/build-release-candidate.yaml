@@ -701,7 +701,9 @@ jobs:
           git add -A
           git commit -m "chore(nightly): update catalog channel for $BRANCH (build $BUILD)"
 
-          CATALOG_REPO_URL="https://x-access-token:${GH_TOKEN}@github.com/rh-gitops-midstream/catalog.git"
+          CATALOG_REPO_URL="https://github.com/rh-gitops-midstream/catalog.git"
+          git config --local "http.https://github.com/.extraheader" \
+            "AUTHORIZATION: basic $(printf '%s' "x-access-token:${GH_TOKEN}" | base64 -w0)"
           git push "$CATALOG_REPO_URL" "HEAD:$NIGHTLY_BRANCH"
 
           # Also push to the consolidated branch (accumulates commits from all channels)
