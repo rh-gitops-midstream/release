@@ -41,6 +41,20 @@ channel = re.sub(r'\blatest\b,?', '', olm.get("channel", "").strip('"\'')).lstri
 
 # Bundle image
 tag = release_config.get('release', {}).get('konflux', {}).get('branch', 'latest')
+
+# For the main branch, derive replaces dynamically from the latest channel in the catalog
+if tag == "main":
+    for ch in catalog_config.get("channels", []):
+        if ch.get("name") == "latest":
+            versions = ch.get("versions", [])
+            if versions:
+                def parse_ver(v):
+                    m = re.search(r'v(\d+)\.(\d+)\.(\d+)', v.get("name", ""))
+                    return tuple(int(x) for x in m.groups()) if m else (0, 0, 0)
+                latest_entry = max(versions, key=parse_ver)
+                replaces = latest_entry["name"]
+                print(f"main branch: dynamically set replaces={replaces} from latest channel")
+            break
 base = "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle"   # TODO: read from config.yaml
 image = f"{base}:{tag}"
 digest =  get_digest(image)
