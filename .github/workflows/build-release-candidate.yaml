@@ -607,13 +607,9 @@ jobs:
         id: metadata_prep
         run: |
           BUILD=$(cat BUILD)
-          BRANCH="${{ steps.branch.outputs.target }}"
           TIMESTAMP=$(date -u +"%Y%m%d-%H%M%S")
-          META_DIR="releases/$BRANCH/candidates/$BUILD"
-
-          mkdir -p "$META_DIR"
-          echo "${{ steps.p2_merge_sha.outputs.sha }}" > "$META_DIR/COMMIT"
-
+          python3 hack/generate-build-data.py \
+            --commit "${{ steps.p2_merge_sha.outputs.sha }}"
           echo "build=$BUILD" >> "$GITHUB_OUTPUT"
           echo "ts=$TIMESTAMP" >> "$GITHUB_OUTPUT"
 
