@@ -11,7 +11,7 @@ spec:
     releaseNotes:
       type: RHSA
       issues:
-          fixed:
+        fixed:
           - id: GITOPS-10780
             source: issues.redhat.com
           - id: GITOPS-11176
