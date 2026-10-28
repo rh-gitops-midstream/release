@@ -831,6 +831,23 @@ jobs:
           echo "build_version=$(cat BUILD)" >> "$GITHUB_OUTPUT"
           echo "failed_stage=${CURRENT_STAGE:-unknown}" >> "$GITHUB_OUTPUT"
 
+      # Dispatched explicitly rather than chained via `workflow_run`: scheduled
+      # runs always execute on the default branch, so workflow_run.head_branch
+      # is always "main" and never the branch selected above.
+      # Needs GH_TOKEN (a PAT) - GITHUB_TOKEN cannot trigger other workflows.
+      - name: "Trigger helm chart update"
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          TARGET_BRANCH: ${{ steps.branch.outputs.target }}
+        run: |
+          set -euo pipefail
+          gh workflow run update-helm-charts.yaml \
+            --repo "${{ github.repository }}" \
+            --ref "${TARGET_BRANCH}" \
+            --field "TARGET_BRANCH=${TARGET_BRANCH}"
+          echo "Dispatched Update Helm Charts for ${TARGET_BRANCH}."
+
   notify-failure:
     name: Notify Slack on Failure
     runs-on: ubuntu-24.04

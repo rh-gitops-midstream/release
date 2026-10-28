@@ -1,0 +1,442 @@
+name: Update Helm Charts
+
+# Dispatch only. Chaining off `workflow_run` from Build Release Candidate does
+# not work: that workflow is schedule-driven, so its runs always sit on the
+# default branch and head_branch is "main" regardless of which release branch
+# it actually built. It dispatches us instead, passing the real target.
+on:
+  workflow_dispatch:
+    inputs:
+      TARGET_BRANCH:
+        description: 'Branch to update helm charts for (e.g. release-1.22, main)'
+        required: true
+        type: string
+
+permissions: {}
+
+# Serialise per target branch: two runs would otherwise push the same PR branch
+# and clobber each other's chart commit.
+concurrency:
+  group: update-helm-charts-${{ inputs.TARGET_BRANCH }}
+  cancel-in-progress: false
+
+jobs:
+  update-helm-charts:
+    name: Update Helm Charts from Bundle Image
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+
+    # Only main and release-* carry published charts.
+    if: inputs.TARGET_BRANCH == 'main' || startsWith(inputs.TARGET_BRANCH, 'release-')
+
+    permissions:
+      checks: read
+      contents: write
+      pull-requests: write
+
+    steps:
+      # ──────────────────────────────────────────────
+      # Setup
+      # ──────────────────────────────────────────────
+
+      - name: Determine target branch
+        id: branch
+        env:
+          TARGET_BRANCH: ${{ inputs.TARGET_BRANCH }}
+        run: |
+          set -euo pipefail
+
+          # Defence in depth: the job-level `if` already gates this, but that
+          # expression is easy to break and this step feeds `git push`.
+          if [[ "$TARGET_BRANCH" != "main" && "$TARGET_BRANCH" != release-* ]]; then
+            echo "Refusing to update charts on branch '$TARGET_BRANCH' (expected main or release-*)."
+            exit 1
+          fi
+
+          echo "target=$TARGET_BRANCH" >> "$GITHUB_OUTPUT"
+          echo "Using branch: $TARGET_BRANCH"
+
+      - name: Checkout code
+        uses: actions/checkout@8410ad0602e1e429cee44a835ae9f77f654a6694 # v4.0.0
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.branch.outputs.target }}
+          token: ${{ secrets.GH_TOKEN }}
+
+      - name: Set up Git config
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y skopeo podman
+
+      - name: Log in to quay.io
+        env:
+          QUAY_USERNAME: ${{ secrets.KONFLUX_QUAY_USERNAME }}
+          QUAY_TOKEN: ${{ secrets.KONFLUX_QUAY_TOKEN }}
+        run: |
+          # kubectl-catalog resolves registry auth via authn.DefaultKeychain,
+          # which reads ~/.docker/config.json - not podman's default authfile.
+          mkdir -p ~/.docker
+          printf '%s' "$QUAY_TOKEN" | podman login quay.io \
+            --username "$QUAY_USERNAME" --password-stdin \
+            --authfile ~/.docker/config.json
+
+      # ──────────────────────────────────────────────
+      # Install kubectl-catalog
+      # ──────────────────────────────────────────────
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Install kubectl-catalog
+        env:
+          # Built from a pinned commit, not the v0.0.1 release: that asset was
+          # built from c27a5e8 (2026-09-13) and predates --bundle, --skip-crds
+          # and --skip-templates, which this workflow needs. Release tags and
+          # their assets are mutable anyway; a commit SHA is not.
+          # 61886c09 = "Added support for mirror ... and ability to use bundle
+          # images directly". Bump only after checking the flags still exist.
+          KUBECTL_CATALOG_COMMIT: 61886c09461d099d0b8bab10ad4b6071f6ca8da1
+        run: |
+          set -euo pipefail
+          go install "github.com/anandf/kubectl-catalog@${KUBECTL_CATALOG_COMMIT}"
+          sudo install -m 0755 "$(go env GOPATH)/bin/kubectl-catalog" /usr/local/bin/
+          kubectl-catalog version
+
+          # Fail loudly here rather than with "unknown flag" mid-generate.
+          for FLAG in --bundle --output-format --chart-name; do
+            kubectl-catalog generate --help | grep -q -- "${FLAG}" || {
+              echo "kubectl-catalog at ${KUBECTL_CATALOG_COMMIT} has no ${FLAG}"
+              exit 1
+            }
+          done
+
+      # ──────────────────────────────────────────────
+      # Determine bundle image ref
+      # ──────────────────────────────────────────────
+
+      - name: Get bundle image ref
+        id: bundle
+        run: |
+          set -euo pipefail
+          BUILD=$(cat BUILD)
+
+          # Konflux tags the bundle with the SHA of the commit that built it, i.e.
+          # the squashed "Bundle Build" merge from build-release-candidate.yaml -
+          # NOT necessarily the branch tip, which moves on under us. Resolve that
+          # commit by its build number rather than assuming HEAD is still it.
+          COMMIT_SHA=$(git log --extended-regexp --max-count=1 --format=%H \
+            --grep="^chore\(bundle\): latest bundle updates for ${BUILD}( |\$)")
+
+          if [[ -z "$COMMIT_SHA" ]]; then
+            echo "No bundle merge commit found for build ${BUILD} on this branch."
+            echo "Expected a commit titled: chore(bundle): latest bundle updates for ${BUILD}"
+            exit 1
+          fi
+
+          BUNDLE_IMAGE="quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle:${COMMIT_SHA}"
+          echo "bundle_image=$BUNDLE_IMAGE" >> "$GITHUB_OUTPUT"
+          echo "commit_sha=$COMMIT_SHA" >> "$GITHUB_OUTPUT"
+          echo "build=$BUILD" >> "$GITHUB_OUTPUT"
+          echo "Bundle commit: $COMMIT_SHA ($(git log -1 --format=%s "$COMMIT_SHA"))"
+          echo "Bundle image: $BUNDLE_IMAGE"
+
+      # ──────────────────────────────────────────────
+      # Wait: Konflux bundle build
+      # No-op when dispatched by build-release-candidate (it already waited);
+      # the real wait is for manual runs on a freshly merged bundle.
+      # ──────────────────────────────────────────────
+
+      - name: "Wait: Poll Konflux bundle build"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMIT_SHA: ${{ steps.bundle.outputs.commit_sha }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -uo pipefail
+          CHECK_CREATION_TIMEOUT=300
+          OVERALL_TIMEOUT=7200
+          SECONDS=0
+          SUCCEEDED=0
+
+          echo "Monitoring Konflux bundle build on commit $COMMIT_SHA..."
+
+          while (( SECONDS < OVERALL_TIMEOUT )); do
+            # Surface API errors instead of coercing them to []: a bad token or
+            # a 403 would otherwise look like "Konflux never created checks".
+            # stderr to a file, not 2>&1: merging it would corrupt the JSON on
+            # any gh warning written to stderr during a successful call.
+            if ! CHECK_RUNS=$(gh api "repos/$REPO/commits/$COMMIT_SHA/check-runs" \
+                   --paginate --jq '.check_runs' 2>/tmp/gh-api-err); then
+              echo "GitHub API call failed while polling check-runs:"
+              cat /tmp/gh-api-err
+              exit 1
+            fi
+
+            ALL_RUNS=$(echo "$CHECK_RUNS" | jq -s 'add // []')
+
+            KONFLUX=$(jq '
+              [.[] | select(
+                (.app.slug // "" | test("konflux"; "i")) or
+                (.name // "" | test("Red Hat Konflux"; "i"))
+              )]
+            ' <<< "$ALL_RUNS")
+
+            TOTAL=$(jq 'length' <<< "$KONFLUX")
+
+            if (( TOTAL == 0 )); then
+              if (( SECONDS >= CHECK_CREATION_TIMEOUT )); then
+                echo "No Konflux check-runs found on commit $COMMIT_SHA within 5 minutes."
+                exit 1
+              fi
+              echo "Waiting for Konflux check-runs to appear on commit..."
+              sleep 60
+              continue
+            fi
+
+            PENDING=$(jq '
+              [.[] | select(.status != "completed")] | length
+            ' <<< "$KONFLUX")
+
+            if (( PENDING > 0 )); then
+              COMPLETED=$((TOTAL - PENDING))
+              echo "Waiting for Konflux bundle build... ($COMPLETED/$TOTAL completed, $PENDING pending)"
+              sleep 300
+              continue
+            fi
+
+            FAILED=$(jq '
+              [.[] | select(
+                .conclusion != "success" and
+                .conclusion != "neutral" and
+                .conclusion != "skipped"
+              )] | length
+            ' <<< "$KONFLUX")
+
+            if (( FAILED > 0 )); then
+              echo "One or more Konflux builds failed on commit $COMMIT_SHA:"
+              jq -r '
+                .[] |
+                select(.conclusion != "success" and .conclusion != "neutral" and .conclusion != "skipped") |
+                "  \(.name): \(.conclusion)"
+              ' <<< "$KONFLUX"
+              exit 1
+            fi
+
+            echo "All $TOTAL Konflux builds completed successfully on commit $COMMIT_SHA."
+            SUCCEEDED=1
+            break
+          done
+
+          # Flag, not SECONDS: the final poll can push SECONDS past the timeout
+          # after it already observed success, which would fail a green build.
+          if (( SUCCEEDED == 0 )); then
+            echo "Timed out waiting for Konflux builds on commit $COMMIT_SHA."
+            exit 1
+          fi
+
+      # ──────────────────────────────────────────────
+      # Generate helm charts via kubectl-catalog
+      # ──────────────────────────────────────────────
+
+      - name: Generate helm charts from bundle image
+        env:
+          BUNDLE_IMAGE: ${{ steps.bundle.outputs.bundle_image }}
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/kubectl-catalog-out
+
+          # The positional arg is the OLM package name; the bundle goes in --bundle.
+          # --bundle is mutually exclusive with --channel/--catalog/--ocp-version.
+          # --output is the chart root: Chart.yaml, values.yaml, crds/, templates/.
+          kubectl-catalog generate openshift-gitops-operator \
+            --bundle "${BUNDLE_IMAGE}" \
+            --output-format helm \
+            --chart-name openshift-gitops-operator \
+            --cluster-type ocp \
+            --pull-secret ~/.docker/config.json \
+            --output /tmp/kubectl-catalog-out
+
+          echo "kubectl-catalog output:"
+          find /tmp/kubectl-catalog-out -type f | sort
+
+          # Non-empty, not merely present: an empty crds/ or templates/ would
+          # pass -e, wipe the charts on copy, and still satisfy `helm lint`.
+          for REQUIRED in crds templates; do
+            find "/tmp/kubectl-catalog-out/${REQUIRED}" -type f -name '*.yaml' 2>/dev/null | grep -q . || {
+              echo "kubectl-catalog produced no manifests in ${REQUIRED}/; aborting before touching the charts."
+              exit 1
+            }
+          done
+          [[ -s /tmp/kubectl-catalog-out/values.yaml ]] || {
+            echo "kubectl-catalog produced no values.yaml; aborting before touching the charts."
+            exit 1
+          }
+
+      # ──────────────────────────────────────────────
+      # Update openshift-gitops-operator-crds chart
+      # ──────────────────────────────────────────────
+
+      - name: Update CRDs chart
+        run: |
+          set -euo pipefail
+          CRD_DIR="helm-charts/openshift-gitops-operator-crds/crds"
+
+          rm -rf "${CRD_DIR}"
+          cp -r /tmp/kubectl-catalog-out/crds "${CRD_DIR}"
+
+          # Remove GitopsService CRD
+          rm -f "${CRD_DIR}"/gitopsservices*.yaml
+
+          echo "CRDs after update:"
+          ls -1 "${CRD_DIR}/"
+
+      # ──────────────────────────────────────────────
+      # Update openshift-gitops-operator chart
+      # ──────────────────────────────────────────────
+
+      - name: Update operator chart templates
+        run: |
+          set -euo pipefail
+          CHART_DIR="helm-charts/openshift-gitops-operator"
+
+          # templates/ is generated wholesale (_helpers.tpl and NOTES.txt included).
+          rm -rf "${CHART_DIR}/templates"
+          cp -r /tmp/kubectl-catalog-out/templates "${CHART_DIR}/templates"
+
+          # values.yaml carries the bundle's image digests (image.manager,
+          # operatorImageEnv.*). Skipping it ships new templates against stale images.
+          cp /tmp/kubectl-catalog-out/values.yaml "${CHART_DIR}/values.yaml"
+
+          echo "Templates after update:"
+          ls -1 "${CHART_DIR}/templates/"
+
+      # ──────────────────────────────────────────────
+      # Update Chart.yaml versions
+      # ──────────────────────────────────────────────
+
+      - name: Update Chart.yaml versions
+        run: |
+          set -euo pipefail
+          BUILD=$(cat BUILD)
+          VERSION="${BUILD#v}"        # strip leading v
+          VERSION="${VERSION%%-*}"    # strip -<buildnum> suffix
+
+          # In --bundle mode kubectl-catalog has no catalog to resolve, so it
+          # emits empty channel/catalog-ref annotations (root.go bundleRefFromManifests
+          # hardcodes Channel: ""). We keep the committed Chart.yaml and patch it:
+          #  - channel from config.yaml, same source hack/generate-catalog.py reads,
+          #    dropping the floating "latest" entry the charts don't track
+          #  - catalog-ref is a per-stream constant; leave whatever is committed
+          CHANNEL=$(yq -r '.release.olm.channel' config.yaml \
+            | tr ',' '\n' | tr -d ' "' | grep -vx 'latest' | head -1 || true)
+
+          if [[ -z "$CHANNEL" || "$CHANNEL" == "null" ]]; then
+            echo "Could not determine channel from config.yaml (.release.olm.channel)"
+            exit 1
+          fi
+
+          for CHART_YAML in \
+            helm-charts/openshift-gitops-operator-crds/Chart.yaml \
+            helm-charts/openshift-gitops-operator/Chart.yaml; do
+            # sed only rewrites lines that already exist - a missing key would
+            # be a silent no-op, so require each one up front.
+            for KEY in '^version:' '^appVersion:' 'kubectl-catalog.io/channel:'; do
+              grep -q "${KEY}" "${CHART_YAML}" || {
+                echo "${CHART_YAML} has no line matching '${KEY}'; refusing to update it silently."
+                exit 1
+              }
+            done
+
+            sed -i "s/^version:.*/version: ${VERSION}/" "${CHART_YAML}"
+            sed -i "s/^appVersion:.*/appVersion: ${VERSION}/" "${CHART_YAML}"
+            sed -i "s|kubectl-catalog.io/channel:.*|kubectl-catalog.io/channel: ${CHANNEL}|" "${CHART_YAML}"
+          done
+
+          echo "Updated Chart.yaml to version ${VERSION}, channel ${CHANNEL}"
+
+      - name: Validate charts render
+        run: |
+          set -euo pipefail
+          for CHART in \
+            helm-charts/openshift-gitops-operator-crds \
+            helm-charts/openshift-gitops-operator; do
+            helm lint "${CHART}"
+            helm template release-test "${CHART}" > /dev/null
+          done
+
+      # ──────────────────────────────────────────────
+      # Open pull request
+      # ──────────────────────────────────────────────
+
+      # Branch is keyed on build + target, not the run id: a re-run for the same
+      # build updates the open PR instead of leaving a trail of stale ones.
+      # No-op when the charts are unchanged - the action creates nothing.
+      - name: Create pull request
+        id: create_pr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          base: ${{ steps.branch.outputs.target }}
+          branch: build/helm-charts-${{ steps.bundle.outputs.build }}-${{ steps.branch.outputs.target }}
+          delete-branch: true
+          add-paths: |
+            helm-charts/openshift-gitops-operator/
+            helm-charts/openshift-gitops-operator-crds/
+          # Records the exact bundle: the Chart.yaml annotations cannot, since
+          # catalog-ref names the catalog and the bundle has no annotation of its own.
+          commit-message: |
+            chore(helm-charts): update charts from bundle ${{ steps.bundle.outputs.build }}
+
+            Bundle image: ${{ steps.bundle.outputs.bundle_image }}
+          title: "chore(helm-charts): update charts from bundle ${{ steps.bundle.outputs.build }} [${{ steps.branch.outputs.target }}]"
+          body: |
+            Regenerates the helm charts from the bundle image with `kubectl-catalog generate`.
+
+            **Build:** `${{ steps.bundle.outputs.build }}`
+            **Bundle commit:** ${{ steps.bundle.outputs.commit_sha }}
+            **Bundle image:** `${{ steps.bundle.outputs.bundle_image }}`
+
+            Automatically generated by GitHub Actions.
+
+      - name: Report result
+        run: |
+          if [[ -z "${{ steps.create_pr.outputs.pull-request-number }}" ]]; then
+            echo "No helm chart changes. No pull request created."
+          else
+            echo "PR #${{ steps.create_pr.outputs.pull-request-number }} (${{ steps.create_pr.outputs.pull-request-operation }}): ${{ steps.create_pr.outputs.pull-request-url }}"
+          fi
+
+  notify-failure:
+    name: Notify Slack on Failure
+    runs-on: ubuntu-24.04
+    needs: update-helm-charts
+    # cancelled() too: concurrency drops superseded pending runs, and a silently
+    # cancelled chart update looks identical to one that never fired.
+    if: failure() || cancelled()
+
+    steps:
+      - name: Send Slack notification
+        uses: slackapi/slack-github-action@v2.1.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": ":red_circle: *Helm chart update ${{ needs.update-helm-charts.result }}*",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":red_circle: *Helm chart update ${{ needs.update-helm-charts.result }}*\n*Branch:* `${{ inputs.TARGET_BRANCH }}`\n*Run:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View logs>"
+                  }
+                }
+              ]
+            }
