@@ -53,7 +53,7 @@ go build -v -ldflags "-X github.com/argoproj/argo-rollouts/utils/version.version
   -X github.com/argoproj/argo-rollouts/utils/version.buildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
   -X github.com/argoproj/argo-rollouts/utils/version.gitCommit=${CI_ARGO_ROLLOUTS_COMMIT} \
   -X github.com/argoproj/argo-rollouts/utils/version.gitTreeState=clean \
-  -X github.com/argoproj/argo-rollouts.gitTag=${CI_ARGO_ROLLOUTS_VERSION}" \
+  -X github.com/argoproj/argo-rollouts/utils/version.gitTag=${CI_ARGO_ROLLOUTS_VERSION}" \
   -tags strictfipsruntime -o ./dist/rollouts-controller ./cmd/rollouts-controller
 
 # build git-lfs
