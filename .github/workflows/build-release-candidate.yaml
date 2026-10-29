@@ -619,6 +619,7 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GH_TOKEN }}
+          commit-message: "chore(release): add build metadata for ${{ steps.metadata_prep.outputs.build }}"
           branch: build/metadata-${{ steps.metadata_prep.outputs.build }}-${{ steps.metadata_prep.outputs.ts }}
           base: ${{ steps.branch.outputs.target }}
           delete-branch: true
@@ -669,7 +670,9 @@ jobs:
         if: |
           github.event_name == 'schedule' &&
           (steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
-        run: make nightly-catalog
+        run: |
+          BUILD=$(cat BUILD)
+          make catalog CATALOG_BRANCH="build/nightly-catalog-$BUILD"
 
       - name: "Catalog Build [nightly]: Commit and push"
         if: |
@@ -681,6 +684,7 @@ jobs:
           BUILD=$(cat BUILD)
           BRANCH="${{ steps.branch.outputs.target }}"
           NIGHTLY_BRANCH="build/nightly-catalog-$BUILD"
+          CONSOLIDATED_BRANCH="build/nightly-catalog"
 
           cd catalog
           git config user.name "github-actions[bot]"
@@ -694,24 +698,15 @@ jobs:
 
           echo "CATALOG_CHANGED=true" >> "$GITHUB_ENV"
 
-          git add -A
-          git commit -m "chore(nightly): update catalog channel for $BRANCH (build $BUILD)"
-
           CATALOG_REPO_URL="https://github.com/rh-gitops-midstream/catalog.git"
           git config --local "http.https://github.com/.extraheader" \
             "AUTHORIZATION: basic $(printf '%s' "x-access-token:${GH_TOKEN}" | base64 -w0)"
-          git push "$CATALOG_REPO_URL" "HEAD:$NIGHTLY_BRANCH"
 
-          # Also push to the consolidated branch (accumulates commits from all channels)
-          CONSOLIDATED_BRANCH="build/nightly-catalog"
-          COMMIT_SHA=$(git rev-parse HEAD)
-          if git fetch "$CATALOG_REPO_URL" "$CONSOLIDATED_BRANCH:refs/remotes/consolidated" 2>/dev/null; then
-            git checkout -B "$CONSOLIDATED_BRANCH" refs/remotes/consolidated
-          else
-            git checkout -B "$CONSOLIDATED_BRANCH" HEAD~1
-          fi
-          git cherry-pick "$COMMIT_SHA"
-          git push "$CATALOG_REPO_URL" "HEAD:$CONSOLIDATED_BRANCH"
+          git add -A
+          git commit -m "chore(nightly): update catalog channel for $BRANCH (build $BUILD)"
+
+          git push "$CATALOG_REPO_URL" "HEAD:$NIGHTLY_BRANCH"
+          git push "$CATALOG_REPO_URL" "HEAD:$CONSOLIDATED_BRANCH" --force
 
       - name: "Catalog Build [nightly]: Create PR"
         if: |
