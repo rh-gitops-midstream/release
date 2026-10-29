@@ -13,7 +13,7 @@ CHART_REGISTRY ?=
 sources:
 	@./hack/sync-sources.sh
 	@./hack/verify-sources.sh
-	@./hack/pin-pnpm-deps.sh
+	@$(MAKE) agent-helm-chart
 
 .PHONY: update-sources
 update-sources: deps
@@ -77,35 +77,31 @@ update-tekton-task-bundles: deps
 	@echo "Updating Tekton Task Bundles..."
 	@./hack/update-tekton-task-bundles.sh .tekton/*.yaml
 
+CATALOG_BRANCH ?= main
+
 .PHONY: catalog
 catalog: deps
-	@echo "Generating Operator Catalog..."
+	@echo "Generating Operator Catalog (branch: $(CATALOG_BRANCH))..."
 	rm -rf catalog
-	git clone --branch main --depth 1 https://github.com/rh-gitops-midstream/catalog.git catalog
-	python3 hack/generate-catalog.py
-	cd catalog && make catalog-template && git status
-
-.PHONY: nightly-catalog
-nightly-catalog: deps
-	@echo "Generating Nightly Catalog..."
-	rm -rf catalog
-	@NIGHTLY_BRANCH="build/nightly-catalog"; \
-	REPO="https://github.com/rh-gitops-midstream/catalog.git"; \
-	if git ls-remote --heads "$$REPO" "$$NIGHTLY_BRANCH" | grep -q "$$NIGHTLY_BRANCH"; then \
-		echo "Nightly branch exists. Cloning and rebasing onto main..."; \
+	@REPO="https://github.com/rh-gitops-midstream/catalog.git"; \
+	BRANCH="$(CATALOG_BRANCH)"; \
+	if [ "$$BRANCH" = "main" ]; then \
+		git clone --branch main --depth 1 "$$REPO" catalog; \
+	elif git ls-remote --heads "$$REPO" "$$BRANCH" | grep -q "$$BRANCH"; then \
+		echo "Branch $$BRANCH exists. Cloning and rebasing onto main..."; \
 		git clone "$$REPO" catalog; \
-		cd catalog && git checkout "$$NIGHTLY_BRANCH"; \
+		cd catalog && git checkout "$$BRANCH"; \
 		if ! git rebase origin/main; then \
 			echo "Rebase conflict. Starting fresh from main."; \
 			git rebase --abort; \
 			git checkout main; \
-			git branch -D "$$NIGHTLY_BRANCH"; \
-			git checkout -b "$$NIGHTLY_BRANCH"; \
+			git branch -D "$$BRANCH"; \
+			git checkout -b "$$BRANCH"; \
 		fi; \
 	else \
-		echo "Nightly branch does not exist. Creating from main..."; \
+		echo "Branch $$BRANCH does not exist. Creating from main..."; \
 		git clone "$$REPO" catalog; \
-		cd catalog && git checkout -b "$$NIGHTLY_BRANCH"; \
+		cd catalog && git checkout -b "$$BRANCH"; \
 	fi
 	python3 hack/generate-catalog.py
 	cd catalog && make catalog-template && git status
