@@ -126,118 +126,101 @@ def update_container_dockerfiles_cpe(config_path: Path, containers_dir: Path) ->
         print("No container Dockerfiles needed cpe label updates")
 
 
+def read_konflux_config(config_path: Path) -> dict:
+    """Read the release.konflux section from config.yaml."""
+    with open(config_path, encoding="utf-8") as f:
+        config = yaml.safe_load(f)
+    konflux = config.get("release", {}).get("konflux", {})
+    required = ("repo", "branch", "application")
+    missing = [k for k in required if k not in konflux]
+    if missing:
+        raise ValueError(
+            f"Missing release.konflux fields {missing} in {config_path}"
+        )
+    return konflux
+
+
 def update_tekton_files(config_path: Path, tekton_dir: Path) -> None:
-    """Update .tekton YAML files to replace -main with -X-Y version format."""
+    """Update .tekton YAML files using release.konflux as the authoritative source of target values."""
     config_version = read_release_version(config_path)
-    
-    # Skip updates for development version 99.99.X
+
     if config_version.startswith("99.99"):
         print("Skipping .tekton updates for development version 99.99.X")
         return
-    
-    version_suffix = convert_version_to_xy_format(config_version)
-    release_branch_suffix = convert_version_to_xdoty_format(config_version)
-    
-    # Get all YAML files in .tekton directory, excluding tasks folder
-    yaml_files = [
-        f for f in tekton_dir.glob("*.yaml")
-        if f.is_file()
-    ]
-    
+
+    konflux = read_konflux_config(config_path)
+    target_branch = konflux["branch"]           # written directly into target_branch expressions
+    target_application = konflux["application"] # written directly into application labels
+    source_repo = konflux["repo"]
+
+    # Extract version suffix from application name (e.g. "gitops-1-23" → "1-23")
+    app_prefix = "gitops-"
+    if not target_application.startswith(app_prefix):
+        raise ValueError(
+            f"Unexpected release.konflux.application {target_application!r}; "
+            f"expected it to start with '{app_prefix}'"
+        )
+    version_suffix = target_application[len(app_prefix):]
+
+    repo_annotation = source_repo.removesuffix(".git") + "?rev={{revision}}"
+
+    yaml_files = [f for f in tekton_dir.glob("*.yaml") if f.is_file()]
     updated_files = []
-    
+
     for yaml_file in yaml_files:
         content = yaml_file.read_text(encoding="utf-8")
-        original_content = content
-        
-        # Parse YAML to update specific fields
-        try:
-            data = yaml.safe_load(content)
-            
-            modified = False
-            
-            # Update metadata.labels.appstudio.openshift.io/application
-            if "metadata" in data and "labels" in data["metadata"]:
-                app_label = "appstudio.openshift.io/application"
-                if app_label in data["metadata"]["labels"]:
-                    old_value = data["metadata"]["labels"][app_label]
-                    if old_value.endswith("-main"):
-                        new_value = old_value.replace("-main", f"-{version_suffix}")
-                        data["metadata"]["labels"][app_label] = new_value
-                        modified = True
-                
-                # Update metadata.labels.appstudio.openshift.io/component
-                comp_label = "appstudio.openshift.io/component"
-                if comp_label in data["metadata"]["labels"]:
-                    old_value = data["metadata"]["labels"][comp_label]
-                    if old_value.endswith("-main"):
-                        new_value = old_value.replace("-main", f"-{version_suffix}")
-                        data["metadata"]["labels"][comp_label] = new_value
-                        modified = True
-            
-            # Update metadata.name
-            if "metadata" in data and "name" in data["metadata"]:
-                old_name = data["metadata"]["name"]
-                if "-main-" in old_name:
-                    new_name = old_name.replace("-main-", f"-{version_suffix}-")
-                    data["metadata"]["name"] = new_name
-                    modified = True
-            
-            # Update spec.taskRunTemplate.serviceAccountName
-            if "spec" in data and "taskRunTemplate" in data["spec"]:
-                if "serviceAccountName" in data["spec"]["taskRunTemplate"]:
-                    old_account = data["spec"]["taskRunTemplate"]["serviceAccountName"]
-                    if old_account.endswith("-main"):
-                        new_account = old_account.replace("-main", f"-{version_suffix}")
-                        data["spec"]["taskRunTemplate"]["serviceAccountName"] = new_account
-                        modified = True
-            
-            # Write back the YAML with preserved formatting as much as possible
-            # Use a simple string replacement approach to preserve formatting
-            updated_content = content
+        updated_content = content
 
-            if modified:
-                # Replace in labels
+        # Determine the current suffix from this file's application label so we know what to replace
+        current_app_match = re.search(
+            r'appstudio\.openshift\.io/application:\s+(\S+)', content
+        )
+        if current_app_match:
+            current_app = current_app_match.group(1)
+            if current_app.startswith(app_prefix):
+                old_suffix = re.escape(current_app[len(app_prefix):])
+
                 updated_content = re.sub(
-                    r'(appstudio\.openshift\.io/application:\s+\S+)-main\b',
+                    rf'(appstudio\.openshift\.io/component:\s+\S+)-{old_suffix}\b',
                     rf'\1-{version_suffix}',
-                    updated_content
+                    updated_content,
                 )
                 updated_content = re.sub(
-                    r'(appstudio\.openshift\.io/component:\s+\S+)-main\b',
-                    rf'\1-{version_suffix}',
-                    updated_content
-                )
-                
-                # Replace in name field
-                updated_content = re.sub(
-                    r'(\bname:\s+\S+)-main-(on-(?:pull-request|push))',
+                    rf'(\bname:\s+\S+)-{old_suffix}-(on-(?:pull-request|push))',
                     rf'\1-{version_suffix}-\2',
-                    updated_content
+                    updated_content,
                 )
-                
-                # Replace in serviceAccountName
                 updated_content = re.sub(
-                    r'(serviceAccountName:\s+\S+)-main\b',
+                    rf'(serviceAccountName:\s+\S+)-{old_suffix}\b',
                     rf'\1-{version_suffix}',
-                    updated_content
+                    updated_content,
                 )
-                
-            # Replace target_branch == "main" with target_branch == "release-X.Y"
-            updated_content = re.sub(
-                r'target_branch\s+==\s+"main"',
-                f'target_branch == "release-{release_branch_suffix}"',
-                updated_content
-            )
 
-            if updated_content != original_content:
-                yaml_file.write_text(updated_content, encoding="utf-8")
-                updated_files.append(yaml_file.name)
-        
-        except yaml.YAMLError as e:
-            print(f"Warning: Could not parse {yaml_file.name}: {e}")
-            continue
-    
+        # Write application label directly from release.konflux.application
+        updated_content = re.sub(
+            r'(appstudio\.openshift\.io/application:\s+)\S+',
+            rf'\g<1>{target_application}',
+            updated_content,
+        )
+
+        # Write target_branch directly from release.konflux.branch
+        updated_content = re.sub(
+            r'(target_branch\s+==\s+")[^"]+(")',
+            rf'\g<1>{target_branch}\2',
+            updated_content,
+        )
+
+        # Update repo annotation from release.konflux.repo
+        updated_content = re.sub(
+            r'(build\.appstudio\.openshift\.io/repo:\s+)\S+',
+            rf'\g<1>{repo_annotation}',
+            updated_content,
+        )
+
+        if updated_content != content:
+            yaml_file.write_text(updated_content, encoding="utf-8")
+            updated_files.append(yaml_file.name)
+
     if updated_files:
         print(f"Updated .tekton files: {', '.join(updated_files)}")
     else:
@@ -247,7 +230,7 @@ def update_tekton_files(config_path: Path, tekton_dir: Path) -> None:
 def main() -> int:
     new_build = update_build_file(CONFIG_PATH, BUILD_PATH)
     print(f"BUILD updated to {new_build}")
-    
+
     update_tekton_files(CONFIG_PATH, TEKTON_DIR)
     update_container_dockerfiles_cpe(CONFIG_PATH, CONTAINERS_DIR)
     
