@@ -18,7 +18,7 @@
 # Argo Rollouts Openshift Routes Plugin Build stage which performs the actual build of Argo Rollouts binaries
 ####################################################################################################
 
-FROM registry.access.redhat.com/hi/go:1.27.3-fips-builder as rollouts-plugin-trafficrouter-openshift-build
+FROM registry.access.redhat.com/hi/go:1.27-fips as rollouts-plugin-trafficrouter-openshift-build
 USER root
 
 COPY sources/rollouts-plugin-trafficrouter-openshift/ /go/src/github.com/argoproj/rollouts-plugin-trafficrouter-openshift
@@ -35,7 +35,7 @@ RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime go build -v -tags strictfipsrun
 # Argo Rollouts Build stage which performs the actual build of Argo Rollouts binaries
 ####################################################################################################
 
-FROM registry.access.redhat.com/hi/go:1.27.3-fips-builder AS argo-rollouts-build
+FROM registry.access.redhat.com/hi/go:1.27-fips AS argo-rollouts-build
 USER root
 
 COPY sources/argo-rollouts/ /go/src/github.com/argoproj/argo-rollouts

@@ -17,7 +17,7 @@
 ####################################################################################################
 # Builder stage which performs the build of Argocd-cli binaries
 ####################################################################################################
-FROM registry.access.redhat.com/hi/go:1.27.3-fips-builder AS builder
+FROM registry.access.redhat.com/hi/go:1.27-fips AS builder
 
 USER root
 
