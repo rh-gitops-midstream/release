@@ -30,7 +30,7 @@ spec:
   publisher: Red Hat
 ```
 
-Available development/pre-release catalog images:
+Available pre-release catalog images:
 - OCP v4.14: `quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.14`
 - OCP v4.15: `quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.15`
 - OCP v4.16: `quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.16`
@@ -40,6 +40,10 @@ Available development/pre-release catalog images:
 - OCP v4.20: `quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.20`
 - OCP v4.21: `quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.21`
 - OCP v4.22: `quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.22`
+
+For nightly/development catalog, use a tag of the form `<ocp-version>-<gitops-y-stream>-nightly`:
+
+- example: `quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.19-1.23-nightly`
 
 Apply using:
 ```bash
