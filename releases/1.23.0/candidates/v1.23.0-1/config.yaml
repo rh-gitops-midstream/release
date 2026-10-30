@@ -1,0 +1,174 @@
+# Release Metadata
+release:
+  name: OpenShift GitOps Operator
+  version: "1.23.0"
+  olm:
+    # TODO: Compute olm data automatically
+    name: "openshift-gitops-operator.v1.23.0"
+    channel: "latest,gitops-1.23"
+    replaces: "openshift-gitops-operator.v1.22.0"
+    skip-range: "" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
+  konflux:
+    repo: https://github.com/rh-gitops-midstream/release.git
+    branch: main
+    application: gitops-main
+  managers:
+    - name: "Siddhesh Ghadi"
+      github: svghadi
+      email: "sghadi@redhat.com"
+# Source code repositories
+# This section defines the source repositories for GitOps Operator artifacts built from source.
+# See docs/sources.md for details on each field and usage instructions.
+# On update, run `make sources` to update & validate the submodules.
+# Note: `commit` is always used to perform the actual checkout. `ref` is purely metadata for CI which can be a tag or branch.
+sources:
+  - path: sources/gitops-operator
+    url: https://github.com/redhat-developer/gitops-operator.git
+    ref: master
+    commit: da817c1e9ff88a886f30b62e67fea24fced71a94
+    auto-update: true
+  - path: sources/argo-cd
+    url: https://github.com/argoproj/argo-cd.git
+    ref: v3.5.6
+    commit: c2b1e3017e2cec86b122172e861dcd026453ae44
+    auto-update: true
+  - path: sources/argo-rollouts
+    url: https://github.com/argoproj/argo-rollouts.git
+    ref: v1.10.1
+    commit: 356117c8e9a21b74b58c2c01d640aa91994522b5
+    auto-update: true
+  - path: sources/kustomize
+    url: https://github.com/kubernetes-sigs/kustomize.git
+    ref: kustomize/v5.8.2
+    commit: 2e294e3e92a56fe9cfa1e755e6e57c5f1268ce22
+    auto-update: false
+  - path: sources/helm
+    url: https://github.com/helm/helm.git
+    ref: v4.3.1
+    commit: c0d08d0d6d9424d4a14febb5e8a3e51b0dd00dff
+    auto-update: true
+  - path: sources/dex
+    url: https://github.com/rh-gitops-midstream/dex.git
+    ref: v2.45.1
+    commit: c205840eb6e81ab03bac51b33a42d3c31f947a3c
+    auto-update: true
+  - path: sources/git-lfs
+    url: https://github.com/git-lfs/git-lfs.git
+    ref: v3.7.1
+    commit: b84b33847fe6458f36ef521534dc0eac953cb379
+    auto-update: true
+  - path: sources/ssh-connect
+    url: https://github.com/gotoh/ssh-connect.git
+    ref: master
+    commit: a7443d32e6bf6f00698384b0519adc16fa7656fa
+    auto-update: true
+  - path: sources/tini
+    url: https://github.com/krallin/tini.git
+    ref: master
+    commit: 369448a167e8b3da4ca5bca0b3307500c3371828
+    auto-update: true
+  - path: sources/argocd-extension-installer
+    url: https://github.com/argoproj-labs/argocd-extension-installer.git
+    ref: v1.1.0
+    commit: 379284c7aaa0717c4224ab119133bf2bad2c7bfd
+    auto-update: true
+  - path: sources/gitops-console-plugin
+    url: https://github.com/redhat-developer/gitops-console-plugin.git
+    ref: main
+    commit: 173040c6e1c60cb1c6b4202f5929e3dee30b8879
+    auto-update: true
+  - path: sources/gitops-console-plugin-4-18
+    url: https://github.com/redhat-developer/gitops-console-plugin.git
+    ref: release-4.18
+    commit: bc5872a4aa59a01c75eb96da9549a92aee9fb9a8
+    auto-update: true
+  - path: sources/gitops-backend
+    url: https://github.com/redhat-developer/gitops-backend.git
+    ref: master
+    commit: 2c16e0c8eaa6923ac35d9256a36f13349e10d339
+    auto-update: false
+  - path: sources/rollouts-plugin-trafficrouter-openshift
+    url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
+    ref: main
+    commit: 98c7fb9c86aa3d067fb4d1e87954c9560567d9e2
+    auto-update: true
+  - path: sources/gitops-must-gather
+    url: https://github.com/redhat-developer/gitops-must-gather.git
+    ref: main
+    commit: 57902bfad7d3e812d15b673ce370dd824acea074
+    auto-update: true
+  - path: sources/rollout-extension
+    url: https://github.com/argoproj-labs/rollout-extension.git
+    ref: v0.4.1
+    commit: a6e0cf49da603f83ec5ef4f0eb2561f302bbcdc8
+    auto-update: true
+  - path: sources/argocd-agent
+    url: https://github.com/argoproj-labs/argocd-agent.git
+    ref: main
+    commit: 2a6d913f19b5c1c96dff7d54b5f3a2aa2c8a7870
+    auto-update: true
+  - path: sources/argocd-image-updater
+    url: https://github.com/argoproj-labs/argocd-image-updater.git
+    ref: v1.4.0
+    commit: ed3b8b6a19909cace74172645e02e1ebd4959ad5
+    auto-update: true
+  - path: sources/gitops-promoter
+    url: https://github.com/argoproj-labs/gitops-promoter.git
+    ref: v0.35.1
+    commit: d1d297fb1a60911448543357ae04e3b4ca04f89f
+    auto-update: true
+# External images pulled directly from Red Hat registry and are
+# required by the operator at runtime.
+# Bundle generation script will automatically fetch latest sha for each image
+# based on the version specified.
+externalImages:
+  - name: "haproxy"
+    image: registry.redhat.io/openshift4/ose-haproxy-router-rhel9
+    version: v4.19
+  - name: "redis"
+    image: registry.redhat.io/rhel9/redis-7
+    version: latest
+# Konflux images are images that are built from the source in this repository
+konfluxImages:
+  - name: argo-rollouts
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argo-rollouts-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argo-rollouts-rhel9"
+  - name: argocd-extenstions
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-extensions-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-extensions-rhel9"
+  - name: argocd
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-rhel9"
+  - name: argocd-agent
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-agent-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9"
+  - name: argocd-image-updater
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-image-updater-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-image-updater-rhel9"
+  - name: console-plugin
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/console-plugin-rhel9"
+  - name: console-plugin-4-18
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/console-plugin-4-18-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/console-plugin-4-18-rhel9"
+  - name: dex
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/dex-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/dex-rhel9"
+  - name: gitops
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-rhel9"
+  - name: gitops-operator-bundle
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-operator-bundle"
+  - name: gitops-operator
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-rhel9-operator"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-rhel9-operator"
+  - name: must-gather
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/must-gather-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/must-gather-rhel9"
+  - name: argocd-promoter-extension
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/argocd-promoter-extension-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/argocd-promoter-extension-rhel9"
+  - name: gitops-promoter
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-promoter-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-promoter-rhel9"
