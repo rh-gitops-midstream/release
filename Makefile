@@ -77,33 +77,14 @@ update-tekton-task-bundles: deps
 	@echo "Updating Tekton Task Bundles..."
 	@./hack/update-tekton-task-bundles.sh .tekton/*.yaml
 
-CATALOG_BRANCH ?= main
+NIGHTLY ?=
 
 .PHONY: catalog
 catalog: deps
-	@echo "Generating Operator Catalog (branch: $(CATALOG_BRANCH))..."
+	@echo "Generating Operator Catalog..."
 	rm -rf catalog
-	@REPO="https://github.com/rh-gitops-midstream/catalog.git"; \
-	BRANCH="$(CATALOG_BRANCH)"; \
-	if [ "$$BRANCH" = "main" ]; then \
-		git clone --branch main --depth 1 "$$REPO" catalog; \
-	elif git ls-remote --heads "$$REPO" "$$BRANCH" | grep -q "$$BRANCH"; then \
-		echo "Branch $$BRANCH exists. Cloning and rebasing onto main..."; \
-		git clone "$$REPO" catalog; \
-		cd catalog && git checkout "$$BRANCH"; \
-		if ! git rebase origin/main; then \
-			echo "Rebase conflict. Starting fresh from main."; \
-			git rebase --abort; \
-			git checkout main; \
-			git branch -D "$$BRANCH"; \
-			git checkout -b "$$BRANCH"; \
-		fi; \
-	else \
-		echo "Branch $$BRANCH does not exist. Creating from main..."; \
-		git clone "$$REPO" catalog; \
-		cd catalog && git checkout -b "$$BRANCH"; \
-	fi
-	python3 hack/generate-catalog.py
+	git clone --branch main --depth 1 https://github.com/rh-gitops-midstream/catalog.git catalog
+	python3 hack/generate-catalog.py $(if $(NIGHTLY),--nightly,)
 	cd catalog && make catalog-template && git status
 
 # Update bundle manifests with latest images

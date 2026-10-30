@@ -1,21 +1,48 @@
 #!/usr/bin/env python3
 from pathlib import Path
 from ruamel.yaml import YAML
+import argparse
 import re
 import subprocess
 import json
 import sys
 
 yaml = YAML()
-yaml.preserve_quotes = True 
+yaml.preserve_quotes = True
 yaml.width = 100000
 yaml.indent(mapping=2, sequence=4, offset=2)
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--nightly", action="store_true", help="Stamp nightly additional-tags label in catalog Dockerfiles")
+args = parser.parse_args()
 
 try:
     subprocess.run(["skopeo", "--version"], check=True, capture_output=False)
 except FileNotFoundError:
     print("[error] 'skopeo' is not installed. Please install skopeo >= 1.18.0.")
     sys.exit(1)
+
+
+def stamp_nightly_labels(catalog_dir: Path, build: str) -> None:
+    """Add/update konflux.additional-tags label in each per-OCP Dockerfile."""
+    for dockerfile in sorted(catalog_dir.glob("*/Dockerfile")):
+        ocp = dockerfile.parent.name          # e.g. "v4.19"
+        label_value = f"{ocp}-{build}-nightly"
+        label_line = f'LABEL konflux.additional-tags="{label_value}"'
+
+        content = dockerfile.read_text()
+        if "konflux.additional-tags" in content:
+            updated = re.sub(
+                r'LABEL konflux\.additional-tags="[^"]*"',
+                label_line,
+                content,
+            )
+        else:
+            updated = content.rstrip("\n") + f"\n{label_line}\n"
+
+        if updated != content:
+            dockerfile.write_text(updated)
+        print(f"Stamped nightly label in {dockerfile}: {label_value}")
 
 def get_digest(image: str) -> str:
     print(f"Fetching sha256 digest for {image}...")
@@ -41,6 +68,20 @@ channel = re.sub(r'\blatest\b,?', '', olm.get("channel", "").strip('"\'')).lstri
 
 # Bundle image
 tag = release_config.get('release', {}).get('konflux', {}).get('branch', 'latest')
+
+# For the main branch, derive replaces dynamically from the latest channel in the catalog
+if tag == "main":
+    for ch in catalog_config.get("channels", []):
+        if ch.get("name") == "latest":
+            versions = ch.get("versions", [])
+            if versions:
+                def parse_ver(v):
+                    m = re.search(r'v(\d+)\.(\d+)\.(\d+)', v.get("name", ""))
+                    return tuple(int(x) for x in m.groups()) if m else (0, 0, 0)
+                latest_entry = max(versions, key=parse_ver)
+                replaces = latest_entry["name"]
+                print(f"main branch: dynamically set replaces={replaces} from latest channel")
+            break
 base = "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle"   # TODO: read from config.yaml
 image = f"{base}:{tag}"
 digest =  get_digest(image)
@@ -81,3 +122,7 @@ with CATALOG_CONFIG_FILE.open('w') as f:
     yaml.dump(catalog_config, f)
 
 print(f"Updated catalog configuration in {CATALOG_CONFIG_FILE}")
+
+if args.nightly:
+    build = Path("BUILD").read_text().strip()
+    stamp_nightly_labels(Path("catalog"), build)
