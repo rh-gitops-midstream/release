@@ -1,5 +1,5 @@
 # Build Stage
-FROM  registry.access.redhat.com/hi/go:1.27.3-builder AS builder
+FROM  registry.access.redhat.com/hi/go:1.27.3-fips-builder AS builder
 USER root
 
 COPY sources/gitops-backend /workspace

@@ -15,7 +15,7 @@
 # ------------------------------------------------------------------------
 
 # --- start build stage #1
-FROM registry.access.redhat.com/hi/go:1.27.3-builder as builder
+FROM registry.access.redhat.com/hi/go:1.27.3-fips-builder as builder
 USER root
 
 COPY sources/dex /app/dex
