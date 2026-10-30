@@ -67,7 +67,7 @@ RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' pnpm build
 # Builder stage which performs the build of argo-rollouts-cli binaries
 ####################################################################################################
 
-FROM registry.redhat.io/rhel9/go-toolset:1.26 AS builder
+FROM registry.access.redhat.com/hi/go:1.27-fips AS builder
 
 # Switch to root user
 USER root
