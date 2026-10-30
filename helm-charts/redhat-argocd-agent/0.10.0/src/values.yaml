@@ -3,7 +3,7 @@ nameOverride: ''
 fullnameOverride: ''
 image:
   repository: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9
-  tag: v1.22.0
+  tag: v1.22.3
   pullPolicy: IfNotPresent
 replicaCount: 1
 imagePullSecrets: []
