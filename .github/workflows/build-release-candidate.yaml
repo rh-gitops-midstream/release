@@ -487,6 +487,16 @@ jobs:
           echo "sha=$MERGE_SHA" >> "$GITHUB_OUTPUT"
           echo "Bundle merge commit SHA: $MERGE_SHA"
 
+      - name: "Wait: Resolve effective SHA (no bundle changes)"
+        if: steps.p2_create_pr.conclusion == 'success' && steps.p2_create_pr.outputs.pull-request-number == ''
+        id: effective_sha
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          MERGE_SHA=$(gh api "repos/${{ github.repository }}/git/ref/heads/${{ steps.branch.outputs.target }}" --jq '.object.sha')
+          echo "sha=$MERGE_SHA" >> "$GITHUB_OUTPUT"
+          echo "No bundle changes — using current HEAD as effective SHA: $MERGE_SHA"
+
       - name: "Wait: Poll post-merge Konflux bundle build"
         if: steps.p2_merge.outcome == 'success'
         env:
@@ -599,22 +609,23 @@ jobs:
       # ──────────────────────────────────────────────
 
       - name: "Set stage: Metadata PR"
-        if: steps.p2_merge.outcome == 'success'
+        if: steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success'
         run: echo "CURRENT_STAGE=Metadata PR" >> "$GITHUB_ENV"
 
       - name: "Metadata PR: Prepare metadata file"
-        if: steps.p2_merge.outcome == 'success'
+        if: steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success'
         id: metadata_prep
         run: |
           BUILD=$(cat BUILD)
           TIMESTAMP=$(date -u +"%Y%m%d-%H%M%S")
-          python3 hack/generate-build-data.py \
-            --commit "${{ steps.p2_merge_sha.outputs.sha }}"
+          SHA="${{ steps.p2_merge_sha.outputs.sha }}"
+          if [[ -z "$SHA" ]]; then SHA="${{ steps.effective_sha.outputs.sha }}"; fi
+          python3 hack/generate-build-data.py --commit "$SHA"
           echo "build=$BUILD" >> "$GITHUB_OUTPUT"
           echo "ts=$TIMESTAMP" >> "$GITHUB_OUTPUT"
 
       - name: "Metadata PR: Create Pull Request"
-        if: steps.p2_merge.outcome == 'success'
+        if: steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success'
         id: metadata_create_pr
         uses: peter-evans/create-pull-request@v6
         with:
@@ -634,7 +645,7 @@ jobs:
             auto-merge
 
       - name: "Metadata PR: Merge Pull Request"
-        if: steps.p2_merge.outcome == 'success' && steps.metadata_create_pr.outputs.pull-request-number != ''
+        if: (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success') && steps.metadata_create_pr.outputs.pull-request-number != ''
         id: metadata_merge
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -661,7 +672,7 @@ jobs:
       # ──────────────────────────────────────────────
 
       - name: "Set stage: Catalog Build"
-        if: steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build'
+        if: steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build'
         run: echo "CURRENT_STAGE=Catalog Build" >> "$GITHUB_ENV"
 
       # ── Nightly path: consolidated PR on stable branch ──
@@ -669,7 +680,7 @@ jobs:
       - name: "Catalog Build [nightly]: Generate catalog"
         if: |
           github.event_name == 'schedule' &&
-          (steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
+          (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
         run: |
           BUILD=$(cat BUILD)
           make catalog NIGHTLY=true
@@ -677,7 +688,7 @@ jobs:
       - name: "Catalog Build [nightly]: Commit and push"
         if: |
           github.event_name == 'schedule' &&
-          (steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
+          (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
@@ -708,7 +719,7 @@ jobs:
       - name: "Catalog Build [nightly]: Create PR"
         if: |
           github.event_name == 'schedule' &&
-          (steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build') &&
+          (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build') &&
           env.CATALOG_CHANGED == 'true'
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -744,13 +755,13 @@ jobs:
       - name: "Catalog Build [rc]: Generate catalog"
         if: |
           github.event_name == 'workflow_dispatch' &&
-          (steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
+          (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
         run: make catalog
 
       - name: "Catalog Build [rc]: Prepare metadata"
         if: |
           github.event_name == 'workflow_dispatch' &&
-          (steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
+          (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
         id: p3_metadata
         run: |
           BUILD=$(cat BUILD)
@@ -772,7 +783,7 @@ jobs:
       - name: "Catalog Build [rc]: Create catalog pull request"
         if: |
           github.event_name == 'workflow_dispatch' &&
-          (steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
+          (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GH_TOKEN }}
