@@ -22,6 +22,11 @@ on:
           - full-build
           - bundle-build
           - catalog-build
+      NIGHTLY:
+        description: 'Run as a nightly build (stamps nightly catalog tags, skips RC catalog PR)'
+        required: false
+        default: false
+        type: boolean
 
 permissions: {}
 
@@ -679,7 +684,7 @@ jobs:
 
       - name: "Catalog Build [nightly]: Generate catalog"
         if: |
-          github.event_name == 'schedule' &&
+          (github.event_name == 'schedule' || inputs.NIGHTLY) &&
           (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
         run: |
           BUILD=$(cat BUILD)
@@ -687,7 +692,7 @@ jobs:
 
       - name: "Catalog Build [nightly]: Commit and push"
         if: |
-          github.event_name == 'schedule' &&
+          (github.event_name == 'schedule' || inputs.NIGHTLY) &&
           (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -718,7 +723,7 @@ jobs:
 
       - name: "Catalog Build [nightly]: Create PR"
         if: |
-          github.event_name == 'schedule' &&
+          (github.event_name == 'schedule' || inputs.NIGHTLY) &&
           (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build') &&
           env.CATALOG_CHANGED == 'true'
         env:
@@ -754,13 +759,13 @@ jobs:
 
       - name: "Catalog Build [rc]: Generate catalog"
         if: |
-          github.event_name == 'workflow_dispatch' &&
+          github.event_name == 'workflow_dispatch' && !inputs.NIGHTLY &&
           (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
         run: make catalog
 
       - name: "Catalog Build [rc]: Prepare metadata"
         if: |
-          github.event_name == 'workflow_dispatch' &&
+          github.event_name == 'workflow_dispatch' && !inputs.NIGHTLY &&
           (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
         id: p3_metadata
         run: |
@@ -782,7 +787,7 @@ jobs:
 
       - name: "Catalog Build [rc]: Create catalog pull request"
         if: |
-          github.event_name == 'workflow_dispatch' &&
+          github.event_name == 'workflow_dispatch' && !inputs.NIGHTLY &&
           (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
         uses: peter-evans/create-pull-request@v6
         with:
