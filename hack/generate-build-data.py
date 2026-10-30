@@ -72,15 +72,35 @@ def diff_cell(cur_commit, ref_map, path, url):
 
 def make_table(sources, ref_map):
     """Build a markdown component table for the given reference source map."""
-    rows = ["| Component | Ref | Diff |", "|-----------|-----|------|"]
+    rows = [
+        "| Component | Ref | Diff | Auto-update |",
+        "|-----------|-----|------|-------------|",
+    ]
     for src in sources:
         path = src["path"]
         component = path.split("/")[-1]
-        ref = str(src.get("ref", "")).strip("'\"")
+        cur_ref = str(src.get("ref", "")).strip("'\"")
         cur_commit = str(src.get("commit", "")).strip("'\"")
+        cur_commit_short = cur_commit[:7] if cur_commit else "?"
         url = str(src.get("url", "")).strip("'\"")
-        cell = diff_cell(cur_commit, ref_map, path, url)
-        rows.append(f"| {component} | {ref} | {cell} |")
+        auto_update = "✓" if src.get("auto-update") else "—"
+
+        component_cell = f"[{component}]({url})" if url else component
+
+        prev_src = (ref_map or {}).get(path, {})
+        prev_ref = str(prev_src.get("ref", "")).strip("'\"")
+        prev_commit = str(prev_src.get("commit", "")).strip("'\"")
+        prev_commit_short = prev_commit[:7] if prev_commit else ""
+
+        if prev_ref and prev_ref != cur_ref:
+            ref_cell = f"{prev_ref} ({prev_commit_short}) → {cur_ref} ({cur_commit_short})"
+        elif prev_commit_short and prev_commit_short != cur_commit_short:
+            ref_cell = f"{cur_ref} ({prev_commit_short} → {cur_commit_short})"
+        else:
+            ref_cell = f"{cur_ref} ({cur_commit_short})"
+
+        diff = diff_cell(cur_commit, ref_map, path, url)
+        rows.append(f"| {component_cell} | {ref_cell} | {diff} | {auto_update} |")
     return "\n".join(rows)
 
 
@@ -134,14 +154,14 @@ def main():
     m = re.search(r'v(\d+\.\d+\.\d+)', replaces)
     if m:
         prev_release_ver = m.group(1)
-        prev_rel_cands = Path(f"releases/{prev_release_ver}/candidates")
-        prev_release_name, prev_release_sha = find_latest_candidate(prev_rel_cands)
+        prev_rel_prod = Path(f"releases/{prev_release_ver}/production")
+        prev_release_name, prev_release_sha = find_latest_candidate(prev_rel_prod)
         if prev_release_sha:
             prev_rel_cfg = load_config_at_sha(prev_release_sha)
             prev_release_sources = sources_map(prev_rel_cfg)
         if prev_release_sources is None:
             prev_release_note = (
-                "_Previous release data not available in this repo "
+                "_Previous release production data not available in this repo "
                 "(cross-stream upgrade or first build for this version)._\n\n"
             )
 
