@@ -3,14 +3,13 @@
 
 Usage: python3 hack/generate-build-data.py --commit <sha>
 Reads BUILD from ./BUILD and config from ./config.yaml in the current directory.
-Writes releases/<version>/candidates/<build>/{COMMIT,BUILD,CHANGELOG.md}.
+Writes releases/<version>/candidates/<build>/{COMMIT,BUILD,config.yaml,CHANGELOG.md}.
 Prunes old candidates to keep only the last 10.
 """
 
 import argparse
 import re
 import shutil
-import subprocess
 import sys
 from pathlib import Path
 
@@ -26,15 +25,12 @@ def parse_build_ver(name):
     return tuple(int(x) for x in m.groups()) if m else (0, 0, 0, 0)
 
 
-def load_config_at_sha(sha):
-    """Return parsed config.yaml from a specific git commit, or None on failure."""
-    result = subprocess.run(
-        ["git", "show", f"{sha.strip()}:config.yaml"],
-        capture_output=True, text=True
-    )
-    if result.returncode != 0:
+def load_config_from_dir(candidate_dir):
+    """Return parsed config.yaml stored inside a candidate/production directory."""
+    config_file = candidate_dir / "config.yaml"
+    if not config_file.exists():
         return None
-    return yaml.load(result.stdout)
+    return yaml.load(config_file.read_text())
 
 
 def sources_map(config):
@@ -43,7 +39,7 @@ def sources_map(config):
 
 
 def find_latest_candidate(candidates_dir, exclude=""):
-    """Return (dir_name, commit_sha) of the most recent candidate, or (None, None)."""
+    """Return (dir_name, dir_path) of the most recent candidate, or (None, None)."""
     if not candidates_dir.exists():
         return None, None
     subdirs = [d for d in candidates_dir.iterdir() if d.is_dir() and d.name != exclude]
@@ -51,10 +47,7 @@ def find_latest_candidate(candidates_dir, exclude=""):
         return None, None
     subdirs.sort(key=lambda d: parse_build_ver(d.name))
     latest = subdirs[-1]
-    commit_file = latest / "COMMIT"
-    if not commit_file.exists():
-        return latest.name, None
-    return latest.name, commit_file.read_text().strip()
+    return latest.name, latest
 
 
 def diff_cell(cur_commit, ref_map, path, url):
@@ -131,18 +124,20 @@ def main():
     candidates_dir = Path(f"releases/{version}/candidates")
     build_dir = candidates_dir / build
 
-    # ── Write COMMIT and BUILD ────────────────────────────────────────────────
+    # ── Write COMMIT, BUILD, and config.yaml ─────────────────────────────────
     build_dir.mkdir(parents=True, exist_ok=True)
     (build_dir / "COMMIT").write_text(commit_sha + "\n")
     (build_dir / "BUILD").write_text(build + "\n")
+    (build_dir / "config.yaml").write_bytes(config_file.read_bytes())
     print(f"Written: {build_dir / 'COMMIT'}")
     print(f"Written: {build_dir / 'BUILD'}")
+    print(f"Written: {build_dir / 'config.yaml'}")
 
     # ── Section B: Previous build candidate (same version) ───────────────────
-    prev_cand_name, prev_cand_sha = find_latest_candidate(candidates_dir, exclude=build)
+    prev_cand_name, prev_cand_dir = find_latest_candidate(candidates_dir, exclude=build)
     prev_cand_sources = None
-    if prev_cand_sha:
-        prev_cand_cfg = load_config_at_sha(prev_cand_sha)
+    if prev_cand_dir is not None:
+        prev_cand_cfg = load_config_from_dir(prev_cand_dir)
         prev_cand_sources = sources_map(prev_cand_cfg)
 
     # ── Section A: Previous release (from olm.replaces) ──────────────────────
@@ -155,9 +150,9 @@ def main():
     if m:
         prev_release_ver = m.group(1)
         prev_rel_prod = Path(f"releases/{prev_release_ver}/production")
-        prev_release_name, prev_release_sha = find_latest_candidate(prev_rel_prod)
-        if prev_release_sha:
-            prev_rel_cfg = load_config_at_sha(prev_release_sha)
+        prev_release_name, prev_release_dir = find_latest_candidate(prev_rel_prod)
+        if prev_release_dir is not None:
+            prev_rel_cfg = load_config_from_dir(prev_release_dir)
             prev_release_sources = sources_map(prev_rel_cfg)
         if prev_release_sources is None:
             prev_release_note = (
