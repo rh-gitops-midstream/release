@@ -142,7 +142,6 @@ def main():
 
     # ── Section A: Previous release (from olm.replaces) ──────────────────────
     prev_release_ver = None
-    prev_release_name = None
     prev_release_sources = None
     prev_release_note = ""
 
@@ -150,10 +149,8 @@ def main():
     if m:
         prev_release_ver = m.group(1)
         prev_rel_prod = Path(f"releases/{prev_release_ver}/production")
-        prev_release_name, prev_release_dir = find_latest_candidate(prev_rel_prod)
-        if prev_release_dir is not None:
-            prev_rel_cfg = load_config_from_dir(prev_release_dir)
-            prev_release_sources = sources_map(prev_rel_cfg)
+        prev_rel_cfg = load_config_from_dir(prev_rel_prod)
+        prev_release_sources = sources_map(prev_rel_cfg)
         if prev_release_sources is None:
             prev_release_note = (
                 "_Previous release production data not available in this repo "
@@ -163,9 +160,8 @@ def main():
     # ── Generate CHANGELOG.md ─────────────────────────────────────────────────
     prev_cand_label = prev_cand_name or "—"
     prev_rel_label = f"v{prev_release_ver}" if prev_release_ver else "—"
-    prev_rel_build_label = prev_release_name or "—"
 
-    section_a_header = f"## Changes from previous release ({prev_rel_label}, build {prev_rel_build_label})"
+    section_a_header = f"## Changes from previous release ({prev_rel_label})"
     section_b_header = f"## Changes from previous build candidate ({prev_cand_label})"
 
     changelog = (
