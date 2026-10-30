@@ -672,7 +672,7 @@ jobs:
           (steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
         run: |
           BUILD=$(cat BUILD)
-          make catalog CATALOG_BRANCH="build/nightly-catalog-$BUILD"
+          make catalog NIGHTLY=true
 
       - name: "Catalog Build [nightly]: Commit and push"
         if: |
