@@ -212,7 +212,7 @@ metadata:
     features.operators.openshift.io/cnf: 'false'
     features.operators.openshift.io/cni: 'false'
     features.operators.openshift.io/csi: 'false'
-    olm.skipRange: ""
+    olm.skipRange: ">=1.0.0 <1.23.0"
   name: openshift-gitops-operator.v1.23.0
   namespace: placeholder
   labels:
