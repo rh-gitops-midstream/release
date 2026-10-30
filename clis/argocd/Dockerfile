@@ -17,7 +17,7 @@
 ####################################################################################################
 # Builder stage which performs the build of Argocd-cli binaries
 ####################################################################################################
-FROM registry.redhat.io/rhel9/go-toolset:1.26 AS builder
+FROM registry.access.redhat.com/hi/go:1.27.3-builder AS builder
 
 USER root
 
