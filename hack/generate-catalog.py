@@ -25,15 +25,13 @@ except FileNotFoundError:
 
 def stamp_nightly_labels(catalog_dir: Path, build: str, version: str) -> None:
     """Add/update konflux.additional-tags label in each per-OCP Dockerfile."""
-    y_stream = ".".join(version.split(".")[:2])   # e.g. "1.22"
-    build_no_v = build.lstrip("v")                # e.g. "1.22.4-1"
+    y_stream = "v" + ".".join(version.split(".")[:2])   # e.g. "v1.22"
     for dockerfile in sorted(catalog_dir.glob("*/Dockerfile")):
-        ocp = dockerfile.parent.name              # e.g. "v4.19"
+        ocp = dockerfile.parent.name                     # e.g. "v4.19"
         label_value = (
             f"{ocp}-{build}-nightly"
             f" {ocp}-{y_stream}-nightly"
-            f" {ocp}-{version}-nightly"
-            f" {ocp}-{build_no_v}-nightly"
+            f" {ocp}-v{version}-nightly"
         )
         label_line = f'LABEL konflux.additional-tags="{label_value}"'
 
@@ -133,4 +131,4 @@ print(f"Updated catalog configuration in {CATALOG_CONFIG_FILE}")
 if args.nightly:
     build = Path("BUILD").read_text().strip()
     version = str(release_config.get("release", {}).get("version", "")).strip("'\"")
-    stamp_nightly_labels(Path("catalog"), build, version)
+    stamp_nightly_labels(Path("catalog/catalog"), build, version)
