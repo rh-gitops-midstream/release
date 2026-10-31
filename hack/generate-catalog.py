@@ -74,19 +74,31 @@ channel = re.sub(r'\blatest\b,?', '', olm.get("channel", "").strip('"\'')).lstri
 # Bundle image
 tag = release_config.get('release', {}).get('konflux', {}).get('branch', 'latest')
 
-# For the main branch, derive replaces dynamically from the latest channel in the catalog
-if tag == "main":
-    for ch in catalog_config.get("channels", []):
-        if ch.get("name") == "latest":
-            versions = ch.get("versions", [])
-            if versions:
-                def parse_ver(v):
-                    m = re.search(r'v(\d+)\.(\d+)\.(\d+)', v.get("name", ""))
-                    return tuple(int(x) for x in m.groups()) if m else (0, 0, 0)
-                latest_entry = max(versions, key=parse_ver)
-                replaces = latest_entry["name"]
-                print(f"main branch: dynamically set replaces={replaces} from latest channel")
-            break
+if args.nightly:
+    # Resolve replaces from the cloned catalog to avoid multiple channel heads.
+    # The release repo's replaces field is stale for nightly — the catalog may
+    # already have newer versions that the nightly build needs to replace.
+    def _parse_ver(name_str):
+        m = re.search(r'v(\d+)\.(\d+)\.(\d+)', str(name_str))
+        return tuple(int(x) for x in m.groups()) if m else (0, 0, 0)
+
+    target_ch = next((ch for ch in catalog_config.get("channels", []) if ch.get("name") == channel), None)
+    if target_ch:
+        # Channel exists — use its current head as replaces
+        ch_versions = [v.get("name", "") for v in target_ch.get("versions", [])]
+        if ch_versions:
+            replaces = max(ch_versions, key=_parse_ver)
+            print(f"Nightly: resolved replaces={replaces} from existing channel {channel}")
+    else:
+        # New channel — use the latest version across all existing channels
+        all_versions = [
+            v.get("name", "")
+            for ch in catalog_config.get("channels", [])
+            for v in ch.get("versions", [])
+        ]
+        if all_versions:
+            replaces = max(all_versions, key=_parse_ver)
+            print(f"Nightly: resolved replaces={replaces} from catalog (new channel {channel})")
 base = "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle"   # TODO: read from config.yaml
 image = f"{base}:{tag}"
 digest =  get_digest(image)
