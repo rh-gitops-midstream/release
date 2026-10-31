@@ -5,7 +5,7 @@ release:
   olm:
     # TODO: Compute olm data automatically
     name: "openshift-gitops-operator.v1.23.0"
-    channel: "gitops-1.23"
+    channel: "latest,gitops-1.23"
     replaces: "openshift-gitops-operator.v1.22.0"
     skip-range: ">=1.0.0 <1.23.0"
   konflux:
