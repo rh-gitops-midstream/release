@@ -100,6 +100,7 @@ def make_table(sources, ref_map):
 def main():
     parser = argparse.ArgumentParser(description="Generate release candidate build metadata")
     parser.add_argument("--commit", required=True, help="Bundle merge commit SHA")
+    parser.add_argument("--snapshot-file", default="", help="Path to Konflux snapshot YAML file to store alongside build metadata")
     args = parser.parse_args()
 
     commit_sha = args.commit.strip()
@@ -124,7 +125,7 @@ def main():
     candidates_dir = Path(f"releases/{version}/candidates")
     build_dir = candidates_dir / build
 
-    # ── Write COMMIT, BUILD, and config.yaml ─────────────────────────────────
+    # ── Write COMMIT, BUILD, config.yaml, and optional SNAPSHOT ─────────────
     build_dir.mkdir(parents=True, exist_ok=True)
     (build_dir / "COMMIT").write_text(commit_sha + "\n")
     (build_dir / "BUILD").write_text(build + "\n")
@@ -132,6 +133,14 @@ def main():
     print(f"Written: {build_dir / 'COMMIT'}")
     print(f"Written: {build_dir / 'BUILD'}")
     print(f"Written: {build_dir / 'config.yaml'}")
+    snapshot_file_src = Path(args.snapshot_file.strip()) if args.snapshot_file.strip() else None
+    snapshot = ""
+    if snapshot_file_src and snapshot_file_src.exists():
+        dest = build_dir / "snapshot.yaml"
+        dest.write_bytes(snapshot_file_src.read_bytes())
+        print(f"Written: {dest}")
+        snap_data = yaml.load(snapshot_file_src.read_text())
+        snapshot = (snap_data.get("metadata") or {}).get("name", "")
 
     # ── Section B: Previous build candidate (same version) ───────────────────
     prev_cand_name, prev_cand_dir = find_latest_candidate(candidates_dir, exclude=build)
@@ -164,11 +173,13 @@ def main():
     section_a_header = f"## Changes from previous release ({prev_rel_label})"
     section_b_header = f"## Changes from previous build candidate ({prev_cand_label})"
 
+    snapshot_line = f"**Konflux snapshot:** `{snapshot}`  \n" if snapshot else ""
     changelog = (
         f"# Changelog for {build}\n\n"
         f"**Release version:** `{version}`  \n"
         f"**Previous operator release:** `{replaces}`  \n"
-        f"**Previous build candidate:** `{prev_cand_label}`\n\n"
+        f"**Previous build candidate:** `{prev_cand_label}`  \n"
+        f"{snapshot_line}\n"
         f"{section_a_header}\n\n"
         f"{prev_release_note}"
         f"{make_table(sources, prev_release_sources)}\n\n"
