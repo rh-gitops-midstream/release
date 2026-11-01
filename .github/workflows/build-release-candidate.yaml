@@ -22,6 +22,11 @@ on:
           - full-build
           - bundle-build
           - catalog-build
+      NIGHTLY:
+        description: 'Run as a nightly build (stamps nightly catalog tags, skips RC catalog PR)'
+        required: false
+        default: false
+        type: boolean
 
 permissions: {}
 
@@ -92,6 +97,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y skopeo podman
+          KUBECTL_VERSION=$(curl -sSL https://dl.k8s.io/release/stable.txt)
+          curl -sSLO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+          chmod +x kubectl && sudo mv kubectl /usr/local/bin/
 
       - name: Log in to registry.redhat.io
         run: |
@@ -487,6 +495,16 @@ jobs:
           echo "sha=$MERGE_SHA" >> "$GITHUB_OUTPUT"
           echo "Bundle merge commit SHA: $MERGE_SHA"
 
+      - name: "Wait: Resolve effective SHA (no bundle changes)"
+        if: steps.p2_create_pr.conclusion == 'success' && steps.p2_create_pr.outputs.pull-request-number == ''
+        id: effective_sha
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          MERGE_SHA=$(gh api "repos/${{ github.repository }}/git/ref/heads/${{ steps.branch.outputs.target }}" --jq '.object.sha')
+          echo "sha=$MERGE_SHA" >> "$GITHUB_OUTPUT"
+          echo "No bundle changes — using current HEAD as effective SHA: $MERGE_SHA"
+
       - name: "Wait: Poll post-merge Konflux bundle build"
         if: steps.p2_merge.outcome == 'success'
         env:
@@ -599,22 +617,58 @@ jobs:
       # ──────────────────────────────────────────────
 
       - name: "Set stage: Metadata PR"
-        if: steps.p2_merge.outcome == 'success'
+        if: steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success'
         run: echo "CURRENT_STAGE=Metadata PR" >> "$GITHUB_ENV"
 
+      - name: "Metadata PR: Fetch Konflux Snapshot"
+        if: steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success'
+        id: fetch_snapshot
+        env:
+          KONFLUX_URL: ${{ secrets.KONFLUX_URL }}
+          KONFLUX_TOKEN: ${{ secrets.KONFLUX_TOKEN }}
+        run: |
+          SHA="${{ steps.p2_merge_sha.outputs.sha }}"
+          if [[ -z "$SHA" ]]; then SHA="${{ steps.effective_sha.outputs.sha }}"; fi
+
+          echo "Querying Konflux snapshot for sha=$SHA"
+
+          kubectl config set-cluster konflux --server="$KONFLUX_URL" --insecure-skip-tls-verify=true
+          kubectl config set-credentials konflux --token="$KONFLUX_TOKEN"
+          kubectl config set-context konflux --cluster=konflux --user=konflux --namespace=rh-openshift-gitops-tenant
+          kubectl config use-context konflux
+
+          SNAPSHOT_NAME=$(kubectl get snapshots.appstudio.redhat.com \
+            -l "pac.test.appstudio.openshift.io/sha=$SHA,pac.test.appstudio.openshift.io/state=completed,pac.test.appstudio.openshift.io/event-type=push" \
+            -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)
+
+          if [[ -z "$SNAPSHOT_NAME" ]]; then
+            echo "No Konflux snapshot found for sha=$SHA"
+            exit 1
+          fi
+
+          # Save full snapshot YAML for the metadata step
+          kubectl get snapshots.appstudio.redhat.com "$SNAPSHOT_NAME" \
+            -o yaml > "$RUNNER_TEMP/snapshot.yaml"
+
+          echo "Found Konflux snapshot: $SNAPSHOT_NAME"
+          echo "name=$SNAPSHOT_NAME" >> "$GITHUB_OUTPUT"
+
       - name: "Metadata PR: Prepare metadata file"
-        if: steps.p2_merge.outcome == 'success'
+        if: steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success'
         id: metadata_prep
         run: |
           BUILD=$(cat BUILD)
           TIMESTAMP=$(date -u +"%Y%m%d-%H%M%S")
+          SHA="${{ steps.p2_merge_sha.outputs.sha }}"
+          if [[ -z "$SHA" ]]; then SHA="${{ steps.effective_sha.outputs.sha }}"; fi
           python3 hack/generate-build-data.py \
-            --commit "${{ steps.p2_merge_sha.outputs.sha }}"
+            --commit "$SHA" \
+            --snapshot-file "$RUNNER_TEMP/snapshot.yaml"
           echo "build=$BUILD" >> "$GITHUB_OUTPUT"
           echo "ts=$TIMESTAMP" >> "$GITHUB_OUTPUT"
 
       - name: "Metadata PR: Create Pull Request"
-        if: steps.p2_merge.outcome == 'success'
+        if: steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success'
         id: metadata_create_pr
         uses: peter-evans/create-pull-request@v6
         with:
@@ -634,7 +688,7 @@ jobs:
             auto-merge
 
       - name: "Metadata PR: Merge Pull Request"
-        if: steps.p2_merge.outcome == 'success' && steps.metadata_create_pr.outputs.pull-request-number != ''
+        if: (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success') && steps.metadata_create_pr.outputs.pull-request-number != ''
         id: metadata_merge
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -661,23 +715,23 @@ jobs:
       # ──────────────────────────────────────────────
 
       - name: "Set stage: Catalog Build"
-        if: steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build'
+        if: steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build'
         run: echo "CURRENT_STAGE=Catalog Build" >> "$GITHUB_ENV"
 
       # ── Nightly path: consolidated PR on stable branch ──
 
       - name: "Catalog Build [nightly]: Generate catalog"
         if: |
-          github.event_name == 'schedule' &&
-          (steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
+          (github.event_name == 'schedule' || inputs.NIGHTLY) &&
+          (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
         run: |
           BUILD=$(cat BUILD)
           make catalog NIGHTLY=true
 
       - name: "Catalog Build [nightly]: Commit and push"
         if: |
-          github.event_name == 'schedule' &&
-          (steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
+          (github.event_name == 'schedule' || inputs.NIGHTLY) &&
+          (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
@@ -707,8 +761,8 @@ jobs:
 
       - name: "Catalog Build [nightly]: Create PR"
         if: |
-          github.event_name == 'schedule' &&
-          (steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build') &&
+          (github.event_name == 'schedule' || inputs.NIGHTLY) &&
+          (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build') &&
           env.CATALOG_CHANGED == 'true'
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -743,14 +797,14 @@ jobs:
 
       - name: "Catalog Build [rc]: Generate catalog"
         if: |
-          github.event_name == 'workflow_dispatch' &&
-          (steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
+          github.event_name == 'workflow_dispatch' && !inputs.NIGHTLY &&
+          (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
         run: make catalog
 
       - name: "Catalog Build [rc]: Prepare metadata"
         if: |
-          github.event_name == 'workflow_dispatch' &&
-          (steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
+          github.event_name == 'workflow_dispatch' && !inputs.NIGHTLY &&
+          (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
         id: p3_metadata
         run: |
           BUILD=$(cat BUILD)
@@ -771,8 +825,8 @@ jobs:
 
       - name: "Catalog Build [rc]: Create catalog pull request"
         if: |
-          github.event_name == 'workflow_dispatch' &&
-          (steps.p2_merge.outcome == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
+          github.event_name == 'workflow_dispatch' && !inputs.NIGHTLY &&
+          (steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success' || (inputs.START_FROM || 'full-build') == 'catalog-build')
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GH_TOKEN }}
