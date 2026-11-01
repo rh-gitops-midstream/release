@@ -1,0 +1,2939 @@
+{
+  "roxctl_new": [
+    {
+      "cve": "CVE-2020-8911",
+      "advisory": [],
+      "summary": "CBC padding oracle issue in AWS S3 Crypto SDK for golang in github.com/aws/aws-sdk-go",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2020-8911"
+      ],
+      "fixedBy": "",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/aws/aws-sdk-go",
+          "version": "v1.45.20",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2020-8912",
+      "advisory": [],
+      "summary": "In-band key negotiation issue in AWS S3 Crypto SDK for golang in github.com/aws/aws-sdk-go",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2020-8912"
+      ],
+      "fixedBy": "",
+      "severity": "LOW_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/aws/aws-sdk-go",
+          "version": "v1.45.20",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2024-25621",
+      "advisory": [],
+      "summary": "containerd affected by a local privilege escalation via wide permissions on CRI directory",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-pwhc-rpq9-4c8w"
+      ],
+      "fixedBy": "1.7.29",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/containerd/containerd",
+          "version": "v1.7.11",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2024-34155",
+      "advisory": [],
+      "summary": "Stack exhaustion in all Parse functions in go/parser",
+      "links": [
+        "https://go.dev/cl/611238"
+      ],
+      "fixedBy": "1.22.7",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2024-34156",
+      "advisory": [],
+      "summary": "Stack exhaustion in Decoder.Decode in encoding/gob",
+      "links": [
+        "https://go.dev/cl/611239"
+      ],
+      "fixedBy": "1.22.7",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2024-34158",
+      "advisory": [],
+      "summary": "Stack exhaustion in Parse in go/build/constraint",
+      "links": [
+        "https://go.dev/cl/611240"
+      ],
+      "fixedBy": "1.22.7",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2024-40635",
+      "advisory": [],
+      "summary": "containerd has an integer overflow in User ID handling",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-265r-hfxg-fhmg"
+      ],
+      "fixedBy": "1.7.27",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/containerd/containerd",
+          "version": "v1.7.11",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2024-41110",
+      "advisory": [],
+      "summary": "Authz zero length regression",
+      "links": [
+        "https://github.com/moby/moby/security/advisories/GHSA-v23v-6jw2-98fq"
+      ],
+      "fixedBy": "25.0.6+incompatible",
+      "severity": "CRITICAL_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/docker/docker",
+          "version": "v24.0.9+incompatible",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2024-45310",
+      "advisory": [],
+      "summary": "runc can be confused to create empty files/directories on the host",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2024-45310"
+      ],
+      "fixedBy": "1.1.14",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/opencontainers/runc",
+          "version": "v1.1.12",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2024-45336",
+      "advisory": [],
+      "summary": "Sensitive headers incorrectly sent after cross-domain redirect in net/http",
+      "links": [
+        "https://go.dev/cl/643100"
+      ],
+      "fixedBy": "1.22.11",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2024-45341",
+      "advisory": [],
+      "summary": "Usage of IPv6 zone IDs can bypass URI name constraints in crypto/x509",
+      "links": [
+        "https://go.dev/cl/643099"
+      ],
+      "fixedBy": "1.22.11",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-0913",
+      "advisory": [],
+      "summary": "Inconsistent handling of O_CREATE|O_EXCL on Unix and Windows in os in syscall",
+      "links": [
+        "https://go.dev/cl/672396"
+      ],
+      "fixedBy": "1.23.10",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-21613",
+      "advisory": [],
+      "summary": "go-git has an Argument Injection via the URL field",
+      "links": [
+        "https://github.com/go-git/go-git/security/advisories/GHSA-v725-9546-7q7m"
+      ],
+      "fixedBy": "5.13.0",
+      "severity": "CRITICAL_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/go-git/go-git/v5",
+          "version": "v5.11.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-21614",
+      "advisory": [],
+      "summary": "go-git clients vulnerable to DoS via maliciously crafted Git server replies",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-r9px-m959-cxf4"
+      ],
+      "fixedBy": "5.13.0",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/go-git/go-git/v5",
+          "version": "v5.11.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-22866",
+      "advisory": [],
+      "summary": "Timing sidechannel for P-256 on ppc64le in crypto/internal/nistec",
+      "links": [
+        "https://go.dev/cl/643735"
+      ],
+      "fixedBy": "1.22.12",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-22868",
+      "advisory": [],
+      "summary": "golang.org/x/oauth2 Improper Validation of Syntactic Correctness of Input vulnerability",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-6v2p-p543-phr9"
+      ],
+      "fixedBy": "0.27.0",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "golang.org/x/oauth2",
+          "version": "v0.16.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-22869",
+      "advisory": [],
+      "summary": "golang.org/x/crypto Vulnerable to Denial of Service (DoS) via Slow or Incomplete Key Exchange",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-hcg3-q754-cr77"
+      ],
+      "fixedBy": "0.35.0",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-22870",
+      "advisory": [],
+      "summary": "HTTP Proxy bypass using IPv6 Zone IDs in golang.org/x/net",
+      "links": [
+        "https://go.dev/cl/654697"
+      ],
+      "fixedBy": "1.23.7",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-22871",
+      "advisory": [],
+      "summary": "Request smuggling due to acceptance of invalid chunked data in net/http",
+      "links": [
+        "https://go.dev/cl/652998"
+      ],
+      "fixedBy": "1.23.8",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-22873",
+      "advisory": [],
+      "summary": "Improper access to parent directory of root in os",
+      "links": [
+        "https://go.dev/cl/670036"
+      ],
+      "fixedBy": "1.23.9",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-31133",
+      "advisory": [],
+      "summary": "runc container escape via \"masked path\" abuse due to mount race conditions",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2025-31133"
+      ],
+      "fixedBy": "1.2.8",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/opencontainers/runc",
+          "version": "v1.1.12",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-4673",
+      "advisory": [],
+      "summary": "Sensitive headers not cleared on cross-origin redirect in net/http",
+      "links": [
+        "https://go.dev/cl/679257"
+      ],
+      "fixedBy": "1.23.10",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-47906",
+      "advisory": [],
+      "summary": "Unexpected paths returned from LookPath in os/exec",
+      "links": [
+        "https://go.dev/cl/691775"
+      ],
+      "fixedBy": "1.23.12",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-47907",
+      "advisory": [],
+      "summary": "Incorrect results returned from Rows.Scan in database/sql",
+      "links": [
+        "https://go.dev/cl/693735"
+      ],
+      "fixedBy": "1.23.12",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-47912",
+      "advisory": [],
+      "summary": "Insufficient validation of bracketed IPv6 hostnames in net/url",
+      "links": [
+        "https://go.dev/issue/75678"
+      ],
+      "fixedBy": "1.24.8",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-47913",
+      "advisory": [],
+      "summary": "Potential denial of service in golang.org/x/crypto/ssh/agent",
+      "links": [
+        "https://go.dev/cl/700295"
+      ],
+      "fixedBy": "0.43.0",
+      "severity": "",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-47914",
+      "advisory": [],
+      "summary": "golang.org/x/crypto/ssh/agent vulnerable to panic if message is malformed due to out of bounds read",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-f6x5-jh6r-wrfv"
+      ],
+      "fixedBy": "0.45.0",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-52565",
+      "advisory": [],
+      "summary": "runc container escape with malicious config due to /dev/console mount and related races",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2025-52565"
+      ],
+      "fixedBy": "1.2.8",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/opencontainers/runc",
+          "version": "v1.1.12",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-52881",
+      "advisory": [],
+      "summary": "runc container escape and denial of service due to arbitrary write gadgets and procfs write redirects",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2025-52881"
+      ],
+      "fixedBy": "1.2.8",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/opencontainers/runc",
+          "version": "v1.1.12",
+          "source": "usr/bin/oc"
+        },
+        {
+          "component": "github.com/opencontainers/selinux",
+          "version": "v1.11.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-54410",
+      "advisory": [],
+      "summary": "Moby firewalld reload removes bridge network isolation",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-4vq8-7jfc-9cvp"
+      ],
+      "fixedBy": "25.0.13+incompatible",
+      "severity": "LOW_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/docker/docker",
+          "version": "v24.0.9+incompatible",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-58058",
+      "advisory": [],
+      "summary": "github.com/ulikunitz/xz leaks memory when decoding a corrupted multiple LZMA archives",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-jc7w-c686-c4v9"
+      ],
+      "fixedBy": "0.5.15",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/ulikunitz/xz",
+          "version": "v0.5.11",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-58181",
+      "advisory": [],
+      "summary": "golang.org/x/crypto/ssh allows an attacker to cause unbounded memory consumption",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-j5w8-q4qc-rx2x"
+      ],
+      "fixedBy": "0.45.0",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-58183",
+      "advisory": [],
+      "summary": "Unbounded allocation when parsing GNU sparse map in archive/tar",
+      "links": [
+        "https://go.dev/cl/709861"
+      ],
+      "fixedBy": "1.24.8",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-58185",
+      "advisory": [],
+      "summary": "Parsing DER payload can cause memory exhaustion in encoding/asn1",
+      "links": [
+        "https://go.dev/issue/75671"
+      ],
+      "fixedBy": "1.24.8",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-58186",
+      "advisory": [],
+      "summary": "Lack of limit when parsing cookies can cause memory exhaustion in net/http",
+      "links": [
+        "https://go.dev/issue/75672"
+      ],
+      "fixedBy": "1.24.8",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-58187",
+      "advisory": [],
+      "summary": "Quadratic complexity when checking name constraints in crypto/x509",
+      "links": [
+        "https://go.dev/issue/75681"
+      ],
+      "fixedBy": "1.24.9",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-58188",
+      "advisory": [],
+      "summary": "Panic when validating certificates with DSA public keys in crypto/x509",
+      "links": [
+        "https://go.dev/cl/709853"
+      ],
+      "fixedBy": "1.24.8",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-58189",
+      "advisory": [],
+      "summary": "ALPN negotiation error contains attacker controlled information in crypto/tls",
+      "links": [
+        "https://go.dev/cl/707776"
+      ],
+      "fixedBy": "1.24.8",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-61723",
+      "advisory": [],
+      "summary": "Quadratic complexity when parsing some invalid inputs in encoding/pem",
+      "links": [
+        "https://go.dev/issue/75676"
+      ],
+      "fixedBy": "1.24.8",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-61724",
+      "advisory": [],
+      "summary": "Excessive CPU consumption in Reader.ReadResponse in net/textproto",
+      "links": [
+        "https://go.dev/cl/709859"
+      ],
+      "fixedBy": "1.24.8",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-61725",
+      "advisory": [],
+      "summary": "Excessive CPU consumption in ParseAddress in net/mail",
+      "links": [
+        "https://go.dev/cl/709860"
+      ],
+      "fixedBy": "1.24.8",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-61726",
+      "advisory": [],
+      "summary": "Memory exhaustion in query parameter parsing in net/url",
+      "links": [
+        "https://go.dev/cl/736712"
+      ],
+      "fixedBy": "1.24.12",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-61727",
+      "advisory": [],
+      "summary": "Improper application of excluded DNS name constraints when verifying wildcard names in crypto/x509",
+      "links": [
+        "https://go.dev/cl/723900"
+      ],
+      "fixedBy": "1.24.11",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-61728",
+      "advisory": [],
+      "summary": "Excessive CPU consumption when building archive index in archive/zip",
+      "links": [
+        "https://go.dev/cl/736713"
+      ],
+      "fixedBy": "1.24.12",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-61729",
+      "advisory": [],
+      "summary": "Excessive resource consumption when printing error string for host certificate validation in crypto/x509",
+      "links": [
+        "https://go.dev/cl/725920"
+      ],
+      "fixedBy": "1.24.11",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-61730",
+      "advisory": [],
+      "summary": "Handshake messages may be processed at the incorrect encryption level in crypto/tls",
+      "links": [
+        "https://go.dev/cl/724120"
+      ],
+      "fixedBy": "1.24.12",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-64329",
+      "advisory": [],
+      "summary": "containerd CRI server: Host memory exhaustion through Attach goroutine leak",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2025-64329"
+      ],
+      "fixedBy": "1.7.29",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/containerd/containerd",
+          "version": "v1.7.11",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-66506",
+      "advisory": [],
+      "summary": "Fulcio allocates excessive memory during token parsing",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-f83f-xpx7-ffpw"
+      ],
+      "fixedBy": "1.8.3",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/sigstore/fulcio",
+          "version": "v1.4.3",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2025-68121",
+      "advisory": [],
+      "summary": "Unexpected session resumption in crypto/tls",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2025-68121"
+      ],
+      "fixedBy": "1.24.13",
+      "severity": "CRITICAL_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-111943",
+      "advisory": [],
+      "summary": "Distrust compromised intermediate certificates in crypto/x509",
+      "links": [
+        "https://go.dev/cl/851047"
+      ],
+      "fixedBy": "1.26.10",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-116585",
+      "advisory": [],
+      "summary": "Go JOSE: Panic during CBC-HMAC processing",
+      "links": [
+        "https://github.com/go-jose/go-jose/security/advisories/GHSA-4w3g-jfj2-cw2q"
+      ],
+      "fixedBy": "4.1.5",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/go-jose/go-jose/v4",
+          "version": "v4.0.5",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-116586",
+      "advisory": [],
+      "summary": "Go JOSE: Panics in JSON parsing",
+      "links": [
+        "https://github.com/go-jose/go-jose/security/advisories/GHSA-vvm8-gf78-28g4"
+      ],
+      "fixedBy": "4.1.5",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/go-jose/go-jose/v4",
+          "version": "v4.0.5",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-116587",
+      "advisory": [],
+      "summary": "Go JOSE: DoS when parsing JWKs that contain RSA keys",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-mgcc-cww5-fp2q"
+      ],
+      "fixedBy": "4.1.6",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/go-jose/go-jose/v4",
+          "version": "v4.0.5",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-11979",
+      "advisory": [
+        {
+          "name": "RHSA-2026:89750",
+          "link": "https://access.redhat.com/errata/RHSA-2026:89750"
+        }
+      ],
+      "summary": "A flaw was found in libxml2, specifically within the xmlcatalog utility when operating in shell mode. An attacker can exploit multiple stack-based buffer overflows by providing an excessively long input line. This leads to memory corruption, which may cause the application to crash or potentially allow the attacker to execute arbitrary code within the context of the xmlcatalog process.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-11979"
+      ],
+      "fixedBy": "0:2.9.13-13.el9_4.10",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "libxml2",
+          "version": "2.9.13-13.el9_4.2",
+          "source": "var/lib/rpm"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-15789",
+      "advisory": [],
+      "summary": "A flaw was found in BuildKit. A custom client with valid permissions to access the BuildKit control API can produce an upload request that allows files to escape from the BuildKit-controlled state directory. This could lead to unauthorized modification or disclosure of sensitive data.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-15789"
+      ],
+      "fixedBy": "",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "openshift-gitops-1/must-gather-rhel9",
+          "version": "1793434119",
+          "source": "root/buildinfo/labels.json"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-22772",
+      "advisory": [],
+      "summary": "Fulcio is vulnerable to Server-Side Request Forgery (SSRF) via MetaIssuer Regex Bypass",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-59jp-pj84-45mr"
+      ],
+      "fixedBy": "1.8.5",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/sigstore/fulcio",
+          "version": "v1.4.3",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-2303",
+      "advisory": [],
+      "summary": "mongo-go-driver has Heap Out-of-Bounds Read in GSSAPI Error Handling",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-2303"
+      ],
+      "fixedBy": "1.17.7",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "go.mongodb.org/mongo-driver",
+          "version": "v1.11.3",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-23831",
+      "advisory": [],
+      "summary": "Rekor's COSE v0.0.1 entry type nil pointer dereference in Canonicalize via empty Message",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-273p-m2cw-6833"
+      ],
+      "fixedBy": "1.5.0",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/sigstore/rekor",
+          "version": "v1.2.2",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-24117",
+      "advisory": [],
+      "summary": "Rekor affected by Server-Side Request Forgery (SSRF) via provided public key URL",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-4c4x-jm2x-pf9j"
+      ],
+      "fixedBy": "1.5.0",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/sigstore/rekor",
+          "version": "v1.2.2",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-24137",
+      "advisory": [],
+      "summary": "sigstore legacy TUF client allows for arbitrary file writes with target cache path traversal",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-fcv2-xgw5-pqxf"
+      ],
+      "fixedBy": "1.10.4",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/sigstore/sigstore",
+          "version": "v1.7.5",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-25679",
+      "advisory": [],
+      "summary": "Incorrect parsing of IPv6 host literals in net/url",
+      "links": [
+        "https://go.dev/cl/752180"
+      ],
+      "fixedBy": "1.25.8",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-25934",
+      "advisory": [],
+      "summary": "go-git improperly verifies data integrity values for .idx and .pack files",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-37cx-329c-33x3"
+      ],
+      "fixedBy": "5.16.5",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/go-git/go-git/v5",
+          "version": "v5.11.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-27139",
+      "advisory": [],
+      "summary": "FileInfo can escape from a Root in os",
+      "links": [
+        "https://groups.google.com/g/golang-announce/c/EdhZqrQ98hk"
+      ],
+      "fixedBy": "1.25.8",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-27142",
+      "advisory": [],
+      "summary": "URLs in meta content attribute actions are not escaped in html/template",
+      "links": [
+        "https://groups.google.com/g/golang-announce/c/EdhZqrQ98hk"
+      ],
+      "fixedBy": "1.25.8",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-27145",
+      "advisory": [],
+      "summary": "Inefficient candidate hostname parsing in crypto/x509",
+      "links": [
+        "https://go.dev/cl/783621"
+      ],
+      "fixedBy": "1.25.11",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-32280",
+      "advisory": [],
+      "summary": "Unexpected work during chain building in crypto/x509",
+      "links": [
+        "https://go.dev/cl/758320"
+      ],
+      "fixedBy": "1.25.9",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-32281",
+      "advisory": [],
+      "summary": "Inefficient policy validation in crypto/x509",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-32281"
+      ],
+      "fixedBy": "1.25.9",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-32282",
+      "advisory": [],
+      "summary": "TOCTOU permits root escape on Linux via Root.Chmod in os in internal/syscall/unix",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-32282"
+      ],
+      "fixedBy": "1.25.9",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-32283",
+      "advisory": [],
+      "summary": "Unauthenticated TLS 1.3 KeyUpdate record can cause persistent connection retention and DoS in crypto/tls",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-32283"
+      ],
+      "fixedBy": "1.25.9",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-32288",
+      "advisory": [],
+      "summary": "Unbounded allocation for old GNU sparse in archive/tar",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-32288"
+      ],
+      "fixedBy": "1.25.9",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-32289",
+      "advisory": [],
+      "summary": "JsBraceDepth Context Tracking Bugs (XSS) in html/template",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-32289"
+      ],
+      "fixedBy": "1.25.9",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-32952",
+      "advisory": [],
+      "summary": "go-ntlmssp NTLM challenges can panic on malformed payloads",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-pjcq-xvwq-hhpj"
+      ],
+      "fixedBy": "0.1.1",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/Azure/go-ntlmssp",
+          "version": "v0.0.0-20211209120228-48547f28849e",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-33540",
+      "advisory": [],
+      "summary": "Distribution affected by pull-through cache credential exfiltration via www-authenticate bearer realm",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-3p65-76g6-3w7r"
+      ],
+      "fixedBy": "3.1.0",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/distribution/distribution/v3",
+          "version": "v3.0.0-20230519140516-983358f8e250",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-33747",
+      "advisory": [],
+      "summary": "BuildKit's Malicious frontend can cause file escape outside of storage root",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-4c29-8rgm-jvjj"
+      ],
+      "fixedBy": "0.28.1",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/moby/buildkit",
+          "version": "v0.12.5",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-33748",
+      "advisory": [],
+      "summary": "BuildKit Git URL subdir component can cause access to restricted files",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-33748"
+      ],
+      "fixedBy": "0.28.1",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/moby/buildkit",
+          "version": "v0.12.5",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-33762",
+      "advisory": [],
+      "summary": "go-git missing validation decoding Index v4 files leads to panic",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-gm2x-2g9h-ccm8"
+      ],
+      "fixedBy": "5.17.1",
+      "severity": "LOW_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/go-git/go-git/v5",
+          "version": "v5.11.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-33811",
+      "advisory": [],
+      "summary": "Crash when handling long CNAME response in net",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-33811"
+      ],
+      "fixedBy": "1.25.10",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-33814",
+      "advisory": [],
+      "summary": "Infinite loop in HTTP/2 transport when given bad SETTINGS_MAX_FRAME_SIZE in net/http/internal/http2 in golang.org/x/net",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-33814"
+      ],
+      "fixedBy": "1.25.10",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-33818",
+      "advisory": [],
+      "summary": "Enforce maximum recursion depth in encoding/asn1",
+      "links": [
+        "https://go.dev/issue/80405"
+      ],
+      "fixedBy": "1.25.13",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-33997",
+      "advisory": [],
+      "summary": "Moby has an Off-by-one error in its plugin privilege validation",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-pxq6-2prw-chj9"
+      ],
+      "fixedBy": "",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/docker/docker",
+          "version": "v24.0.9+incompatible",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-34040",
+      "advisory": [],
+      "summary": "Moby has AuthZ plugin bypass when provided oversized request bodies in github.com/docker/docker",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-34040"
+      ],
+      "fixedBy": "",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/docker/docker",
+          "version": "v24.0.9+incompatible",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-34165",
+      "advisory": [],
+      "summary": "go-git: Maliciously crafted idx file can cause asymmetric memory consumption",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-jhf3-xxhw-2wpp"
+      ],
+      "fixedBy": "5.17.1",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/go-git/go-git/v5",
+          "version": "v5.11.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-34986",
+      "advisory": [],
+      "summary": "Go JOSE Panics in JWE decryption",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-78h2-9frx-2jm8"
+      ],
+      "fixedBy": "4.1.4",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/go-jose/go-jose/v4",
+          "version": "v4.0.5",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-35172",
+      "advisory": [],
+      "summary": "Distribution: stale blob access resurrection via repo-scoped redis descriptor cache invalidation",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-f2g3-hh2r-cwgc"
+      ],
+      "fixedBy": "3.1.0",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/distribution/distribution/v3",
+          "version": "v3.0.0-20230519140516-983358f8e250",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-35469",
+      "advisory": [],
+      "summary": "SpdyStream: DOS on CRI",
+      "links": [
+        "https://github.com/moby/spdystream/security/advisories/GHSA-pc3f-x583-g7j2"
+      ],
+      "fixedBy": "0.5.1",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/moby/spdystream",
+          "version": "v0.2.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-39820",
+      "advisory": [],
+      "summary": "Quadratic string concatentation in consumeComment in net/mail",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-39820"
+      ],
+      "fixedBy": "1.25.10",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-39821",
+      "advisory": [],
+      "summary": "Invoking failure to reject ASCII-only Punycode-encoded labels in golang.org/x/net/idna",
+      "links": [
+        "https://go.dev/cl/767220"
+      ],
+      "fixedBy": "1.25.13",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-39822",
+      "advisory": [],
+      "summary": "Root escape via symlink plus trailing slash in os",
+      "links": [
+        "https://go.dev/issue/79005"
+      ],
+      "fixedBy": "1.25.12",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-39823",
+      "advisory": [],
+      "summary": "Bypass of meta content URL escaping causes XSS in html/template",
+      "links": [
+        "https://go.dev/issue/78913"
+      ],
+      "fixedBy": "1.25.10",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-39824",
+      "advisory": [],
+      "summary": "Invoking integer overflow in NewNTUnicodeString in golang.org/x/sys/windows",
+      "links": [
+        "https://go.dev/issue/78916"
+      ],
+      "fixedBy": "0.44.0",
+      "severity": "",
+      "components": [
+        {
+          "component": "golang.org/x/sys",
+          "version": "v0.30.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-39825",
+      "advisory": [],
+      "summary": "ReverseProxy forwards queries with more than urlmaxqueryparams parameters in net/http/httputil",
+      "links": [
+        "https://go.dev/cl/770541"
+      ],
+      "fixedBy": "1.25.10",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-39826",
+      "advisory": [],
+      "summary": "Escaper bypass leads to XSS in html/template",
+      "links": [
+        "https://go.dev/issue/78981"
+      ],
+      "fixedBy": "1.25.10",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-39827",
+      "advisory": [],
+      "summary": "golang.org/x/crypto: Invoking memory leak when rejecting channels can lead to DoS",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-qpw4-5x99-6vjp"
+      ],
+      "fixedBy": "0.52.0",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-39828",
+      "advisory": [],
+      "summary": "golang.org/x/crypto vulnerable to invoking bypass of certificate restrictions",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-45gg-vh54-h5m9"
+      ],
+      "fixedBy": "0.52.0",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-39829",
+      "advisory": [],
+      "summary": "golang.org/x/crypto: Invoking pathological RSA/DSA parameters may cause DoS",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-w879-237q-wc7r"
+      ],
+      "fixedBy": "0.52.0",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-39830",
+      "advisory": [],
+      "summary": "golang.org/x/crypto: Invoking client can cause server deadlock on unexpected responses",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-vgwf-h737-ff37"
+      ],
+      "fixedBy": "0.52.0",
+      "severity": "CRITICAL_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-39831",
+      "advisory": [],
+      "summary": "golang.org/x/crypto: FIDO/U2F security key physical presence check can be bypassed",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-89gr-r52h-f8rx"
+      ],
+      "fixedBy": "0.52.0",
+      "severity": "CRITICAL_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-39832",
+      "advisory": [],
+      "summary": "golang.org/x/crypto doesn't drop invoking agent constraints when forwarding keys",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-f5wc-c3c7-36mc"
+      ],
+      "fixedBy": "0.52.0",
+      "severity": "CRITICAL_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-39833",
+      "advisory": [],
+      "summary": "A flaw was found in golang.org/x/crypto/ssh/agent. The NewKeyring() function, which creates an in-memory keyring, failed to enforce the ConfirmBeforeUse constraint on keys. This allowed keys configured to require user confirmation before use to perform signing operations without any prompt or indication to the user. Consequently, an attacker could potentially bypass intended security controls, leading to unauthorized cryptographic signing actions.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-39833"
+      ],
+      "fixedBy": "",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "openshift-gitops-1/must-gather-rhel9",
+          "version": "1793434119",
+          "source": "root/buildinfo/labels.json"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-39834",
+      "advisory": [],
+      "summary": "golang.org/x/crypto vulnerable to infinite loop on large channel writes",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-rm3j-f69w-wqmq"
+      ],
+      "fixedBy": "0.52.0",
+      "severity": "CRITICAL_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-39835",
+      "advisory": [],
+      "summary": "golang.org/x/crypto is vulnerable to invoking server panic during CheckHostKey/Authenticate flow",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-78mq-xcr3-xm33"
+      ],
+      "fixedBy": "0.52.0",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-39836",
+      "advisory": [],
+      "summary": "Panic in Dial and LookupPort when handling NUL byte on Windows in net",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-39836"
+      ],
+      "fixedBy": "1.25.10",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-41506",
+      "advisory": [],
+      "summary": "A flaw was found in go-git, an extensible Git implementation library for Go. This vulnerability allows an attacker to potentially obtain sensitive HTTP authentication credentials. This can occur when go-git follows redirects during smart-HTTP clone and fetch operations, leading to the unintended disclosure of user credentials.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-41506"
+      ],
+      "fixedBy": "",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "openshift-gitops-1/must-gather-rhel9",
+          "version": "1793434119",
+          "source": "root/buildinfo/labels.json"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-41567",
+      "advisory": [],
+      "summary": "Docker: `PUT /containers/{id}/archive` executes container binary on the host",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-x86f-5xw2-fm2r"
+      ],
+      "fixedBy": "",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/docker/docker",
+          "version": "v24.0.9+incompatible",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-41568",
+      "advisory": [],
+      "summary": "A flaw was found in the Moby container framework. A race condition during the `docker cp` mount setup allows a malicious container to create empty files or directories at arbitrary locations on the host filesystem. This vulnerability can lead to a denial of service by filling up disk space or interfering with critical system files.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-41568"
+      ],
+      "fixedBy": "",
+      "severity": "LOW_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "openshift-gitops-1/must-gather-rhel9",
+          "version": "1793434119",
+          "source": "root/buildinfo/labels.json"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-41579",
+      "advisory": [],
+      "summary": "runc: Malicious image with /dev symlink can trigger limited host filesystem integrity violations ",
+      "links": [
+        "https://github.com/opencontainers/runc/security/advisories/GHSA-xjvp-4fhw-gc47"
+      ],
+      "fixedBy": "1.3.6",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/opencontainers/runc",
+          "version": "v1.1.12",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-41888",
+      "advisory": [],
+      "summary": "Distribution's tag deletion bypasses `storage.delete.enabled` configuration",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-41888"
+      ],
+      "fixedBy": "3.1.1",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/distribution/distribution/v3",
+          "version": "v3.0.0-20230519140516-983358f8e250",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-42306",
+      "advisory": [],
+      "summary": "A flaw was found in the Moby container framework. A race condition occurs during the `docker cp` mount setup, which a malicious container can exploit. This vulnerability allows the container to redirect a bind mount target to an arbitrary path on the host system. Consequently, an attacker could overwrite host files, potentially leading to data corruption or a denial of service.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-42306"
+      ],
+      "fixedBy": "",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "openshift-gitops-1/must-gather-rhel9",
+          "version": "1793434119",
+          "source": "root/buildinfo/labels.json"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-42499",
+      "advisory": [],
+      "summary": "Quadratic string concatenation in consumePhrase in net/mail",
+      "links": [
+        "https://go.dev/issue/78987"
+      ],
+      "fixedBy": "1.25.10",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-42504",
+      "advisory": [],
+      "summary": "Quadratic complexity in WordDecoder.DecodeHeader in mime",
+      "links": [
+        "https://go.dev/issue/79217"
+      ],
+      "fixedBy": "1.25.11",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-42505",
+      "advisory": [],
+      "summary": "Invoking Encrypted Client Hello privacy leak in crypto/tls",
+      "links": [
+        "https://go.dev/cl/775960"
+      ],
+      "fixedBy": "1.25.12",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-42507",
+      "advisory": [],
+      "summary": "Arbitrary inputs are included in errors without any escaping in net/textproto",
+      "links": [
+        "https://go.dev/issue/79346"
+      ],
+      "fixedBy": "1.25.11",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-42508",
+      "advisory": [],
+      "summary": "golang.org/x/crypto vulnerable to auth bypass via unenforced @revoked status",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-5cgq-3rg8-m6cv"
+      ],
+      "fixedBy": "0.52.0",
+      "severity": "CRITICAL_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-44740",
+      "advisory": [],
+      "summary": "A flaw was found in Billy, an interface filesystem abstraction for Go. This vulnerability allows a remote attacker to cause a Denial of Service (DoS) by providing crafted or malformed input. The issue arises from insufficient validation and missing safety mechanisms when processing untrusted repository data and filesystem structures, leading to panics, infinite loops, uncontrolled recursion, or excessive resource consumption.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-44740"
+      ],
+      "fixedBy": "",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "openshift-gitops-1/must-gather-rhel9",
+          "version": "1793434119",
+          "source": "root/buildinfo/labels.json"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-44973",
+      "advisory": [],
+      "summary": "go-billy has path traversal vulnerabilities",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-qw64-3x98-g7q2"
+      ],
+      "fixedBy": "5.9.0",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/go-git/go-billy/v5",
+          "version": "v5.5.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-45022",
+      "advisory": [],
+      "summary": "go-git's improper parsing of specially crafted objects may lead to inconsistent interpretation compared to upstream Git",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-45022"
+      ],
+      "fixedBy": "5.19.0",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/go-git/go-git/v5",
+          "version": "v5.11.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-45570",
+      "advisory": [],
+      "summary": "Improper single-quote escaping in go-git SSH transport in github.com/go-git/go-git",
+      "links": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-45570"
+      ],
+      "fixedBy": "5.19.1",
+      "severity": "CRITICAL_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/go-git/go-git/v5",
+          "version": "v5.11.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-45571",
+      "advisory": [],
+      "summary": "go-git: Crafted repositories may modify main and submodule .git directories",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-crhj-59gh-8x96"
+      ],
+      "fixedBy": "5.19.1",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/go-git/go-git/v5",
+          "version": "v5.11.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-46595",
+      "advisory": [],
+      "summary": "golang.org/x/crypto: Invoking VerifiedPublicKeyCallback permissions skip enforcement",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-x527-x647-q7gg"
+      ],
+      "fixedBy": "0.52.0",
+      "severity": "CRITICAL_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-46597",
+      "advisory": [],
+      "summary": "golang.org/x/crypto: Invoking byte arithmetic causes underflow and panic",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-q4h4-gmj2-qvw2"
+      ],
+      "fixedBy": "0.52.0",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-46598",
+      "advisory": [],
+      "summary": "golang.org/x/crypto: Invoking pathological inputs can lead to client panic",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-9m57-25v3-79x9"
+      ],
+      "fixedBy": "0.52.0",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-49478",
+      "advisory": [],
+      "summary": "A flaw was found in Fulcio's OpenID Connect (OIDC) Discovery client. This vulnerability allows a remote attacker to perform Server-Side Request Forgery (SSRF) by redirecting discovery requests to internal systems. Additionally, an attacker can manipulate the JSON Web Key Set (JWKS) Uniform Resource Identifier (URI) to poison the verifier cache with malicious keys, enabling the validation of attacker-controlled signatures. Furthermore, the flaw can lead to the leakage of Kubernetes ServiceAccount tokens to third-party hosts through cross-host redirects or misconfigured MetaIssuers, potentially exposing sensitive cluster credentials.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-49478"
+      ],
+      "fixedBy": "",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "openshift-gitops-1/must-gather-rhel9",
+          "version": "1793434119",
+          "source": "root/buildinfo/labels.json"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-53488",
+      "advisory": [],
+      "summary": "A flaw was found in containerd, an open-source container runtime. The Container Runtime Interface (CRI) plugin, which manages container operations, fails to validate labels propagated from an image configuration to a container. This oversight could enable an attacker to execute arbitrary commands on the host system through a plugin that processes these unvalidated labels. The primary impact is host-root command execution, allowing unauthorized control over the underlying system.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-53488"
+      ],
+      "fixedBy": "",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "openshift-gitops-1/must-gather-rhel9",
+          "version": "1793434119",
+          "source": "root/buildinfo/labels.json"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-53492",
+      "advisory": [],
+      "summary": "A flaw was found in containerd, an open-source container runtime. The Container Runtime Interface (CRI) implementation, which allows Kubernetes to interact with container runtimes, improperly trusts Container Device Interface (CDI) annotations found within untrusted checkpoint image metadata during container restoration. This vulnerability enables a user with permissions to create pods to bypass standard Kubernetes resource allocation and device plugin enforcement. Consequently, an attacker can inject arbitrary CDI edits, such as device nodes and host mounts, into the restored container, potentially leading to unauthorized resource access or privilege escalation.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-53492"
+      ],
+      "fixedBy": "",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "openshift-gitops-1/must-gather-rhel9",
+          "version": "1793434119",
+          "source": "root/buildinfo/labels.json"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-53493",
+      "advisory": [],
+      "summary": "Containerd has image-pull DoS via crafted OCI index graph amplification",
+      "links": [
+        "https://github.com/containerd/containerd/security/advisories/GHSA-pg57-6jwg-q645"
+      ],
+      "fixedBy": "1.7.36",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/containerd/containerd",
+          "version": "v1.7.11",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-53495",
+      "advisory": [],
+      "summary": "A flaw was found in containerd. When the Container Runtime Interface (CRI) plugin is enabled on Linux, repeated use of CRI ExecSync by exec probes or lifecycle hooks can cause goroutines to become indefinitely blocked. This leads to resource exhaustion and can terminate the containerd process, making the container runtime unavailable. This issue specifically affects deployments utilizing containerd's CRI implementation on Linux.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-53495"
+      ],
+      "fixedBy": "",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "openshift-gitops-1/must-gather-rhel9",
+          "version": "1793434119",
+          "source": "root/buildinfo/labels.json"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-56851",
+      "advisory": [],
+      "summary": "Panic parsing crafted input in x/text/secure/precis in golang.org/x/text",
+      "links": [
+        "https://go.dev/cl/793360"
+      ],
+      "fixedBy": "0.41.0",
+      "severity": "",
+      "components": [
+        {
+          "component": "golang.org/x/text",
+          "version": "v0.22.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-56852",
+      "advisory": [],
+      "summary": "Infinite loop on invalid input in golang.org/x/text",
+      "links": [
+        "https://go.dev/issue/80142"
+      ],
+      "fixedBy": "0.39.0",
+      "severity": "",
+      "components": [
+        {
+          "component": "golang.org/x/text",
+          "version": "v0.22.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-56853",
+      "advisory": [],
+      "summary": "Apply ReadHeaderTimeout when doing unencrypted HTTP/2 check in net/http",
+      "links": [
+        "https://go.dev/issue/80205"
+      ],
+      "fixedBy": "1.25.13",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-56854",
+      "advisory": [],
+      "summary": "Source-address critical option not enforced for non-public-key auth callbacks in golang.org/x/crypto/ssh",
+      "links": [
+        "https://go.dev/issue/80213"
+      ],
+      "fixedBy": "0.55.0",
+      "severity": "",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-56855",
+      "advisory": [],
+      "summary": "Prevent DoS on deadlocked established channel in golang.org/x/crypto/ssh",
+      "links": [
+        "https://go.dev/issue/81317"
+      ],
+      "fixedBy": "0.56.0",
+      "severity": "",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-56857",
+      "advisory": [],
+      "summary": "Root.Mkdir(All) can follow junctions out of the root on Windows in os",
+      "links": [
+        "https://go.dev/cl/847305"
+      ],
+      "fixedBy": "1.26.9",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-56858",
+      "advisory": [],
+      "summary": "Fix Javascript regexp context tracking in html/template",
+      "links": [
+        "https://go.dev/issue/80435"
+      ],
+      "fixedBy": "1.25.13",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-56859",
+      "advisory": [],
+      "summary": "Add recursion depth guard during decode in encoding/xml",
+      "links": [
+        "https://go.dev/issue/80481"
+      ],
+      "fixedBy": "1.25.13",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-56860",
+      "advisory": [],
+      "summary": "Avoid quadratic complexity in resolvePath in net/url",
+      "links": [
+        "https://go.dev/cl/803681"
+      ],
+      "fixedBy": "1.25.13",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-56862",
+      "advisory": [],
+      "summary": "Limit handshake messages we are willing to accept post-handshake in crypto/tls",
+      "links": [
+        "https://go.dev/issue/80528"
+      ],
+      "fixedBy": "1.25.13",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-56866",
+      "advisory": [],
+      "summary": "HTTP/1 client connection desynchronization after CONNECT rejection in net/http",
+      "links": [
+        "https://go.dev/cl/847306"
+      ],
+      "fixedBy": "1.26.9",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-61711",
+      "advisory": [],
+      "summary": "A flaw was found in BuildKit. A custom frontend could craft a build request with an invalid security mode, leading to the disabling of Seccomp and AppArmor protections for the build container. This bypasses the intended sandbox mechanisms, potentially allowing for broader impact within the container, even though Linux capabilities remained restricted.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-61711"
+      ],
+      "fixedBy": "",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "openshift-gitops-1/must-gather-rhel9",
+          "version": "1793434119",
+          "source": "root/buildinfo/labels.json"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-61712",
+      "advisory": [],
+      "summary": "A flaw was found in BuildKit. A remote attacker could provide a malicious base image or build with oversized /etc/passwd and /etc/group files. When BuildKit attempts to resolve usernames or group identifiers from these files, it reads them without an upper bound, leading to excessive memory consumption. This can cause the buildkitd process to terminate due to out-of-memory errors, resulting in a Denial of Service (DoS).",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-61712"
+      ],
+      "fixedBy": "",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "openshift-gitops-1/must-gather-rhel9",
+          "version": "1793434119",
+          "source": "root/buildinfo/labels.json"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-63209",
+      "advisory": [],
+      "summary": "Compress/s2: Integer Overflow or Wraparound and Out-of-bounds Write in compress",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-259r-337f-4rfw"
+      ],
+      "fixedBy": "1.18.7",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/klauspost/compress",
+          "version": "v1.17.3",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-6653",
+      "advisory": [
+        {
+          "name": "RHSA-2026:89750",
+          "link": "https://access.redhat.com/errata/RHSA-2026:89750"
+        }
+      ],
+      "summary": "A flaw was found in libxml2. A remote attacker can exploit a use-after-free vulnerability in the `xmlParseInternalSubset` function by providing maliciously crafted XML input. This improper handling of entity resolution can lead to a denial-of-service (DoS), making the affected system or application unavailable.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-6653"
+      ],
+      "fixedBy": "0:2.9.13-13.el9_4.10",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "libxml2",
+          "version": "2.9.13-13.el9_4.2",
+          "source": "var/lib/rpm"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-71556",
+      "advisory": [],
+      "summary": "A flaw was found in go-git, an extensible Git implementation library. Worktree operations, such as checkout, status, and add, resolve symbolic links within the working tree without proper boundary confinement. This allows a remote attacker to craft a malicious repository containing a symlink, which, when cloned and its worktree operations are used, can lead to reading from or writing to arbitrary files outside the intended working directory. This could result in information disclosure or arbitrary file modification.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-71556"
+      ],
+      "fixedBy": "",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "openshift-gitops-1/must-gather-rhel9",
+          "version": "1793434119",
+          "source": "root/buildinfo/labels.json"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-71557",
+      "advisory": [],
+      "summary": "A flaw was found in go-git, an extensible Git implementation library. Maliciously crafted reference names, which can contain directory-traversal sequences, are not properly sanitized. This vulnerability allows an attacker to write files outside of the intended reference storage directory, potentially leading to unauthorized file modification or data integrity issues.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-71557"
+      ],
+      "fixedBy": "",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "openshift-gitops-1/must-gather-rhel9",
+          "version": "1793434119",
+          "source": "root/buildinfo/labels.json"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-74860",
+      "advisory": [
+        {
+          "name": "RHSA-2026:89750",
+          "link": "https://access.redhat.com/errata/RHSA-2026:89750"
+        }
+      ],
+      "summary": "A flaw was found in libxml2 with Python bindings enabled. A remote attacker could exploit this vulnerability by providing a specially crafted XML document containing a Document Type Definition (DTD) with enumerated attribute values. This triggers a double-free error in the SAX attributeDecl callback handler, where a string is freed twice. This flaw can lead to a denial of service (DoS) due to a reproducible crash in Python applications using the libxml2 SAX bindings.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-74860"
+      ],
+      "fixedBy": "0:2.9.13-13.el9_4.10",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "libxml2",
+          "version": "2.9.13-13.el9_4.2",
+          "source": "var/lib/rpm"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-75593",
+      "advisory": [],
+      "summary": "A flaw was found in BuildKit, a toolkit for converting source code to build artifacts. A malicious client with valid permissions to access the BuildKit control API can craft a special upload request. This request allows files to escape from the BuildKit-controlled state directory, potentially leading to unauthorized modification or deletion of files on the system.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-75593"
+      ],
+      "fixedBy": "",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "openshift-gitops-1/must-gather-rhel9",
+          "version": "1793434119",
+          "source": "root/buildinfo/labels.json"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-78659",
+      "advisory": [],
+      "summary": "HTTP/2 server memory exhaustion due to Trailer headers in net/http",
+      "links": [
+        "https://go.dev/cl/847185"
+      ],
+      "fixedBy": "1.26.9",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-78660",
+      "advisory": [],
+      "summary": "HTTP/2 transport accepts malformed framing-related headers in net/http",
+      "links": [
+        "https://go.dev/cl/835145"
+      ],
+      "fixedBy": "1.26.9",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-78662",
+      "advisory": [],
+      "summary": "Prevent DoS on deadlocked undecided channel in golang.org/x/crypto/ssh",
+      "links": [
+        "https://go.dev/issue/81316"
+      ],
+      "fixedBy": "0.56.0",
+      "severity": "",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-78663",
+      "advisory": [],
+      "summary": "Double flow control refund on HTTP/2 server streams in net/http",
+      "links": [
+        "https://go.dev/cl/847187"
+      ],
+      "fixedBy": "1.26.9",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-78667",
+      "advisory": [],
+      "summary": "Lack of limit on size of parsed Range headers in net/http",
+      "links": [
+        "https://go.dev/cl/847309"
+      ],
+      "fixedBy": "1.26.9",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-78669",
+      "advisory": [],
+      "summary": "Excessive CPU consumption from repeated initial window changes in net/http",
+      "links": [
+        "https://go.dev/cl/847186"
+      ],
+      "fixedBy": "1.26.9",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-81521",
+      "advisory": [],
+      "summary": "A flaw was found in the MongoDB Go Driver. The `Client.BulkWrite` operation does not properly validate database names, allowing a specially crafted name with reserved characters to redirect write operations. This vulnerability could enable an attacker to modify or corrupt data in unintended databases and collections.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-81521"
+      ],
+      "fixedBy": "",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "openshift-gitops-1/must-gather-rhel9",
+          "version": "1793434119",
+          "source": "root/buildinfo/labels.json"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-85747",
+      "advisory": [],
+      "summary": "Distribution: Client `manifests.Get()` does not verify returned content against requested digest",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-685w-q87j-wqw3"
+      ],
+      "fixedBy": "3.1.2",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/distribution/distribution/v3",
+          "version": "v3.0.0-20230519140516-983358f8e250",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-86138",
+      "advisory": [
+        {
+          "name": "RHSA-2026:89750",
+          "link": "https://access.redhat.com/errata/RHSA-2026:89750"
+        }
+      ],
+      "summary": "A flaw was found in libxml2, a software library for parsing XML documents. An integer overflow within the `xmlDictAddQString` function can lead to a heap-based buffer overflow. This vulnerability could allow a local attacker to execute arbitrary code on the system, potentially compromising its integrity and confidentiality.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-86138"
+      ],
+      "fixedBy": "0:2.9.13-13.el9_4.10",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "libxml2",
+          "version": "2.9.13-13.el9_4.2",
+          "source": "var/lib/rpm"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-86140",
+      "advisory": [
+        {
+          "name": "RHSA-2026:89750",
+          "link": "https://access.redhat.com/errata/RHSA-2026:89750"
+        }
+      ],
+      "summary": "A flaw was found in libxml2. A local attacker could exploit a stack-based buffer overflow in the `xmlSnprintfElements` function to achieve arbitrary code execution. This vulnerability in a fundamental system library could lead to significant system compromise if successfully exploited.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-86140"
+      ],
+      "fixedBy": "0:2.9.13-13.el9_4.10",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "libxml2",
+          "version": "2.9.13-13.el9_4.2",
+          "source": "var/lib/rpm"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-86142",
+      "advisory": [
+        {
+          "name": "RHSA-2026:89750",
+          "link": "https://access.redhat.com/errata/RHSA-2026:89750"
+        }
+      ],
+      "summary": "A flaw in libxml2's xmlXPtrEvalXPtrPart function allows a local attacker to cause a heap-based buffer overflow. An integer overflow while processing an oversized xpointer() expression leads to incorrect memory allocation and an out-of-bounds write, potentially resulting in information disclosure, data corruption, or a denial of service (DoS).",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-86142"
+      ],
+      "fixedBy": "0:2.9.13-13.el9_4.10",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "libxml2",
+          "version": "2.9.13-13.el9_4.2",
+          "source": "var/lib/rpm"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-86143",
+      "advisory": [
+        {
+          "name": "RHSA-2026:89750",
+          "link": "https://access.redhat.com/errata/RHSA-2026:89750"
+        }
+      ],
+      "summary": "An integer overflow in the libxml2 xmlIO module occurs when data backlogs exceed maximum integer limits. This flaw passes negative length values to downstream write callbacks, creating an unsafe state that can lead to data corruption or compromise application confidentiality and integrity.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-86143"
+      ],
+      "fixedBy": "0:2.9.13-13.el9_4.10",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "libxml2",
+          "version": "2.9.13-13.el9_4.2",
+          "source": "var/lib/rpm"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-86144",
+      "advisory": [
+        {
+          "name": "RHSA-2026:89750",
+          "link": "https://access.redhat.com/errata/RHSA-2026:89750"
+        }
+      ],
+      "summary": "A flaw in libxml2's XInclude processing (xmlXIncludeProcess and xmlXIncludeProcessTree) fails to propagate parser flags like XML_PARSE_NONET. This allows custom resource loaders to fetch external network resources, potentially enabling Server-Side Request Forgery (SSRF), XML External Entity (XXE) injection, or Denial of Service (DoS) attacks.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-86144"
+      ],
+      "fixedBy": "0:2.9.13-13.el9_4.10",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "libxml2",
+          "version": "2.9.13-13.el9_4.2",
+          "source": "var/lib/rpm"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-88031",
+      "advisory": [],
+      "summary": "A flaw was found in go.mongodb.org/mongo-driver for version < 1.17.10 and < 2.9.1. \nImproper handling of data query elements in the GridFS component can lead to a file identifier being misinterpreted as a query. An authenticated user can exploit this to delete all GridFS file chunks, making stored file content unreadable, resulting in a denial of service.",
+      "links": [
+        "https://access.redhat.com/security/cve/CVE-2026-88031"
+      ],
+      "fixedBy": "",
+      "severity": "IMPORTANT_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "openshift-gitops-1/must-gather-rhel9",
+          "version": "1793434119",
+          "source": "root/buildinfo/labels.json"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-94439",
+      "advisory": [],
+      "summary": "HTTP/1 server connection desynchronization after 2xx CONNECT response in net/http",
+      "links": [
+        "https://go.dev/cl/847311"
+      ],
+      "fixedBy": "1.26.9",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-94440",
+      "advisory": [],
+      "summary": "Memory limit bypass when parsing MIME headers in net/textproto, mime/multipart",
+      "links": [
+        "https://go.dev/cl/847307"
+      ],
+      "fixedBy": "1.26.9",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-94448",
+      "advisory": [],
+      "summary": "Reset context tracking on consecutive template expressions in html/template",
+      "links": [
+        "https://go.dev/cl/839866"
+      ],
+      "fixedBy": "1.26.9",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-95837",
+      "advisory": [],
+      "summary": "containerd CRI plugin: Checkpoint restore bypasses destination security context in github.com/containerd/containerd",
+      "links": [
+        "https://github.com/containerd/containerd/security/advisories/GHSA-p7v4-vr35-mj6f"
+      ],
+      "fixedBy": "",
+      "severity": "",
+      "components": [
+        {
+          "component": "github.com/containerd/containerd",
+          "version": "v1.7.11",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-95838",
+      "advisory": [],
+      "summary": "containerd: Unpack DoS via repeated opaque whiteouts",
+      "links": [
+        "https://github.com/containerd/containerd/security/advisories/GHSA-rp3h-jf77-q9p4"
+      ],
+      "fixedBy": "1.7.35",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/containerd/containerd",
+          "version": "v1.7.11",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-97030",
+      "advisory": [],
+      "summary": "Recognize yield as regexp preceder keyword in html/template",
+      "links": [
+        "https://go.dev/cl/840925"
+      ],
+      "fixedBy": "1.26.9",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-97031",
+      "advisory": [],
+      "summary": "Reject malformed ECH outer extension references in crypto/tls",
+      "links": [
+        "https://go.dev/cl/847312"
+      ],
+      "fixedBy": "1.26.9",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "CVE-2026-97032",
+      "advisory": [],
+      "summary": "HTTP/2 server crash due to HPACK encoder race in net/http",
+      "links": [
+        "https://go.dev/cl/847188"
+      ],
+      "fixedBy": "1.26.9",
+      "severity": "",
+      "components": [
+        {
+          "component": "stdlib",
+          "version": "1.21.13",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "GHSA-w5pp-99ch-qj29",
+      "advisory": [],
+      "summary": "go-git: Malformed Git object data may cause panics or resource exhaustion",
+      "links": [
+        "https://osv.dev/vulnerability/GHSA-w5pp-99ch-qj29"
+      ],
+      "fixedBy": "5.19.1",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/go-git/go-git/v5",
+          "version": "v5.11.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "GHSA-w67g-5rqw-f597",
+      "advisory": [],
+      "summary": "Gorilla WebSocket Uses Cryptographically Weak PRNG for WebSocket Mask Key",
+      "links": [
+        "https://github.com/canolgun-commits/websocket/security/advisories/GHSA-w67g-5rqw-f597"
+      ],
+      "fixedBy": "1.5.3",
+      "severity": "MODERATE_VULNERABILITY_SEVERITY",
+      "components": [
+        {
+          "component": "github.com/gorilla/websocket",
+          "version": "v1.5.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    },
+    {
+      "cve": "GO-2026-5932",
+      "advisory": [],
+      "summary": "The golang.org/x/crypto/openpgp package is unmaintained, unsafe by design, and has known security issues",
+      "links": [
+        "https://go.dev/issue/44226"
+      ],
+      "fixedBy": "",
+      "severity": "",
+      "components": [
+        {
+          "component": "golang.org/x/crypto",
+          "version": "v0.33.0",
+          "source": "usr/bin/oc"
+        }
+      ]
+    }
+  ]
+}
