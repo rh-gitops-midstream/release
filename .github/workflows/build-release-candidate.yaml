@@ -97,6 +97,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y skopeo podman
+          KUBECTL_VERSION=$(curl -sSL https://dl.k8s.io/release/stable.txt)
+          curl -sSLO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+          chmod +x kubectl && sudo mv kubectl /usr/local/bin/
 
       - name: Log in to registry.redhat.io
         run: |
@@ -617,6 +620,39 @@ jobs:
         if: steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success'
         run: echo "CURRENT_STAGE=Metadata PR" >> "$GITHUB_ENV"
 
+      - name: "Metadata PR: Fetch Konflux Snapshot"
+        if: steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success'
+        id: fetch_snapshot
+        env:
+          KONFLUX_URL: ${{ secrets.KONFLUX_URL }}
+          KONFLUX_TOKEN: ${{ secrets.KONFLUX_TOKEN }}
+        run: |
+          SHA="${{ steps.p2_merge_sha.outputs.sha }}"
+          if [[ -z "$SHA" ]]; then SHA="${{ steps.effective_sha.outputs.sha }}"; fi
+
+          echo "Querying Konflux snapshot for sha=$SHA"
+
+          kubectl config set-cluster konflux --server="$KONFLUX_URL" --insecure-skip-tls-verify=true
+          kubectl config set-credentials konflux --token="$KONFLUX_TOKEN"
+          kubectl config set-context konflux --cluster=konflux --user=konflux --namespace=rh-openshift-gitops-tenant
+          kubectl config use-context konflux
+
+          SNAPSHOT_NAME=$(kubectl get snapshots.appstudio.redhat.com \
+            -l "pac.test.appstudio.openshift.io/sha=$SHA,pac.test.appstudio.openshift.io/state=completed,pac.test.appstudio.openshift.io/event-type=push" \
+            -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)
+
+          if [[ -z "$SNAPSHOT_NAME" ]]; then
+            echo "No Konflux snapshot found for sha=$SHA"
+            exit 1
+          fi
+
+          # Save full snapshot YAML for the metadata step
+          kubectl get snapshots.appstudio.redhat.com "$SNAPSHOT_NAME" \
+            -o yaml > "$RUNNER_TEMP/snapshot.yaml"
+
+          echo "Found Konflux snapshot: $SNAPSHOT_NAME"
+          echo "name=$SNAPSHOT_NAME" >> "$GITHUB_OUTPUT"
+
       - name: "Metadata PR: Prepare metadata file"
         if: steps.p2_merge.outcome == 'success' || steps.effective_sha.conclusion == 'success'
         id: metadata_prep
@@ -625,7 +661,9 @@ jobs:
           TIMESTAMP=$(date -u +"%Y%m%d-%H%M%S")
           SHA="${{ steps.p2_merge_sha.outputs.sha }}"
           if [[ -z "$SHA" ]]; then SHA="${{ steps.effective_sha.outputs.sha }}"; fi
-          python3 hack/generate-build-data.py --commit "$SHA"
+          python3 hack/generate-build-data.py \
+            --commit "$SHA" \
+            --snapshot-file "$RUNNER_TEMP/snapshot.yaml"
           echo "build=$BUILD" >> "$GITHUB_OUTPUT"
           echo "ts=$TIMESTAMP" >> "$GITHUB_OUTPUT"
 
