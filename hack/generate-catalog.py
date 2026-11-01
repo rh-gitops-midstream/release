@@ -75,30 +75,49 @@ channel = re.sub(r'\blatest\b,?', '', olm.get("channel", "").strip('"\'')).lstri
 tag = release_config.get('release', {}).get('konflux', {}).get('branch', 'latest')
 
 if args.nightly:
-    # Resolve replaces from the cloned catalog to avoid multiple channel heads.
-    # The release repo's replaces field is stale for nightly — the catalog may
-    # already have newer versions that the nightly build needs to replace.
+    # Resolve replaces by checking which versions are actually live.
+    # A version is considered live only if releases/<ver>/production/COMMIT
+    # exists on the corresponding release branch in the release repo.
+    # This prevents pointing replaces at nightly-only catalog entries.
+    repo_url = release_config.get("release", {}).get("konflux", {}).get("repo", "")
+    github_repo = repo_url.replace("https://github.com/", "").removesuffix(".git")
+
     def _parse_ver(name_str):
         m = re.search(r'v(\d+)\.(\d+)\.(\d+)', str(name_str))
         return tuple(int(x) for x in m.groups()) if m else (0, 0, 0)
 
-    target_ch = next((ch for ch in catalog_config.get("channels", []) if ch.get("name") == channel), None)
-    if target_ch:
-        # Channel exists — use its current head as replaces
-        ch_versions = [v.get("name", "") for v in target_ch.get("versions", [])]
-        if ch_versions:
-            replaces = max(ch_versions, key=_parse_ver)
-            print(f"Nightly: resolved replaces={replaces} from existing channel {channel}")
+    # Collect all catalog versions except the one we're building now
+    candidates = []
+    for ch in catalog_config.get("channels", []):
+        for v in ch.get("versions", []):
+            v_name = v.get("name", "")
+            if v_name and v_name != name:
+                candidates.append(v_name)
+    candidates.sort(key=_parse_ver, reverse=True)
+
+    resolved_replaces = None
+    for v_name in candidates:
+        m = re.search(r'v(\d+)\.(\d+)\.(\d+)', v_name)
+        if not m:
+            continue
+        maj, min_, patch = m.group(1), m.group(2), m.group(3)
+        ver = f"{maj}.{min_}.{patch}"
+        branch = f"release-{maj}.{min_}"
+        result = subprocess.run(
+            ["gh", "api", f"repos/{github_repo}/contents/releases/{ver}/production/COMMIT?ref={branch}"],
+            capture_output=True, text=True
+        )
+        if result.returncode == 0:
+            resolved_replaces = v_name
+            print(f"Nightly: resolved replaces={v_name} (production/COMMIT found on {branch})")
+            break
+        else:
+            print(f"Nightly: {v_name} not released, checking next...")
+
+    if resolved_replaces:
+        replaces = resolved_replaces
     else:
-        # New channel — use the latest version across all existing channels
-        all_versions = [
-            v.get("name", "")
-            for ch in catalog_config.get("channels", [])
-            for v in ch.get("versions", [])
-        ]
-        if all_versions:
-            replaces = max(all_versions, key=_parse_ver)
-            print(f"Nightly: resolved replaces={replaces} from catalog (new channel {channel})")
+        print(f"Nightly: no live previous version found, keeping replaces={replaces}")
 base = "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-operator-bundle"   # TODO: read from config.yaml
 image = f"{base}:{tag}"
 digest =  get_digest(image)
