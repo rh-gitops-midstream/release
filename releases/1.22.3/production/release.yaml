@@ -1,0 +1,23 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.22.3-prod-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-22-prod
+  snapshot: gitops-1-22-20261030-064158-000
+  data:
+    releaseNotes:
+      type: RHSA
+      issues:
+        fixed:
+          - id: GITOPS-10775
+            source: issues.redhat.com
+          - id: GITOPS-11708
+            source: issues.redhat.com
+      cves:
+        - key: CVE-2026-56855
+          component: gitops-promoter-1-22
+        - key: CVE-2026-78662
+          component: gitops-promoter-1-22
