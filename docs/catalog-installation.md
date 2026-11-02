@@ -43,7 +43,7 @@ Available pre-release catalog images:
 
 For nightly/development catalog, use a tag of the form `<ocp-version>-<gitops-y-stream>-nightly`:
 
-- example: `quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.19-1.23-nightly`
+- example: `quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.19-v1.23-nightly`
 
 Apply using:
 ```bash
