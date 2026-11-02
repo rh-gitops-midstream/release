@@ -15,7 +15,7 @@
 # ------------------------------------------------------------------------
 
 # Build the manager binary
-FROM registry.redhat.io/rhel9/go-toolset:1.26 AS builder
+FROM registry.access.redhat.com/hi/go:1.27-fips AS builder
 USER root
 
 ARG CI_ARGOCD_IMAGE_UPDATER_VERSION
@@ -37,7 +37,7 @@ RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime \
 # in the UBI9 repos, so it is built from the pinned sources/tini submodule, the same way the argocd
 # and gitops-promoter images do it.
 ####################################################################################################
-FROM registry.redhat.io/rhel9/go-toolset:1.26 AS tini-build
+FROM registry.access.redhat.com/hi/go:1.27-fips AS tini-build
 USER root
 
 # Install cmake and build tini from the source in midstream
