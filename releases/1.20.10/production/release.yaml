@@ -6,10 +6,12 @@ metadata:
 spec:
   gracePeriodDays: 7
   releasePlan: gitops-1-20-prod
-  snapshot: gitops-1-20-20261030-012057-000
+  snapshot: gitops-1-20-20261103-070810-000
   data:
     releaseNotes:
       type: RHSA
+      topic: Red Hat OpenShift GitOps v1.20.10 security update
+      synopsis: Red Hat OpenShift GitOps v1.20.10 security update
       issues:
         fixed:
           - id: GITOPS-10775
@@ -17,3 +19,40 @@ spec:
       cves:
         - key: CVE-2026-75838
           component: argocd-1-20
+        # CVE-2026-114406
+        - key: CVE-2026-114406
+          component: gitops-1-20
+        - key: CVE-2026-114406
+          component: gitops-operator-1-20
+        - key: CVE-2026-114406
+          component: dex-1-20
+        - key: CVE-2026-114406
+          component: argocd-agent-1-20
+        - key: CVE-2026-114406
+          component: argocd-image-updater-1-20
+        - key: CVE-2026-114406
+          component: argo-rollouts-1-20
+        - key: CVE-2026-114406
+          component: must-gather-1-20
+        - key: CVE-2026-114406
+          component: console-plugin-1-20
+        - key: CVE-2026-114406
+          component: argocd-extensions-1-20
+        - key: CVE-2026-114406
+          component: argocd-1-20
+        # CVE-2026-111943
+        - key: CVE-2026-114406
+          component: gitops-1-20
+        - key: CVE-2026-114406
+          component: gitops-operator-1-20
+        - key: CVE-2026-114406
+          component: dex-1-20
+        - key: CVE-2026-114406
+          component: argocd-agent-1-20
+        - key: CVE-2026-114406
+          component: argocd-image-updater-1-20
+        - key: CVE-2026-114406
+          component: argo-rollouts-1-20
+        - key: CVE-2026-114406
+          component: argocd-1-20
+        
