@@ -1,0 +1,66 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.22.3-stage-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-22-stage
+  snapshot: gitops-1-22-20261103-065451-000
+  data:
+    releaseNotes:
+      type: RHSA
+      issues:
+        fixed:
+          - id: GITOPS-10775
+            source: issues.redhat.com
+          - id: GITOPS-11708
+            source: issues.redhat.com
+      cves:
+        - key: CVE-2026-56855
+          component: gitops-promoter-1-22
+        - key: CVE-2026-78662
+          component: gitops-promoter-1-22
+        # CVE-2026-114406
+        - key: CVE-2026-114406
+          component: gitops-1-22
+        - key: CVE-2026-114406
+          component: gitops-operator-1-22
+        - key: CVE-2026-114406
+          component: dex-1-22
+        - key: CVE-2026-114406
+          component: argocd-agent-1-22
+        - key: CVE-2026-114406
+          component: argocd-image-updater-1-22
+        - key: CVE-2026-114406
+          component: argo-rollouts-1-22
+        - key: CVE-2026-114406
+          component: must-gather-1-22
+        - key: CVE-2026-114406
+          component: console-plugin-1-22
+        - key: CVE-2026-114406
+          component: argocd-extensions-1-22
+        - key: CVE-2026-114406
+          component: argocd-1-22
+        - key: CVE-2026-114406
+          component: gitops-promoter-1-22
+        - key: CVE-2026-114406
+          component: console-plugin-4-18-1-22
+        - key: CVE-2026-114406
+          component: argocd-promoter-extension-1-22
+        # CVE-2026-111943
+        - key: CVE-2026-114406
+          component: gitops-1-22
+        - key: CVE-2026-114406
+          component: gitops-operator-1-22
+        - key: CVE-2026-114406
+          component: dex-1-22
+        - key: CVE-2026-114406
+          component: argocd-agent-1-22
+        - key: CVE-2026-114406
+          component: argocd-image-updater-1-22
+        - key: CVE-2026-114406
+          component: argo-rollouts-1-22
+        - key: CVE-2026-114406
+          component: argocd-1-22
+        
