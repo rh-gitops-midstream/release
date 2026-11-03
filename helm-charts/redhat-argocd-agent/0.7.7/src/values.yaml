@@ -1,7 +1,7 @@
 namespaceOverride: ''
 image:
   repository: registry.redhat.io/openshift-gitops-1/argocd-agent-rhel9
-  tag: v1.20.10
+  tag: v1.20.11
   pullPolicy: Always
 replicaCount: 1
 tlsSecretName: argocd-agent-client-tls
