@@ -1,0 +1,58 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.21.7-prod-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-21-prod
+  snapshot: gitops-1-21-20261103-081836-000
+  data:
+    releaseNotes:
+      type: RHSA
+      issues:
+        fixed:
+          - id: GITOPS-10775
+            source: issues.redhat.com
+      cves:
+        - key: CVE-2026-75838
+          component: argocd-1-21
+        - key: CVE-2026-84445
+          component: gitops-1-21
+        # CVE-2026-114406
+        - key: CVE-2026-114406
+          component: gitops-1-21
+        - key: CVE-2026-114406
+          component: gitops-operator-1-21
+        - key: CVE-2026-114406
+          component: dex-1-21
+        - key: CVE-2026-114406
+          component: argocd-agent-1-21
+        - key: CVE-2026-114406
+          component: argocd-image-updater-1-21
+        - key: CVE-2026-114406
+          component: argo-rollouts-1-21
+        - key: CVE-2026-114406
+          component: must-gather-1-21
+        - key: CVE-2026-114406
+          component: console-plugin-1-21
+        - key: CVE-2026-114406
+          component: argocd-extensions-1-21
+        - key: CVE-2026-114406
+          component: argocd-1-21
+        # CVE-2026-111943
+        - key: CVE-2026-114406
+          component: gitops-1-21
+        - key: CVE-2026-114406
+          component: gitops-operator-1-21
+        - key: CVE-2026-114406
+          component: dex-1-21
+        - key: CVE-2026-114406
+          component: argocd-agent-1-21
+        - key: CVE-2026-114406
+          component: argocd-image-updater-1-21
+        - key: CVE-2026-114406
+          component: argo-rollouts-1-21
+        - key: CVE-2026-114406
+          component: argocd-1-21
+        
