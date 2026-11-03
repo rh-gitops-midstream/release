@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # ------------------------------------------------------------------------
-FROM registry.redhat.io/openshift4/ose-must-gather-rhel9:v4.16.0
+FROM registry.redhat.io/openshift4/ose-must-gather-rhel9:v4.22
 
 LABEL \
     name="openshift-gitops-1/must-gather-rhel9" \
