@@ -25,17 +25,17 @@ sources:
   - path: sources/gitops-operator
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.22
-    commit: 1345992fb7dfeb65d555d6d4a81e2779be69f335
+    commit: 24f6c25a9e61b517ebb414ce0175364c86099ce7
     auto-update: true
   - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.5.6
-    commit: c2b1e3017e2cec86b122172e861dcd026453ae44
+    ref: v3.5.7
+    commit: 6d732962f61a99c2a0f221fd26b9aac7c83bcf18
     auto-update: true
   - path: sources/argo-rollouts
     url: https://github.com/argoproj/argo-rollouts.git
-    ref: v1.10.1
-    commit: 356117c8e9a21b74b58c2c01d640aa91994522b5
+    ref: v1.10.2
+    commit: be8a6221c6c9751cd14497f31a2cb3c33690375a
     auto-update: true
   - path: sources/kustomize
     url: https://github.com/kubernetes-sigs/kustomize.git
