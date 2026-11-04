@@ -124,7 +124,7 @@ sources:
 externalImages:
   - name: "haproxy"
     image: registry.redhat.io/openshift4/ose-haproxy-router-rhel9
-    version: v4.19
+    version: latest
   - name: "redis"
     image: registry.redhat.io/rhel9/redis-7
     version: latest
