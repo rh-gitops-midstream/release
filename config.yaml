@@ -107,8 +107,8 @@ sources:
     auto-update: true
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
-    ref: v1.2.2
-    commit: 0e7ba4e51d2f8e64934f738db9f2b57274a401d3
+    ref: v1.2.3
+    commit: cfa95e12a8ed6795599804b493ae9cf2e202da7a
     auto-update: true
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
