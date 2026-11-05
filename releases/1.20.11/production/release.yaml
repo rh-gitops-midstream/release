@@ -1,0 +1,21 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.20.11-prod-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-20-prod
+  snapshot: gitops-1-20-20261105-100804-000
+  data:
+    releaseNotes:
+      type: RHSA
+      topic: Red Hat OpenShift GitOps v1.20.11 security update
+      synopsis: Red Hat OpenShift GitOps v1.20.11 security update
+      issues:
+        fixed:
+          - id: GITOPS-11185
+            source: issues.redhat.com
+      cves:
+        - key: CVE-2026-37236 
+          component: argocd-1-20
