@@ -3,14 +3,14 @@
 **Release version:** `1.20.11`  
 **Previous operator release:** `openshift-gitops-operator.v1.20.10`  
 **Previous build candidate:** `v1.20.11-1`  
-**Konflux snapshot:** `gitops-1-20-20261105-021036-000`  
+**Konflux snapshot:** `gitops-1-20-20261105-052406-000`  
 
 ## Changes from previous release (v1.20.10)
 
 | Component | Ref | Diff | Auto-update |
 |-----------|-----|------|-------------|
 | [gitops-operator](https://github.com/redhat-developer/gitops-operator.git) | v1.20 (f4acd98) | no change | ✓ |
-| [argo-cd](https://github.com/argoproj/argo-cd.git) | v3.3.19 (554529f) | no change | ✓ |
+| [argo-cd](https://github.com/argoproj/argo-cd.git) | release-3.3 (d6bd0bd) | no change | ✓ |
 | [argo-rollouts](https://github.com/argoproj/argo-rollouts.git) | v1.8.5 (2c9de84) | no change | ✓ |
 | [kustomize](https://github.com/kubernetes-sigs/kustomize.git) | kustomize/v5.8.1 (9790a1c) | no change | — |
 | [helm](https://github.com/helm/helm.git) | v3.19.5 (4a19a5b) | no change | ✓ |
@@ -32,7 +32,7 @@
 | Component | Ref | Diff | Auto-update |
 |-----------|-----|------|-------------|
 | [gitops-operator](https://github.com/redhat-developer/gitops-operator.git) | v1.20 (f4acd98) | no change | ✓ |
-| [argo-cd](https://github.com/argoproj/argo-cd.git) | v3.3.19 (554529f) | no change | ✓ |
+| [argo-cd](https://github.com/argoproj/argo-cd.git) | v3.3.19 (554529f) → release-3.3 (d6bd0bd) | [changes](https://github.com/argoproj/argo-cd/compare/554529f...d6bd0bd) | ✓ |
 | [argo-rollouts](https://github.com/argoproj/argo-rollouts.git) | v1.8.5 (2c9de84) | no change | ✓ |
 | [kustomize](https://github.com/kubernetes-sigs/kustomize.git) | kustomize/v5.8.1 (9790a1c) | no change | — |
 | [helm](https://github.com/helm/helm.git) | v3.19.5 (4a19a5b) | no change | ✓ |
