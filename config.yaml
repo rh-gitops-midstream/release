@@ -30,7 +30,7 @@ sources:
   - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
     ref: release-3.3
-    commit: d6bd0bd21bbf0f4e5f931cd132d4a502b4154584
+    commit: 405e9ef9cf6b965de56614a8b230d804f9c7afbf
     auto-update: true
   - path: sources/argo-rollouts
     url: https://github.com/argoproj/argo-rollouts.git
@@ -90,7 +90,7 @@ sources:
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
-    commit: 57902bfad7d3e812d15b673ce370dd824acea074
+    commit: 2ed9ed53494978fbee337d784ed586098bd906f4
     auto-update: true
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
@@ -104,8 +104,8 @@ sources:
     auto-update: true
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
-    ref: v1.1.3
-    commit: b39f30d08d845583b06caeeb452e833799c3509a
+    ref: v1.1.4
+    commit: f94cc27f5ecfa98cebd5b79e879387412f144cbe
     auto-update: true
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
