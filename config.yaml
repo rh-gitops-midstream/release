@@ -25,7 +25,7 @@ sources:
   - path: sources/gitops-operator
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: master
-    commit: 9210c5fc22180246cc1186ebbfa2ef0e588cef6f
+    commit: 8389aabedaf288d389ce7271a5898a25e8e1b897
     auto-update: true
   - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
@@ -95,7 +95,7 @@ sources:
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
-    commit: 57902bfad7d3e812d15b673ce370dd824acea074
+    commit: 2ed9ed53494978fbee337d784ed586098bd906f4
     auto-update: true
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
@@ -105,7 +105,7 @@ sources:
   - path: sources/argocd-agent
     url: https://github.com/argoproj-labs/argocd-agent.git
     ref: main
-    commit: 13a33ca4f7999e2b9a210d9d9521112bf666387d
+    commit: cf7d2c8760ca4df3c556ce24711ca0bf241cc127
     auto-update: true
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
