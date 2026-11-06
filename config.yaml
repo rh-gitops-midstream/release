@@ -93,7 +93,7 @@ sources:
   - path: sources/gitops-must-gather
     url: https://github.com/redhat-developer/gitops-must-gather.git
     ref: main
-    commit: 57902bfad7d3e812d15b673ce370dd824acea074
+    commit: 2ed9ed53494978fbee337d784ed586098bd906f4
     auto-update: true
   - path: sources/rollout-extension
     url: https://github.com/argoproj-labs/rollout-extension.git
@@ -107,8 +107,8 @@ sources:
     auto-update: true
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
-    ref: v1.2.2
-    commit: 0e7ba4e51d2f8e64934f738db9f2b57274a401d3
+    ref: v1.2.3
+    commit: cfa95e12a8ed6795599804b493ae9cf2e202da7a
     auto-update: true
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
