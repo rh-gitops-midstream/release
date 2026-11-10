@@ -25,6 +25,9 @@ If not already present, create a new product version file for the version you ar
     invisible: false
     releaseDate: "<release-date>"
 ```
+> **Note:** The releaseDate field is important because it is used to determine which release is considered the latest when generating the latest link for binaries [OpenShift GitOps latest binaries](https://developers.redhat.com/content-gateway/rest/browse/pub/cgw/openshift-gitops/latest/)
+> Make sure that the release marked as the latest has a releaseDate later than any other OpenShift GitOps release. If 
+> the dates are not aligned the `latest` binaries will return an empty result.
 
 #### References
 
