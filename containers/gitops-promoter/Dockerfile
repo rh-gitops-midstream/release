@@ -46,7 +46,7 @@ RUN mkdir -p ../web/static && cp -r dist/* ../web/static
 #################################################################################################
 # GitOps Promoter Binary Build Stage
 #################################################################################################
-FROM registry.redhat.io/rhel9/go-toolset:1.26 AS promoter-build
+FROM registry.access.redhat.com/hi/go:1.27-fips AS promoter-build
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -77,7 +77,7 @@ RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -a -o gi
 #################################################################################################
 # Build tini binary
 #################################################################################################
-FROM registry.redhat.io/rhel9/go-toolset:1.26 AS tini-build
+FROM registry.access.redhat.com/hi/go:1.27-fips AS tini-build
 USER root
 
 # Install cmake and build tini from the source in midstream
