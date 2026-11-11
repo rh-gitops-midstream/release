@@ -83,6 +83,71 @@ pin_ui_deps_to_local_file() {
   echo "✓ Pinned argo-ui to $file_spec in $file"
 }
 
+# Sync pnpm.overrides from a pnpm-lock.yaml into a package.json.
+# pnpm --frozen-lockfile fails with ERR_PNPM_LOCKFILE_CONFIG_MISMATCH when the
+# lockfile declares overrides that package.json does not.  This can happen when
+# upstream removes pnpm.overrides from package.json without regenerating the
+# lockfile.  Call this after stage_overlay_file for every package.json overlay
+# to keep the two files consistent.
+#
+# Arguments:
+#   $1 - lockfile: pnpm-lock.yaml whose overrides section is authoritative
+#   $2 - pkg:      package.json to patch in place
+sync_lockfile_overrides() {
+  local lockfile=$1
+  local pkg=$2
+
+  local tmp
+  tmp=$(mktemp "${pkg}.XXXXXX")
+
+  python3 - "$lockfile" "$pkg" "$tmp" <<'PYEOF'
+import json, re, sys
+
+lockfile_path, pkg_path, tmp_path = sys.argv[1], sys.argv[2], sys.argv[3]
+
+with open(lockfile_path) as f:
+    content = f.read()
+
+# Parse the top-level overrides block.  The format is strict YAML produced by
+# pnpm itself:  "overrides:\n  'key': value\n  key: value\n"
+overrides = {}
+m = re.search(r'^overrides:\n((?:  [^\n]+\n?)*)', content, re.MULTILINE)
+if m:
+    for line in m.group(1).splitlines():
+        if ':' in line:
+            k, v = line.strip().split(':', 1)
+            overrides[k.strip().strip("'")] = v.strip().strip("'")
+
+if not overrides:
+    sys.exit(2)  # no overrides in lockfile — nothing to do
+
+with open(pkg_path) as f:
+    data = json.load(f)
+
+existing = data.get('pnpm', {}).get('overrides', {})
+if existing == overrides:
+    sys.exit(2)  # already in sync
+
+data.setdefault('pnpm', {})['overrides'] = overrides
+
+with open(tmp_path, 'w') as f:
+    json.dump(data, f, indent=2)
+    f.write('\n')
+PYEOF
+
+  local ec=$?
+  if [[ $ec -eq 2 ]]; then
+    rm -f "$tmp"
+    echo "- $pkg pnpm.overrides already matches lockfile"
+  elif [[ $ec -eq 0 ]]; then
+    mv "$tmp" "$pkg"
+    echo "✓ Synced pnpm.overrides from $lockfile into $pkg"
+  else
+    rm -f "$tmp"
+    return $ec
+  fi
+}
+
 # Stage one overlay file from its pristine submodule copy  and then patch it in
 # place via pin_ui_deps_to_local_file.
 # Arguments:

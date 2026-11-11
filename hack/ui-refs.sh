@@ -161,6 +161,9 @@ sync_ui_refs() {
     sources/argo-rollouts/ui/package.json \
     clis/kubectl-argo-rollouts/ui/package.json \
     "file:../../../sources/argo-rollouts-ui-ref"
+  sync_lockfile_overrides \
+    clis/kubectl-argo-rollouts/ui/pnpm-lock.yaml \
+    clis/kubectl-argo-rollouts/ui/package.json
 
   stage_overlay_file \
     sources/argo-cd/ui/pnpm-lock.yaml \
@@ -171,6 +174,9 @@ sync_ui_refs() {
     sources/argo-cd/ui/package.json \
     containers/argocd/ui/package.json \
     "file:../../../sources/argo-cd-ui-ref"
+  sync_lockfile_overrides \
+    containers/argocd/ui/pnpm-lock.yaml \
+    containers/argocd/ui/package.json
 
 }
 
