@@ -52,7 +52,7 @@ RUN HOST_ARCH=${TARGETARCH:-amd64} NODE_ENV='production' NODE_ONLINE_ENV='offlin
 # Argo CD Build stage which performs the actual build of Argo CD binaries
 ####################################################################################################
 # TODO: switch to registry.redhat.io once the image is available
-FROM registry.redhat.io/rhel9/go-toolset:1.26 as argocd-build
+FROM registry.redhat.io/rhel9/go-toolset:1.27 as argocd-build
 USER root
 
 COPY sources/argo-cd /go/src/github.com/argoproj/argo-cd

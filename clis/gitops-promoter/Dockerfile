@@ -17,7 +17,7 @@
 ###################################################################################################
 # GitOps Promoter Build stag which builds the GitOps Promoter binary that contains the dashboard
 ###################################################################################################
-FROM registry.redhat.io/rhel9/go-toolset:1.26 AS builder
+FROM registry.redhat.io/rhel9/go-toolset:1.27 AS builder
 
 USER root
 
