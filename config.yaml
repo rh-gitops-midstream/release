@@ -80,7 +80,7 @@ sources:
   - path: sources/gitops-console-plugin-4-18
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: release-4.18
-    commit: bc5872a4aa59a01c75eb96da9549a92aee9fb9a8
+    commit: 898cc86c75a7afa700b7bb3baba2ec3439bb4f62
     auto-update: true
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
