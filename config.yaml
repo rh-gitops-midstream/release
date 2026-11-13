@@ -25,7 +25,7 @@ sources:
   - path: sources/gitops-operator
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: master
-    commit: b1240a84c400633bb4b255f94f5ca087c92c82ff
+    commit: 5fb7a030c1c77c9e6f4ba78b1868514ad7e38d37
     auto-update: true
   - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
@@ -44,8 +44,8 @@ sources:
     auto-update: true
   - path: sources/helm
     url: https://github.com/helm/helm.git
-    ref: v4.3.1
-    commit: c0d08d0d6d9424d4a14febb5e8a3e51b0dd00dff
+    ref: v4.3.2
+    commit: 8346aaa55e7161f7c547212d0a87f01367976727
     auto-update: true
   - path: sources/dex
     url: https://github.com/rh-gitops-midstream/dex.git
@@ -75,12 +75,12 @@ sources:
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: main
-    commit: 570eb87af9ba39f0e896849b50d1a17d3153ea4b
+    commit: 009afb06ed9bf0c25cb8f1401a2683f2e1a6653c
     auto-update: true
   - path: sources/gitops-console-plugin-4-18
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: release-4.18
-    commit: 898cc86c75a7afa700b7bb3baba2ec3439bb4f62
+    commit: 463c65da8e35f64b7ed4630d57006ce13fa97d74
     auto-update: true
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
