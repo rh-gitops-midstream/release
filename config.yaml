@@ -109,8 +109,8 @@ sources:
     auto-update: true
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
-    ref: v1.4.0
-    commit: ed3b8b6a19909cace74172645e02e1ebd4959ad5
+    ref: v1.5.0
+    commit: 7b9b04cdb79ef4ad8d76aa5ae49afdb1bacd7de6
     auto-update: true
   - path: sources/gitops-promoter
     url: https://github.com/argoproj-labs/gitops-promoter.git
