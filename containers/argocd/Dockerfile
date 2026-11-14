@@ -136,24 +136,61 @@ RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 \
  -gcflags="" -tags strictfipsruntime -trimpath  -o ./bin/git-lfs ./git-lfs.go
 
 ####################################################################################################
+# Intermediate image to install packages into ubi9-micro rootfs
+####################################################################################################
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest AS package-builder
+
+# Create a directory to hold the ubi9-micro filesystem
+RUN mkdir -p /mnt/rootfs
+
+# Copy the base filesystem from ubi9-micro into the builder
+# Note: Using COPY --from directly in the RUN or copying via an intermediate stage
+COPY --from=registry.access.redhat.com/ubi9/ubi-micro:latest / /mnt/rootfs
+
+# Install git-core and tzdata into the /mnt/rootfs directory
+RUN microdnf install \
+    --installroot /mnt/rootfs \
+    --releasever 9 \
+    --config=/etc/dnf/dnf.conf \
+    --noplugins \
+    --setopt=reposdir=/etc/yum.repos.d \
+    --setopt=varsdir=/etc/dnf/vars \
+    --setopt=cachedir=/tmp/dnf-cache \
+    --setopt install_weak_deps=0 \
+    --setopt tsflags=nodocs \
+    -y \
+    ca-certificates \
+    crypto-policies \
+    openssl-libs \
+    openssl-fips-provider \
+    git-core \
+    openssh-clients \
+    gnupg2 \
+    tzdata \
+    tar \
+    gzip \
+    findutils && \
+    rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/* /mnt/rootfs/tmp/*
+
+
+####################################################################################################
 # Final image
 ####################################################################################################
 ####################################################################################################
 # Argo CD Base - used as the base for both the release and dev argocd images
 ####################################################################################################
-FROM registry.access.redhat.com/ubi9/ubi-minimal AS argocd-base
+FROM registry.access.redhat.com/ubi9/ubi-micro AS argocd-base
+
+# Copy the modified root filesystem over the clean ubi9-micro base
+COPY --from=package-builder /mnt/rootfs /
 
 USER root
-RUN microdnf install shadow-utils -y
 
 RUN groupadd -g 999 argocd && \
     useradd -l -r -u 999 -g argocd -d /home/argocd argocd && \
     mkdir -p /home/argocd && \
     chown argocd:0 /home/argocd && \
-    chmod g=u /home/argocd && \
-    microdnf install -y git-core gpg tar tzdata && \
-    microdnf clean all && \
-    rm -rf /tmp/* /var/tmp/*
+    chmod g=u /home/argocd
 
 COPY sources/argo-cd/hack/gpg-wrapper.sh /usr/local/bin/gpg-wrapper.sh
 COPY sources/argo-cd/hack/git-verify-wrapper.sh /usr/local/bin/git-verify-wrapper.sh
