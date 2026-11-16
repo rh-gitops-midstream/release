@@ -1,11 +1,11 @@
 name: Build Release Candidate
 
 on:
-  schedule:
-    - cron: '0 20 * * *'
-    - cron: '0 22 * * *'
-    - cron: '0 0 * * *'
-    - cron: '0 2 * * *'
+  #schedule:
+    #- cron: '0 20 * * *'
+    #- cron: '0 22 * * *'
+    #- cron: '0 0 * * *'
+    #- cron: '0 2 * * *'
 
   workflow_dispatch:
     inputs:
