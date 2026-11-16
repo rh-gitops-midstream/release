@@ -26,7 +26,7 @@ WORKDIR /app/gitops-promoter
 
 # Copy all package files for better layer caching
 COPY sources/gitops-promoter/ui/components-lib/package*.json ./ui/components-lib/
-COPY sources/gitops-promoter/ui/dashboard/package*.json ./ui/dashboard
+COPY sources/gitops-promoter/ui/dashboard/package*.json ./ui/dashboard/
 
 # Copy all UI sources
 COPY sources/gitops-promoter/ui ./ui/
