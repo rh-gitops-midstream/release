@@ -39,7 +39,8 @@ RUN NODE_ONLINE_ENV='offline' NODE_ENV='production' pnpm build
 
 ####################################################################################################
 
-FROM registry.access.redhat.com/ubi9/httpd-24
+# Rebuild for CVE-2026-119618 pin ubi9/httpd-24 with patched mod_http2
+FROM registry.access.redhat.com/ubi9/httpd-24@sha256:b56587a64751ddddf74f649a5c1dcac6025dd32a6018113141e5a1f733aba374
 USER root
 RUN chown -R 1001:0 /opt/app-root/src
 USER 1001
