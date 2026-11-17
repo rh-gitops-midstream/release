@@ -30,7 +30,44 @@ RUN CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime \
     make argocd-agent BIN_NAME_AGENT=argocd-agent \
     LDFLAGS= GIT_COMMIT=${CI_ARGOCD_AGENT_COMMIT}
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal
+####################################################################################################
+# Intermediate image to install packages into ubi9-micro rootfs
+####################################################################################################
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest AS package-builder
+
+# Create a directory to hold the ubi9-micro filesystem
+RUN mkdir -p /mnt/rootfs
+
+# Copy the base filesystem from ubi9-micro into the builder
+# Note: Using COPY --from directly in the RUN or copying via an intermediate stage
+COPY --from=registry.access.redhat.com/ubi9/ubi-micro:latest / /mnt/rootfs
+
+# Install git-core and tzdata into the /mnt/rootfs directory
+RUN microdnf install \
+    --installroot /mnt/rootfs \
+    --releasever 9 \
+    --config=/etc/dnf/dnf.conf \
+    --noplugins \
+    --setopt=reposdir=/etc/yum.repos.d \
+    --setopt=varsdir=/etc/dnf/vars \
+    --setopt=cachedir=/tmp/dnf-cache \
+    --setopt install_weak_deps=0 \
+    --setopt tsflags=nodocs \
+    -y \
+    ca-certificates \
+    crypto-policies \
+    openssl \
+    openssl-libs \
+    openssl-fips-provider && \
+    rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/* /mnt/rootfs/tmp/*
+
+####################################################################################################
+# Final image
+####################################################################################################
+FROM registry.access.redhat.com/ubi9/ubi-micro
+
+# Copy the modified root filesystem over the clean ubi9-micro base
+COPY --from=package-builder /mnt/rootfs /
 
 COPY --from=builder /app/argocd-agent/dist/argocd-agent /bin/argocd-agent
 ENTRYPOINT ["./bin/argocd-agent"]

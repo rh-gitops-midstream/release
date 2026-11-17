@@ -4,5 +4,5 @@ catalog/
 dist/
 settings.json
 .claude/
-
+.idea/
 hack/__pycache__/
