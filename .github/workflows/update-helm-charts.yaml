@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       TARGET_BRANCH:
-        description: 'Branch to update helm charts for (e.g. release-1.22, main)'
+        description: 'Branch to update helm charts for (main or release-1.23+)'
         required: true
         type: string
 
@@ -46,11 +46,14 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Defence in depth: the job-level `if` already gates this, but that
-          # expression is easy to break and this step feeds `git push`.
-          if [[ "$TARGET_BRANCH" != "main" && "$TARGET_BRANCH" != release-* ]]; then
-            echo "Refusing to update charts on branch '$TARGET_BRANCH' (expected main or release-*)."
-            exit 1
+          # Strict gate (job-level `if` can't regex): main or release-X.Y >= 1.23.
+          # Keep in sync with the dispatch gate in build-release-candidate.yaml.
+          if [[ "$TARGET_BRANCH" != "main" ]]; then
+            if [[ ! "$TARGET_BRANCH" =~ ^release-([0-9]+)\.([0-9]+)$ ]] || \
+               (( BASH_REMATCH[1] < 1 || (BASH_REMATCH[1] == 1 && BASH_REMATCH[2] < 23) )); then
+              echo "Refusing to update charts on branch '$TARGET_BRANCH' (expected main or release-1.23+)."
+              exit 1
+            fi
           fi
 
           echo "target=$TARGET_BRANCH" >> "$GITHUB_OUTPUT"
@@ -318,6 +321,9 @@ jobs:
           # templates/ is generated wholesale (_helpers.tpl and NOTES.txt included).
           rm -rf "${CHART_DIR}/templates"
           cp -r /tmp/kubectl-catalog-out/templates "${CHART_DIR}/templates"
+
+          # GitopsService CRD is dropped from the CRDs chart; drop it from NOTES too.
+          sed -i '/- gitopsservices\.pipelines\.openshift\.io/d' "${CHART_DIR}/templates/NOTES.txt"
 
           # values.yaml carries the bundle's image digests (image.manager,
           # operatorImageEnv.*). Skipping it ships new templates against stale images.

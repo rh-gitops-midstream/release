@@ -924,18 +924,48 @@ jobs:
       # runs always execute on the default branch, so workflow_run.head_branch
       # is always "main" and never the branch selected above.
       # Needs GH_TOKEN (a PAT) - GITHUB_TOKEN cannot trigger other workflows.
+      # continue-on-error: a failed dispatch must not fail the build, but it
+      # must not be silent either - the next step alerts Slack on it.
       - name: "Trigger helm chart update"
+        id: helm_dispatch
         if: success()
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           TARGET_BRANCH: ${{ steps.branch.outputs.target }}
         run: |
-          set -euo pipefail
-          gh workflow run update-helm-charts.yaml \
+          set -uo pipefail
+
+          # Only main and release-X.Y with X.Y >= 1.23 carry the helm chart
+          # automation. Keep in sync with update-helm-charts.yaml.
+          if [[ "${TARGET_BRANCH}" != "main" ]]; then
+            if [[ ! "${TARGET_BRANCH}" =~ ^release-([0-9]+)\.([0-9]+)$ ]] || \
+               (( BASH_REMATCH[1] < 1 || (BASH_REMATCH[1] == 1 && BASH_REMATCH[2] < 23) )); then
+              echo "Helm chart update not applicable for ${TARGET_BRANCH}; skipping."
+              exit 0
+            fi
+          fi
+
+          if ! gh workflow run update-helm-charts.yaml \
             --repo "${{ github.repository }}" \
             --ref "${TARGET_BRANCH}" \
-            --field "TARGET_BRANCH=${TARGET_BRANCH}"
+            --field "TARGET_BRANCH=${TARGET_BRANCH}"; then
+            echo "::warning title=Helm chart update::Could not dispatch update-helm-charts.yaml for ${TARGET_BRANCH}."
+            exit 1
+          fi
           echo "Dispatched Update Helm Charts for ${TARGET_BRANCH}."
+
+      - name: "Notify Slack on helm chart dispatch failure"
+        if: steps.helm_dispatch.outcome == 'failure'
+        continue-on-error: true
+        uses: slackapi/slack-github-action@v2.1.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": ":warning: *Helm chart update dispatch failed* for `${{ steps.branch.outputs.target }}` (build succeeded). Check GH_TOKEN. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View logs>"
+            }
 
   notify-failure:
     name: Notify Slack on Failure
