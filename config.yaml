@@ -25,12 +25,12 @@ sources:
   - path: sources/gitops-operator
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: v1.20
-    commit: c17999b50fee7600d8765c4f2b26b4b471dc2fb5
+    commit: a8b8a640a96e9df09f3b4a36af0eb90116a857b4
     auto-update: true
   - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
     ref: release-3.3
-    commit: 405e9ef9cf6b965de56614a8b230d804f9c7afbf
+    commit: d6de2f779004a8db4ab51b77a857cbc25522a936
     auto-update: true
   - path: sources/argo-rollouts
     url: https://github.com/argoproj/argo-rollouts.git
@@ -75,7 +75,7 @@ sources:
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: v1.20
-    commit: 10c071a7bfd82d37a7ac11482d1615489a35fd60
+    commit: 7f818ec017889771f64ee2d687d9fce147fe4c19
     auto-update: true
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
