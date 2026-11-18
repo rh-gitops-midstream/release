@@ -940,7 +940,7 @@ jobs:
           # automation. Keep in sync with update-helm-charts.yaml.
           if [[ "${TARGET_BRANCH}" != "main" ]]; then
             if [[ ! "${TARGET_BRANCH}" =~ ^release-([0-9]+)\.([0-9]+)$ ]] || \
-               (( BASH_REMATCH[1] < 1 || (BASH_REMATCH[1] == 1 && BASH_REMATCH[2] < 23) )); then
+               (( 10#${BASH_REMATCH[1]} < 1 || (10#${BASH_REMATCH[1]} == 1 && 10#${BASH_REMATCH[2]} < 23) )); then
               echo "Helm chart update not applicable for ${TARGET_BRANCH}; skipping."
               exit 0
             fi

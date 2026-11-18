@@ -18,7 +18,6 @@ CRDs installed:
   - notificationsconfigurations.argoproj.io
   - rolloutmanagers.argoproj.io
   - rollouts.argoproj.io
-  - gitopsservices.pipelines.openshift.io
   - argocdcommitstatuses.promoter.argoproj.io
   - changetransferpolicies.promoter.argoproj.io
   - clusterscmproviders.promoter.argoproj.io
