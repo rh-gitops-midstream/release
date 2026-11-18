@@ -29,8 +29,8 @@ sources:
     auto-update: true
   - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
-    ref: v3.5.7
-    commit: 6d732962f61a99c2a0f221fd26b9aac7c83bcf18
+    ref: v3.5.8
+    commit: 71576a24e898f50c9bf5e31b6930d81d4ac7717d
     auto-update: true
   - path: sources/argo-rollouts
     url: https://github.com/argoproj/argo-rollouts.git
@@ -75,7 +75,7 @@ sources:
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: v1.22
-    commit: 0a2a15ca903e078d712127fb74492bcce96e83ba
+    commit: 12a70191c41c3aeebad2157f4bfcc43c907051e2
     auto-update: true
   - path: sources/gitops-console-plugin-4-18
     url: https://github.com/redhat-developer/gitops-console-plugin.git
