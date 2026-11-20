@@ -54,8 +54,8 @@ sources:
     auto-update: true
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
-    ref: v3.7.1
-    commit: b84b33847fe6458f36ef521534dc0eac953cb379
+    ref: v3.8.1
+    commit: a662a6dbfedf706cfa9fc7a5b7bcc7ba2e2c8a65
     auto-update: true
   - path: sources/ssh-connect
     url: https://github.com/gotoh/ssh-connect.git
