@@ -1,9 +1,9 @@
 annotations:
   kubectl-catalog.io/catalog-ref: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/catalog:v4.20
-  kubectl-catalog.io/channel: gitops-1.22
+  kubectl-catalog.io/channel: gitops-1.23
   kubectl-catalog.io/maturity: GA
 apiVersion: v2
-appVersion: 1.22.1
+appVersion: 1.23.0
 description: "Red Hat OpenShift GitOps is a declarative continuous delivery platform
   based on [Argo CD](https://argoproj.github.io/argo-cd/). It enables teams to adopt
   GitOps principles for managing cluster configurations and automating secure and
@@ -35,4 +35,4 @@ maintainers:
   name: OpenShift GitOps Team
 name: openshift-gitops-operator-crd
 type: application
-version: 1.22.1
+version: 1.23.0

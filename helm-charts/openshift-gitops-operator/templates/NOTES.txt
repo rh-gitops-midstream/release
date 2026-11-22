@@ -4,6 +4,41 @@ Release:   {{ .Release.Name }}
 Namespace: {{ .Release.Namespace }}
 Version:   {{ .Chart.AppVersion }}
 
+CRDs installed:
+  - imageupdaters.argocd-image-updater.argoproj.io
+  - analysisruns.argoproj.io
+  - analysistemplates.argoproj.io
+  - applications.argoproj.io
+  - applicationsets.argoproj.io
+  - appprojects.argoproj.io
+  - argocds.argoproj.io
+  - clusteranalysistemplates.argoproj.io
+  - experiments.argoproj.io
+  - namespacemanagements.argoproj.io
+  - notificationsconfigurations.argoproj.io
+  - rolloutmanagers.argoproj.io
+  - rollouts.argoproj.io
+  - gitopsservices.pipelines.openshift.io
+  - argocdcommitstatuses.promoter.argoproj.io
+  - changetransferpolicies.promoter.argoproj.io
+  - clusterscmproviders.promoter.argoproj.io
+  - commitstatuses.promoter.argoproj.io
+  - controllerconfigurations.promoter.argoproj.io
+  - gitcommitstatuses.promoter.argoproj.io
+  - gitrepositories.promoter.argoproj.io
+  - promotionstrategies.promoter.argoproj.io
+  - pullrequests.promoter.argoproj.io
+  - revertcommits.promoter.argoproj.io
+  - scheduledcommitstatuses.promoter.argoproj.io
+  - scmproviders.promoter.argoproj.io
+  - timedcommitstatuses.promoter.argoproj.io
+  - webrequestcommitstatuses.promoter.argoproj.io
+
+NOTE: CRDs are placed in the crds/ directory and are installed on
+first 'helm install' but NOT updated on 'helm upgrade'.
+To update CRDs manually:
+  kubectl apply -f <chart-dir>/crds/
+
 Check operator status:
   kubectl get deployment -l app.kubernetes.io/instance={{ .Release.Name }} -n {{ .Release.Namespace }}
 

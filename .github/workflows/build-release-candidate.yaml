@@ -1,11 +1,11 @@
 name: Build Release Candidate
 
 on:
-  schedule:
-    - cron: '0 20 * * *'
-    - cron: '0 22 * * *'
-    - cron: '0 0 * * *'
-    - cron: '0 2 * * *'
+  #schedule:
+    #- cron: '0 20 * * *'
+    #- cron: '0 22 * * *'
+    #- cron: '0 0 * * *'
+    #- cron: '0 2 * * *'
 
   workflow_dispatch:
     inputs:
@@ -104,12 +104,12 @@ jobs:
       - name: Log in to registry.redhat.io
         run: |
           mkdir -p ~/.config/containers
-          podman login registry.redhat.io -u ${{ secrets.RH_USERNAME }} -p ${{ secrets.RH_PASSWORD }}
+          podman login registry.redhat.io -u "${{ secrets.RH_USERNAME }}" -p "${{ secrets.RH_PASSWORD }}"
 
-      - name: Log in to quay.io
-        run: |
-          mkdir -p ~/.config/containers
-          podman login quay.io -u ${{ secrets.KONFLUX_QUAY_USERNAME }} -p ${{ secrets.KONFLUX_QUAY_TOKEN }}
+      #- name: Log in to quay.io
+      #  run: |
+      #    mkdir -p ~/.config/containers
+      #    podman login quay.io -u "${{ secrets.KONFLUX_QUAY_USERNAME }}" -p "${{ secrets.KONFLUX_QUAY_TOKEN }}"
 
       # ──────────────────────────────────────────────
       # Operator Build

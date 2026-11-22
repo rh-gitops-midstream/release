@@ -110,8 +110,11 @@ jobs:
           kubectl-catalog version
 
           # Fail loudly here rather than with "unknown flag" mid-generate.
-          for FLAG in --bundle --output-format --chart-name; do
-            kubectl-catalog generate --help | grep -q -- "${FLAG}" || {
+          # Capture help first: piping into `grep -q` under pipefail SIGPIPEs
+          # kubectl-catalog on early match and reports a false "has no flag".
+          HELP=$(kubectl-catalog generate --help)
+          for FLAG in --bundle --output-format --chart-name --env; do
+            grep -q -- "${FLAG}" <<<"${HELP}" || {
               echo "kubectl-catalog at ${KUBECTL_CATALOG_COMMIT} has no ${FLAG}"
               exit 1
             }
@@ -259,7 +262,7 @@ jobs:
             --bundle "${BUNDLE_IMAGE}" \
             --output-format helm \
             --chart-name openshift-gitops-operator \
-            --cluster-type ocp \
+            --env "ENABLE_CONVERSION_WEBHOOK=false" \
             --pull-secret ~/.docker/config.json \
             --output /tmp/kubectl-catalog-out
 
@@ -293,6 +296,12 @@ jobs:
 
           # Remove GitopsService CRD
           rm -f "${CRD_DIR}"/gitopsservices*.yaml
+
+          # ArgoCD CRD: drop the conversion webhook (no webhook service backs it
+          # in this chart) and the deprecated v1alpha1 version it would convert.
+          ARGOCD_CRD="${CRD_DIR}/argocds.argoproj.io.yaml"
+          yq -i 'del(.spec.conversion)' "${ARGOCD_CRD}"
+          yq -i 'del(.spec.versions[] | select(.name == "v1alpha1"))' "${ARGOCD_CRD}"
 
           echo "CRDs after update:"
           ls -1 "${CRD_DIR}/"
