@@ -1,0 +1,35 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  generateName: gitops-1.20.12-prod-
+  namespace: rh-openshift-gitops-tenant
+spec:
+  gracePeriodDays: 7
+  releasePlan: gitops-1-20-prod
+  snapshot: gitops-1-20-20261123-040921-000
+  data:
+    releaseNotes:
+      type: RHSA
+      topic: Red Hat OpenShift GitOps v1.20.12 security update
+      synopsis: Red Hat OpenShift GitOps v1.20.12 security update
+      issues:
+        fixed:
+          - id: GITOPS-10904
+            source: issues.redhat.com
+          - id: GITOPS-12072
+            source: issues.redhat.com
+          - id: GITOPS-12033
+            source: issues.redhat.com
+          - id: GITOPS-12079
+            source: issues.redhat.com
+      cves:
+        - key: CVE-2025-61560
+          component: argocd-image-updater-1-20
+        - key: CVE-2026-116591
+          component: argocd-image-updater-1-20
+        - key: CVE-2026-78660
+          component: dex-1-20
+        - key: CVE-2026-78659
+          component: argocd-1-20
+        - key: CVE-2026-119618
+          component: console-plugin-1-20
