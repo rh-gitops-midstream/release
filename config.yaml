@@ -1,13 +1,13 @@
 # Release Metadata
 release:
   name: OpenShift GitOps Operator
-  version: "1.23.0"
+  version: "1.24.0"
   olm:
     # TODO: Compute olm data automatically
-    name: "openshift-gitops-operator.v1.23.0"
-    channel: "latest,gitops-1.23"
-    replaces: "openshift-gitops-operator.v1.22.0"
-    skip-range: ">=1.0.0 <1.23.0"
+    name: "openshift-gitops-operator.v1.24.0"
+    channel: "latest,gitops-1.24"
+    replaces: "openshift-gitops-operator.v1.23.0"
+    skip-range: ">=1.0.0 <1.24.0"
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
     branch: main
@@ -86,7 +86,7 @@ sources:
     url: https://github.com/redhat-developer/gitops-backend.git
     ref: master
     commit: 2c16e0c8eaa6923ac35d9256a36f13349e10d339
-    auto-update: false
+    auto-update: true
   - path: sources/rollouts-plugin-trafficrouter-openshift
     url: https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-openshift.git
     ref: main
