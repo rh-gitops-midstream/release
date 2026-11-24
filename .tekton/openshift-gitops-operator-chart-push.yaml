@@ -32,6 +32,9 @@ spec:
     value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/openshift-gitops-operator-chart:{{revision}}
   - name: dockerfile
     value: Dockerfile
+  - name: git-metadata-directories
+    value:
+      - sources/gitops-operator
   pipelineSpec:
     description: |
       This pipeline packages and pushes a Helm chart as an OCI artifact using trusted artifacts.

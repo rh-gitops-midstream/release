@@ -33,6 +33,9 @@ spec:
     value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/openshift-gitops-operator-chart:on-pr-{{revision}}
   - name: image-expires-after
     value: 5d
+  - name: git-metadata-directories
+    value:
+      - sources/gitops-operator
   pipelineSpec:
     description: |
       This pipeline packages and pushes a Helm chart as an OCI artifact using trusted artifacts.
