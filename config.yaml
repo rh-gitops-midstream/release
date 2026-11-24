@@ -11,7 +11,7 @@ release:
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
     branch: release-1.23
-    application: gitops-1.23
+    application: gitops-1-23
   managers:
     - name: "Atif Ali"
       github: aali309
