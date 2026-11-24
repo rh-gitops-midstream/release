@@ -12,7 +12,7 @@ metadata:
       event == "pull_request" &&
       target_branch == "main" &&
       (
-        "helm-charts/openshift-gitops-operator".pathChanged() ||
+        "helm-charts/openshift-gitops-operator/***".pathChanged() ||
         ".tekton/openshift-gitops-operator-chart-pull-request.yaml".pathChanged() ||
         "BUILD".pathChanged() ||
         ".tekton/tasks/***".pathChanged()

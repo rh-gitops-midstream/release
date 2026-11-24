@@ -11,7 +11,7 @@ metadata:
       event == "push" &&
       target_branch == "main" &&
       (
-        "helm-charts/openshift-gitops-operator".pathChanged() ||
+        "helm-charts/openshift-gitops-operator/***".pathChanged() ||
         ".tekton/openshift-gitops-operator-chart-push.yaml".pathChanged() ||
         "BUILD".pathChanged() ||
         ".tekton/tasks/***".pathChanged()
