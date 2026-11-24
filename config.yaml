@@ -25,7 +25,7 @@ sources:
   - path: sources/gitops-operator
     url: https://github.com/redhat-developer/gitops-operator.git
     ref: master
-    commit: 5fb7a030c1c77c9e6f4ba78b1868514ad7e38d37
+    commit: 6d1af9bff06a044adedc98e497ce17c668cbad3e
     auto-update: true
   - path: sources/argo-cd
     url: https://github.com/argoproj/argo-cd.git
@@ -172,3 +172,6 @@ konfluxImages:
   - name: gitops-promoter
     buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-promoter-rhel9"
     releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-promoter-rhel9"
+  - name: gitops-ai-controller
+    buildRef: "quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/gitops-ai-controller-rhel9"
+    releaseRef: "registry.redhat.io/openshift-gitops-1/gitops-ai-controller-rhel9"

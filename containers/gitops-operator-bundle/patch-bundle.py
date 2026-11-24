@@ -128,6 +128,7 @@ new_env = [
     {'name': 'PROMOTER_EXTENSION_IMAGE', 'value': images['argocd-promoter-extension']},
     {'name': 'RELATED_IMAGE_GITOPS_PROMOTER_IMAGE', 'value': images['gitops-promoter']},
     {'name': 'GITOPS_PROMOTER_IMAGE', 'value': images['gitops-promoter']},
+    {'name': 'GITOPS_AI_CONTROLLER_IMAGE', 'value': images['gitops-ai-controller']},
 ]
 
 # --- OLM fields ---
