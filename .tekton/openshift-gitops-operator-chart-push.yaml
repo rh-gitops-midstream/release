@@ -17,10 +17,10 @@ metadata:
         ".tekton/tasks/***".pathChanged()
       )
   labels:
-    appstudio.openshift.io/application: gitops-1.23
-    appstudio.openshift.io/component: openshift-gitops-operator-chart-1.23
+    appstudio.openshift.io/application: gitops-1-23
+    appstudio.openshift.io/component: openshift-gitops-operator-chart-1-23
     pipelines.appstudio.openshift.io/type: build
-  name: openshift-gitops-operator-chart-1.23-on-push
+  name: openshift-gitops-operator-chart-1-23-on-push
   namespace: rh-openshift-gitops-tenant
 spec:
   params:
@@ -305,7 +305,7 @@ spec:
     - name: git-auth
       optional: true
   taskRunTemplate:
-    serviceAccountName: build-pipeline-openshift-gitops-operator-chart-1.23
+    serviceAccountName: build-pipeline-openshift-gitops-operator-chart-1-23
   workspaces:
   - name: git-auth
     secret:

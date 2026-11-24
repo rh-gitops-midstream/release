@@ -19,10 +19,10 @@ metadata:
       )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: gitops-1.23
-    appstudio.openshift.io/component: argocd-agentctl-1.23
+    appstudio.openshift.io/application: gitops-1-23
+    appstudio.openshift.io/component: argocd-agentctl-1-23
     pipelines.appstudio.openshift.io/type: build
-  name: argocd-agentctl-1.23-on-pull-request
+  name: argocd-agentctl-1-23-on-pull-request
   namespace: rh-openshift-gitops-tenant
 spec:
   params:
@@ -47,7 +47,7 @@ spec:
   pipelineRef:
     name: build-multi-platform-image
   taskRunTemplate: 
-    serviceAccountName: build-pipeline-argocd-agentctl-1.23
+    serviceAccountName: build-pipeline-argocd-agentctl-1-23
   workspaces:
   - name: git-auth
     secret:
