@@ -10,7 +10,7 @@ metadata:
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: >-
       event == "pull_request" &&
-      target_branch == "main" &&
+      target_branch == "release-1.23" &&
       (
         "helm-charts/openshift-gitops-operator/***".pathChanged() ||
         ".tekton/openshift-gitops-operator-chart-pull-request.yaml".pathChanged() ||
@@ -18,10 +18,10 @@ metadata:
         ".tekton/tasks/***".pathChanged()
       )
   labels:
-    appstudio.openshift.io/application: gitops-main
-    appstudio.openshift.io/component: openshift-gitops-operator-chart-main
+    appstudio.openshift.io/application: gitops-1.23
+    appstudio.openshift.io/component: openshift-gitops-operator-chart-1.23
     pipelines.appstudio.openshift.io/type: build
-  name: openshift-gitops-operator-chart-main-on-pull-request
+  name: openshift-gitops-operator-chart-1.23-on-pull-request
   namespace: rh-openshift-gitops-tenant
 spec:
   params:
@@ -303,7 +303,7 @@ spec:
     - name: git-auth
       optional: true
   taskRunTemplate:
-    serviceAccountName: build-pipeline-openshift-gitops-operator-chart-main
+    serviceAccountName: build-pipeline-openshift-gitops-operator-chart-1.23
   workspaces:
   - name: git-auth
     secret:

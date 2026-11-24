@@ -8,14 +8,14 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "main" && ( "rpms/microshift-gitops/***".pathChanged() || ".tekton/rpm-microshift-gitops-push.yaml".pathChanged()
+      == "release-1.23" && ( "rpms/microshift-gitops/***".pathChanged() || ".tekton/rpm-microshift-gitops-push.yaml".pathChanged()
       )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: gitops-main
-    appstudio.openshift.io/component: rpm-microshift-gitops-main
+    appstudio.openshift.io/application: gitops-1.23
+    appstudio.openshift.io/component: rpm-microshift-gitops-1.23
     pipelines.appstudio.openshift.io/type: build
-  name: rpm-microshift-gitops-main-on-push
+  name: rpm-microshift-gitops-1.23-on-push
   namespace: rh-openshift-gitops-tenant
 spec:
   params:
@@ -71,7 +71,7 @@ spec:
     - name: pathInRepo
       value: .tekton/build-rpm-package.yaml
   taskRunTemplate:
-    serviceAccountName: build-pipeline-rpm-microshift-gitops-main
+    serviceAccountName: build-pipeline-rpm-microshift-gitops-1.23
   workspaces:
   - name: git-auth
     secret:

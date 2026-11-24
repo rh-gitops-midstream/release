@@ -6,16 +6,16 @@ release:
     # TODO: Compute olm data automatically
     name: "openshift-gitops-operator.v1.23.0"
     channel: "latest,gitops-1.23"
-    replaces: "openshift-gitops-operator.v1.22.0"
+    replaces: "openshift-gitops-operator.v1.22.4"
     skip-range: ">=1.0.0 <1.23.0"
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
-    branch: main
-    application: gitops-main
+    branch: release-1.23
+    application: gitops-1.23
   managers:
-    - name: "Siddhesh Ghadi"
-      github: svghadi
-      email: "sghadi@redhat.com"
+    - name: "Atif Ali"
+      github: aali309
+      email: "atali@redhat.com"
 # Source code repositories
 # This section defines the source repositories for GitOps Operator artifacts built from source.
 # See docs/sources.md for details on each field and usage instructions.
