@@ -8,12 +8,20 @@ metadata:
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
     pipelinesascode.tekton.dev/cancel-in-progress: "true"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
-    pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch == "main"
+    pipelinesascode.tekton.dev/on-cel-expression: >-
+      event == "pull_request" &&
+      target_branch == "main" &&
+      (
+        "helm-charts/openshift-gitops-operator/***".pathChanged() ||
+        ".tekton/openshift-gitops-operator-chart-pull-request.yaml".pathChanged() ||
+        "BUILD".pathChanged() ||
+        ".tekton/tasks/***".pathChanged()
+      )
   labels:
     appstudio.openshift.io/application: gitops-main
-    appstudio.openshift.io/component: openshift-gitops-operator-chart
+    appstudio.openshift.io/component: openshift-gitops-operator-chart-main
     pipelines.appstudio.openshift.io/type: build
-  name: openshift-gitops-operator-chart-on-pull-request
+  name: openshift-gitops-operator-chart-main-on-pull-request
   namespace: rh-openshift-gitops-tenant
 spec:
   params:
@@ -25,6 +33,9 @@ spec:
     value: quay.io/redhat-user-workloads/rh-openshift-gitops-tenant/openshift-gitops-operator-chart:on-pr-{{revision}}
   - name: image-expires-after
     value: 5d
+  - name: git-metadata-directories
+    value:
+      - sources/gitops-operator
   pipelineSpec:
     description: |
       This pipeline packages and pushes a Helm chart as an OCI artifact using trusted artifacts.
@@ -74,6 +85,10 @@ spec:
       description: Target directories to scan with SAST tools. Multiple values should be separated with commas.
       name: sast-target-dirs
       type: string
+    - name: git-metadata-directories
+      description: List of directories to run Git commands and extract metadata. First directory should be the main source directory.
+      type: array
+      default: []
     results:
     - description: ""
       name: IMAGE_URL
@@ -127,6 +142,19 @@ spec:
       workspaces:
       - name: basic-auth
         workspace: git-auth
+    - name: generate-metadata
+      runAfter:
+      - clone-repository
+      taskRef:
+        name: generate-metadata
+      params:
+      - name: SOURCE_ARTIFACT
+        value: $(tasks.clone-repository.results.SOURCE_ARTIFACT)
+      - name: GIT_METADATA_DIRECTORIES
+        value:
+        - $(params.git-metadata-directories[*])
+      - name: OUTPUT_IMAGE
+        value: $(params.output-image)
     - name: prefetch-dependencies
       params:
       - name: input
@@ -138,7 +166,7 @@ spec:
       - name: ociArtifactExpiresAfter
         value: $(params.image-expires-after)
       runAfter:
-      - clone-repository
+      - generate-metadata
       taskRef:
         params:
         - name: name
@@ -275,7 +303,7 @@ spec:
     - name: git-auth
       optional: true
   taskRunTemplate:
-    serviceAccountName: build-pipeline-openshift-gitops-operator-chart
+    serviceAccountName: build-pipeline-openshift-gitops-operator-chart-main
   workspaces:
   - name: git-auth
     secret:
