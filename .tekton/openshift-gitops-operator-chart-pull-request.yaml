@@ -13,7 +13,7 @@ metadata:
       target_branch == "main" &&
       (
         "helm-charts/openshift-gitops-operator".pathChanged() ||
-        ".tekton/openshift-gitops-operator-chart-push.yaml".pathChanged() ||
+        ".tekton/openshift-gitops-operator-chart-pull-request.yaml".pathChanged() ||
         "BUILD".pathChanged() ||
         ".tekton/tasks/***".pathChanged()
       )
@@ -82,6 +82,10 @@ spec:
       description: Target directories to scan with SAST tools. Multiple values should be separated with commas.
       name: sast-target-dirs
       type: string
+    - name: git-metadata-directories
+      description: List of directories to run Git commands and extract metadata. First directory should be the main source directory.
+      type: array
+      default: []
     results:
     - description: ""
       name: IMAGE_URL
@@ -135,6 +139,19 @@ spec:
       workspaces:
       - name: basic-auth
         workspace: git-auth
+    - name: generate-metadata
+      runAfter:
+      - clone-repository
+      taskRef:
+        name: generate-metadata
+      params:
+      - name: SOURCE_ARTIFACT
+        value: $(tasks.clone-repository.results.SOURCE_ARTIFACT)
+      - name: GIT_METADATA_DIRECTORIES
+        value:
+        - $(params.git-metadata-directories[*])
+      - name: OUTPUT_IMAGE
+        value: $(params.output-image)
     - name: prefetch-dependencies
       params:
       - name: input
@@ -146,7 +163,7 @@ spec:
       - name: ociArtifactExpiresAfter
         value: $(params.image-expires-after)
       runAfter:
-      - clone-repository
+      - generate-metadata
       taskRef:
         params:
         - name: name
