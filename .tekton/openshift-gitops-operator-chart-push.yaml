@@ -286,7 +286,6 @@ spec:
       - name: ADDITIONAL_TAGS
         value:
         - $(tasks.generate-metadata.results.additional-image-tags[*])
-        - $(params.additional-tags)
       - name: IMAGE_URL
         value: $(tasks.build-helm-chart.results.IMAGE_URL)
       - name: IMAGE_DIGEST
