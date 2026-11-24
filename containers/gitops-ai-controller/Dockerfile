@@ -46,7 +46,7 @@ ENTRYPOINT [ "/usr/local/bin/gitops-ai-controller" ]
     
 LABEL \
     name="openshift-gitops-1/gitops-ai-controller-rhel9" \
-    cpe="cpe:/a:redhat:openshift_gitops:1.23::el9" \
+    cpe="cpe:/a:redhat:openshift_gitops:1.24::el9" \
     License="Apache 2.0" \
     com.redhat.component="openshift-gitops-ai-controller-container" \
     com.redhat.delivery.appregistry="false" \
