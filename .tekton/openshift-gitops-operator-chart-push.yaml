@@ -306,7 +306,7 @@ spec:
     - name: git-auth
       optional: true
   taskRunTemplate:
-    serviceAccountName: build-pipeline-openshift-gitops-operator-chart
+    serviceAccountName: build-pipeline-openshift-gitops-operator-chart-main
   workspaces:
   - name: git-auth
     secret:
