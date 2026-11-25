@@ -70,6 +70,7 @@ name = olm.get("name", "").strip('"\'')
 replaces = olm.get("replaces", "").strip('"\'')
 skip_range = olm.get("skip-range", "").strip('"\'')
 channel = re.sub(r'\blatest\b,?', '', olm.get("channel", "").strip('"\'')).lstrip(',')  # Remove 'latest' from channel list
+supported_ocp = olm.get("supportedOCP", [])
 
 # Bundle image
 tag = release_config.get('release', {}).get('konflux', {}).get('branch', 'latest')
@@ -141,11 +142,13 @@ if existing_channel is None:
     # Create new channel entry
     new_channel = {
         "name": channel,
+        "supportedOCP": supported_ocp,
         "versions": [version_entry]
     }
     catalog_config.setdefault("channels", []).append(new_channel)
 else:
     # Update existing channel entry
+    existing_channel["supportedOCP"] = supported_ocp
     versions = existing_channel.get("versions", [])
     for i, v in enumerate(versions):
         if v.get("name") == name:
