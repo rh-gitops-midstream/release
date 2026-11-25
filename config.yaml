@@ -50,7 +50,7 @@ sources:
   - path: sources/dex
     ref: v2.43.1
     url: https://github.com/rh-gitops-midstream/dex.git
-    commit: d0b0e859a6de24ebcbf273e28e885d618b43ed12
+    commit: 7c7cb115f525cc2c6a9ea84373d7b1f6a10eb4d0
     auto-update: true
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
@@ -60,7 +60,7 @@ sources:
   - path: sources/ssh-connect
     url: https://github.com/gotoh/ssh-connect.git
     ref: master
-    commit: a7443d32e6bf6f00698384b0519adc16fa7656fa
+    commit: 2ab2f9aaf7602016f9b85608dae05296747d0d0b
     auto-update: true
   - path: sources/tini
     url: https://github.com/krallin/tini.git
@@ -75,7 +75,7 @@ sources:
   - path: sources/gitops-console-plugin
     url: https://github.com/redhat-developer/gitops-console-plugin.git
     ref: v1.20
-    commit: 430b89e4d176767f7bde36897c654c0180a27322
+    commit: 5c3c3397c64a5ec8a2d3d2f1a7577e0a63d3e312
     auto-update: true
   - path: sources/gitops-backend
     url: https://github.com/redhat-developer/gitops-backend.git
@@ -104,8 +104,8 @@ sources:
     auto-update: true
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
-    ref: v1.1.4
-    commit: f94cc27f5ecfa98cebd5b79e879387412f144cbe
+    ref: v1.1.5
+    commit: c4649b09e1e209ad3a4a4291372f6a0d2356012e
     auto-update: true
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
