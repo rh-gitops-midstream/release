@@ -8,6 +8,7 @@ release:
     channel: "latest,gitops-1.24"
     replaces: "openshift-gitops-operator.v1.23.0"
     skip-range: ">=1.0.0 <1.24.0"
+    supportedOCP: [v4.18, v4.19, v4.20, v4.21, v4.22, v5.0]
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
     branch: main
