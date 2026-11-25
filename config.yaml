@@ -115,8 +115,8 @@ sources:
     auto-update: true
   - path: sources/gitops-promoter
     url: https://github.com/argoproj-labs/gitops-promoter.git
-    ref: v0.50.0
-    commit: 559b25427e65a28bedb309ef72e00d8e0fa8bf51
+    ref: v0.49.0
+    commit: 00e606f4539f73ba9ed9ed8c694a1d964e1fb718
     auto-update: true
 # External images pulled directly from Red Hat registry and are
 # required by the operator at runtime.
