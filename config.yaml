@@ -8,6 +8,7 @@ release:
     channel: "gitops-1.20"
     replaces: "openshift-gitops-operator.v1.20.12"
     skip-range: ">=1.20.0 <1.20.13" # empty for z-stream & ">=1.0.0 <x.y.0" for y-stream
+    supportedOCP: [v4.14, v4.15, v4.16, v4.17, v4.18, v4.19, v4.20, v4.21, v4.22, v5.0]
   konflux:
     repo: https://github.com/rh-gitops-midstream/release.git
     branch: release-1.20
