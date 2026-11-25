@@ -50,7 +50,7 @@ sources:
   - path: sources/dex
     url: https://github.com/rh-gitops-midstream/dex.git
     ref: v2.46.1
-    commit: 75eb19238e10fc4750e7efb05a4031b254b04029
+    commit: a71f1cb3b5c7d598794d5d9ac17ea73e87316b18
     auto-update: true
   - path: sources/git-lfs
     url: https://github.com/git-lfs/git-lfs.git
@@ -109,8 +109,8 @@ sources:
     auto-update: true
   - path: sources/argocd-image-updater
     url: https://github.com/argoproj-labs/argocd-image-updater.git
-    ref: v1.5.0
-    commit: 7b9b04cdb79ef4ad8d76aa5ae49afdb1bacd7de6
+    ref: v1.5.1
+    commit: 26b243cc5c00184007eec13463e705a18fbfd0aa
     auto-update: true
   - path: sources/gitops-promoter
     url: https://github.com/argoproj-labs/gitops-promoter.git
