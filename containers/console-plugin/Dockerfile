@@ -30,7 +30,7 @@ RUN pnpm config set manage-package-manager-versions false
 # Build Console Plugin Dependencies
 WORKDIR /workspace/gitops-console-plugin
 
-COPY ["sources/gitops-console-plugin/package.json", "sources/gitops-console-plugin/pnpm-lock.yaml", "sources/gitops-console-plugin/.npmrc", "./"]
+COPY ["sources/gitops-console-plugin/package.json", "sources/gitops-console-plugin/pnpm-lock.yaml", "sources/gitops-console-plugin/pnpm-workspace.yaml", "sources/gitops-console-plugin/.npmrc", "./"]
 RUN pnpm install --frozen-lockfile --offline
 
 COPY ["sources/gitops-console-plugin/", "."]
