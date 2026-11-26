@@ -26,15 +26,47 @@ ARG CI_DEX_COMMIT
 ENV GOFLAGS=""
 RUN GOEXPERIMENT=strictfipsruntime CGO_ENABLED=1 GOOS=linux go build -mod=mod -o /tmp/dex -ldflags "-w -X main.version=$CI_DEX_VERSION -X main.commit=$CI_DEX_COMMIT" -tags strictfipsruntime ./cmd/dex
 
-# --- start build stage #2
-FROM registry.access.redhat.com/ubi9/ubi-minimal
+####################################################################################################
+# Intermediate image to install packages into ubi9-micro rootfs
+####################################################################################################
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest AS package-builder
+
+# Create a directory to hold the ubi9-micro filesystem
+RUN mkdir -p /mnt/rootfs
+
+# Copy the base filesystem from ubi9-micro into the builder
+# Note: Using COPY --from directly in the RUN or copying via an intermediate stage
+COPY --from=registry.access.redhat.com/ubi9/ubi-micro:latest / /mnt/rootfs
+
+# Install git-core and tzdata into the /mnt/rootfs directory
+RUN microdnf install \
+    --installroot /mnt/rootfs \
+    --releasever 9 \
+    --config=/etc/dnf/dnf.conf \
+    --noplugins \
+    --setopt=reposdir=/etc/yum.repos.d \
+    --setopt=varsdir=/etc/dnf/vars \
+    --setopt=cachedir=/tmp/dnf-cache \
+    --setopt install_weak_deps=0 \
+    --setopt tsflags=nodocs \
+    -y \
+    ca-certificates \
+    crypto-policies \
+    openssl \
+    openssl-libs \
+    openssl-fips-provider && \
+    rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/* /mnt/rootfs/tmp/*
+
+# --- start build stage #3
+FROM registry.access.redhat.com/ubi9/ubi-micro
 # Dex connectors, such as GitHub and Google logins require root certificates.
 # Proper installations should manage those certificates, but it's a bad user
 # experience when this doesn't work out of the box.
 #
 # OpenSSL is required so wget can query HTTPS endpoints for health checking.
 
-RUN microdnf install -y ca-certificates openssl && microdnf clean all
+# Copy the modified root filesystem over the clean ubi9-micro base
+COPY --from=package-builder /mnt/rootfs /
 
 RUN mkdir -p /var/dex
 RUN chown -R 1001:1001 /var/dex
