@@ -172,7 +172,7 @@ spec:
         - name: name
           value: prefetch-dependencies-oci-ta
         - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-prefetch-dependencies-oci-ta:0.11.1@sha256:b57b0a2d0a017db019e2312e11298b317e0e943dd0a1dae008c5bf29f8c90a22
+          value: quay.io/konflux-ci/tekton-catalog/task-prefetch-dependencies-oci-ta:0.12.1@sha256:fed3eddb96bab130cace8d3aa794eeb651fa61ec358a9f1dbfaf01f6f0df669f
         - name: kind
           value: task
         resolver: bundles
@@ -200,7 +200,7 @@ spec:
         - name: name
           value: build-helm-chart-oci-ta
         - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-build-helm-chart-oci-ta:0.4.1@sha256:6f526d1490e7fbbffbab0baa93a30d3ca2c2461642077fc4dded6e9a58831b54
+          value: quay.io/konflux-ci/tekton-catalog/task-build-helm-chart-oci-ta:0.4.1@sha256:dbccaa7a801cc542d1c5042b825fbac0d314dedb51ac1cc916498cf4d4dcb68d
         - name: kind
           value: task
         resolver: bundles
